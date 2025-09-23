@@ -46,7 +46,6 @@ export const TradingViewMiniWidget = ({
       colorTheme: theme,
       isTransparent: true,
       autosize: true,
-      largeChartUrl: ""
     })
 
     // Ajouter le script au container
@@ -64,16 +63,20 @@ export const TradingViewMiniWidget = ({
 
   return (
     <div 
-      ref={containerRef}
-      onClick={onClick}
-      style={{ width, height }}
-      className={`tradingview-mini-widget cursor-pointer rounded-xl transition-all duration-300 border ${
+      onClick={onClick} 
+      className={`cursor-pointer rounded-xl transition-all duration-300 border ${ 
         isSelected 
           ? 'bg-[#6366F1]/20 border-[#6366F1]/40 shadow-lg shadow-[#6366F1]/20' 
-          : 'border-transparent hover:bg-gray-800/40 hover:border-gray-700/60'
+          : 'border-transparent hover:bg-gray-800/40 hover:border-gray-700/60' 
       }`}
     >
-      <div className="tradingview-widget-container__widget h-full"></div>
+      <div 
+        ref={containerRef}
+        style={{ width, height }}
+        className="tradingview-mini-widget pointer-events-none"
+      >
+        <div className="tradingview-widget-container__widget h-full"></div>
+      </div>
     </div>
   )
 }
@@ -110,7 +113,7 @@ export const TradingViewCryptoList = ({
           theme={theme}
           onClick={() => onSymbolChange(symbol)}
           isSelected={selectedSymbol === symbol}
-          height={65}
+          height={80}
         />
       ))}
     </div>
