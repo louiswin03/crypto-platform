@@ -63,35 +63,35 @@ export default function Home() {
 
               {/* Navigation */}
               <nav className="hidden lg:flex space-x-12">
-                <Link href="#cryptos" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
+                <Link href="/cryptos" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
                   <TrendingUp className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
                   <span className="relative">
                     Cryptomonnaies
                     <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
                   </span>
                 </Link>
-                <Link href="#graphiques" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
+                <Link href="/graphiques" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
                   <BarChart3 className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
                   <span className="relative">
                     Graphiques
                     <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
                   </span>
                 </Link>
-                <Link href="#backtest" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
+                <Link href="/backtest" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
                   <Activity className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
                   <span className="relative">
                     Backtest
                     <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
                   </span>
                 </Link>
-                <Link href="#portefeuille" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
+                <Link href="/portefeuille" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
                   <Wallet className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
                   <span className="relative">
                     Portefeuille
                     <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
                   </span>
                 </Link>
-                <Link href="#account" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
+                <Link href="/account" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
                   <User className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
                   <span className="relative">
                     Account
