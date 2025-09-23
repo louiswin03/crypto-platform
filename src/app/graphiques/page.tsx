@@ -1,28 +1,32 @@
 "use client"
 
 import Link from 'next/link'
-import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw } from 'lucide-react'
+import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import TradingViewWidget from '@/components/TradingViewWidget'
-import { TradingViewCryptoList } from '@/components/TradingViewMiniWidget'
+import ModernCryptoSelector from '@/components/CryptoSelector/ModernCryptoSelector'
 
 export default function GraphiquesPage() {
   const [selectedPair, setSelectedPair] = useState('BINANCE:BTCEUR')
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // Données statiques pour les infos supplémentaires (optionnel)
+  // Données pour info crypto (optionnel)
   const cryptoInfo = {
-    'BINANCE:BTCEUR': { name: 'Bitcoin', description: 'La première et plus connue des cryptomonnaies' },
-    'BINANCE:ETHEUR': { name: 'Ethereum', description: 'Plateforme de contrats intelligents' },
-    'BINANCE:BNBEUR': { name: 'Binance Coin', description: 'Token natif de Binance' },
-    'BINANCE:SOLEUR': { name: 'Solana', description: 'Blockchain haute performance' },
-    'BINANCE:XRPEUR': { name: 'XRP', description: 'Monnaie numérique pour les paiements' },
-    'BINANCE:ADAEUR': { name: 'Cardano', description: 'Blockchain proof-of-stake' },
-    'BINANCE:AVAXEUR': { name: 'Avalanche', description: 'Plateforme de DeFi et dApps' },
-    'BINANCE:LINKEUR': { name: 'Chainlink', description: 'Réseau d\'oracles décentralisé' }
+    'BINANCE:BTCEUR': { name: 'Bitcoin', description: 'La première et plus connue des cryptomonnaies', category: 'Layer 1' },
+    'BINANCE:ETHEUR': { name: 'Ethereum', description: 'Plateforme de contrats intelligents', category: 'Layer 1' },
+    'BINANCE:BNBEUR': { name: 'BNB', description: 'Token natif de Binance', category: 'Exchange' },
+    'BINANCE:SOLEUR': { name: 'Solana', description: 'Blockchain haute performance', category: 'Layer 1' },
+    'BINANCE:XRPEUR': { name: 'XRP', description: 'Monnaie numérique pour les paiements', category: 'Payments' },
+    'BINANCE:ADAEUR': { name: 'Cardano', description: 'Blockchain proof-of-stake', category: 'Layer 1' },
+    'BINANCE:AVAXEUR': { name: 'Avalanche', description: 'Plateforme de DeFi et dApps', category: 'Layer 1' },
+    'BINANCE:LINKEUR': { name: 'Chainlink', description: 'Réseau d\'oracles décentralisé', category: 'DeFi' }
   }
 
-  const currentCrypto = cryptoInfo[selectedPair as keyof typeof cryptoInfo]
+  const currentCrypto = cryptoInfo[selectedPair as keyof typeof cryptoInfo] || { 
+    name: selectedPair.split(':')[1]?.replace('EUR', '') || 'Crypto', 
+    description: 'Cryptomonnaie', 
+    category: 'Other' 
+  }
 
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1)
@@ -50,6 +54,22 @@ export default function GraphiquesPage() {
         .pattern-dots {
           background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px);
           background-size: 20px 20px;
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(75, 85, 99, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(99, 102, 241, 0.5);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(99, 102, 241, 0.7);
         }
 
         /* TradingView custom styles */
@@ -81,11 +101,6 @@ export default function GraphiquesPage() {
 
         .tradingview-widget-copyright a:visited .blue-text {
           color: #6366F1 !important;
-        }
-
-        /* Style pour les mini widgets */
-        .tradingview-mini-widget .tradingview-widget-copyright {
-          display: none !important;
         }
       `}</style>
       
@@ -164,129 +179,117 @@ export default function GraphiquesPage() {
         </header>
 
         {/* Main Content */}
-        <main className="relative h-[calc(100vh-5rem)] max-w-[100vw] mx-auto overflow-hidden">
-          <div className="flex h-full">
-            {/* Sidebar TradingView */}
-            <div className="w-80 border-r border-gray-800/40 glass-effect p-6 overflow-y-auto">
-              <div className="space-y-6">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-[#F9FAFB]">Cryptomonnaies</h3>
-                  <button 
-                    onClick={handleRefresh}
-                    className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-all hover:scale-110"
-                  >
-                    <RotateCcw className="w-4 h-4 text-gray-400 hover:text-[#6366F1]" />
-                  </button>
-                </div>
+        <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-20">
+          {/* Page Header avec Sélecteur Moderne */}
+          <div className="mb-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold text-[#F9FAFB] mb-4 tracking-tight flex items-center space-x-3">
+                  <span>Graphiques Avancés</span>
+                  <Sparkles className="w-8 h-8 text-[#6366F1]" />
+                </h1>
+                <p className="text-gray-400 text-xl font-light max-w-2xl">
+                  Plus de 200 cryptomonnaies avec des graphiques TradingView professionnels
+                </p>
+              </div>
+              
+              <button 
+                onClick={handleRefresh}
+                className="flex items-center space-x-2 px-6 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all font-medium"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Actualiser</span>
+              </button>
+            </div>
 
-                {/* TradingView Crypto List */}
-                <div key={refreshKey}>
-                  <TradingViewCryptoList 
-                    selectedSymbol={selectedPair}
-                    onSymbolChange={setSelectedPair}
-                    theme="dark"
-                  />
-                </div>
-
-                {/* Info Crypto */}
-                {currentCrypto && (
-                  <div className="glass-effect rounded-xl p-4 border border-gray-800/40">
-                    <h4 className="font-semibold text-[#F9FAFB] mb-2">{currentCrypto.name}</h4>
-                    <p className="text-gray-400 text-sm">{currentCrypto.description}</p>
-                  </div>
-                )}
-
-                {/* Info TradingView */}
-                <div className="glass-effect rounded-xl p-4 border border-gray-800/40">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className="w-4 h-4 bg-gradient-to-br from-[#16A34A] to-[#22C55E] rounded-full"></div>
-                    <span className="text-[#F9FAFB] font-medium text-sm">Données TradingView</span>
-                  </div>
-                  <p className="text-gray-400 text-xs">
-                    Prix et graphiques synchronisés en temps réel avec TradingView. 
-                    Données directement depuis les exchanges (Binance, etc.).
-                  </p>
-                </div>
-
-                {/* Raccourcis */}
-                <div className="glass-effect rounded-xl p-4 border border-gray-800/40">
-                  <h4 className="font-semibold text-[#F9FAFB] mb-3">Actions rapides</h4>
-                  <div className="space-y-2">
-                    <Link 
-                      href="/backtest" 
-                      className="flex items-center space-x-2 p-3 rounded-lg bg-gradient-to-r from-[#6366F1]/20 to-[#8B5CF6]/20 border border-[#6366F1]/30 text-[#6366F1] hover:border-[#6366F1]/50 transition-all text-sm"
-                    >
-                      <Activity className="w-4 h-4" />
-                      <span>Backtest {currentCrypto?.name || 'cette crypto'}</span>
-                    </Link>
-                    <Link 
-                      href="/portefeuille" 
-                      className="flex items-center space-x-2 p-3 rounded-lg bg-gray-800/30 border border-gray-700/30 text-gray-300 hover:border-gray-600/50 hover:text-[#F9FAFB] transition-all text-sm"
-                    >
-                      <Wallet className="w-4 h-4" />
-                      <span>Ajouter au portefeuille</span>
-                    </Link>
-                  </div>
-                </div>
+            {/* Nouveau Sélecteur de Crypto - Remplace la sidebar */}
+            <div className="mb-8">
+              <div className="max-w-md">
+                <ModernCryptoSelector
+                  selectedCrypto={selectedPair}
+                  onCryptoSelect={setSelectedPair}
+                />
               </div>
             </div>
 
-            {/* Chart Area */}
-            <div className="flex-1 flex flex-col">
-              {/* Chart Header */}
-              <div className="border-b border-gray-800/40 glass-effect p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-6">
-                    <div>
-                      <div className="text-2xl font-bold text-[#F9FAFB] flex items-center space-x-3">
-                        <span>{selectedPair.split(':')[1]?.replace('EUR', '/EUR') || selectedPair}</span>
-                        <div className="flex items-center space-x-1 text-sm">
-                          <div className="w-2 h-2 bg-[#16A34A] rounded-full animate-pulse"></div>
-                          <span className="text-[#16A34A] font-medium">LIVE</span>
-                        </div>
-                      </div>
-                      <div className="text-gray-400 flex items-center space-x-2">
-                        <span>{currentCrypto?.name || 'Crypto'}</span>
-                        <span>•</span>
-                        <span>Binance</span>
-                        <span>•</span>
-                        <span>Données temps réel</span>
+            {/* Info Crypto Sélectionnée */}
+            <div className="glass-effect rounded-2xl p-6 border border-gray-800/40 mb-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                    {selectedPair.split(':')[1]?.replace('EUR', '').slice(0, 2) || 'BT'}
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-[#F9FAFB] flex items-center space-x-3">
+                      <span>{selectedPair.split(':')[1]?.replace('EUR', '/EUR') || 'BTC/EUR'}</span>
+                      <div className="flex items-center space-x-1 text-sm">
+                        <div className="w-2 h-2 bg-[#16A34A] rounded-full animate-pulse"></div>
+                        <span className="text-[#16A34A] font-medium">LIVE</span>
                       </div>
                     </div>
+                    <div className="text-gray-400 flex items-center space-x-2">
+                      <span>{currentCrypto.name}</span>
+                      <span>•</span>
+                      <span className="px-2 py-1 bg-[#6366F1]/20 text-[#6366F1] rounded-full text-xs font-medium">
+                        {currentCrypto.category}
+                      </span>
+                      <span>•</span>
+                      <span>TradingView</span>
+                    </div>
                   </div>
-                  
-                  <div className="flex space-x-3">
-                    <button className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors">
-                      <Download className="w-4 h-4 text-gray-400" />
-                    </button>
-                    <button className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors">
-                      <Maximize2 className="w-4 h-4 text-gray-400" />
-                    </button>
-                  </div>
+                </div>
+                
+                <div className="flex space-x-3">
+                  <button className="p-3 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors">
+                    <Download className="w-5 h-5 text-gray-400" />
+                  </button>
+                  <button className="p-3 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors">
+                    <Maximize2 className="w-5 h-5 text-gray-400" />
+                  </button>
                 </div>
               </div>
-
-              {/* Chart Container */}
-              <div className="flex-1 p-6">
-                <div className="h-full glass-effect rounded-2xl border border-gray-800/40 relative overflow-hidden">
-                  {/* TradingView Advanced Chart */}
-                  <TradingViewWidget 
-                    key={`${selectedPair}-${refreshKey}`}
-                    symbol={selectedPair}
-                    theme="dark"
-                    width="100%"
-                    height="100%"
-                    locale="fr"
-                    toolbar_bg="#111827"
-                    allow_symbol_change={false}
-                    details={true}
-                    hotlist={false}
-                    calendar={false}
-                  />
-                </div>
+              
+              <div className="mt-4 text-gray-500 text-sm">
+                {currentCrypto.description}
               </div>
             </div>
+          </div>
+
+          {/* Chart Container - Plus grand sans sidebar */}
+          <div className="glass-effect rounded-2xl border border-gray-800/40 relative overflow-hidden" style={{ height: '70vh' }}>
+            {/* TradingView Advanced Chart */}
+            <TradingViewWidget 
+              key={`${selectedPair}-${refreshKey}`}
+              symbol={selectedPair}
+              theme="dark"
+              width="100%"
+              height="100%"
+              locale="fr"
+              toolbar_bg="#111827"
+              allow_symbol_change={false}
+              details={true}
+              hotlist={false}
+              calendar={false}
+            />
+          </div>
+
+          {/* Actions rapides */}
+          <div className="mt-8 flex justify-center space-x-4">
+            <Link 
+              href="/backtest" 
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-[#6366F1]/40"
+            >
+              <Activity className="w-5 h-5" />
+              <span>Backtest {currentCrypto.name}</span>
+            </Link>
+            
+            <Link 
+              href="/portefeuille" 
+              className="flex items-center space-x-2 px-6 py-3 bg-gray-800/50 border border-gray-700/50 text-[#F9FAFB] rounded-xl font-medium hover:bg-gray-700/50 hover:border-gray-600/50 transition-all"
+            >
+              <Wallet className="w-5 h-5" />
+              <span>Ajouter au portefeuille</span>
+            </Link>
           </div>
         </main>
       </div>
