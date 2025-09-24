@@ -4,32 +4,56 @@ import Link from 'next/link'
 import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import TradingViewWidget from '@/components/TradingViewWidget'
-import ModernCryptoSelector from '@/components/CryptoSelector/ModernCryptoSelector'
+import SmartCryptoSelector from '@/components/CryptoSelector/SmartCryptoSelector' // ← CHANGEMENT ICI
 
 export default function GraphiquesPage() {
   const [selectedPair, setSelectedPair] = useState('BINANCE:BTCEUR')
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // Données pour info crypto (optionnel)
-  const cryptoInfo = {
-    'BINANCE:BTCEUR': { name: 'Bitcoin', description: 'La première et plus connue des cryptomonnaies', category: 'Layer 1' },
-    'BINANCE:ETHEUR': { name: 'Ethereum', description: 'Plateforme de contrats intelligents', category: 'Layer 1' },
-    'BINANCE:BNBEUR': { name: 'BNB', description: 'Token natif de Binance', category: 'Exchange' },
-    'BINANCE:SOLEUR': { name: 'Solana', description: 'Blockchain haute performance', category: 'Layer 1' },
-    'BINANCE:XRPEUR': { name: 'XRP', description: 'Monnaie numérique pour les paiements', category: 'Payments' },
-    'BINANCE:ADAEUR': { name: 'Cardano', description: 'Blockchain proof-of-stake', category: 'Layer 1' },
-    'BINANCE:AVAXEUR': { name: 'Avalanche', description: 'Plateforme de DeFi et dApps', category: 'Layer 1' },
-    'BINANCE:LINKEUR': { name: 'Chainlink', description: 'Réseau d\'oracles décentralisé', category: 'DeFi' }
+  // Infos crypto enrichies avec multi-exchange
+  const getCryptoInfo = (symbol: string) => {
+    // Extraire exchange et crypto du symbole TradingView
+    const [exchange, pair] = symbol.split(':')
+    const crypto = pair?.replace('EUR', '').replace('USD', '').replace('USDT', '') || 'BTC'
+    
+    // Mapping basique des infos (tu peux l'enrichir plus tard)
+    const cryptoInfoMap: Record<string, any> = {
+      'BTC': { name: 'Bitcoin', description: 'La première et plus connue des cryptomonnaies', category: 'Layer 1' },
+      'ETH': { name: 'Ethereum', description: 'Plateforme de contrats intelligents', category: 'Layer 1' },
+      'XMR': { name: 'Monero', description: 'Cryptomonnaie axée sur la confidentialité', category: 'Privacy' },
+      'COMP': { name: 'Compound', description: 'Protocole de prêt décentralisé', category: 'DeFi' },
+      'MKR': { name: 'MakerDAO', description: 'Gouvernance du stablecoin DAI', category: 'DeFi' },
+      'SUI': { name: 'Sui', description: 'Blockchain Layer 1 haute performance', category: 'Layer 1' },
+      'APT': { name: 'Aptos', description: 'Blockchain Layer 1 sécurisée', category: 'Layer 1' },
+    }
+    
+    return cryptoInfoMap[crypto] || { 
+      name: crypto, 
+      description: 'Cryptomonnaie', 
+      category: 'Other' 
+    }
   }
 
-  const currentCrypto = cryptoInfo[selectedPair as keyof typeof cryptoInfo] || { 
-    name: selectedPair.split(':')[1]?.replace('EUR', '') || 'Crypto', 
-    description: 'Cryptomonnaie', 
-    category: 'Other' 
-  }
+  const currentCrypto = getCryptoInfo(selectedPair)
+  const [exchange] = selectedPair.split(':')
 
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1)
+  }
+
+  // Couleurs par exchange pour l'affichage
+  const getExchangeColor = (exchange: string) => {
+    const colors: Record<string, string> = {
+      'BINANCE': '#F0B90B',
+      'COINBASE': '#0052FF', 
+      'KRAKEN': '#5741D9',
+      'KUCOIN': '#00D4AA',
+      'BYBIT': '#FFA500',
+      'OKX': '#000000',
+      'HUOBI': '#2E8AF6',
+      'BITFINEX': '#16C784'
+    }
+    return colors[exchange] || '#6366F1'
   }
 
   return (
@@ -56,7 +80,6 @@ export default function GraphiquesPage() {
           background-size: 20px 20px;
         }
 
-        /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }
@@ -72,7 +95,6 @@ export default function GraphiquesPage() {
           background: rgba(99, 102, 241, 0.7);
         }
 
-        /* TradingView custom styles */
         .tradingview-widget-copyright {
           font-size: 11px !important;
           line-height: 24px !important;
@@ -84,22 +106,6 @@ export default function GraphiquesPage() {
 
         .tradingview-widget-copyright a {
           text-decoration: none !important;
-          color: #6366F1 !important;
-        }
-
-        .tradingview-widget-copyright a:visited {
-          color: #6366F1 !important;
-        }
-
-        .tradingview-widget-copyright a:hover .blue-text {
-          color: #8B5CF6 !important;
-        }
-
-        .tradingview-widget-copyright a:active .blue-text {
-          color: #A855F7 !important;
-        }
-
-        .tradingview-widget-copyright a:visited .blue-text {
           color: #6366F1 !important;
         }
       `}</style>
@@ -180,16 +186,16 @@ export default function GraphiquesPage() {
 
         {/* Main Content */}
         <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-20">
-          {/* Page Header avec Sélecteur Moderne */}
+          {/* Page Header avec Sélecteur Multi-Exchange */}
           <div className="mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-[#F9FAFB] mb-4 tracking-tight flex items-center space-x-3">
-                  <span>Graphiques Avancés</span>
+                  <span>Graphiques Multi-Exchange</span>
                   <Sparkles className="w-8 h-8 text-[#6366F1]" />
                 </h1>
                 <p className="text-gray-400 text-xl font-light max-w-2xl">
-                  Plus de 200 cryptomonnaies avec des graphiques TradingView professionnels
+                  Plus de 1000 cryptomonnaies sur 9 exchanges avec graphiques TradingView professionnels
                 </p>
               </div>
               
@@ -202,33 +208,47 @@ export default function GraphiquesPage() {
               </button>
             </div>
 
-            {/* Nouveau Sélecteur de Crypto - Remplace la sidebar */}
+            {/* Nouveau Sélecteur Multi-Exchange */}
             <div className="mb-8">
               <div className="max-w-md">
-                <ModernCryptoSelector
+                <SmartCryptoSelector
                   selectedCrypto={selectedPair}
                   onCryptoSelect={setSelectedPair}
                 />
               </div>
             </div>
 
-            {/* Info Crypto Sélectionnée */}
+            {/* Info Crypto Sélectionnée avec Badge Exchange */}
             <div className="glass-effect rounded-2xl p-6 border border-gray-800/40 mb-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                    {selectedPair.split(':')[1]?.replace('EUR', '').slice(0, 2) || 'BT'}
+                  <div 
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+                    style={{ background: `linear-gradient(135deg, ${getExchangeColor(exchange)}, #8B5CF6)` }}
+                  >
+                    {selectedPair.split(':')[1]?.replace(/EUR|USD|USDT/g, '').slice(0, 2) || 'BT'}
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-[#F9FAFB] flex items-center space-x-3">
-                      <span>{selectedPair.split(':')[1]?.replace('EUR', '/EUR') || 'BTC/EUR'}</span>
-                      <div className="flex items-center space-x-1 text-sm">
+                      <span>{selectedPair.split(':')[1] || 'BTCEUR'}</span>
+                      <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-[#16A34A] rounded-full animate-pulse"></div>
-                        <span className="text-[#16A34A] font-medium">LIVE</span>
+                        <span className="text-[#16A34A] font-medium text-sm">LIVE</span>
                       </div>
                     </div>
                     <div className="text-gray-400 flex items-center space-x-2">
                       <span>{currentCrypto.name}</span>
+                      <span>•</span>
+                      <span 
+                        className="px-2 py-1 rounded-full text-xs font-medium"
+                        style={{ 
+                          backgroundColor: `${getExchangeColor(exchange)}20`, 
+                          color: getExchangeColor(exchange),
+                          border: `1px solid ${getExchangeColor(exchange)}40`
+                        }}
+                      >
+                        {exchange}
+                      </span>
                       <span>•</span>
                       <span className="px-2 py-1 bg-[#6366F1]/20 text-[#6366F1] rounded-full text-xs font-medium">
                         {currentCrypto.category}
@@ -255,9 +275,8 @@ export default function GraphiquesPage() {
             </div>
           </div>
 
-          {/* Chart Container - Plus grand sans sidebar */}
+          {/* Chart Container */}
           <div className="glass-effect rounded-2xl border border-gray-800/40 relative overflow-hidden" style={{ height: '70vh' }}>
-            {/* TradingView Advanced Chart */}
             <TradingViewWidget 
               key={`${selectedPair}-${refreshKey}`}
               symbol={selectedPair}
