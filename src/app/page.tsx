@@ -1,9 +1,20 @@
 "use client"
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown } from 'lucide-react'
+import SmartNavigation from '@/components/SmartNavigation'
 
 export default function Home() {
+  const { saveCurrentLocationForRedirect } = useRedirectAfterLogin()
+  const pathname = usePathname()
+
+  const handleAuthClick = () => {
+    // Sauvegarder la page actuelle
+    saveCurrentLocationForRedirect(pathname)
+  }
+
   return (
     <>
       <style jsx global>{`
@@ -35,85 +46,14 @@ export default function Home() {
           background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px);
           background-size: 20px 20px;
         }
-        
-
       `}</style>
       
       <div className="min-h-screen bg-[#111827] text-[#F9FAFB] relative overflow-hidden">
         {/* Background Pattern */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
         
-        {/* Header */}
-        <header className="relative z-50 border-b border-gray-800/40 glass-effect sticky top-0">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
-              {/* Logo */}
-              <div className="flex items-center">
-                <div className="flex items-center space-x-4">
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl glow-effect">
-                    <TrendingUp className="w-7 h-7 text-white" />
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-                  </div>
-                  <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">CryptoBacktest</span>
-                    <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">Plateforme française</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Navigation */}
-              <nav className="hidden lg:flex space-x-12">
-                <Link href="/cryptos" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <TrendingUp className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Cryptomonnaies
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/graphiques" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <BarChart3 className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Graphiques
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/backtest" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Activity className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Backtest
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/portefeuille" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Wallet className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Portefeuille
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/account" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <User className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Account
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-              </nav>
-
-              {/* Auth */}
-              <div className="flex items-center space-x-5">
-                <button className="text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium px-5 py-2.5 rounded-xl hover:bg-gray-800/40 relative group">
-                  <span className="relative z-10">Connexion</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-800/0 via-gray-800/40 to-gray-800/0 opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300"></div>
-                </button>
-                <button className="relative bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-7 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#6366F1]/40 overflow-hidden group">
-                  <span className="relative z-10">S'inscrire</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#5B21B6] to-[#7C3AED] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* Navigation intelligente */}
+        <SmartNavigation />
 
         {/* Hero Section */}
         <section className="relative pt-32 pb-40 overflow-hidden">
@@ -139,14 +79,18 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
-                <button className="group relative bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] text-white px-12 py-5 rounded-2xl text-xl font-bold transition-all duration-500 hover:scale-110 shadow-2xl hover:shadow-[#6366F1]/50 overflow-hidden">
+                <Link 
+                  href="/auth/signup" 
+                  onClick={handleAuthClick}
+                  className="group relative bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] text-white px-12 py-5 rounded-2xl text-xl font-bold transition-all duration-500 hover:scale-110 shadow-2xl hover:shadow-[#6366F1]/50 overflow-hidden"
+                >
                   <span className="relative z-10 flex items-center space-x-3">
                     <span>Accéder à la plateforme</span>
                     <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-[#5B21B6] via-[#7C3AED] to-[#9333EA] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="absolute -inset-4 bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] blur-2xl opacity-30 group-hover:opacity-60 transition-opacity duration-500"></div>
-                </button>
+                </Link>
                 
                 <button className="group relative border-2 border-gray-700 text-[#F9FAFB] px-12 py-5 rounded-2xl text-xl font-bold hover:border-gray-600 transition-all duration-500 hover:scale-105 glass-effect overflow-hidden">
                   <span className="relative z-10">En savoir plus</span>

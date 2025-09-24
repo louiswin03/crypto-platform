@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCcw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight, Bell, CreditCard, LogOut, Camera, Mail, Phone, MapPin, Globe, Smartphone } from 'lucide-react'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import SmartNavigation from '@/components/SmartNavigation'
 
 export default function AccountPage() {
   const userProfile = {
@@ -49,21 +51,12 @@ export default function AccountPage() {
 
   const connectedDevices = [
     { name: 'MacBook Pro', location: 'Paris, France', lastActive: 'Maintenant', current: true },
-    { name: 'iPhone 13', location: 'Paris, France', lastActive: 'Il y a 2h', current: false },
-    { name: 'Chrome - Windows', location: 'Lyon, France', lastActive: 'Il y a 3 jours', current: false },
-  ]
-
-  const notificationSettings = [
-    { id: 'email_alerts', name: 'Alertes de trading par email', enabled: true },
-    { id: 'sms_alerts', name: 'Alertes SMS urgentes', enabled: false },
-    { id: 'backtest_complete', name: 'Backtests terminés', enabled: true },
-    { id: 'weekly_report', name: 'Rapport hebdomadaire', enabled: true },
-    { id: 'security_alerts', name: 'Alertes de sécurité', enabled: true },
-    { id: 'product_updates', name: 'Mises à jour produit', enabled: false },
+    { name: 'iPhone 15', location: 'Paris, France', lastActive: '2 heures', current: false },
+    { name: 'Chrome Windows', location: 'Lyon, France', lastActive: '3 jours', current: false },
   ]
 
   return (
-    <>
+    <ProtectedRoute>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
         
@@ -91,82 +84,8 @@ export default function AccountPage() {
         {/* Background Pattern */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
         
-        {/* Header */}
-        <header className="relative z-50 border-b border-gray-800/40 glass-effect sticky top-0">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
-              {/* Logo */}
-              <Link href="/" className="flex items-center">
-                <div className="flex items-center space-x-4">
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl">
-                    <TrendingUp className="w-7 h-7 text-white" />
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-                  </div>
-                  <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">CryptoBacktest</span>
-                    <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">Plateforme française</div>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Navigation */}
-              <nav className="hidden lg:flex space-x-12">
-                <Link href="/cryptos" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <TrendingUp className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Cryptomonnaies
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/graphiques" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <BarChart3 className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Graphiques
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/backtest" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Activity className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Backtest
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/portefeuille" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Wallet className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Portefeuille
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/account" className="group flex items-center space-x-2 text-[#6366F1] font-semibold relative">
-                  <User className="w-4 h-4" />
-                  <span className="relative">
-                    Account
-                    <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6]"></span>
-                  </span>
-                </Link>
-              </nav>
-
-              {/* User Menu */}
-              <div className="flex items-center space-x-5">
-                <button className="p-2 rounded-xl hover:bg-gray-800/40 transition-colors relative">
-                  <Bell className="w-5 h-5 text-gray-400" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#DC2626] rounded-full"></div>
-                </button>
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white font-bold">
-                    {userProfile.avatar}
-                  </div>
-                  <div className="hidden sm:block">
-                    <div className="text-sm font-semibold text-[#F9FAFB]">{userProfile.name}</div>
-                    <div className="text-xs text-gray-400">Plan {userProfile.plan}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* Navigation intelligente */}
+        <SmartNavigation />
 
         {/* Main Content */}
         <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-12 pb-20">
@@ -217,71 +136,74 @@ export default function AccountPage() {
             <div className="lg:col-span-3 space-y-8">
               {/* Profile Section */}
               <section id="profile" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">Informations du profil</h2>
-                  <button className="flex items-center space-x-2 text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
+                  <button className="flex items-center space-x-2 px-4 py-2 bg-[#6366F1] text-white rounded-xl hover:bg-[#5B21B6] transition-colors">
                     <Settings className="w-4 h-4" />
                     <span>Modifier</span>
                   </button>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-8">
-                  {/* Avatar */}
-                  <div className="flex flex-col items-center space-y-4">
-                    <div className="relative w-32 h-32 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-3xl flex items-center justify-center text-white text-4xl font-bold shadow-2xl">
-                      {userProfile.avatar}
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#8B5CF6]/50 rounded-3xl blur-xl"></div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white font-bold text-2xl">
+                        {userProfile.avatar}
+                      </div>
+                      <div>
+                        <div className="text-xl font-bold text-[#F9FAFB]">{userProfile.name}</div>
+                        <div className="text-gray-400">Plan {userProfile.plan}</div>
+                        <div className="text-gray-500 text-sm">Membre depuis {userProfile.memberSince}</div>
+                      </div>
                     </div>
-                    <button className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm">
-                      <Camera className="w-4 h-4" />
-                      <span>Changer la photo</span>
-                    </button>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <Mail className="w-5 h-5 text-gray-400" />
+                        <div>
+                          <div className="text-[#F9FAFB]">{userProfile.email}</div>
+                          <div className="text-gray-400 text-sm">Email principal</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-3">
+                        <Phone className="w-5 h-5 text-gray-400" />
+                        <div>
+                          <div className="text-[#F9FAFB]">{userProfile.phone}</div>
+                          <div className="text-gray-400 text-sm">Téléphone</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-3">
+                        <MapPin className="w-5 h-5 text-gray-400" />
+                        <div>
+                          <div className="text-[#F9FAFB]">{userProfile.location}</div>
+                          <div className="text-gray-400 text-sm">Localisation</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Profile Info */}
-                  <div className="flex-1 space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="text-sm font-medium text-gray-400 mb-2 block">Nom complet</label>
-                        <input 
-                          type="text" 
-                          defaultValue={userProfile.name}
-                          className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20 transition-all"
-                        />
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-[#F9FAFB] mb-4">Statistiques du compte</h3>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-gray-900/50 rounded-xl p-4">
+                        <div className="text-2xl font-bold text-[#6366F1] mb-1">47</div>
+                        <div className="text-gray-400 text-sm">Backtests créés</div>
                       </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-400 mb-2 block">Email</label>
-                        <input 
-                          type="email" 
-                          defaultValue={userProfile.email}
-                          className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20 transition-all"
-                        />
+                      <div className="bg-gray-900/50 rounded-xl p-4">
+                        <div className="text-2xl font-bold text-[#16A34A] mb-1">3</div>
+                        <div className="text-gray-400 text-sm">Exchanges connectés</div>
                       </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-400 mb-2 block">Téléphone</label>
-                        <input 
-                          type="tel" 
-                          defaultValue={userProfile.phone}
-                          className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20 transition-all"
-                        />
+                      <div className="bg-gray-900/50 rounded-xl p-4">
+                        <div className="text-2xl font-bold text-[#F59E0B] mb-1">12</div>
+                        <div className="text-gray-400 text-sm">Stratégies sauvées</div>
                       </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-400 mb-2 block">Localisation</label>
-                        <input 
-                          type="text" 
-                          defaultValue={userProfile.location}
-                          className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20 transition-all"
-                        />
+                      <div className="bg-gray-900/50 rounded-xl p-4">
+                        <div className="text-2xl font-bold text-[#8B5CF6] mb-1">89%</div>
+                        <div className="text-gray-400 text-sm">Taux de réussite</div>
                       </div>
-                    </div>
-
-                    <div className="flex justify-end space-x-4">
-                      <button className="px-6 py-3 bg-gray-800/50 border border-gray-700/50 text-gray-400 rounded-xl hover:bg-gray-700/50 hover:text-[#F9FAFB] transition-all font-medium">
-                        Annuler
-                      </button>
-                      <button className="px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-xl font-semibold">
-                        Sauvegarder
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -289,60 +211,47 @@ export default function AccountPage() {
 
               {/* Security Section */}
               <section id="security" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8">Sécurité et confidentialité</h2>
-
+                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-6">Sécurité</h2>
+                
                 <div className="space-y-6">
-                  {/* Password */}
-                  <div className="p-6 bg-gray-900/30 rounded-xl border border-gray-800/40">
-                    <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl">
+                    <div className="flex items-center space-x-4">
+                      <Lock className="w-5 h-5 text-[#16A34A]" />
                       <div>
-                        <h3 className="font-semibold text-[#F9FAFB] mb-2">Mot de passe</h3>
-                        <p className="text-gray-400 text-sm">Dernière modification: il y a 2 mois</p>
-                      </div>
-                      <button className="px-4 py-2 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-medium">
-                        Modifier
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Two-Factor Authentication */}
-                  <div className="p-6 bg-gray-900/30 rounded-xl border border-gray-800/40">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-[#16A34A]/20 rounded-xl flex items-center justify-center">
-                          <Shield className="w-6 h-6 text-[#16A34A]" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-[#F9FAFB] mb-1">Authentification à deux facteurs</h3>
-                          <p className="text-gray-400 text-sm">Sécurité renforcée pour votre compte</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="px-3 py-1 bg-[#16A34A]/20 text-[#16A34A] rounded-full text-xs font-semibold">
-                          Activé
-                        </div>
-                        <button className="px-4 py-2 bg-gray-800/50 border border-gray-700/50 text-gray-400 rounded-lg hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all font-medium">
-                          Configurer
-                        </button>
+                        <div className="font-semibold text-[#F9FAFB]">Mot de passe</div>
+                        <div className="text-gray-400 text-sm">Dernière modification il y a 3 mois</div>
                       </div>
                     </div>
+                    <button className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                      Modifier
+                    </button>
                   </div>
 
-                  {/* Connected Devices */}
-                  <div className="p-6 bg-gray-900/30 rounded-xl border border-gray-800/40">
+                  <div className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl">
+                    <div className="flex items-center space-x-4">
+                      <Shield className="w-5 h-5 text-[#DC2626]" />
+                      <div>
+                        <div className="font-semibold text-[#F9FAFB]">Authentification à deux facteurs</div>
+                        <div className="text-gray-400 text-sm">Non configurée - Recommandée</div>
+                      </div>
+                    </div>
+                    <button className="px-4 py-2 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-colors">
+                      Activer
+                    </button>
+                  </div>
+
+                  <div>
                     <h3 className="font-semibold text-[#F9FAFB] mb-4">Appareils connectés</h3>
                     <div className="space-y-3">
                       {connectedDevices.map((device, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+                        <div key={index} className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl">
                           <div className="flex items-center space-x-4">
-                            <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
-                              <Smartphone className="w-5 h-5 text-gray-400" />
-                            </div>
+                            <Smartphone className="w-5 h-5 text-gray-400" />
                             <div>
                               <div className="font-medium text-[#F9FAFB] flex items-center space-x-2">
                                 <span>{device.name}</span>
                                 {device.current && (
-                                  <span className="px-2 py-0.5 bg-[#16A34A]/20 text-[#16A34A] rounded-full text-xs font-semibold">
+                                  <span className="px-2 py-0.5 bg-[#16A34A]/20 text-[#16A34A] text-xs font-semibold rounded-full">
                                     Actuel
                                   </span>
                                 )}
@@ -364,63 +273,70 @@ export default function AccountPage() {
 
               {/* Billing Section */}
               <section id="billing" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8">Abonnement et facturation</h2>
-
+                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-6">Facturation & Abonnement</h2>
+                
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
                   {subscriptionPlans.map((plan) => (
-                    <div key={plan.name} className={`p-6 rounded-2xl border transition-all ${
-                      plan.current 
-                        ? 'border-[#6366F1] bg-[#6366F1]/10 shadow-xl shadow-[#6366F1]/20' 
-                        : 'border-gray-800/40 hover:border-gray-700/60'
-                    }`}>
-                      <div className="text-center mb-6">
-                        {plan.popular && (
-                          <div className="inline-block px-3 py-1 bg-[#F59E0B]/20 text-[#F59E0B] rounded-full text-xs font-semibold mb-3">
+                    <div 
+                      key={plan.name}
+                      className={`relative rounded-2xl p-6 border ${
+                        plan.current 
+                          ? 'border-[#6366F1] bg-[#6366F1]/10' 
+                          : 'border-gray-800/40 bg-gray-900/30'
+                      }`}
+                    >
+                      {plan.popular && (
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                          <div className="px-3 py-1 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-xs font-semibold rounded-full">
                             POPULAIRE
                           </div>
-                        )}
+                        </div>
+                      )}
+                      
+                      <div className="text-center mb-6">
                         <h3 className="text-xl font-bold text-[#F9FAFB] mb-2">{plan.name}</h3>
-                        <div className="flex items-end justify-center">
-                          <span className="text-3xl font-black text-[#F9FAFB] font-mono">{plan.price}</span>
-                          <span className="text-gray-400 font-medium">{plan.period}</span>
+                        <div className="flex items-baseline justify-center">
+                          <span className="text-4xl font-bold text-[#F9FAFB]">{plan.price}</span>
+                          <span className="text-gray-400 ml-1">{plan.period}</span>
                         </div>
                       </div>
-                      
-                      <ul className="space-y-2 mb-6">
+
+                      <ul className="space-y-3 mb-6">
                         {plan.features.map((feature, index) => (
-                          <li key={index} className="flex items-center space-x-2 text-sm">
+                          <li key={index} className="flex items-center space-x-3">
                             <CheckCircle className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
-                            <span className="text-gray-300">{feature}</span>
+                            <span className="text-gray-300 text-sm">{feature}</span>
                           </li>
                         ))}
                       </ul>
 
-                      <button className={`w-full py-3 rounded-xl font-semibold transition-all ${
-                        plan.current
-                          ? 'bg-gray-800/50 border border-gray-700 text-gray-400 cursor-not-allowed'
-                          : 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:scale-105 shadow-xl'
-                      }`} disabled={plan.current}>
-                        {plan.current ? 'Plan actuel' : 'Changer de plan'}
+                      <button 
+                        className={`w-full py-3 rounded-xl font-semibold transition-all ${
+                          plan.current
+                            ? 'bg-gray-800 text-gray-400 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:scale-105'
+                        }`}
+                        disabled={plan.current}
+                      >
+                        {plan.current ? 'Plan actuel' : 'Choisir ce plan'}
                       </button>
                     </div>
                   ))}
                 </div>
 
-                {/* Payment Method */}
-                <div className="p-6 bg-gray-900/30 rounded-xl border border-gray-800/40">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-[#F9FAFB]">Méthode de paiement</h3>
-                    <button className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium text-sm">
-                      Modifier
-                    </button>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">
-                      VISA
-                    </div>
+                <div className="border-t border-gray-800/40 pt-6">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium text-[#F9FAFB]">•••• •••• •••• 4242</div>
-                      <div className="text-gray-400 text-sm">Expire 12/27</div>
+                      <div className="font-semibold text-[#F9FAFB]">Prochain paiement</div>
+                      <div className="text-gray-400 text-sm">20 février 2025 • 19,00€</div>
+                    </div>
+                    <div className="flex space-x-3">
+                      <button className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        Gérer la facturation
+                      </button>
+                      <button className="px-4 py-2 bg-[#DC2626] text-white rounded-lg hover:bg-[#B91C1C] transition-colors">
+                        Annuler l'abonnement
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -428,60 +344,38 @@ export default function AccountPage() {
 
               {/* Activity Log */}
               <section id="activity" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8">Journal d'activité</h2>
+                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-6">Activité récente</h2>
                 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {activityLog.map((activity) => (
-                    <div key={activity.id} className="flex items-center space-x-4 p-4 bg-gray-900/30 rounded-xl border border-gray-800/40">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        activity.type === 'backtest' ? 'bg-[#6366F1]/20 text-[#6366F1]' :
-                        activity.type === 'security' ? 'bg-[#16A34A]/20 text-[#16A34A]' :
-                        activity.type === 'auth' ? 'bg-[#F59E0B]/20 text-[#F59E0B]' :
-                        'bg-[#8B5CF6]/20 text-[#8B5CF6]'
-                      }`}>
-                        {activity.type === 'backtest' ? <Activity className="w-5 h-5" /> :
-                         activity.type === 'security' ? <Shield className="w-5 h-5" /> :
-                         activity.type === 'auth' ? <Lock className="w-5 h-5" /> :
-                         <CreditCard className="w-5 h-5" />}
-                      </div>
+                    <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-900/30 rounded-xl">
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        activity.type === 'backtest' ? 'bg-[#6366F1]' :
+                        activity.type === 'security' ? 'bg-[#F59E0B]' :
+                        activity.type === 'auth' ? 'bg-[#16A34A]' :
+                        'bg-gray-400'
+                      }`}></div>
                       <div className="flex-1">
-                        <div className="font-medium text-[#F9FAFB]">{activity.action}</div>
+                        <div className="flex items-center justify-between">
+                          <div className="font-medium text-[#F9FAFB]">{activity.action}</div>
+                          <div className="text-gray-400 text-sm font-mono">{activity.timestamp}</div>
+                        </div>
                         <div className="text-gray-400 text-sm">{activity.details}</div>
                       </div>
-                      <div className="text-gray-400 text-sm font-mono">{activity.timestamp}</div>
                     </div>
                   ))}
                 </div>
 
                 <div className="text-center mt-6">
-                  <button className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
-                    Voir plus d'activités
+                  <button className="text-[#6366F1] hover:text-[#8B5CF6] font-medium transition-colors">
+                    Voir toute l'activité
                   </button>
-                </div>
-              </section>
-
-              {/* Notifications */}
-              <section id="notifications" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8">Préférences de notification</h2>
-                
-                <div className="space-y-4">
-                  {notificationSettings.map((setting) => (
-                    <div key={setting.id} className="flex items-center justify-between p-4 bg-gray-900/30 rounded-xl border border-gray-800/40">
-                      <div>
-                        <div className="font-medium text-[#F9FAFB]">{setting.name}</div>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" defaultChecked={setting.enabled} />
-                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6366F1]"></div>
-                      </label>
-                    </div>
-                  ))}
                 </div>
               </section>
             </div>
           </div>
         </main>
       </div>
-    </>
+    </ProtectedRoute>
   )
 }
