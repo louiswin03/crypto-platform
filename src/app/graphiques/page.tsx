@@ -4,19 +4,19 @@ import Link from 'next/link'
 import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import TradingViewWidget from '@/components/TradingViewWidget'
-import SmartCryptoSelector from '@/components/CryptoSelector/SmartCryptoSelector' // ← CHANGEMENT ICI
+import SmartCryptoSelector from '@/components/CryptoSelector/SmartCryptoSelector'
 
 export default function GraphiquesPage() {
   const [selectedPair, setSelectedPair] = useState('BINANCE:BTCEUR')
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // Infos crypto enrichies avec multi-exchange
+  // Infos crypto
   const getCryptoInfo = (symbol: string) => {
-    // Extraire exchange et crypto du symbole TradingView
-    const [exchange, pair] = symbol.split(':')
+    // Extraire la paire du symbole TradingView
+    const pair = symbol.includes(':') ? symbol.split(':')[1] : symbol
     const crypto = pair?.replace('EUR', '').replace('USD', '').replace('USDT', '') || 'BTC'
     
-    // Mapping basique des infos (tu peux l'enrichir plus tard)
+    // Mapping basique des infos
     const cryptoInfoMap: Record<string, any> = {
       'BTC': { name: 'Bitcoin', description: 'La première et plus connue des cryptomonnaies', category: 'Layer 1' },
       'ETH': { name: 'Ethereum', description: 'Plateforme de contrats intelligents', category: 'Layer 1' },
@@ -30,30 +30,15 @@ export default function GraphiquesPage() {
     return cryptoInfoMap[crypto] || { 
       name: crypto, 
       description: 'Cryptomonnaie', 
-      category: 'Other' 
+      category: 'Blockchain' 
     }
   }
 
   const currentCrypto = getCryptoInfo(selectedPair)
-  const [exchange] = selectedPair.split(':')
+  const symbolWithoutExchange = selectedPair.includes(':') ? selectedPair.split(':')[1] : selectedPair
 
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1)
-  }
-
-  // Couleurs par exchange pour l'affichage
-  const getExchangeColor = (exchange: string) => {
-    const colors: Record<string, string> = {
-      'BINANCE': '#F0B90B',
-      'COINBASE': '#0052FF', 
-      'KRAKEN': '#5741D9',
-      'KUCOIN': '#00D4AA',
-      'BYBIT': '#FFA500',
-      'OKX': '#000000',
-      'HUOBI': '#2E8AF6',
-      'BITFINEX': '#16C784'
-    }
-    return colors[exchange] || '#6366F1'
   }
 
   return (
@@ -191,11 +176,11 @@ export default function GraphiquesPage() {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-[#F9FAFB] mb-4 tracking-tight flex items-center space-x-3">
-                  <span>Graphiques Multi-Exchange</span>
+                  <span>Graphiques Cryptos</span>
                   <Sparkles className="w-8 h-8 text-[#6366F1]" />
                 </h1>
                 <p className="text-gray-400 text-xl font-light max-w-2xl">
-                  Plus de 1000 cryptomonnaies sur 9 exchanges avec graphiques TradingView professionnels
+                  Graphiques TradingView professionnels pour les principales cryptomonnaies
                 </p>
               </div>
               
@@ -218,60 +203,49 @@ export default function GraphiquesPage() {
               </div>
             </div>
 
-            {/* Info Crypto Sélectionnée avec Badge Exchange */}
+            {/* Info Crypto Sélectionnée */}
             <div className="glass-effect rounded-2xl p-6 border border-gray-800/40 mb-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-6">
-                  <div 
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg"
-                    style={{ background: `linear-gradient(135deg, ${getExchangeColor(exchange)}, #8B5CF6)` }}
-                  >
-                    {selectedPair.split(':')[1]?.replace(/EUR|USD|USDT/g, '').slice(0, 2) || 'BT'}
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                    {symbolWithoutExchange.replace(/EUR|USD|USDT/g, '').slice(0, 2) || 'BT'}
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-[#F9FAFB] flex items-center space-x-3">
-                      <span>{selectedPair.split(':')[1] || 'BTCEUR'}</span>
+                      <span>{symbolWithoutExchange || 'BTCEUR'}</span>
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-[#16A34A] rounded-full animate-pulse"></div>
                         <span className="text-[#16A34A] font-medium text-sm">LIVE</span>
                       </div>
                     </div>
-                    <div className="text-gray-400 flex items-center space-x-2">
+                    <div className="text-gray-400 flex items-center space-x-2 flex-wrap gap-1">
                       <span>{currentCrypto.name}</span>
-                      <span>•</span>
-                      <span 
-                        className="px-2 py-1 rounded-full text-xs font-medium"
-                        style={{ 
-                          backgroundColor: `${getExchangeColor(exchange)}20`, 
-                          color: getExchangeColor(exchange),
-                          border: `1px solid ${getExchangeColor(exchange)}40`
-                        }}
-                      >
-                        {exchange}
-                      </span>
                       <span>•</span>
                       <span className="px-2 py-1 bg-[#6366F1]/20 text-[#6366F1] rounded-full text-xs font-medium">
                         {currentCrypto.category}
                       </span>
                       <span>•</span>
-                      <span>TradingView</span>
+                      <span className="text-gray-500">TradingView</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex space-x-3">
-                  <button className="p-3 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors">
-                    <Download className="w-5 h-5 text-gray-400" />
-                  </button>
-                  <button className="p-3 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors">
-                    <Maximize2 className="w-5 h-5 text-gray-400" />
+                  <button 
+                    onClick={handleRefresh}
+                    className="p-3 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
+                    title="Actualiser le graphique"
+                  >
+                    <RotateCcw className="w-5 h-5 text-gray-400" />
                   </button>
                 </div>
               </div>
               
-              <div className="mt-4 text-gray-500 text-sm">
-                {currentCrypto.description}
-              </div>
+              {currentCrypto.description && (
+                <div className="mt-4 text-gray-500 text-sm">
+                  {currentCrypto.description}
+                </div>
+              )}
             </div>
           </div>
 
