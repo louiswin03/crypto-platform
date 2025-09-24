@@ -1,5 +1,9 @@
 "use client"
 
+// AJOUT : Import pour utiliser la navigation cohérente
+import SmartNavigation from '@/components/SmartNavigation'
+import { useAuth } from '@/hooks/useAuth'
+
 import Link from 'next/link'
 import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw, Sparkles } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
@@ -12,6 +16,9 @@ import { Search, AlertCircle } from 'lucide-react'
 import ImprovedCryptoSearch from '@/components/CryptoSelector/ImprovedCryptoSearch'
 
 export default function GraphiquesPage() {
+  // Hook pour récupérer l'utilisateur connecté (pour conditionner certains boutons)
+  const { user } = useAuth()
+  
   const [selectedPair, setSelectedPair] = useState('BINANCE:BTCEUR')
   const [refreshKey, setRefreshKey] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -206,75 +213,8 @@ export default function GraphiquesPage() {
         {/* GARDEZ VOTRE BACKGROUND PATTERN EXISTANT */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
         
-        {/* GARDEZ VOTRE HEADER EXISTANT IDENTIQUE */}
-        <header className="relative z-50 border-b border-gray-800/40 glass-effect sticky top-0">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
-              {/* Logo */}
-              <Link href="/" className="flex items-center">
-                <div className="flex items-center space-x-4">
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl">
-                    <TrendingUp className="w-7 h-7 text-white" />
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-                  </div>
-                  <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">CryptoBacktest</span>
-                    <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">Plateforme française</div>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Navigation */}
-              <nav className="hidden lg:flex space-x-12">
-                <Link href="/cryptos" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <TrendingUp className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Cryptomonnaies
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/graphiques" className="group flex items-center space-x-2 text-[#6366F1] font-semibold relative">
-                  <BarChart3 className="w-4 h-4" />
-                  <span className="relative">
-                    Graphiques
-                    <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6]"></span>
-                  </span>
-                </Link>
-                <Link href="/backtest" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Activity className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Backtest
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/portefeuille" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Wallet className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Portefeuille
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/account" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <User className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Account
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-              </nav>
-
-              {/* Auth */}
-              <div className="flex items-center space-x-5">
-                <button className="text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium px-5 py-2.5 rounded-xl hover:bg-gray-800/40 relative group">
-                  <span className="relative z-10">Connexion</span>
-                </button>
-                <button className="relative bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-7 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#6366F1]/40">
-                  <span className="relative z-10">S'inscrire</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* MODIFICATION : Utiliser SmartNavigation au lieu de la navigation personnalisée */}
+        <SmartNavigation />
 
         {/* Main Content */}
         <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-20">
@@ -305,9 +245,6 @@ export default function GraphiquesPage() {
                 <span>Actualiser</span>
               </button>
             </div>
-
-            {/* MODIFICATION : Sélecteur avec données CoinGecko */}
-            
 
             {/* Section de recherche améliorée - TOUTE LARGEUR */}
             <div className="mb-8">
@@ -348,10 +285,6 @@ export default function GraphiquesPage() {
                 )}
             </div>
             </div>
-
-
-
-
 
             {/* MODIFICATION : Info Crypto avec données CoinGecko */}
             <div className="glass-effect rounded-2xl p-6 border border-gray-800/40 mb-8">
@@ -477,24 +410,65 @@ export default function GraphiquesPage() {
             />
           </div>
 
-          {/* GARDEZ VOS ACTIONS RAPIDES IDENTIQUES */}
+          {/* Actions rapides - MODIFICATION : Boutons conditionnels selon l'état de connexion */}
           <div className="mt-8 flex justify-center space-x-4">
-            <Link 
-              href="/backtest" 
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-[#6366F1]/40"
-            >
-              <Activity className="w-5 h-5" />
-              <span>Backtest {currentCrypto.name}</span>
-            </Link>
+            {user ? (
+              <Link 
+                href="/backtest" 
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-[#6366F1]/40"
+              >
+                <Activity className="w-5 h-5" />
+                <span>Backtest {currentCrypto.name}</span>
+              </Link>
+            ) : (
+              <div 
+                className="flex items-center space-x-2 px-6 py-3 bg-gray-700/50 text-gray-500 rounded-xl font-semibold cursor-not-allowed"
+                title="Connexion requise pour le backtest"
+              >
+                <Activity className="w-5 h-5" />
+                <span>Backtest {currentCrypto.name}</span>
+              </div>
+            )}
             
-            <Link 
-              href="/portefeuille" 
-              className="flex items-center space-x-2 px-6 py-3 bg-gray-800/50 border border-gray-700/50 text-[#F9FAFB] rounded-xl font-medium hover:bg-gray-700/50 hover:border-gray-600/50 transition-all"
-            >
-              <Wallet className="w-5 h-5" />
-              <span>Ajouter au portefeuille</span>
-            </Link>
+            {user ? (
+              <Link 
+                href="/portefeuille" 
+                className="flex items-center space-x-2 px-6 py-3 bg-gray-800/50 border border-gray-700/50 text-[#F9FAFB] rounded-xl font-medium hover:bg-gray-700/50 hover:border-gray-600/50 transition-all"
+              >
+                <Wallet className="w-5 h-5" />
+                <span>Ajouter au portefeuille</span>
+              </Link>
+            ) : (
+              <div 
+                className="flex items-center space-x-2 px-6 py-3 bg-gray-800/30 border border-gray-700/30 text-gray-500 rounded-xl font-medium cursor-not-allowed"
+                title="Connexion requise pour la gestion de portefeuille"
+              >
+                <Wallet className="w-5 h-5" />
+                <span>Ajouter au portefeuille</span>
+              </div>
+            )}
           </div>
+
+          {/* AJOUT : Message d'encouragement pour les utilisateurs non connectés */}
+          {!user && (
+            <div className="mt-12 glass-effect rounded-2xl p-6 border border-[#6366F1]/40 bg-[#6366F1]/5">
+              <div className="text-center">
+                <BarChart3 className="w-12 h-12 text-[#6366F1] mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">
+                  Analysez vos stratégies avec nos outils avancés
+                </h3>
+                <p className="text-gray-400 mb-4">
+                  Connectez-vous pour accéder au backtest de stratégies et à la gestion de portefeuille
+                </p>
+                <Link
+                  href="/auth/signin"
+                  className="inline-flex items-center px-6 py-3 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-semibold"
+                >
+                  Se connecter
+                </Link>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </>

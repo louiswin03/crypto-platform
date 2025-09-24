@@ -1,59 +1,176 @@
 "use client"
 
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCcw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight, Bell, CreditCard, LogOut, Camera, Mail, Phone, MapPin, Globe, Smartphone } from 'lucide-react'
+import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight, Bell, CreditCard, LogOut, Camera, Mail, Phone, MapPin, Globe, Smartphone, Loader2 } from 'lucide-react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
+import { useAuth } from '@/hooks/useAuth'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+
+interface UserStats {
+  backtests_count: number
+  exchanges_count: number
+  strategies_count: number
+  success_rate: number
+}
+
+interface ActivityItem {
+  id: string
+  action: string
+  details: string
+  timestamp: string
+  type: 'backtest' | 'security' | 'auth' | 'billing'
+}
 
 export default function AccountPage() {
-  const userProfile = {
-    name: 'Alexandre Martin',
-    email: 'alexandre.martin@email.com',
-    phone: '+33 6 12 34 56 78',
-    location: 'Paris, France',
-    memberSince: 'Janvier 2023',
-    plan: 'Pro',
-    avatar: 'AM'
+  const { user, profile, signOut, loading: authLoading } = useAuth()
+  const router = useRouter()
+  
+  const [loading, setLoading] = useState(true)
+  const [userStats, setUserStats] = useState<UserStats | null>(null)
+  const [activityLog, setActivityLog] = useState<ActivityItem[]>([])
+  const [isEditing, setIsEditing] = useState(false)
+  const [editForm, setEditForm] = useState({
+    email: user?.email || '',
+    phone: '',
+    location: ''
+  })
+
+  // Charger les données utilisateur
+  useEffect(() => {
+    if (user && profile) {
+      loadUserData()
+    }
+  }, [user, profile])
+
+  const loadUserData = async () => {
+    if (!user) return
+    
+    try {
+      setLoading(true)
+      
+      // Charger les statistiques (simulées pour l'instant car pas encore d'autres tables)
+      const stats: UserStats = {
+        backtests_count: 0, // TODO: compter depuis la table backtests quand elle existera
+        exchanges_count: 0, // TODO: compter depuis la table exchanges quand elle existera  
+        strategies_count: 0, // TODO: compter depuis la table strategies quand elle existera
+        success_rate: 0
+      }
+      setUserStats(stats)
+
+      // Charger l'activité récente (simulée pour l'instant)
+      const activities: ActivityItem[] = [
+        {
+          id: '1',
+          action: 'Connexion',
+          details: `Depuis ${getUserLocation()}`,
+          timestamp: new Date().toISOString(),
+          type: 'auth'
+        },
+        {
+          id: '2', 
+          action: 'Profil créé',
+          details: 'Inscription sur la plateforme',
+          timestamp: profile.member_since,
+          type: 'auth'
+        }
+      ]
+      setActivityLog(activities)
+
+      // Pré-remplir le formulaire d'édition
+      setEditForm({
+        email: user.email || '',
+        phone: profile.preferences?.phone || '',
+        location: profile.preferences?.location || ''
+      })
+
+    } catch (error) {
+      console.error('Erreur lors du chargement des données:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const subscriptionPlans = [
-    {
-      name: 'Gratuit',
-      price: '0€',
-      period: '/mois',
-      current: false,
-      features: ['1 exchange connecté', '10 backtests/mois', 'Stratégies de base', 'Support communautaire']
-    },
-    {
-      name: 'Pro',
-      price: '19€',
-      period: '/mois',
-      current: true,
-      popular: true,
-      features: ['Exchanges illimités', 'Backtests illimités', 'Toutes les stratégies', 'Alertes en temps réel', 'Support prioritaire', 'Export PDF']
-    },
-    {
-      name: 'Business',
-      price: '49€',
-      period: '/mois',
-      current: false,
-      features: ['Tout Pro +', 'Accès API', 'Données étendues', 'Support téléphonique', 'Rapports personnalisés', 'Intégrations avancées']
+  const getUserLocation = () => {
+    // Vous pourriez utiliser une API de géolocalisation ici
+    return 'France'
+  }
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push('/')
+  }
+
+  const handleSaveProfile = async () => {
+    if (!user || !profile) return
+
+    try {
+      setLoading(true)
+
+      // Mettre à jour les préférences utilisateur
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({
+          preferences: {
+            ...profile.preferences,
+            phone: editForm.phone,
+            location: editForm.location
+          }
+        })
+        .eq('id', user.id)
+
+      if (error) throw error
+
+      // Recharger les données
+      await loadUserData()
+      setIsEditing(false)
+
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error)
+      // TODO: Afficher un toast d'erreur
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
 
-  const activityLog = [
-    { id: 1, action: 'Backtest créé', details: 'DCA Bitcoin Strategy', timestamp: '2025-01-20 14:32', type: 'backtest' },
-    { id: 2, action: 'Exchange connecté', details: 'Binance API ajoutée', timestamp: '2025-01-20 12:15', type: 'security' },
-    { id: 3, action: 'Connexion', details: 'Depuis Paris, France', timestamp: '2025-01-20 09:23', type: 'auth' },
-    { id: 4, action: 'Stratégie sauvegardée', details: 'RSI Swing Trading', timestamp: '2025-01-19 16:48', type: 'backtest' },
-    { id: 5, action: 'Abonnement mis à jour', details: 'Passage au plan Pro', timestamp: '2025-01-19 10:22', type: 'billing' },
-  ]
+  const formatDate = (dateString: string) => {
+    return new Intl.DateTimeFormat('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(new Date(dateString))
+  }
 
-  const connectedDevices = [
-    { name: 'MacBook Pro', location: 'Paris, France', lastActive: 'Maintenant', current: true },
-    { name: 'iPhone 15', location: 'Paris, France', lastActive: '2 heures', current: false },
-    { name: 'Chrome Windows', location: 'Lyon, France', lastActive: '3 jours', current: false },
-  ]
+  const getMemberSince = () => {
+    if (!profile?.member_since) return 'Récemment'
+    
+    return new Intl.DateTimeFormat('fr-FR', {
+      year: 'numeric',
+      month: 'long'
+    }).format(new Date(profile.member_since))
+  }
+
+  const getUserInitials = () => {
+    if (!user?.email) return 'U'
+    return user.email.substring(0, 2).toUpperCase()
+  }
+
+  if (authLoading || loading) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen bg-[#111827] text-[#F9FAFB] flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin text-[#6366F1] mx-auto mb-4" />
+            <p className="text-gray-400">Chargement de votre profil...</p>
+          </div>
+        </div>
+      </ProtectedRoute>
+    )
+  }
 
   return (
     <ProtectedRoute>
@@ -112,19 +229,14 @@ export default function AccountPage() {
                     <Shield className="w-4 h-4" />
                     <span>Sécurité</span>
                   </a>
-                  <a href="#notifications" className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-800/40 text-gray-400 hover:text-[#F9FAFB] transition-all">
-                    <Bell className="w-4 h-4" />
-                    <span>Notifications</span>
-                  </a>
-                  <a href="#billing" className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-800/40 text-gray-400 hover:text-[#F9FAFB] transition-all">
-                    <CreditCard className="w-4 h-4" />
-                    <span>Facturation</span>
-                  </a>
                   <a href="#activity" className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-800/40 text-gray-400 hover:text-[#F9FAFB] transition-all">
                     <Clock className="w-4 h-4" />
                     <span>Activité</span>
                   </a>
-                  <button className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-800/40 text-[#DC2626] hover:text-[#EF4444] transition-all w-full">
+                  <button 
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-800/40 text-[#DC2626] hover:text-[#EF4444] transition-all w-full"
+                  >
                     <LogOut className="w-4 h-4" />
                     <span>Déconnexion</span>
                   </button>
@@ -138,9 +250,19 @@ export default function AccountPage() {
               <section id="profile" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">Informations du profil</h2>
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-[#6366F1] text-white rounded-xl hover:bg-[#5B21B6] transition-colors">
-                    <Settings className="w-4 h-4" />
-                    <span>Modifier</span>
+                  <button 
+                    onClick={() => isEditing ? handleSaveProfile() : setIsEditing(true)}
+                    disabled={loading}
+                    className="flex items-center space-x-2 px-4 py-2 bg-[#6366F1] text-white rounded-xl hover:bg-[#5B21B6] transition-colors disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : isEditing ? (
+                      <Save className="w-4 h-4" />
+                    ) : (
+                      <Settings className="w-4 h-4" />
+                    )}
+                    <span>{isEditing ? 'Sauvegarder' : 'Modifier'}</span>
                   </button>
                 </div>
 
@@ -148,12 +270,14 @@ export default function AccountPage() {
                   <div className="space-y-6">
                     <div className="flex items-center space-x-4">
                       <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white font-bold text-2xl">
-                        {userProfile.avatar}
+                        {getUserInitials()}
                       </div>
                       <div>
-                        <div className="text-xl font-bold text-[#F9FAFB]">{userProfile.name}</div>
-                        <div className="text-gray-400">Plan {userProfile.plan}</div>
-                        <div className="text-gray-500 text-sm">Membre depuis {userProfile.memberSince}</div>
+                        <div className="text-xl font-bold text-[#F9FAFB]">
+                          {user?.email?.split('@')[0] || 'Utilisateur'}
+                        </div>
+                        <div className="text-gray-400">Plan {profile?.plan || 'Gratuit'}</div>
+                        <div className="text-gray-500 text-sm">Membre depuis {getMemberSince()}</div>
                       </div>
                     </div>
 
@@ -161,27 +285,73 @@ export default function AccountPage() {
                       <div className="flex items-center space-x-3">
                         <Mail className="w-5 h-5 text-gray-400" />
                         <div>
-                          <div className="text-[#F9FAFB]">{userProfile.email}</div>
+                          <div className="text-[#F9FAFB]">{user?.email}</div>
                           <div className="text-gray-400 text-sm">Email principal</div>
                         </div>
                       </div>
 
                       <div className="flex items-center space-x-3">
                         <Phone className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <div className="text-[#F9FAFB]">{userProfile.phone}</div>
-                          <div className="text-gray-400 text-sm">Téléphone</div>
+                        <div className="flex-1">
+                          {isEditing ? (
+                            <input
+                              type="tel"
+                              value={editForm.phone}
+                              onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
+                              placeholder="Numéro de téléphone"
+                              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-3 py-2 text-[#F9FAFB] placeholder-gray-500 focus:border-[#6366F1] focus:outline-none"
+                            />
+                          ) : (
+                            <>
+                              <div className="text-[#F9FAFB]">
+                                {editForm.phone || 'Non renseigné'}
+                              </div>
+                              <div className="text-gray-400 text-sm">Téléphone</div>
+                            </>
+                          )}
                         </div>
                       </div>
 
                       <div className="flex items-center space-x-3">
                         <MapPin className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <div className="text-[#F9FAFB]">{userProfile.location}</div>
-                          <div className="text-gray-400 text-sm">Localisation</div>
+                        <div className="flex-1">
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editForm.location}
+                              onChange={(e) => setEditForm({...editForm, location: e.target.value})}
+                              placeholder="Votre localisation"
+                              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-3 py-2 text-[#F9FAFB] placeholder-gray-500 focus:border-[#6366F1] focus:outline-none"
+                            />
+                          ) : (
+                            <>
+                              <div className="text-[#F9FAFB]">
+                                {editForm.location || 'Non renseigné'}
+                              </div>
+                              <div className="text-gray-400 text-sm">Localisation</div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
+
+                    {isEditing && (
+                      <div className="flex space-x-3 pt-4">
+                        <button
+                          onClick={() => {
+                            setIsEditing(false)
+                            setEditForm({
+                              email: user?.email || '',
+                              phone: profile?.preferences?.phone || '',
+                              location: profile?.preferences?.location || ''
+                            })
+                          }}
+                          className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -189,19 +359,27 @@ export default function AccountPage() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-gray-900/50 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-[#6366F1] mb-1">47</div>
+                        <div className="text-2xl font-bold text-[#6366F1] mb-1">
+                          {userStats?.backtests_count || 0}
+                        </div>
                         <div className="text-gray-400 text-sm">Backtests créés</div>
                       </div>
                       <div className="bg-gray-900/50 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-[#16A34A] mb-1">3</div>
+                        <div className="text-2xl font-bold text-[#16A34A] mb-1">
+                          {userStats?.exchanges_count || 0}
+                        </div>
                         <div className="text-gray-400 text-sm">Exchanges connectés</div>
                       </div>
                       <div className="bg-gray-900/50 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-[#F59E0B] mb-1">12</div>
+                        <div className="text-2xl font-bold text-[#F59E0B] mb-1">
+                          {userStats?.strategies_count || 0}
+                        </div>
                         <div className="text-gray-400 text-sm">Stratégies sauvées</div>
                       </div>
                       <div className="bg-gray-900/50 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-[#8B5CF6] mb-1">89%</div>
+                        <div className="text-2xl font-bold text-[#8B5CF6] mb-1">
+                          {userStats?.success_rate || 0}%
+                        </div>
                         <div className="text-gray-400 text-sm">Taux de réussite</div>
                       </div>
                     </div>
@@ -219,10 +397,16 @@ export default function AccountPage() {
                       <Lock className="w-5 h-5 text-[#16A34A]" />
                       <div>
                         <div className="font-semibold text-[#F9FAFB]">Mot de passe</div>
-                        <div className="text-gray-400 text-sm">Dernière modification il y a 3 mois</div>
+                        <div className="text-gray-400 text-sm">Géré par l'authentification sécurisée</div>
                       </div>
                     </div>
-                    <button className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                    <button 
+                      onClick={() => {
+                        // TODO: Implémenter le changement de mot de passe via Supabase
+                        console.log('Changement de mot de passe à implémenter')
+                      }}
+                      className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    >
                       Modifier
                     </button>
                   </div>
@@ -232,111 +416,42 @@ export default function AccountPage() {
                       <Shield className="w-5 h-5 text-[#DC2626]" />
                       <div>
                         <div className="font-semibold text-[#F9FAFB]">Authentification à deux facteurs</div>
-                        <div className="text-gray-400 text-sm">Non configurée - Recommandée</div>
+                        <div className="text-gray-400 text-sm">Fonctionnalité à venir</div>
                       </div>
                     </div>
-                    <button className="px-4 py-2 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-colors">
-                      Activer
+                    <button 
+                      className="px-4 py-2 bg-gray-600 text-gray-300 rounded-lg cursor-not-allowed"
+                      disabled
+                    >
+                      Bientôt disponible
                     </button>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-[#F9FAFB] mb-4">Appareils connectés</h3>
-                    <div className="space-y-3">
-                      {connectedDevices.map((device, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 bg-gray-900/50 rounded-xl">
-                          <div className="flex items-center space-x-4">
-                            <Smartphone className="w-5 h-5 text-gray-400" />
-                            <div>
-                              <div className="font-medium text-[#F9FAFB] flex items-center space-x-2">
-                                <span>{device.name}</span>
-                                {device.current && (
-                                  <span className="px-2 py-0.5 bg-[#16A34A]/20 text-[#16A34A] text-xs font-semibold rounded-full">
-                                    Actuel
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-gray-400 text-sm">{device.location} • {device.lastActive}</div>
+                    <h3 className="font-semibold text-[#F9FAFB] mb-4">Session actuelle</h3>
+                    <div className="p-4 bg-gray-900/50 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <Smartphone className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <div className="font-medium text-[#F9FAFB] flex items-center space-x-2">
+                              <span>Session actuelle</span>
+                              <span className="px-2 py-0.5 bg-[#16A34A]/20 text-[#16A34A] text-xs font-semibold rounded-full">
+                                Actif
+                              </span>
+                            </div>
+                            <div className="text-gray-400 text-sm">
+                              Connecté depuis {getUserLocation()}
                             </div>
                           </div>
-                          {!device.current && (
-                            <button className="text-[#DC2626] hover:text-[#EF4444] text-sm font-medium">
-                              Déconnecter
-                            </button>
-                          )}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Billing Section */}
-              <section id="billing" className="glass-effect rounded-2xl p-8 border border-gray-800/40">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-6">Facturation & Abonnement</h2>
-                
-                <div className="grid md:grid-cols-3 gap-6 mb-8">
-                  {subscriptionPlans.map((plan) => (
-                    <div 
-                      key={plan.name}
-                      className={`relative rounded-2xl p-6 border ${
-                        plan.current 
-                          ? 'border-[#6366F1] bg-[#6366F1]/10' 
-                          : 'border-gray-800/40 bg-gray-900/30'
-                      }`}
-                    >
-                      {plan.popular && (
-                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <div className="px-3 py-1 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-xs font-semibold rounded-full">
-                            POPULAIRE
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="text-center mb-6">
-                        <h3 className="text-xl font-bold text-[#F9FAFB] mb-2">{plan.name}</h3>
-                        <div className="flex items-baseline justify-center">
-                          <span className="text-4xl font-bold text-[#F9FAFB]">{plan.price}</span>
-                          <span className="text-gray-400 ml-1">{plan.period}</span>
-                        </div>
+                        <button 
+                          onClick={handleSignOut}
+                          className="text-[#DC2626] hover:text-[#EF4444] text-sm font-medium"
+                        >
+                          Déconnecter
+                        </button>
                       </div>
-
-                      <ul className="space-y-3 mb-6">
-                        {plan.features.map((feature, index) => (
-                          <li key={index} className="flex items-center space-x-3">
-                            <CheckCircle className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
-                            <span className="text-gray-300 text-sm">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <button 
-                        className={`w-full py-3 rounded-xl font-semibold transition-all ${
-                          plan.current
-                            ? 'bg-gray-800 text-gray-400 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:scale-105'
-                        }`}
-                        disabled={plan.current}
-                      >
-                        {plan.current ? 'Plan actuel' : 'Choisir ce plan'}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-gray-800/40 pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-semibold text-[#F9FAFB]">Prochain paiement</div>
-                      <div className="text-gray-400 text-sm">20 février 2025 • 19,00€</div>
-                    </div>
-                    <div className="flex space-x-3">
-                      <button className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                        Gérer la facturation
-                      </button>
-                      <button className="px-4 py-2 bg-[#DC2626] text-white rounded-lg hover:bg-[#B91C1C] transition-colors">
-                        Annuler l'abonnement
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -347,29 +462,32 @@ export default function AccountPage() {
                 <h2 className="text-2xl font-bold text-[#F9FAFB] mb-6">Activité récente</h2>
                 
                 <div className="space-y-4">
-                  {activityLog.map((activity) => (
-                    <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-900/30 rounded-xl">
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        activity.type === 'backtest' ? 'bg-[#6366F1]' :
-                        activity.type === 'security' ? 'bg-[#F59E0B]' :
-                        activity.type === 'auth' ? 'bg-[#16A34A]' :
-                        'bg-gray-400'
-                      }`}></div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div className="font-medium text-[#F9FAFB]">{activity.action}</div>
-                          <div className="text-gray-400 text-sm font-mono">{activity.timestamp}</div>
+                  {activityLog.length > 0 ? (
+                    activityLog.map((activity) => (
+                      <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-900/30 rounded-xl">
+                        <div className={`w-2 h-2 rounded-full mt-2 ${
+                          activity.type === 'backtest' ? 'bg-[#6366F1]' :
+                          activity.type === 'security' ? 'bg-[#F59E0B]' :
+                          activity.type === 'auth' ? 'bg-[#16A34A]' :
+                          'bg-gray-400'
+                        }`}></div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <div className="font-medium text-[#F9FAFB]">{activity.action}</div>
+                            <div className="text-gray-400 text-sm font-mono">
+                              {formatDate(activity.timestamp)}
+                            </div>
+                          </div>
+                          <div className="text-gray-400 text-sm">{activity.details}</div>
                         </div>
-                        <div className="text-gray-400 text-sm">{activity.details}</div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-400">
+                      <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>Aucune activité récente</p>
                     </div>
-                  ))}
-                </div>
-
-                <div className="text-center mt-6">
-                  <button className="text-[#6366F1] hover:text-[#8B5CF6] font-medium transition-colors">
-                    Voir toute l'activité
-                  </button>
+                  )}
                 </div>
               </section>
             </div>

@@ -1,7 +1,11 @@
 "use client"
 
+// AJOUT : Import pour utiliser la navigation cohérente
+import SmartNavigation from '@/components/SmartNavigation'
+import { useAuth } from '@/hooks/useAuth'
+
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCcw, Loader2, AlertCircle, Clock, Eye, EyeOff, MoreHorizontal, ExternalLink, Image as ImageIcon, Calendar, Layers, ChevronDown, ChevronUp, Sparkles, Crown, TrendingUp as Rising, TrendingDown as Falling, Trophy, BarChart2, Menu, Bookmark, Heart, List, X } from 'lucide-react'
+import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCw, Loader2, AlertCircle, Clock, Eye, EyeOff, MoreHorizontal, ExternalLink, Image as ImageIcon, Calendar, Layers, ChevronDown, ChevronUp, Sparkles, Crown, TrendingUp as Rising, TrendingDown as Falling, Trophy, BarChart2, Menu, Bookmark, Heart, List, X } from 'lucide-react'
 import { useExtendedCoinGeckoPrices } from '@/hooks/useExtendedCoinGeckoPrices'
 import { useWatchlists } from '@/hooks/useWatchlists'
 import { AddToWatchlistButton, WatchlistSidebar, WatchlistDetailView } from '@/components/Watchlists'
@@ -11,6 +15,9 @@ type SortField = 'market_cap' | 'current_price' | 'price_change_percentage_24h' 
 type ViewMode = 'market' | 'watchlist'
 
 export default function CompleteCryptosPage() {
+  // Hook pour récupérer l'utilisateur connecté (pour les fonctionnalités watchlist)
+  const { user } = useAuth()
+  
   const { prices, stats, loading, error, hasMore, totalCoins, refetch, loadMore, getCoinsWithTradingView, searchCoins, sortCoins, formatters } = useExtendedCoinGeckoPrices(100)
   const { 
     watchlists, 
@@ -24,17 +31,17 @@ export default function CompleteCryptosPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<SortField>('market_cap_rank')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-  const [viewMode, setViewMode] = useState<ViewMode>('market')
+  const [viewMode, setViewMode] = useState<ViewMode>('market') // Toujours commencer par la vue marché
   const [showOnlyTradingView, setShowOnlyTradingView] = useState(false)
   const [showWatchlistSidebar, setShowWatchlistSidebar] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
-  // Auto-switch to watchlist view when selecting a watchlist
+  // Auto-switch to watchlist view when selecting a watchlist - SEULEMENT si user connecté
   useEffect(() => {
-    if (activeWatchlist && activeWatchlist !== 'market') {
+    if (user && activeWatchlist && activeWatchlist !== 'market') {
       setViewMode('watchlist')
     }
-  }, [activeWatchlist])
+  }, [activeWatchlist, user]) // Ajout de user dans les dépendances
 
   // Filtrage et tri avancés pour la vue marché
   const filteredAndSortedCryptos = useMemo(() => {
@@ -99,97 +106,67 @@ export default function CompleteCryptosPage() {
         {/* Background Pattern */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
         
-        {/* Header */}
-        <header className="relative z-50 border-b border-gray-800/40 glass-effect sticky top-0">
-          <div className="max-w-[100vw] mx-auto px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
-              {/* Logo */}
-              <Link href="/" className="flex items-center">
-                <div className="flex items-center space-x-4">
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl">
-                    <TrendingUp className="w-7 h-7 text-white" />
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-                  </div>
-                  <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">CryptoBacktest</span>
-                    <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">Plateforme française</div>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Navigation */}
-              <nav className="hidden lg:flex space-x-12">
-                <Link href="/cryptos" className="group flex items-center space-x-2 text-[#6366F1] font-semibold relative">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="relative">
-                    Cryptomonnaies
-                    <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6]"></span>
-                  </span>
-                </Link>
-                <Link href="/graphiques" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <BarChart3 className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Graphiques
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/backtest" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Activity className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Backtest
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/portefeuille" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <Wallet className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Portefeuille
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-                <Link href="/account" className="group flex items-center space-x-2 text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium relative">
-                  <User className="w-4 h-4 group-hover:text-[#6366F1] transition-colors duration-300" />
-                  <span className="relative">
-                    Account
-                    <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] group-hover:w-full transition-all duration-300"></span>
-                  </span>
-                </Link>
-              </nav>
-
-              {/* Auth + Watchlist Toggle */}
-              <div className="flex items-center space-x-5">
-                <button
-                  onClick={() => setShowWatchlistSidebar(!showWatchlistSidebar)}
-                  className="relative p-2 rounded-xl hover:bg-gray-800/40 transition-colors"
-                >
-                  <List className="w-5 h-5 text-gray-400 hover:text-[#6366F1]" />
-                  {totalWatchedCryptos > 0 && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#F59E0B] rounded-full flex items-center justify-center text-xs font-bold text-white">
-                      {totalWatchedCryptos > 99 ? '99+' : totalWatchedCryptos}
-                    </div>
-                  )}
-                </button>
-                <button className="text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium px-5 py-2.5 rounded-xl hover:bg-gray-800/40 relative group">
-                  <span className="relative z-10">Connexion</span>
-                </button>
-                <button className="relative bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-7 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#6366F1]/40">
-                  <span className="relative z-10">S'inscrire</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* MODIFICATION : Utiliser SmartNavigation au lieu de la navigation personnalisée */}
+        <SmartNavigation />
 
         {/* Layout avec Sidebar */}
         <div className="flex">
-          {/* Watchlist Sidebar */}
-          <WatchlistSidebar 
-            isOpen={showWatchlistSidebar} 
-            onClose={() => setShowWatchlistSidebar(false)} 
-          />
+          {/* Watchlist Sidebar - Affichée seulement si utilisateur connecté */}
+          {user ? (
+            <WatchlistSidebar 
+              isOpen={showWatchlistSidebar} 
+              onClose={() => setShowWatchlistSidebar(false)} 
+            />
+          ) : (
+            /* Sidebar pour utilisateurs non connectés */
+            showWatchlistSidebar && (
+              <div className="fixed left-0 top-0 h-full w-80 bg-[#111827]/95 backdrop-blur-sm border-r border-gray-800/40 z-40 transform transition-transform duration-300">
+                <div className="p-6 h-full flex flex-col">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-[#F9FAFB]">Listes de Suivi</h2>
+                    <button
+                      onClick={() => setShowWatchlistSidebar(false)}
+                      className="p-2 hover:bg-gray-800/50 rounded-lg transition-colors"
+                    >
+                      <X className="w-5 h-5 text-gray-400" />
+                    </button>
+                  </div>
+                  
+                  {/* Message de connexion */}
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center max-w-sm">
+                      <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <Star className="w-8 h-8 text-gray-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">
+                        Créez vos listes personnalisées
+                      </h3>
+                      <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+                        Connectez-vous pour organiser vos cryptomonnaies favorites et créer des listes de suivi personnalisées
+                      </p>
+                      <Link
+                        href="/auth/signin"
+                        className="inline-flex items-center px-6 py-3 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-semibold text-sm"
+                      >
+                        Se connecter
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+
+          {/* Overlay pour fermer la sidebar */}
+          {showWatchlistSidebar && (
+            <div 
+              className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+              onClick={() => setShowWatchlistSidebar(false)}
+            />
+          )}
 
           {/* Main Content */}
-          <main className={`flex-1 relative transition-all duration-300 ${showWatchlistSidebar ? 'lg:ml-80' : ''}`}>
+          <main className={`flex-1 relative transition-all duration-300 ${user && showWatchlistSidebar ? 'lg:ml-80' : showWatchlistSidebar ? 'lg:ml-80' : ''}`}>
             <div className="px-6 lg:px-8 pt-12 pb-20">
               {/* Page Header avec Toggle Mode */}
               <div className="mb-12">
@@ -205,60 +182,72 @@ export default function CompleteCryptosPage() {
                       </h1>
                       <p className="text-gray-400 text-xl font-light max-w-2xl">
                         {viewMode === 'market' 
-                          ? `Données complètes sur ${totalCoins}+ cryptomonnaies avec listes de suivi personnalisées`
+                          ? `Données complètes sur ${totalCoins}+ cryptomonnaies${user ? ' avec listes de suivi personnalisées' : ' - Connectez-vous pour créer des listes personnalisées'}`
                           : `Gérez vos ${totalWatchedCryptos} cryptomonnaies suivies dans ${watchlists.length} listes`
                         }
                       </p>
                     </div>
                     
-                    {/* View Toggle */}
+                    {/* View Toggle - Affiché seulement si user connecté */}
                     <div className="flex items-center space-x-4">
-                      <div className="flex bg-gray-900/50 rounded-xl p-1 border border-gray-800/40">
-                        <button 
-                          onClick={() => setViewMode('market')}
-                          className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                            viewMode === 'market' 
-                              ? 'bg-[#6366F1] text-white shadow-lg' 
-                              : 'text-gray-400 hover:text-[#F9FAFB]'
-                          }`}
+                      {user ? (
+                        <>
+                          <div className="flex bg-gray-900/50 rounded-xl p-1 border border-gray-800/40">
+                            <button 
+                              onClick={() => setViewMode('market')}
+                              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                                viewMode === 'market' 
+                                  ? 'bg-[#6366F1] text-white shadow-lg' 
+                                  : 'text-gray-400 hover:text-[#F9FAFB]'
+                              }`}
+                            >
+                              <TrendingUp className="w-4 h-4" />
+                              <span>Marché</span>
+                            </button>
+                            <button 
+                              onClick={() => setViewMode('watchlist')}
+                              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                                viewMode === 'watchlist' 
+                                  ? 'bg-[#6366F1] text-white shadow-lg' 
+                                  : 'text-gray-400 hover:text-[#F9FAFB]'
+                              }`}
+                            >
+                              <Star className="w-4 h-4" />
+                              <span>Mes Listes</span>
+                              {totalWatchedCryptos > 0 && (
+                                <span className="bg-[#F59E0B] text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                                  {totalWatchedCryptos}
+                                </span>
+                              )}
+                            </button>
+                          </div>
+                          
+                          <button
+                            onClick={() => setShowWatchlistSidebar(!showWatchlistSidebar)}
+                            className={`p-3 rounded-xl transition-all ${
+                              showWatchlistSidebar 
+                                ? 'bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#6366F1]' 
+                                : 'bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50'
+                            }`}
+                          >
+                            <Menu className="w-5 h-5" />
+                          </button>
+                        </>
+                      ) : (
+                        /* Bouton pour utilisateurs non connectés */
+                        <button
+                          onClick={() => setShowWatchlistSidebar(!showWatchlistSidebar)}
+                          className="p-3 rounded-xl transition-all bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50"
                         >
-                          <TrendingUp className="w-4 h-4" />
-                          <span>Marché</span>
+                          <List className="w-5 h-5" />
                         </button>
-                        <button 
-                          onClick={() => setViewMode('watchlist')}
-                          className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                            viewMode === 'watchlist' 
-                              ? 'bg-[#6366F1] text-white shadow-lg' 
-                              : 'text-gray-400 hover:text-[#F9FAFB]'
-                          }`}
-                        >
-                          <Star className="w-4 h-4" />
-                          <span>Mes Listes</span>
-                          {totalWatchedCryptos > 0 && (
-                            <span className="bg-[#F59E0B] text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                              {totalWatchedCryptos}
-                            </span>
-                          )}
-                        </button>
-                      </div>
-                      
-                      <button
-                        onClick={() => setShowWatchlistSidebar(!showWatchlistSidebar)}
-                        className={`p-3 rounded-xl transition-all ${
-                          showWatchlistSidebar 
-                            ? 'bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#6366F1]' 
-                            : 'bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50'
-                        }`}
-                      >
-                        <Menu className="w-5 h-5" />
-                      </button>
+                      )}
                     </div>
                   </div>
                   
                   {/* Stats Grid - Différent selon le mode */}
                   {viewMode === 'market' ? (
-                    // Stats marché
+                    // Stats marché - identiques
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       <div className="glass-effect rounded-2xl p-6 text-center relative">
                         <div className="text-2xl font-bold text-[#16A34A] mb-1 font-mono">
@@ -302,39 +291,41 @@ export default function CompleteCryptosPage() {
                       </div>
                     </div>
                   ) : (
-                    // Stats watchlists
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="glass-effect rounded-2xl p-6 text-center">
-                        <div className="text-2xl font-bold text-[#F59E0B] mb-1 font-mono">
-                          {totalWatchedCryptos}
+                    // Stats watchlists - seulement si user connecté ET en mode watchlist
+                    user && viewMode === 'watchlist' && (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="glass-effect rounded-2xl p-6 text-center">
+                          <div className="text-2xl font-bold text-[#F59E0B] mb-1 font-mono">
+                            {totalWatchedCryptos}
+                          </div>
+                          <div className="text-gray-400 text-sm font-medium">Cryptos Suivies</div>
                         </div>
-                        <div className="text-gray-400 text-sm font-medium">Cryptos Suivies</div>
-                      </div>
-                      
-                      <div className="glass-effect rounded-2xl p-6 text-center">
-                        <div className="text-2xl font-bold text-[#6366F1] mb-1 font-mono">
-                          {watchlists.length}
+                        
+                        <div className="glass-effect rounded-2xl p-6 text-center">
+                          <div className="text-2xl font-bold text-[#6366F1] mb-1 font-mono">
+                            {watchlists.length}
+                          </div>
+                          <div className="text-gray-400 text-sm font-medium">Listes Créées</div>
                         </div>
-                        <div className="text-gray-400 text-sm font-medium">Listes Créées</div>
-                      </div>
 
-                      <div className="glass-effect rounded-2xl p-6 text-center">
-                        <div className="text-2xl font-bold text-[#8B5CF6] mb-1 font-mono">
-                          {watchlists.filter(l => l.isPinned).length}
+                        <div className="glass-effect rounded-2xl p-6 text-center">
+                          <div className="text-2xl font-bold text-[#8B5CF6] mb-1 font-mono">
+                            {watchlists.filter(l => l.isPinned).length}
+                          </div>
+                          <div className="text-gray-400 text-sm font-medium">Listes Épinglées</div>
                         </div>
-                        <div className="text-gray-400 text-sm font-medium">Listes Épinglées</div>
-                      </div>
 
-                      <div className="glass-effect rounded-2xl p-6 text-center">
-                        <div className="text-2xl font-bold text-[#16A34A] mb-1 font-mono">
-                          {watchlists.reduce((sum, list) => sum + list.items.length, 0)}
+                        <div className="glass-effect rounded-2xl p-6 text-center">
+                          <div className="text-2xl font-bold text-[#16A34A] mb-1 font-mono">
+                            {watchlists.reduce((sum, list) => sum + list.items.length, 0)}
+                          </div>
+                          <div className="text-gray-400 text-sm font-medium">Total Items</div>
                         </div>
-                        <div className="text-gray-400 text-sm font-medium">Total Items</div>
                       </div>
-                    </div>
+                    )
                   )}
 
-                  {/* Top Gainers & Losers - Seulement en mode marché */}
+                  {/* Top Gainers & Losers - Seulement en mode marché - identiques */}
                   {viewMode === 'market' && (
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="glass-effect rounded-2xl p-6 border border-gray-800/40">
@@ -362,7 +353,8 @@ export default function CompleteCryptosPage() {
                                     {formatters.percentage(coin.price_change_percentage_24h || 0)}
                                   </div>
                                 </div>
-                                <AddToWatchlistButton crypto={coin} />
+                                {/* Boutons watchlist affichés seulement si user connecté */}
+                                {user && <AddToWatchlistButton crypto={coin} />}
                               </div>
                             </div>
                           ))}
@@ -394,7 +386,8 @@ export default function CompleteCryptosPage() {
                                     {formatters.percentage(coin.price_change_percentage_24h || 0)}
                                   </div>
                                 </div>
-                                <AddToWatchlistButton crypto={coin} />
+                                {/* Boutons watchlist affichés seulement si user connecté */}
+                                {user && <AddToWatchlistButton crypto={coin} />}
                               </div>
                             </div>
                           ))}
@@ -420,11 +413,48 @@ export default function CompleteCryptosPage() {
                   refetch={refetch}
                   hasMore={hasMore}
                   loadMore={loadMore}
+                  user={user}
                 />
               ) : (
-                <WatchlistView 
-                  activeWatchlist={activeWatchlist}
-                />
+                // Watchlist view : accessible seulement si connecté
+                user ? (
+                  <WatchlistView 
+                    activeWatchlist={activeWatchlist}
+                  />
+                ) : (
+                  <div className="text-center py-16">
+                    <div className="text-6xl mb-6">🔒</div>
+                    <h2 className="text-2xl font-bold text-[#F9FAFB] mb-4">Connexion requise</h2>
+                    <p className="text-gray-400 mb-6">Connectez-vous pour accéder à vos listes de suivi personnalisées</p>
+                    <Link
+                      href="/auth/signin"
+                      className="inline-flex items-center px-6 py-3 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-semibold"
+                    >
+                      Se connecter
+                    </Link>
+                  </div>
+                )
+              )}
+
+              {/* Message pour utilisateurs non connectés - affiché seulement en mode market */}
+              {!user && viewMode === 'market' && (
+                <div className="mt-8 glass-effect rounded-2xl p-6 border border-[#6366F1]/40 bg-[#6366F1]/5">
+                  <div className="text-center">
+                    <Star className="w-12 h-12 text-[#6366F1] mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">
+                      Créez vos listes de suivi personnalisées
+                    </h3>
+                    <p className="text-gray-400 mb-4">
+                      Connectez-vous pour organiser vos cryptomonnaies favorites, accéder au backtest et gérer votre portefeuille
+                    </p>
+                    <Link
+                      href="/auth/signin"
+                      className="inline-flex items-center px-6 py-3 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-semibold"
+                    >
+                      Se connecter
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </main>
@@ -434,15 +464,16 @@ export default function CompleteCryptosPage() {
   )
 }
 
-// Vue Marché
+// Vue Marché - Fonctionnalité de base accessible à tous
 function MarketView({ 
   cryptos, loading, error, searchTerm, setSearchTerm, sortBy, sortOrder, 
   handleSort, formatters, 
-  refetch, hasMore, loadMore 
+  refetch, hasMore, loadMore,
+  user
 }: any) {
   return (
     <>
-      {/* Filtres et Contrôles */}
+      {/* Filtres et Contrôles - identiques */}
       <div className="glass-effect rounded-2xl p-6 mb-8 border border-gray-800/40 space-y-6">
         {/* Ligne 1: Search + Filters */}
         <div className="flex flex-col lg:flex-row gap-4 items-center">
@@ -466,14 +497,14 @@ function MarketView({
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <RefreshCcw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4" />
               )}
               <span className="font-medium">Actualiser</span>
             </button>
           </div>
         </div>
 
-        {/* Ligne 2: Sort Options */}
+        {/* Ligne 2: Sort Options - identiques */}
         <div className="flex flex-wrap gap-2">
           {[
             { key: 'market_cap_rank' as const, label: 'Rang', icon: Crown },
@@ -503,7 +534,7 @@ function MarketView({
           ))}
         </div>
 
-        {/* Status */}
+        {/* Status - identiques */}
         {!loading && !error && cryptos.length > 0 && (
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2 text-[#16A34A]">
@@ -539,9 +570,10 @@ function MarketView({
         error={error}
         searchTerm={searchTerm}
         formatters={formatters}
+        user={user}
       />
 
-      {/* Load More */}
+      {/* Load More - identiques */}
       {hasMore && !loading && (
         <div className="text-center mt-12">
           <button 
@@ -556,7 +588,7 @@ function MarketView({
   )
 }
 
-// Vue Watchlist
+// Vue Watchlist - identique (mais sera rendue seulement si user connecté)
 function WatchlistView({ activeWatchlist }: { activeWatchlist: string | null }) {
   if (!activeWatchlist) {
     return (
@@ -574,8 +606,8 @@ function WatchlistView({ activeWatchlist }: { activeWatchlist: string | null }) 
   return <WatchlistDetailView listId={activeWatchlist} />
 }
 
-// Table des cryptos avec boutons watchlist
-function CryptoTable({ cryptos, loading, error, searchTerm, formatters }: any) {
+// Table des cryptos - Accessible à tous avec fonctionnalités conditionnelles
+function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user }: any) {
   if (loading && cryptos.length === 0) {
     return (
       <div className="glass-effect rounded-2xl border border-gray-800/40 p-12 text-center">
@@ -693,9 +725,48 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters }: any) {
                 {formatters.marketCap(crypto.total_volume)}
               </div>
               
-              {/* Actions */}
+              {/* Actions - Fonctionnalités selon l'état de connexion */}
               <div className="col-span-1 flex justify-center">
-                <AddToWatchlistButton crypto={crypto} />
+                <div className="flex items-center space-x-2">
+                  {/* Graphique - toujours disponible */}
+                  <Link
+                    href={`/graphiques?crypto=${crypto.id}`}
+                    className="p-2 bg-gray-800/50 hover:bg-[#6366F1]/20 border border-gray-700/50 hover:border-[#6366F1]/40 rounded-lg transition-all group/btn"
+                    title="Voir le graphique"
+                  >
+                    <BarChart3 className="w-4 h-4 text-gray-400 group-hover/btn:text-[#6366F1]" />
+                  </Link>
+                  
+                  {/* AddToWatchlistButton - seulement si connecté */}
+                  {user ? (
+                    <AddToWatchlistButton crypto={crypto} />
+                  ) : (
+                    <div
+                      className="p-2 bg-gray-800/30 border border-gray-700/30 rounded-lg opacity-50 cursor-not-allowed"
+                      title="Connexion requise pour les listes de suivi"
+                    >
+                      <Star className="w-4 h-4 text-gray-600" />
+                    </div>
+                  )}
+                  
+                  {/* Backtest - seulement si connecté */}
+                  {user ? (
+                    <Link
+                      href={`/backtest?crypto=${crypto.id}`}
+                      className="p-2 bg-gray-800/50 hover:bg-[#8B5CF6]/20 border border-gray-700/50 hover:border-[#8B5CF6]/40 rounded-lg transition-all group/btn"
+                      title="Lancer un backtest"
+                    >
+                      <Activity className="w-4 h-4 text-gray-400 group-hover/btn:text-[#8B5CF6]" />
+                    </Link>
+                  ) : (
+                    <div
+                      className="p-2 bg-gray-800/30 border border-gray-700/30 rounded-lg opacity-50 cursor-not-allowed"
+                      title="Connexion requise pour le backtest"
+                    >
+                      <Activity className="w-4 h-4 text-gray-600" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
