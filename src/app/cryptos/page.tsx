@@ -31,15 +31,17 @@ export default function CompleteCryptosPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<SortField>('market_cap_rank')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-  const [viewMode, setViewMode] = useState<ViewMode>('market') // Toujours commencer par la vue marché
-  const [showOnlyTradingView, setShowOnlyTradingView] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('market')
   const [showWatchlistSidebar, setShowWatchlistSidebar] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [showOnlyTradingView, setShowOnlyTradingView] = useState(false)
 
-  // Auto-switch to watchlist view when selecting a watchlist - SEULEMENT si user connecté
+  // Gestion du mode de vue en fonction de la watchlist active
   useEffect(() => {
     if (user && activeWatchlist && activeWatchlist !== 'market') {
       setViewMode('watchlist')
+    } else {
+      setViewMode('market')
     }
   }, [activeWatchlist, user]) // Ajout de user dans les dépendances
 

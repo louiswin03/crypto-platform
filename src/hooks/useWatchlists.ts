@@ -75,7 +75,7 @@ const STORAGE_KEY = 'crypto_watchlists'
 
 export const useWatchlists = () => {
   const [watchlists, setWatchlists] = useState<Watchlist[]>([])
-  const [activeWatchlist, setActiveWatchlist] = useState<string | null>('favorites')
+  const [activeWatchlist, setActiveWatchlist] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Charger les listes depuis le localStorage
