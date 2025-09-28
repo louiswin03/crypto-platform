@@ -33,33 +33,16 @@ export default function ImprovedCryptoSearch({
   const [showAll, setShowAll] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('rank')
   const [filterBy, setFilterBy] = useState<FilterOption>('all')
-  const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [showFilters, setShowFilters] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
 
-  // Charger les favoris depuis le localStorage
+  // Charger les recherches récentes depuis le localStorage
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('crypto-favorites')
-    if (savedFavorites) {
-      setFavorites(new Set(JSON.parse(savedFavorites)))
-    }
     const savedRecentSearches = localStorage.getItem('crypto-recent-searches')
     if (savedRecentSearches) {
       setRecentSearches(JSON.parse(savedRecentSearches))
     }
   }, [])
-
-  // Sauvegarder les favoris
-  const toggleFavorite = (cryptoId: string) => {
-    const newFavorites = new Set(favorites)
-    if (newFavorites.has(cryptoId)) {
-      newFavorites.delete(cryptoId)
-    } else {
-      newFavorites.add(cryptoId)
-    }
-    setFavorites(newFavorites)
-    localStorage.setItem('crypto-favorites', JSON.stringify([...newFavorites]))
-  }
 
   // Ajouter à l'historique de recherche
   const addToRecentSearches = (term: string) => {
@@ -93,7 +76,8 @@ export default function ImprovedCryptoSearch({
         filtered = filtered.filter(crypto => crypto.change24h && crypto.change24h < 0)
         break
       case 'favorites':
-        filtered = filtered.filter(crypto => favorites.has(crypto.id))
+        // Favoris locaux supprimés - on peut garder le filtre mais vide pour l'instant
+        filtered = []
         break
     }
 
@@ -119,13 +103,13 @@ export default function ImprovedCryptoSearch({
     }
 
     return filtered
-  }, [searchTerm, cryptoOptions, showAll, sortBy, filterBy, favorites])
+  }, [searchTerm, cryptoOptions, showAll, sortBy, filterBy])
 
   const formatPrice = (price: number | null) => {
     if (!price) return 'N/A'
-    return new Intl.NumberFormat('fr-FR', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'USD',
       minimumFractionDigits: price < 1 ? 4 : 2,
       maximumFractionDigits: price < 1 ? 4 : 2
     }).format(price)
@@ -344,21 +328,6 @@ export default function ImprovedCryptoSearch({
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFavorite(crypto.id)
-                      }}
-                      className={`p-1.5 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${
-                        favorites.has(crypto.id)
-                          ? 'text-yellow-400 hover:text-yellow-300'
-                          : 'text-gray-400 hover:text-yellow-400'
-                      }`}
-                      title={favorites.has(crypto.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                    >
-                      <Star className={`w-4 h-4 ${favorites.has(crypto.id) ? 'fill-current' : ''}`} />
-                    </div>
-
                     {crypto.tradingview_symbol === selectedCrypto && (
                       <div className="w-6 h-6 bg-[#6366F1] rounded-full flex items-center justify-center animate-pulse">
                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">

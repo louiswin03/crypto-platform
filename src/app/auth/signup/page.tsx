@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { Eye, EyeOff, Mail, Lock, User, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
+import Footer from '@/components/Footer'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -272,6 +273,9 @@ export default function SignUpPage() {
           background-size: 20px 20px;
         }
       `}</style>
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

@@ -35,7 +35,7 @@ export const useCoinGeckoPrices = () => {
       const coinIds = COINS_CONFIG.map(coin => coin.id).join(',')
       
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&ids=${coinIds}&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h`,
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinIds}&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h`,
         {
           headers: {
             'Accept': 'application/json',

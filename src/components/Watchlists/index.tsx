@@ -3,11 +3,11 @@
 
 import React, { useState } from 'react'
 import { Star, Plus, MoreHorizontal, Trash2, Edit3, Pin, Download, Upload, Search, TrendingUp, TrendingDown, Eye, EyeOff, Heart, Bookmark, Target, Layers, X, Check, AlertCircle } from 'lucide-react'
-import { useWatchlists, Watchlist, WatchlistItem } from '@/hooks/useWatchlists'
+import { useWatchlistContext } from '@/contexts/WatchlistContext'
 
 // Bouton d'ajout à une liste (à intégrer dans chaque ligne crypto)
 export const AddToWatchlistButton = ({ crypto, className = "" }: { crypto: any, className?: string }) => {
-  const { watchlists, addToWatchlist, removeFromWatchlist, getListsContainingCrypto } = useWatchlists()
+  const { watchlists, addToWatchlist, removeFromWatchlist, getListsContainingCrypto } = useWatchlistContext()
   const [showDropdown, setShowDropdown] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
 
@@ -93,17 +93,17 @@ export const AddToWatchlistButton = ({ crypto, className = "" }: { crypto: any, 
 
 // Sidebar des listes de suivi
 export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-  const { 
-    watchlists, 
-    activeWatchlist, 
-    setActiveWatchlist, 
-    pinnedWatchlists, 
+  const {
+    watchlists,
+    activeWatchlist,
+    setActiveWatchlist,
+    pinnedWatchlists,
     unpinnedWatchlists,
     getTotalWatchedCryptos,
     getWatchlistStats,
     deleteWatchlist,
     togglePinWatchlist
-  } = useWatchlists()
+  } = useWatchlistContext()
   
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -134,7 +134,7 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
             <div className="min-w-0 flex-1">
               <div className="font-semibold text-[#F9FAFB] flex items-center space-x-2">
                 <span className="truncate">{list.name}</span>
-                {list.isPinned && <Pin className="w-3 h-3 text-[#F59E0B]" />}
+                {list.is_pinned && <Pin className="w-3 h-3 text-[#F59E0B]" />}
               </div>
               <div className="text-gray-400 text-sm">
                 {stats?.count || 0} crypto{(stats?.count || 0) > 1 ? 's' : ''}
@@ -156,9 +156,10 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
                 }}
                 className="p-1 rounded hover:bg-gray-700/50 text-gray-400 hover:text-[#F59E0B] transition-all"
               >
-                <Pin className={`w-3 h-3 ${list.isPinned ? 'fill-current text-[#F59E0B]' : ''}`} />
+                <Pin className={`w-3 h-3 ${list.is_pinned ? 'fill-current text-[#F59E0B]' : ''}`} />
               </button>
-              {!list.isDefault && (
+              {/* Temporairement permettre la suppression de toutes les listes */}
+              {true && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
@@ -316,7 +317,7 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
 
 // Modal de création de liste
 const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
-  const { createWatchlist } = useWatchlists()
+  const { createWatchlist } = useWatchlistContext()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [color, setColor] = useState('#6366F1')
@@ -457,12 +458,14 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
 
 // Vue détaillée d'une liste
 export const WatchlistDetailView = ({ listId }: { listId: string }) => {
-  const { 
-    watchlists, 
-    getWatchlistStats, 
+  const {
+    watchlists,
+    getWatchlistStats,
     removeFromWatchlist,
-    currentWatchlist 
-  } = useWatchlists()
+    deleteWatchlist,
+    togglePinWatchlist,
+    currentWatchlist
+  } = useWatchlistContext()
   
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'change' | 'rank' | 'addedAt'>('addedAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
@@ -514,8 +517,8 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
         bValue = b.market_cap_rank || Infinity
         return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
       case 'addedAt':
-        aValue = new Date(a.addedAt).getTime()
-        bValue = new Date(b.addedAt).getTime()
+        aValue = new Date(a.created_at).getTime()
+        bValue = new Date(b.created_at).getTime()
         break
     }
     
@@ -535,31 +538,65 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
             )}
           </div>
         </div>
-        
-        {stats && (
-          <div className="flex items-center space-x-6 text-sm">
-            <div className="text-center">
-              <div className="font-mono text-[#F9FAFB] font-semibold">{stats.count}</div>
-              <div className="text-gray-400">Cryptos</div>
-            </div>
-            <div className="text-center">
-              <div className={`font-mono font-semibold ${
-                stats.avgChange >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
-              }`}>
-                {stats.avgChange >= 0 ? '+' : ''}{stats.avgChange.toFixed(1)}%
+
+        <div className="flex items-center space-x-6">
+          {stats && (
+            <div className="flex items-center space-x-6 text-sm">
+              <div className="text-center">
+                <div className="font-mono text-[#F9FAFB] font-semibold">{stats.count}</div>
+                <div className="text-gray-400">Cryptos</div>
               </div>
-              <div className="text-gray-400">Moy. 24h</div>
+              <div className="text-center">
+                <div className={`font-mono font-semibold ${
+                  stats.avgChange >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                }`}>
+                  {stats.avgChange >= 0 ? '+' : ''}{stats.avgChange.toFixed(1)}%
+                </div>
+                <div className="text-gray-400">Moy. 24h</div>
+              </div>
+              <div className="text-center">
+                <div className="font-mono text-[#16A34A] font-semibold">{stats.gainers}</div>
+                <div className="text-gray-400">Gagnants</div>
+              </div>
+              <div className="text-center">
+                <div className="font-mono text-[#DC2626] font-semibold">{stats.losers}</div>
+                <div className="text-gray-400">Perdants</div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="font-mono text-[#16A34A] font-semibold">{stats.gainers}</div>
-              <div className="text-gray-400">Gagnants</div>
-            </div>
-            <div className="text-center">
-              <div className="font-mono text-[#DC2626] font-semibold">{stats.losers}</div>
-              <div className="text-gray-400">Perdants</div>
-            </div>
+          )}
+
+          {/* Actions sur la liste */}
+          <div className="flex items-center space-x-2">
+            {/* Bouton épingler/désépingler */}
+            <button
+              onClick={() => togglePinWatchlist(listId)}
+              className={`p-2 rounded-lg transition-all ${
+                list.is_pinned
+                  ? 'bg-[#F59E0B]/10 border border-[#F59E0B]/20 text-[#F59E0B] hover:bg-[#F59E0B]/20'
+                  : 'bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#F59E0B] hover:border-[#F59E0B]/40'
+              }`}
+              title={list.is_pinned ? "Désépingler cette liste" : "Épingler cette liste"}
+            >
+              <Pin className={`w-4 h-4 ${list.is_pinned ? 'fill-current' : ''}`} />
+            </button>
+
+            {/* Bouton supprimer - temporairement pour toutes les listes */}
+            {true && (
+              <button
+                onClick={() => {
+                  if (window.confirm(`Êtes-vous sûr de vouloir supprimer la liste "${list.name}" ?\n\nCette action est irréversible et supprimera également toutes les cryptomonnaies de cette liste.`)) {
+                    deleteWatchlist(listId)
+                    // Note: Le contexte se chargera de gérer la navigation
+                  }
+                }}
+                className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-all"
+                title="Supprimer cette liste"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Sort Controls */}
@@ -603,7 +640,7 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
         <div className="space-y-0">
           {sortedItems.map((item, index) => (
             <div 
-              key={item.id} 
+              key={item.crypto_id} 
               className="flex items-center justify-between p-4 border-b border-gray-800/20 last:border-b-0 hover:bg-gray-800/20 transition-all group"
             >
               <div className="flex items-center space-x-4">
@@ -631,7 +668,7 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
                     }).format(item.current_price)}
                   </div>
                   <div className="text-gray-400 text-xs">
-                    {new Date(item.addedAt).toLocaleDateString('fr-FR')}
+                    {new Date(item.created_at).toLocaleDateString('fr-FR')}
                   </div>
                 </div>
                 
@@ -643,7 +680,7 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
                 </div>
                 
                 <button
-                  onClick={() => removeFromWatchlist(listId, item.id)}
+                  onClick={() => removeFromWatchlist(listId, item.crypto_id)}
                   className="p-2 rounded-lg text-gray-400 hover:text-[#DC2626] hover:bg-[#DC2626]/10 transition-all opacity-0 group-hover:opacity-100"
                 >
                   <X className="w-4 h-4" />

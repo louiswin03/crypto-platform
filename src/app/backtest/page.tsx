@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCcw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight } from 'lucide-react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
+import Footer from '@/components/Footer'
 
 export default function BacktestPage() {
   const strategyTemplates = [
@@ -493,6 +494,9 @@ export default function BacktestPage() {
             </div>
           </div>
         </main>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </ProtectedRoute>
   )
