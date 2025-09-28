@@ -1,12 +1,16 @@
 "use client"
 
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCcw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight } from 'lucide-react'
+import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCcw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight, Database } from 'lucide-react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
+import HistoricalDataTest from '@/components/HistoricalDataTest'
 
 export default function BacktestPage() {
+  const [currentTab, setCurrentTab] = useState('backtest') // 'backtest' | 'test'
+
   const strategyTemplates = [
     { 
       name: 'DCA Bitcoin', 
@@ -148,8 +152,38 @@ export default function BacktestPage() {
         {/* Navigation */}
         <SmartNavigation />
 
+        {/* Tabs Navigation */}
+        <div className="border-b border-gray-800/40 glass-effect">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex space-x-8">
+              <button
+                onClick={() => setCurrentTab('backtest')}
+                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                  currentTab === 'backtest'
+                    ? 'border-[#6366F1] text-[#6366F1]'
+                    : 'border-transparent text-gray-400 hover:text-[#F9FAFB] hover:border-gray-300'
+                }`}
+              >
+                Backtest Strategy
+              </button>
+              <button
+                onClick={() => setCurrentTab('test')}
+                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors flex items-center gap-2 ${
+                  currentTab === 'test'
+                    ? 'border-[#6366F1] text-[#6366F1]'
+                    : 'border-transparent text-gray-400 hover:text-[#F9FAFB] hover:border-gray-300'
+                }`}
+              >
+                <Database className="w-4 h-4" />
+                Test Données
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Main Content */}
-        <main className="relative h-[calc(100vh-5rem)] max-w-[100vw] mx-auto overflow-hidden">
+        {currentTab === 'backtest' ? (
+          <main className="relative h-[calc(100vh-10rem)] max-w-[100vw] mx-auto overflow-hidden">
           <div className="flex h-full">
             {/* Left Sidebar - Strategy Builder */}
             <div className="w-96 border-r border-gray-800/40 glass-effect overflow-y-auto">
@@ -494,6 +528,18 @@ export default function BacktestPage() {
             </div>
           </div>
         </main>
+        ) : (
+          /* Test Data Tab */
+          <main className="relative max-w-7xl mx-auto px-6 lg:px-8 py-8">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-[#F9FAFB] mb-4">Test des Données Historiques</h1>
+              <p className="text-gray-400">
+                Vérifiez que la récupération des données historiques fonctionne correctement avant de lancer vos backtests.
+              </p>
+            </div>
+            <HistoricalDataTest />
+          </main>
+        )}
 
         {/* Footer */}
         <Footer />
