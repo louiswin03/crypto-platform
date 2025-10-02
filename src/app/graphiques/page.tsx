@@ -4,6 +4,7 @@
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
 import { useAuth } from '@/hooks/useAuth'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 import Link from 'next/link'
 import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw, Sparkles, Star } from 'lucide-react'
@@ -22,6 +23,7 @@ import ImprovedCryptoSearch from '@/components/CryptoSelector/ImprovedCryptoSear
 export default function GraphiquesPage() {
   // Hook pour récupérer l'utilisateur connecté (pour conditionner certains boutons)
   const { user } = useAuth()
+  const { t } = useLanguage()
   const searchParams = useSearchParams()
 
   const [selectedPair, setSelectedPair] = useState('CRYPTO:BTCUSD')
@@ -383,7 +385,7 @@ export default function GraphiquesPage() {
                 <div className="mb-4">
                 <h2 className="text-xl font-semibold text-white mb-2 flex items-center space-x-2">
                     <Search className="w-5 h-5 text-[#6366F1]" />
-                    <span>Rechercher une cryptomonnaie</span>
+                    <span>{t('charts.search_crypto')}</span>
                 </h2>
                 <p className="text-gray-400 text-sm">
                     Sélectionnez parmi {cryptoOptions.length} cryptomonnaies avec graphiques professionnels
@@ -417,7 +419,7 @@ export default function GraphiquesPage() {
             </div>
             </div>
 
-            {/* Mes Listes de Suivi - Section pour naviguer rapidement */}
+            {/* {t('charts.my_watchlists')} - Section pour naviguer rapidement */}
             {user && watchlists.length > 0 && (
               <div className="mb-12">
                 <div className="glass-effect-strong rounded-3xl border border-gray-700/50 p-8">
@@ -426,7 +428,7 @@ export default function GraphiquesPage() {
                       <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
                         <Star className="w-6 h-6 text-[#F59E0B]" />
                       </div>
-                      <span>Mes Listes de Suivi</span>
+                      <span>{t('charts.my_watchlists')}</span>
                       <div className="text-sm bg-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#F59E0B] px-3 py-1 rounded-full font-bold">
                         {watchlists.length} liste{watchlists.length > 1 ? 's' : ''}
                       </div>
@@ -645,7 +647,7 @@ export default function GraphiquesPage() {
                   <button
                     onClick={handleRefresh}
                     className="group/btn p-4 rounded-2xl bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#8B5CF6]/20 hover:to-[#7C3AED]/20 border border-gray-600/50 hover:border-[#8B5CF6]/60 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#8B5CF6]/20"
-                    title="Actualiser le graphique"
+                    title={t('charts.refresh')}
                   >
                     <RotateCcw className="w-6 h-6 text-gray-400 group-hover/btn:text-[#8B5CF6] group-hover/btn:rotate-180 transition-all duration-500" />
                   </button>
@@ -744,7 +746,7 @@ export default function GraphiquesPage() {
                 className="group flex items-center space-x-3 px-8 py-4 glass-effect-strong border border-gray-600/50 text-[#F9FAFB] rounded-2xl font-bold hover:bg-gray-700/50 hover:border-gray-500/50 transition-all duration-300 hover:scale-105 relative overflow-hidden"
               >
                 <Wallet className="w-6 h-6" />
-                <span>Ajouter au Portefeuille</span>
+                <span>{t('charts.add_to_portfolio')}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out"></div>
               </Link>
             ) : (
@@ -753,7 +755,7 @@ export default function GraphiquesPage() {
                 title="Connexion requise pour la gestion de portefeuille"
               >
                 <Wallet className="w-6 h-6" />
-                <span>Ajouter au Portefeuille</span>
+                <span>{t('charts.add_to_portfolio')}</span>
               </div>
             )}
 

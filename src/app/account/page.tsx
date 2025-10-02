@@ -7,13 +7,17 @@ import SmartNavigation from '@/components/SmartNavigation'
 import { useAuth } from '@/hooks/useAuth'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { DatabaseAuthService } from '@/services/databaseAuthService'
+import { createClient } from '@supabase/supabase-js'
+import { useTheme } from '@/contexts/ThemeContext'
+import { themeClasses, cn } from '@/utils/themeClasses'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface UserStats {
-  backtests_count: number
+  watchlists_count: number
   exchanges_count: number
+  cryptos_count: number
   strategies_count: number
-  success_rate: number
 }
 
 interface ActivityItem {
@@ -26,8 +30,28 @@ interface ActivityItem {
 
 type TabType = 'profile' | 'settings' | 'security' | 'activity'
 
+// Fonction pour créer un client Supabase admin côté client
+const createSupabaseAdmin = () => {
+  // Récupérer la clé service depuis les variables d'environnement
+  // ATTENTION: Ceci n'est qu'une solution temporaire pour le développement
+  const serviceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im11b2x1dGF3eWprZm95eXdwamhtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODYxMjE0NywiZXhwIjoyMDc0MTg4MTQ3fQ.KUOCou3PLZqalgZk83f-n006MTnVGGLB5hWKN8YcVBU'
+
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    }
+  )
+}
+
 export default function AccountPage() {
-  const { user, profile, signOut, loading: authLoading } = useAuth()
+  const { user, signOut, loading: authLoading } = useAuth()
+  const { isDarkMode, toggleTheme } = useTheme()
+  const { language, setLanguage, t } = useLanguage()
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialTab = (searchParams.get('tab') as TabType) || 'profile'
@@ -36,6 +60,7 @@ export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab)
   const [userStats, setUserStats] = useState<UserStats | null>(null)
   const [activityLog, setActivityLog] = useState<ActivityItem[]>([])
+  const [performanceData, setPerformanceData] = useState<any>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editForm, setEditForm] = useState({
     email: user?.email || '',
@@ -43,12 +68,20 @@ export default function AccountPage() {
     location: ''
   })
 
+  // État séparé pour l'affichage des données sauvegardées
+  const [profileDisplay, setProfileDisplay] = useState({
+    phone: '',
+    location: ''
+  })
+
+  // Note: isDarkMode vient maintenant du context global
+
   // Charger les données utilisateur
   useEffect(() => {
-    if (user && profile) {
+    if (user) {
       loadUserData()
     }
-  }, [user, profile])
+  }, [user])
 
   const loadUserData = async () => {
     if (!user) return
@@ -56,57 +89,106 @@ export default function AccountPage() {
     try {
       setLoading(true)
 
-      // Charger les statistiques (simulées pour l'instant)
-      const stats: UserStats = {
-        backtests_count: 12,
-        exchanges_count: 3,
-        strategies_count: 8,
-        success_rate: 74
+      const authData = DatabaseAuthService.getCurrentUserFromStorage()
+      if (!authData) {
+        console.error('Token d\'authentification manquant')
+        return
       }
-      setUserStats(stats)
 
-      // Charger l'activité récente (simulée)
-      const activities: ActivityItem[] = [
-        {
-          id: '1',
-          action: 'Backtest créé',
-          details: 'Stratégie DCA Bitcoin',
-          timestamp: new Date(Date.now() - 3600000).toISOString(), // 1h ago
-          type: 'backtest'
-        },
-        {
-          id: '2',
-          action: 'Connexion réussie',
-          details: `Depuis ${getUserLocation()}`,
-          timestamp: new Date(Date.now() - 7200000).toISOString(), // 2h ago
-          type: 'auth'
-        },
-        {
-          id: '3',
-          action: 'Mot de passe modifié',
-          details: 'Sécurité renforcée',
-          timestamp: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-          type: 'security'
-        },
-        {
-          id: '4',
-          action: 'Exchange connecté',
-          details: 'Binance - API en lecture seule',
-          timestamp: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-          type: 'security'
+      console.log('🔍 Chargement direct depuis Supabase pour userId:', authData.user.id)
+
+      // 📋 Récupérer le profil directement depuis user_profiles
+      const supabaseAdmin = createSupabaseAdmin()
+      const { data: profile, error: profileError } = await supabaseAdmin
+        .from('user_profiles')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single()
+
+      console.log('📱 Profil récupéré:', profile)
+      console.log('❌ Erreur profil:', profileError)
+
+      if (profile) {
+        console.log('✅ Téléphone trouvé:', profile.phone)
+        console.log('✅ Localisation trouvée:', profile.location)
+
+        // Mettre à jour les états avec les vraies données
+        setEditForm({
+          email: user.email || '',
+          phone: profile.phone || '',
+          location: profile.location || ''
+        })
+
+        setProfileDisplay({
+          phone: profile.phone || '',
+          location: profile.location || ''
+        })
+      } else {
+        console.log('⚠️ Aucun profil trouvé, création d\'un profil vide')
+
+        // Créer un profil vide si il n'existe pas
+        const { data: newProfile, error: createError } = await supabaseAdmin
+          .from('user_profiles')
+          .insert({
+            id: authData.user.id,
+            plan: 'free',
+            preferences: {}
+          })
+          .select()
+          .single()
+
+        if (!createError && newProfile) {
+          console.log('✅ Nouveau profil créé:', newProfile)
         }
-      ]
-      setActivityLog(activities)
+      }
 
-      // Pré-remplir le formulaire d'édition
-      setEditForm({
-        email: user.email || '',
-        phone: profile.preferences?.phone || '',
-        location: profile.preferences?.location || ''
-      })
+      // 📊 Récupérer les stats de listes de suivis
+      const { data: watchlists } = await supabaseAdmin
+        .from('watchlists')
+        .select('*')
+        .eq('user_id', authData.user.id)
+
+      console.log('📋 Listes de suivis trouvées:', watchlists?.length || 0)
+
+      // Récupérer les éléments de watchlist pour calculer le nombre total de cryptos suivies
+      const { data: watchlistItems } = await supabaseAdmin
+        .from('watchlist_items')
+        .select('*')
+        .eq('user_id', authData.user.id)
+
+      console.log('💰 Cryptos suivies:', watchlistItems?.length || 0)
+
+      // 📈 Récupérer les stratégies de backtest
+      const { data: strategies } = await supabaseAdmin
+        .from('strategies')
+        .select('*')
+        .eq('user_id', authData.user.id)
+
+      console.log('🎯 Stratégies backtest trouvées:', strategies?.length || 0)
+
+      const stats: UserStats = {
+        watchlists_count: watchlists?.length || 0,
+        exchanges_count: 0, // TODO: implémenter quand la table exchanges sera prête
+        cryptos_count: watchlistItems?.length || 0, // Nombre de cryptos suivies
+        strategies_count: strategies?.length || 0 // Nombre de stratégies backtest sauvegardées
+      }
+
+      setUserStats(stats)
+      setActivityLog([]) // TODO: implémenter l'activité plus tard
+      setPerformanceData(null) // TODO: implémenter les performances plus tard
+
+      console.log('🎯 Chargement direct terminé avec succès!')
 
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error)
+      // En cas d'erreur, utiliser des données par défaut
+      setUserStats({
+        watchlists_count: 0,
+        exchanges_count: 0,
+        cryptos_count: 0,
+        strategies_count: 0
+      })
+      setActivityLog([])
     } finally {
       setLoading(false)
     }
@@ -121,30 +203,66 @@ export default function AccountPage() {
     router.push('/')
   }
 
+  // Note: toggleDarkMode est maintenant toggleTheme du context global
+
   const handleSaveProfile = async () => {
-    if (!user || !profile) return
+    if (!user) return
 
     try {
       setLoading(true)
 
-      const { error } = await supabase
+      const authData = DatabaseAuthService.getCurrentUserFromStorage()
+      if (!authData) {
+        console.error('Token d\'authentification manquant')
+        alert('Session expirée, veuillez vous reconnecter')
+        return
+      }
+
+      console.log('💾 Sauvegarde directe vers Supabase')
+      console.log('📱 Téléphone à sauver:', editForm.phone)
+      console.log('📍 Localisation à sauver:', editForm.location)
+
+      // Préparer les données à mettre à jour
+      const updateData: any = {
+        updated_at: new Date().toISOString()
+      }
+
+      // Toujours sauvegarder phone et location (même si vides)
+      updateData.phone = editForm.phone || null
+      updateData.location = editForm.location || null
+
+      console.log('📝 Données à sauvegarder:', updateData)
+
+      // Sauvegarder directement dans Supabase
+      const supabaseAdmin = createSupabaseAdmin()
+      const { data, error } = await supabaseAdmin
         .from('user_profiles')
-        .update({
-          preferences: {
-            ...profile.preferences,
-            phone: editForm.phone,
-            location: editForm.location
-          }
+        .upsert({
+          id: authData.user.id,
+          ...updateData
         })
-        .eq('id', user.id)
+        .select()
+        .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Erreur Supabase:', error)
+        throw new Error('Erreur lors de la sauvegarde: ' + error.message)
+      }
 
-      await loadUserData()
+      console.log('✅ Sauvegarde réussie:', data)
+
+      // Mettre à jour l'affichage immédiatement
+      setProfileDisplay({
+        phone: editForm.phone || '',
+        location: editForm.location || ''
+      })
+
       setIsEditing(false)
+      console.log('🎯 Sauvegarde directe terminée avec succès!')
 
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error)
+      alert('Erreur: ' + (error instanceof Error ? error.message : 'Erreur inconnue'))
     } finally {
       setLoading(false)
     }
@@ -155,11 +273,11 @@ export default function AccountPage() {
     const date = new Date(dateString)
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
 
-    if (diffInHours < 1) return 'À l\'instant'
-    if (diffInHours < 24) return `Il y a ${diffInHours}h`
-    if (diffInHours < 48) return 'Hier'
+    if (diffInHours < 1) return t('time.now')
+    if (diffInHours < 24) return `${t('time.hours_ago')} ${diffInHours}h`.trim()
+    if (diffInHours < 48) return t('time.yesterday')
 
-    return new Intl.DateTimeFormat('fr-FR', {
+    return new Intl.DateTimeFormat(language === 'fr' ? 'fr-FR' : 'en-US', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -168,12 +286,12 @@ export default function AccountPage() {
   }
 
   const getMemberSince = () => {
-    if (!profile?.member_since) return 'Récemment'
+    if (!user?.profile?.created_at) return t('profile.recently')
 
-    return new Intl.DateTimeFormat('fr-FR', {
+    return new Intl.DateTimeFormat(language === 'fr' ? 'fr-FR' : 'en-US', {
       year: 'numeric',
       month: 'long'
-    }).format(new Date(profile.member_since))
+    }).format(new Date(user?.profile?.created_at || user?.createdAt || new Date()))
   }
 
   const getUserInitials = () => {
@@ -182,10 +300,10 @@ export default function AccountPage() {
   }
 
   const tabs = [
-    { id: 'profile', label: 'Profil', icon: User },
-    { id: 'settings', label: 'Paramètres', icon: Settings },
-    { id: 'security', label: 'Sécurité', icon: Shield },
-    { id: 'activity', label: 'Activité', icon: Clock },
+    { id: 'profile', label: t('tabs.profile'), icon: User },
+    { id: 'settings', label: t('tabs.settings'), icon: Settings },
+    { id: 'security', label: t('tabs.security'), icon: Shield },
+    { id: 'activity', label: t('tabs.activity'), icon: Clock },
   ] as const
 
   if (authLoading || loading) {
@@ -194,7 +312,7 @@ export default function AccountPage() {
         <div className="min-h-screen bg-[#111827] text-[#F9FAFB] flex items-center justify-center">
           <div className="text-center">
             <div className="w-12 h-12 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-400">Chargement de votre profil...</p>
+            <p className="text-gray-400">{t('account.loading')}</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -257,47 +375,61 @@ export default function AccountPage() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-[#111827] text-[#F9FAFB] relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="fixed inset-0 pattern-grid opacity-30"></div>
+      <div className="min-h-screen bg-[#111827] relative overflow-hidden">
+        {/* Background with gradient */}
+        <div className="fixed inset-0 bg-gradient-to-br from-[#111827] via-[#1E293B] to-[#111827]"></div>
+        <div className="fixed inset-0 pattern-grid opacity-20"></div>
+
+        {/* Gradient orbs */}
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#6366F1]/10 rounded-full blur-3xl"></div>
+        <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-[#8B5CF6]/10 rounded-full blur-3xl"></div>
 
         {/* Navigation */}
         <SmartNavigation />
 
         {/* Main Content */}
-        <main className="relative max-w-6xl mx-auto px-6 lg:px-8 pt-12 pb-20">
-          {/* Page Header */}
-          <div className="mb-12">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-3xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                {getUserInitials()}
-              </div>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-black text-[#F9FAFB] tracking-tight font-display">
-                  {user?.email?.split('@')[0] || 'Mon Compte'}
-                </h1>
-                <p className="text-gray-400 text-lg font-light">
-                  Gérez votre profil et préférences
-                </p>
+        <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-12 pb-20">
+          {/* Page Header with enhanced styling */}
+          <div className="mb-12 animate-slide-up">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+              <div className="flex items-center space-x-6">
+                <div className="relative">
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl shadow-[#6366F1]/25">
+                    {getUserInitials()}
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#16A34A] border-4 border-[#111827] rounded-full"></div>
+                </div>
+                <div>
+                  <h1 className={cn("text-5xl md:text-6xl font-black tracking-tight font-display mb-2", themeClasses.text.primary(isDarkMode))}>
+                    {user?.email?.split('@')[0] || t('account.title')}
+                  </h1>
+                  <p className={cn("text-lg flex items-center space-x-2", themeClasses.text.secondary(isDarkMode))}>
+                    <span>{t('account.subtitle')}</span>
+                    <span>•</span>
+                    <span className="text-[#6366F1] font-semibold">{user?.profile?.preferences?.plan || 'Free'}</span>
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Tab Navigation */}
-            <div className="flex space-x-1 glass-effect-strong rounded-2xl p-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-all duration-300 font-semibold ${
-                    activeTab === tab.id
-                      ? 'bg-[#6366F1] text-white shadow-lg shadow-[#6366F1]/25'
-                      : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
-                  }`}
-                >
-                  <tab.icon className="w-5 h-5" />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
+            {/* Tab Navigation with improved design */}
+            <div className="glass-effect-strong rounded-2xl p-1.5 shadow-xl">
+              <div className="flex space-x-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-xl transition-all duration-300 font-semibold ${
+                      activeTab === tab.id
+                        ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white shadow-lg shadow-[#6366F1]/30 scale-105'
+                        : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
+                    }`}
+                  >
+                    <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -306,9 +438,13 @@ export default function AccountPage() {
             {activeTab === 'profile' && (
               <div className="space-y-8">
                 {/* Profile Info */}
-                <div className="glass-effect-strong rounded-3xl p-8">
+                <div className={`rounded-3xl p-8 transition-colors duration-300 ${
+                  isDarkMode
+                    ? 'glass-effect-strong'
+                    : 'bg-white/95 backdrop-blur-40 border border-gray-200 shadow-xl'
+                }`}>
                   <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold text-[#F9FAFB] font-display">Informations personnelles</h2>
+                    <h2 className={cn("text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>{t('profile.title')}</h2>
                     <button
                       onClick={() => isEditing ? handleSaveProfile() : setIsEditing(true)}
                       disabled={loading}
@@ -325,7 +461,7 @@ export default function AccountPage() {
                       ) : (
                         <Edit3 className="w-5 h-5" />
                       )}
-                      <span>{isEditing ? 'Sauvegarder' : 'Modifier'}</span>
+                      <span>{isEditing ? t('profile.save') : t('profile.edit')}</span>
                     </button>
                   </div>
 
@@ -342,33 +478,40 @@ export default function AccountPage() {
                           </button>
                         </div>
                         <div className="space-y-2">
-                          <div className="text-2xl font-bold text-[#F9FAFB] font-display">
+                          <div className={cn("text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>
                             {user?.email?.split('@')[0] || 'Utilisateur'}
                           </div>
                           <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#6366F1]/20 text-[#6366F1] text-sm font-semibold">
-                            Plan {profile?.plan || 'Gratuit'}
+                            {t('profile.plan')} {user?.profile?.preferences?.plan || t('common.free')}
                           </div>
-                          <div className="text-gray-400">Membre depuis {getMemberSince()}</div>
+                          <div className={cn("", themeClasses.text.secondary(isDarkMode))}>{t('profile.member_since')} {getMemberSince()}</div>
                         </div>
                       </div>
 
                       {/* Contact Information */}
                       <div className="space-y-6">
-                        <h3 className="text-lg font-semibold text-[#F9FAFB] border-b border-gray-800/40 pb-2">Contact</h3>
+                        <h3 className={cn("text-lg font-semibold pb-2",
+                          themeClasses.text.primary(isDarkMode),
+                          isDarkMode ? "border-b border-gray-800/40" : "border-b border-gray-200"
+                        )}>{t('contact.title')}</h3>
 
                         <div className="space-y-4">
-                          <div className="flex items-center space-x-4 p-4 glass-effect rounded-2xl">
+                          <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
+                            isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
+                          )}>
                             <Mail className="w-5 h-5 text-[#6366F1]" />
                             <div className="flex-1">
-                              <div className="text-[#F9FAFB] font-medium">{user?.email}</div>
-                              <div className="text-gray-400 text-sm">Email principal</div>
+                              <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>{user?.email}</div>
+                              <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.email')}</div>
                             </div>
                             <div className="px-2 py-1 bg-[#16A34A]/20 text-[#16A34A] text-xs rounded-full font-semibold">
-                              Vérifié
+                              {t('contact.verified')}
                             </div>
                           </div>
 
-                          <div className="flex items-center space-x-4 p-4 glass-effect rounded-2xl">
+                          <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
+                            isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
+                          )}>
                             <Phone className="w-5 h-5 text-[#8B5CF6]" />
                             <div className="flex-1">
                               {isEditing ? (
@@ -376,21 +519,27 @@ export default function AccountPage() {
                                   type="tel"
                                   value={editForm.phone}
                                   onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
-                                  placeholder="Numéro de téléphone"
-                                  className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] placeholder-gray-500 focus:border-[#6366F1] focus:outline-none transition-colors"
+                                  placeholder={t('contact.phone_placeholder')}
+                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#6366F1] focus:outline-none transition-colors",
+                                    isDarkMode
+                                      ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
+                                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
+                                  )}
                                 />
                               ) : (
                                 <>
-                                  <div className="text-[#F9FAFB] font-medium">
-                                    {editForm.phone || 'Non renseigné'}
+                                  <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>
+                                    {profileDisplay.phone || t('contact.not_provided')}
                                   </div>
-                                  <div className="text-gray-400 text-sm">Téléphone</div>
+                                  <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.phone')}</div>
                                 </>
                               )}
                             </div>
                           </div>
 
-                          <div className="flex items-center space-x-4 p-4 glass-effect rounded-2xl">
+                          <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
+                            isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
+                          )}>
                             <MapPin className="w-5 h-5 text-[#F59E0B]" />
                             <div className="flex-1">
                               {isEditing ? (
@@ -398,15 +547,19 @@ export default function AccountPage() {
                                   type="text"
                                   value={editForm.location}
                                   onChange={(e) => setEditForm({...editForm, location: e.target.value})}
-                                  placeholder="Votre localisation"
-                                  className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] placeholder-gray-500 focus:border-[#6366F1] focus:outline-none transition-colors"
+                                  placeholder={t('contact.location_placeholder')}
+                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#6366F1] focus:outline-none transition-colors",
+                                    isDarkMode
+                                      ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
+                                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
+                                  )}
                                 />
                               ) : (
                                 <>
-                                  <div className="text-[#F9FAFB] font-medium">
-                                    {editForm.location || 'Non renseigné'}
+                                  <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>
+                                    {profileDisplay.location || t('contact.not_provided')}
                                   </div>
-                                  <div className="text-gray-400 text-sm">Localisation</div>
+                                  <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.location')}</div>
                                 </>
                               )}
                             </div>
@@ -421,67 +574,163 @@ export default function AccountPage() {
                               setIsEditing(false)
                               setEditForm({
                                 email: user?.email || '',
-                                phone: profile?.preferences?.phone || '',
-                                location: profile?.preferences?.location || ''
+                                phone: user?.profile?.preferences?.phone || '',
+                                location: user?.profile?.preferences?.location || ''
                               })
                             }}
                             className="px-6 py-3 bg-gray-800/50 text-gray-300 rounded-xl hover:bg-gray-700/50 transition-colors font-semibold"
                           >
-                            Annuler
+                            {t('profile.cancel')}
                           </button>
                         </div>
                       )}
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-[#F9FAFB] mb-6 border-b border-gray-800/40 pb-2">Statistiques du compte</h3>
+                      <h3 className={cn("text-lg font-semibold mb-6 pb-2",
+                        themeClasses.text.primary(isDarkMode),
+                        isDarkMode ? "border-b border-gray-800/40" : "border-b border-gray-200"
+                      )}>{t('stats.title')}</h3>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-                          <div className="text-3xl font-bold text-[#6366F1] mb-2 font-display">
-                            {userStats?.backtests_count || 0}
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#6366F1]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#6366F1]/30">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="p-2 bg-[#6366F1]/20 rounded-xl">
+                              <Star className="w-5 h-5 text-[#6366F1]" />
+                            </div>
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">Backtests créés</div>
+                          <div className="text-4xl font-bold text-[#6366F1] mb-2 font-display">
+                            {userStats?.watchlists_count || 0}
+                          </div>
+                          <div className="text-gray-400 text-sm font-medium">{t('stats.watchlists')}</div>
+                          {userStats?.watchlists_count === 0 && (
+                            <div className="mt-2">
+                              <Link
+                                href="/portfolio"
+                                className="text-xs text-[#6366F1] hover:text-[#8B5CF6] transition-colors"
+                              >
+                                {t('stats.create_first')}
+                              </Link>
+                            </div>
+                          )}
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-                          <div className="text-3xl font-bold text-[#16A34A] mb-2 font-display">
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#16A34A]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#16A34A]/30">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="p-2 bg-[#16A34A]/20 rounded-xl">
+                              <Activity className="w-5 h-5 text-[#16A34A]" />
+                            </div>
+                          </div>
+                          <div className="text-4xl font-bold text-[#16A34A] mb-2 font-display">
                             {userStats?.exchanges_count || 0}
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">Exchanges connectés</div>
+                          <div className="text-gray-400 text-sm font-medium">{t('stats.exchanges')}</div>
+                          {userStats?.exchanges_count === 0 && (
+                            <div className="mt-2">
+                              <span className="text-xs text-gray-500">
+                                {t('stats.coming_soon')}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-                          <div className="text-3xl font-bold text-[#F59E0B] mb-2 font-display">
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#F59E0B]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#F59E0B]/30">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
+                              <TrendingUp className="w-5 h-5 text-[#F59E0B]" />
+                            </div>
+                          </div>
+                          <div className="text-4xl font-bold text-[#F59E0B] mb-2 font-display">
+                            {userStats?.cryptos_count || 0}
+                          </div>
+                          <div className="text-gray-400 text-sm font-medium">{t('stats.cryptos')}</div>
+                          {userStats?.cryptos_count === 0 && (
+                            <div className="mt-2">
+                              <Link
+                                href="/portfolio"
+                                className="text-xs text-[#F59E0B] hover:text-[#FBBF24] transition-colors"
+                              >
+                                {t('stats.add_cryptos')}
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#8B5CF6]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#8B5CF6]/30">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="p-2 bg-[#8B5CF6]/20 rounded-xl">
+                              <Target className="w-5 h-5 text-[#8B5CF6]" />
+                            </div>
+                          </div>
+                          <div className="text-4xl font-bold text-[#8B5CF6] mb-2 font-display">
                             {userStats?.strategies_count || 0}
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">Stratégies sauvées</div>
-                        </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-                          <div className="text-3xl font-bold text-[#8B5CF6] mb-2 font-display">
-                            {userStats?.success_rate || 0}%
-                          </div>
-                          <div className="text-gray-400 text-sm font-medium">Taux de réussite</div>
+                          <div className="text-gray-400 text-sm font-medium">{t('stats.strategies')}</div>
+                          {userStats?.strategies_count === 0 && (
+                            <div className="mt-2">
+                              <Link
+                                href="/backtest"
+                                className="text-xs text-[#8B5CF6] hover:text-[#A855F7] transition-colors"
+                              >
+                                {t('stats.create_first')}
+                              </Link>
+                            </div>
+                          )}
                         </div>
                       </div>
 
                       <div className="mt-8 glass-effect rounded-2xl p-6">
                         <h4 className="font-semibold text-[#F9FAFB] mb-4 flex items-center">
                           <TrendingUp className="w-5 h-5 text-[#16A34A] mr-2" />
-                          Performance récente
+                          {t('performance.title')}
                         </h4>
-                        <div className="space-y-3">
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-400">Ce mois</span>
-                            <span className="text-[#16A34A] font-semibold">+12.4%</span>
+                        {performanceData ? (
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-400">{t('performance.this_month')}</span>
+                              <span className={`font-semibold ${
+                                performanceData.monthly_return >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                              }`}>
+                                {performanceData.monthly_return >= 0 ? '+' : ''}{(performanceData.monthly_return * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-400">{t('performance.last_3_months')}</span>
+                              <span className={`font-semibold ${
+                                performanceData.quarterly_return >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                              }`}>
+                                {performanceData.quarterly_return >= 0 ? '+' : ''}{(performanceData.quarterly_return * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-400">{t('performance.this_year')}</span>
+                              <span className={`font-semibold ${
+                                performanceData.yearly_return >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                              }`}>
+                                {performanceData.yearly_return >= 0 ? '+' : ''}{(performanceData.yearly_return * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                            {performanceData.sharpe_ratio > 0 && (
+                              <div className="flex justify-between items-center border-t border-gray-700/30 pt-3">
+                                <span className="text-gray-400">{t('performance.sharpe_ratio')}</span>
+                                <span className="font-semibold text-[#8B5CF6]">
+                                  {performanceData.sharpe_ratio.toFixed(2)}
+                                </span>
+                              </div>
+                            )}
+                            {performanceData.max_drawdown < 0 && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-400">{t('performance.max_drawdown')}</span>
+                                <span className="font-semibold text-[#DC2626]">
+                                  {(performanceData.max_drawdown * 100).toFixed(1)}%
+                                </span>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-400">3 derniers mois</span>
-                            <span className="text-[#16A34A] font-semibold">+34.7%</span>
+                        ) : (
+                          <div className="text-center py-8 text-gray-400">
+                            <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                            <p className="text-sm">{t('performance.no_data')}</p>
+                            <p className="text-xs">{t('performance.create_backtest')}</p>
                           </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-400">Cette année</span>
-                            <span className="text-[#16A34A] font-semibold">+89.2%</span>
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -491,14 +740,14 @@ export default function AccountPage() {
 
             {activeTab === 'settings' && (
               <div className="glass-effect-strong rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">Paramètres</h2>
+                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">{t('settings.title')}</h2>
 
                 <div className="space-y-6">
                   <div className="glass-effect rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <div className="font-semibold text-[#F9FAFB]">Notifications par email</div>
-                        <div className="text-gray-400 text-sm">Recevez des alertes sur vos backtests</div>
+                        <div className="font-semibold text-[#F9FAFB]">{t('settings.email_notifications')}</div>
+                        <div className="text-gray-400 text-sm">{t('settings.email_notifications_desc')}</div>
                       </div>
                       <button className="relative w-12 h-6 bg-[#6366F1] rounded-full transition-colors">
                         <div className="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div>
@@ -509,11 +758,18 @@ export default function AccountPage() {
                   <div className="glass-effect rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <div className="font-semibold text-[#F9FAFB]">Mode sombre</div>
-                        <div className="text-gray-400 text-sm">Interface en thème sombre</div>
+                        <div className="font-semibold text-[#F9FAFB]">{t('settings.dark_mode')}</div>
+                        <div className="text-gray-400 text-sm">{t('settings.dark_mode_desc')}</div>
                       </div>
-                      <button className="relative w-12 h-6 bg-[#6366F1] rounded-full transition-colors">
-                        <div className="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div>
+                      <button
+                        onClick={toggleTheme}
+                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                          isDarkMode ? 'bg-[#6366F1]' : 'bg-gray-300'
+                        }`}
+                      >
+                        <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                          isDarkMode ? 'right-0.5' : 'left-0.5'
+                        }`}></div>
                       </button>
                     </div>
                   </div>
@@ -521,10 +777,14 @@ export default function AccountPage() {
                   <div className="glass-effect rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <div className="font-semibold text-[#F9FAFB]">Langue</div>
-                        <div className="text-gray-400 text-sm">Langue de l'interface</div>
+                        <div className="font-semibold text-[#F9FAFB]">{t('settings.language')}</div>
+                        <div className="text-gray-400 text-sm">{t('settings.language_desc')}</div>
                       </div>
-                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#6366F1] focus:outline-none">
+                      <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value as 'fr' | 'en')}
+                        className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#6366F1] focus:outline-none"
+                      >
                         <option value="fr">Français</option>
                         <option value="en">English</option>
                       </select>
@@ -534,8 +794,8 @@ export default function AccountPage() {
                   <div className="glass-effect rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <div className="font-semibold text-[#F9FAFB]">Devise par défaut</div>
-                        <div className="text-gray-400 text-sm">Devise d'affichage des prix</div>
+                        <div className="font-semibold text-[#F9FAFB]">{t('settings.currency')}</div>
+                        <div className="text-gray-400 text-sm">{t('settings.currency_desc')}</div>
                       </div>
                       <select className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#6366F1] focus:outline-none">
                         <option value="EUR">EUR (€)</option>
@@ -550,7 +810,7 @@ export default function AccountPage() {
 
             {activeTab === 'security' && (
               <div className="glass-effect-strong rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">Sécurité</h2>
+                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">{t('security.title')}</h2>
 
                 <div className="space-y-6">
                   <div className="glass-effect rounded-2xl p-6">
@@ -560,12 +820,12 @@ export default function AccountPage() {
                           <Lock className="w-6 h-6 text-[#16A34A]" />
                         </div>
                         <div>
-                          <div className="font-semibold text-[#F9FAFB]">Mot de passe</div>
-                          <div className="text-gray-400 text-sm">Dernière modification il y a 2 jours</div>
+                          <div className="font-semibold text-[#F9FAFB]">{t('security.password')}</div>
+                          <div className="text-gray-400 text-sm">{t('security.password_changed')} 2 {t('security.password_days')}</div>
                         </div>
                       </div>
                       <button className="px-6 py-3 bg-[#6366F1] text-white rounded-xl hover:bg-[#5B21B6] transition-colors font-semibold">
-                        Modifier
+                        {t('security.modify')}
                       </button>
                     </div>
                   </div>
@@ -577,18 +837,18 @@ export default function AccountPage() {
                           <Shield className="w-6 h-6 text-[#F59E0B]" />
                         </div>
                         <div>
-                          <div className="font-semibold text-[#F9FAFB]">Authentification à deux facteurs</div>
-                          <div className="text-gray-400 text-sm">Protection supplémentaire recommandée</div>
+                          <div className="font-semibold text-[#F9FAFB]">{t('security.2fa')}</div>
+                          <div className="text-gray-400 text-sm">{t('security.2fa_desc')}</div>
                         </div>
                       </div>
                       <button className="px-6 py-3 bg-gray-800/50 text-gray-400 rounded-xl cursor-not-allowed font-semibold">
-                        Bientôt disponible
+                        {t('security.coming_soon')}
                       </button>
                     </div>
                   </div>
 
                   <div className="glass-effect rounded-2xl p-6">
-                    <h3 className="font-semibold text-[#F9FAFB] mb-4">Sessions actives</h3>
+                    <h3 className="font-semibold text-[#F9FAFB] mb-4">{t('security.active_sessions')}</h3>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between p-4 bg-gray-800/30 rounded-xl">
                         <div className="flex items-center space-x-4">
@@ -597,13 +857,13 @@ export default function AccountPage() {
                           </div>
                           <div>
                             <div className="font-medium text-[#F9FAFB] flex items-center space-x-2">
-                              <span>Session actuelle</span>
+                              <span>{t('security.current_session')}</span>
                               <span className="px-2 py-1 bg-[#16A34A]/20 text-[#16A34A] text-xs font-semibold rounded-full">
-                                Actif
+                                {t('security.active')}
                               </span>
                             </div>
                             <div className="text-gray-400 text-sm">
-                              {getUserLocation()} • {new Date().toLocaleDateString('fr-FR')}
+                              {getUserLocation()} • {new Date().toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')}
                             </div>
                           </div>
                         </div>
@@ -611,7 +871,7 @@ export default function AccountPage() {
                           onClick={handleSignOut}
                           className="text-[#DC2626] hover:text-[#EF4444] text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors"
                         >
-                          Déconnecter
+                          {t('security.disconnect')}
                         </button>
                       </div>
                     </div>
@@ -620,12 +880,12 @@ export default function AccountPage() {
                   <div className="glass-effect rounded-2xl p-6">
                     <h3 className="font-semibold text-[#F9FAFB] mb-4 flex items-center">
                       <Key className="w-5 h-5 mr-2" />
-                      Clés API
+                      {t('security.api_keys')}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-4">Gérez vos clés API pour les exchanges</p>
+                    <p className="text-gray-400 text-sm mb-4">{t('security.api_keys_desc')}</p>
                     <button className="flex items-center space-x-2 px-6 py-3 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-colors font-semibold">
                       <Plus className="w-5 h-5" />
-                      <span>Ajouter une clé API</span>
+                      <span>{t('security.add_api_key')}</span>
                     </button>
                   </div>
                 </div>
@@ -634,7 +894,7 @@ export default function AccountPage() {
 
             {activeTab === 'activity' && (
               <div className="glass-effect-strong rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">Activité récente</h2>
+                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">{t('activity.title')}</h2>
 
                 <div className="space-y-4">
                   {activityLog.length > 0 ? (
@@ -664,8 +924,8 @@ export default function AccountPage() {
                   ) : (
                     <div className="text-center py-12 text-gray-400">
                       <Clock className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg mb-2">Aucune activité récente</p>
-                      <p className="text-sm">Vos actions apparaîtront ici</p>
+                      <p className="text-lg mb-2">{t('activity.no_activity')}</p>
+                      <p className="text-sm">{t('activity.no_activity_desc')}</p>
                     </div>
                   )}
                 </div>

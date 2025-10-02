@@ -6,9 +6,10 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
 import React, { useState, useEffect, useMemo } from 'react'
-import { supabase } from '@/lib/supabase'
+import { DatabaseAuthService } from '@/services/databaseAuthService'
 import { useAuth } from '@/hooks/useAuth'
 import { useExtendedCoinGeckoPrices } from '@/hooks/useExtendedCoinGeckoPrices'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 // Types pour le portfolio manuel
 interface Holding {
@@ -43,6 +44,7 @@ interface CoinGeckoPrice {
 // Composant du portfolio manuel
 function ManualPortfolioSection() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const [manualHoldings, setManualHoldings] = useState<Holding[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingHolding, setEditingHolding] = useState<Holding | null>(null)
@@ -62,26 +64,34 @@ function ManualPortfolioSection() {
     return cryptoData?.image || null
   }
 
-  // Charger les holdings depuis Supabase
+  // Charger les holdings depuis l'API
   const loadHoldings = async () => {
     if (!user) return
-    
+
     setIsLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('holdings')
-        .select('*')
-        .eq('user_id', user.id)
-        .is('exchange_key_id', null) // Portfolio manuel uniquement
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Erreur chargement holdings:', error)
+      const authData = DatabaseAuthService.getCurrentUserFromStorage()
+      if (!authData) {
+        console.error('Token d\'authentification manquant')
         return
       }
 
+      const response = await fetch('/api/holdings', {
+        headers: {
+          'Authorization': `Bearer ${authData.token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        console.error('Erreur chargement holdings:', response.status)
+        return
+      }
+
+      const { holdings: data } = await response.json()
+
       if (data) {
-        const holdings: Holding[] = data.map(holding => ({
+        const holdings: Holding[] = data.map((holding: any) => ({
           id: holding.id,
           cryptoId: holding.crypto_id,
           symbol: holding.symbol,
@@ -93,9 +103,9 @@ function ManualPortfolioSection() {
           lastUpdated: new Date(holding.last_updated_at || holding.created_at).toLocaleTimeString('fr-FR'),
           image: undefined
         }))
-        
+
         setManualHoldings(holdings)
-        
+
         // Actualiser les prix après chargement
         if (holdings.length > 0) {
           await updatePricesForHoldings(holdings)
@@ -146,14 +156,19 @@ function ManualPortfolioSection() {
       for (const holding of updates) {
         if (updatedPrices[holding.cryptoId]) {
           try {
-            await supabase
-              .from('holdings')
-              .update({ 
-                current_price_usd: holding.currentPrice,
-                last_updated_at: new Date().toISOString()
+            const authData = DatabaseAuthService.getCurrentUserFromStorage()
+            if (authData) {
+              await fetch(`/api/holdings/${holding.id}`, {
+                method: 'PUT',
+                headers: {
+                  'Authorization': `Bearer ${authData.token}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  current_price_usd: holding.currentPrice
+                })
               })
-              .eq('id', holding.id)
-              .eq('user_id', user?.id)
+            }
           } catch (dbError) {
             console.warn('Erreur mise à jour DB (non bloquante):', dbError)
           }
@@ -289,34 +304,62 @@ function ManualPortfolioSection() {
     if (!user) return
 
     try {
-      // Sauvegarder en DB
-      const { data, error } = await supabase
-        .from('holdings')
-        .insert({
-          user_id: user.id,
-          crypto_id: newHolding.cryptoId,
-          symbol: newHolding.symbol,
-          quantity: newHolding.quantity,
-          avg_cost_usd: newHolding.avgPurchasePrice,
-          current_price_usd: newHolding.currentPrice,
-          current_value_usd: newHolding.quantity * newHolding.currentPrice,
-          unrealized_pnl_usd: (newHolding.quantity * newHolding.currentPrice) - (newHolding.quantity * newHolding.avgPurchasePrice),
-          unrealized_pnl_percent: ((newHolding.currentPrice - newHolding.avgPurchasePrice) / newHolding.avgPurchasePrice) * 100,
-          last_updated_at: new Date().toISOString()
-        })
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Erreur sauvegarde:', error)
-        alert('Erreur lors de la sauvegarde. Veuillez réessayer.')
+      const authData = DatabaseAuthService.getCurrentUserFromStorage()
+      if (!authData) {
+        console.error('Token d\'authentification manquant')
         return
       }
 
+      // Sauvegarder en DB via API
+      const payload = {
+        crypto_id: newHolding.cryptoId,
+        symbol: newHolding.symbol,
+        quantity: newHolding.quantity,
+        avg_cost_usd: newHolding.avgPurchasePrice,
+        current_price_usd: newHolding.currentPrice
+      }
+
+      console.log('💾 Saving holding:', payload)
+
+      const response = await fetch('/api/holdings', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authData.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+
+      console.log('📡 Response status:', response.status)
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('❌ Erreur sauvegarde - Status:', response.status)
+        console.error('❌ Erreur sauvegarde - Response:', errorText)
+
+        let errorData
+        try {
+          errorData = JSON.parse(errorText)
+        } catch (e) {
+          errorData = { error: errorText }
+        }
+
+        alert(`Erreur lors de la sauvegarde: ${errorData.error || 'Erreur inconnue'}`)
+        return
+      }
+
+      const { holding: data } = await response.json()
+
       // Ajouter au state local
       const holding: Holding = {
-        ...newHolding,
         id: data.id,
+        cryptoId: data.crypto_id,
+        symbol: data.symbol,
+        name: data.symbol,
+        quantity: parseFloat(data.quantity),
+        avgPurchasePrice: data.avg_cost_usd,
+        currentPrice: data.current_price_usd,
+        priceChange24h: 0,
         lastUpdated: new Date().toLocaleTimeString()
       }
       setManualHoldings(prev => [...prev, holding])
@@ -330,40 +373,37 @@ function ManualPortfolioSection() {
     if (!user) return
 
     try {
-      const dbUpdates: any = {
-        last_updated_at: new Date().toISOString()
+      const authData = DatabaseAuthService.getCurrentUserFromStorage()
+      if (!authData) {
+        console.error('Token d\'authentification manquant')
+        return
       }
 
-      if (updatedHolding.quantity !== undefined) dbUpdates.quantity = updatedHolding.quantity
-      if (updatedHolding.avgPurchasePrice !== undefined) dbUpdates.avg_cost_usd = updatedHolding.avgPurchasePrice
-      if (updatedHolding.currentPrice !== undefined) {
-        dbUpdates.current_price_usd = updatedHolding.currentPrice
-        // Recalculer les valeurs dérivées
-        const holding = manualHoldings.find(h => h.id === id)
-        if (holding) {
-          const newCurrentValue = (updatedHolding.quantity || holding.quantity) * updatedHolding.currentPrice
-          const newCostBasis = (updatedHolding.quantity || holding.quantity) * (updatedHolding.avgPurchasePrice || holding.avgPurchasePrice)
-          dbUpdates.current_value_usd = newCurrentValue
-          dbUpdates.unrealized_pnl_usd = newCurrentValue - newCostBasis
-          dbUpdates.unrealized_pnl_percent = ((updatedHolding.currentPrice - (updatedHolding.avgPurchasePrice || holding.avgPurchasePrice)) / (updatedHolding.avgPurchasePrice || holding.avgPurchasePrice)) * 100
-        }
-      }
+      const apiUpdates: any = {}
 
-      const { error } = await supabase
-        .from('holdings')
-        .update(dbUpdates)
-        .eq('id', id)
-        .eq('user_id', user.id)
+      if (updatedHolding.quantity !== undefined) apiUpdates.quantity = updatedHolding.quantity
+      if (updatedHolding.avgPurchasePrice !== undefined) apiUpdates.avg_cost_usd = updatedHolding.avgPurchasePrice
+      if (updatedHolding.currentPrice !== undefined) apiUpdates.current_price_usd = updatedHolding.currentPrice
 
-      if (error) {
-        console.error('Erreur mise à jour:', error)
+      const response = await fetch(`/api/holdings/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${authData.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiUpdates)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Erreur mise à jour:', errorData)
         alert('Erreur lors de la mise à jour. Veuillez réessayer.')
         return
       }
 
       // Mettre à jour le state local
-      setManualHoldings(prev => prev.map(holding => 
-        holding.id === id 
+      setManualHoldings(prev => prev.map(holding =>
+        holding.id === id
           ? { ...holding, ...updatedHolding, lastUpdated: new Date().toLocaleTimeString() }
           : holding
       ))
@@ -377,14 +417,23 @@ function ManualPortfolioSection() {
     if (!user) return
 
     try {
-      const { error } = await supabase
-        .from('holdings')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user.id)
+      const authData = DatabaseAuthService.getCurrentUserFromStorage()
+      if (!authData) {
+        console.error('Token d\'authentification manquant')
+        return
+      }
 
-      if (error) {
-        console.error('Erreur suppression:', error)
+      const response = await fetch(`/api/holdings/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${authData.token}`,
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Erreur suppression:', errorData)
         alert('Erreur lors de la suppression. Veuillez réessayer.')
         return
       }
@@ -487,7 +536,7 @@ function ManualPortfolioSection() {
             className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-2 rounded-lg font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
           >
             <Plus className="w-4 h-4" />
-            Ajouter
+            {t('portfolio.add')}
           </button>
         </div>
       </div>
@@ -574,11 +623,11 @@ function ManualPortfolioSection() {
             <div className="border-b border-gray-800/40 bg-gray-900/30">
               <div className="grid grid-cols-9 gap-4 p-6 text-gray-400 font-semibold text-sm uppercase tracking-wider">
                 <div className="col-span-2">Asset</div>
-                <div className="text-right">Prix Actuel</div>
+                <div className="text-right">{t('portfolio.current_price')}</div>
                 <div className="text-right">24h</div>
-                <div className="text-right">Quantité</div>
-                <div className="text-right">Prix Moyen</div>
-                <div className="text-right">Valeur</div>
+                <div className="text-right">{t('portfolio.quantity')}</div>
+                <div className="text-right">{t('portfolio.avg_price')}</div>
+                <div className="text-right">{t('portfolio.value')}</div>
                 <div className="text-right">P&L</div>
                 <div className="text-right">Allocation</div>
                 <div className="text-center">Actions</div>
@@ -698,7 +747,7 @@ function ManualPortfolioSection() {
                             setShowAddModal(true)
                           }}
                           className="p-2 text-gray-400 hover:text-[#16A34A] hover:bg-[#16A34A]/10 rounded-lg transition-all"
-                          title="Ajouter une transaction"
+                          title={t('portfolio.add_transaction')}
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -718,7 +767,7 @@ function ManualPortfolioSection() {
               className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
             >
               <Plus className="w-4 h-4" />
-              <span>Ajouter ma première crypto</span>
+              <span>{t('portfolio.add_first_crypto')}</span>
             </button>
           </div>
         )}
@@ -779,6 +828,71 @@ function ManualPortfolioSection() {
                 </div>
               </div>
             </div>
+
+            {/* Conseils de gestion */}
+            <div className="glass-effect rounded-2xl p-6 border border-[#6366F1]/30">
+              <h4 className="text-lg font-semibold text-[#F9FAFB] mb-4 flex items-center gap-2">
+                <Target className="w-5 h-5 text-[#6366F1]" />
+                Conseils de Gestion
+              </h4>
+              <div className="space-y-3 text-sm">
+                {holdingsWithAllocation[0]?.allocation > 50 && (
+                  <div className="flex items-start gap-3 p-3 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl">
+                    <AlertTriangle className="w-5 h-5 text-[#F59E0B] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#F59E0B] mb-1">Forte concentration détectée</div>
+                      <div className="text-gray-400">
+                        Votre position {holdingsWithAllocation[0].symbol} représente {holdingsWithAllocation[0].allocation.toFixed(1)}% de votre portfolio. Envisagez de diversifier pour réduire le risque.
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {holdingsWithAllocation.filter(h => h.allocation >= 5).length < 3 && totalValue > 1000 && (
+                  <div className="flex items-start gap-3 p-3 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-xl">
+                    <PieChart className="w-5 h-5 text-[#6366F1] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#6366F1] mb-1">Diversification à améliorer</div>
+                      <div className="text-gray-400">
+                        Avec {holdingsWithAllocation.filter(h => h.allocation >= 5).length} position{holdingsWithAllocation.filter(h => h.allocation >= 5).length > 1 ? 's' : ''} significative{holdingsWithAllocation.filter(h => h.allocation >= 5).length > 1 ? 's' : ''}, pensez à diversifier davantage (idéalement 5-10 positions).
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {totalProfitLoss > 0 && (totalProfitLoss / totalInvested) > 0.5 && (
+                  <div className="flex items-start gap-3 p-3 bg-[#16A34A]/10 border border-[#16A34A]/30 rounded-xl">
+                    <TrendingUp className="w-5 h-5 text-[#16A34A] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#16A34A] mb-1">Performance excellente</div>
+                      <div className="text-gray-400">
+                        Gain de {((totalProfitLoss / totalInvested) * 100).toFixed(1)}%. Pensez à sécuriser une partie des profits (take profit) selon votre stratégie.
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {totalProfitLoss < 0 && Math.abs(totalProfitLoss / totalInvested) > 0.2 && (
+                  <div className="flex items-start gap-3 p-3 bg-[#DC2626]/10 border border-[#DC2626]/30 rounded-xl">
+                    <TrendingDown className="w-5 h-5 text-[#DC2626] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#DC2626] mb-1">Perte importante</div>
+                      <div className="text-gray-400">
+                        Perte de {Math.abs((totalProfitLoss / totalInvested) * 100).toFixed(1)}%. Revoyez votre stratégie et utilisez le backtest pour optimiser vos positions.
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {holdingsWithAllocation.length >= 5 && holdingsWithAllocation.filter(h => h.allocation >= 5).length >= 4 && (
+                  <div className="flex items-start gap-3 p-3 bg-[#16A34A]/10 border border-[#16A34A]/30 rounded-xl">
+                    <CheckCircle className="w-5 h-5 text-[#16A34A] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#16A34A] mb-1">Bonne diversification</div>
+                      <div className="text-gray-400">
+                        Votre portfolio est bien diversifié avec {holdingsWithAllocation.length} positions. Continuez à surveiller l'allocation et rééquilibrez si nécessaire.
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Diagramme de répartition */}
@@ -809,6 +923,7 @@ function ManualPortfolioSection() {
           }}
           searchCoinsAPI={searchCoinsAPI}
           updatePricesFromAPI={updatePricesFromAPI}
+          t={t}
         />
       )}
 
@@ -824,6 +939,7 @@ function ManualPortfolioSection() {
           onUpdateTransaction={updateHolding}
           onDeleteTransaction={deleteHolding}
           getCryptoImage={getCryptoImage}
+          t={t}
         />
       )}
     </div>
@@ -1082,7 +1198,8 @@ function TransactionsManagerModal({
   onClose,
   onUpdateTransaction,
   onDeleteTransaction,
-  getCryptoImage
+  getCryptoImage,
+  t
 }: {
   cryptoId: string
   transactions: Holding[]
@@ -1090,6 +1207,7 @@ function TransactionsManagerModal({
   onUpdateTransaction: (id: string, updates: Partial<Holding>) => void
   onDeleteTransaction: (id: string) => void
   getCryptoImage: (cryptoId: string) => string | null
+  t: (key: string) => string
 }) {
   const [editingTransaction, setEditingTransaction] = useState<Holding | null>(null)
 
@@ -1151,7 +1269,7 @@ function TransactionsManagerModal({
             <div className="font-mono font-bold text-[#F9FAFB] text-lg">{formatNumber(totalQuantity)}</div>
           </div>
           <div className="glass-effect rounded-2xl p-4 border border-gray-700/50">
-            <div className="text-gray-400 text-sm mb-1">Prix Moyen</div>
+            <div className="text-gray-400 text-sm mb-1">{t('portfolio.avg_price')}</div>
             <div className="font-mono font-bold text-[#F9FAFB] text-lg">{formatCurrency(avgPrice)}</div>
           </div>
           <div className="glass-effect rounded-2xl p-4 border border-gray-700/50">
@@ -1171,10 +1289,10 @@ function TransactionsManagerModal({
           {/* En-têtes fixes */}
           <div className="border-b border-gray-800/40 bg-gray-900/80 backdrop-blur-md sticky top-0 z-10">
             <div className="grid grid-cols-6 gap-4 p-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">
-              <div>Quantité</div>
-              <div className="text-right">Prix d'Achat</div>
-              <div className="text-right">Valeur Investie</div>
-              <div className="text-right">Valeur Actuelle</div>
+              <div>{t('portfolio.quantity')}</div>
+              <div className="text-right">{t('portfolio.purchase_price')}</div>
+              <div className="text-right">{t('portfolio.total_invested')}</div>
+              <div className="text-right">{t('portfolio.value')}</div>
               <div className="text-right">P&L</div>
               <div className="text-center">Actions</div>
             </div>
@@ -1226,18 +1344,18 @@ function TransactionsManagerModal({
                       <button
                         onClick={() => setEditingTransaction(transaction)}
                         className="p-2 text-gray-400 hover:text-[#6366F1] hover:bg-[#6366F1]/10 rounded-lg transition-all"
-                        title="Modifier cette transaction"
+                        title={t('portfolio.modify_transaction')}
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm('Supprimer cette transaction ?')) {
+                          if (confirm(t('portfolio.delete_transaction_confirm'))) {
                             onDeleteTransaction(transaction.id)
                           }
                         }}
                         className="p-2 text-gray-400 hover:text-[#DC2626] hover:bg-[#DC2626]/10 rounded-lg transition-all"
-                        title="Supprimer cette transaction"
+                        title={t('portfolio.delete_transaction')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -1268,7 +1386,7 @@ function TransactionsManagerModal({
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-10">
             <div className="glass-effect rounded-2xl border border-gray-700 p-6 w-full max-w-md">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-[#F9FAFB]">Modifier Transaction</h3>
+                <h3 className="text-xl font-bold text-[#F9FAFB]">{t('portfolio.modify_transaction')}</h3>
                 <button
                   onClick={() => setEditingTransaction(null)}
                   className="text-gray-400 hover:text-[#F9FAFB]"
@@ -1279,7 +1397,7 @@ function TransactionsManagerModal({
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-300 mb-2">Quantité</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">{t('portfolio.quantity')}</label>
                   <input
                     type="number"
                     step="any"
@@ -1341,7 +1459,8 @@ function AddEditHoldingModal({
   onSave,
   onCancel,
   searchCoinsAPI,
-  updatePricesFromAPI
+  updatePricesFromAPI,
+  t
 }: {
   holding: Holding | null
   preselectedCrypto?: CoinSuggestion | null
@@ -1349,6 +1468,7 @@ function AddEditHoldingModal({
   onCancel: () => void
   searchCoinsAPI: (query: string) => Promise<CoinSuggestion[]>
   updatePricesFromAPI: (cryptoIds: string[]) => Promise<Record<string, CoinGeckoPrice>>
+  t: (key: string) => string
 }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [suggestions, setSuggestions] = useState<CoinSuggestion[]>([])
@@ -1445,7 +1565,7 @@ function AddEditHoldingModal({
       <div className="glass-effect rounded-2xl border border-gray-700 p-6 w-full max-w-lg">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-[#F9FAFB]">
-            {holding ? 'Modifier' : 'Ajouter'} une position
+            {holding ? t('portfolio.modify_position') : t('portfolio.add_position')}
           </h2>
           <button onClick={onCancel} className="text-gray-400 hover:text-[#F9FAFB]">
             <X className="w-6 h-6" />
@@ -1464,7 +1584,7 @@ function AddEditHoldingModal({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Rechercher une crypto..."
+                placeholder={t('portfolio.search_crypto')}
                 className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
               />
             </div>
@@ -1491,7 +1611,7 @@ function AddEditHoldingModal({
                       <div className="text-[#F9FAFB] text-sm">
                         {coin.current_price > 0 ? 
                           coin.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) :
-                          'Prix en cours...'
+                          t('portfolio.loading_price')
                         }
                       </div>
                       <div className={`text-xs ${coin.price_change_percentage_24h >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
@@ -1551,7 +1671,7 @@ function AddEditHoldingModal({
           {/* Prix moyen d'achat */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Prix moyen d'achat ($)
+              {t('portfolio.avg_purchase_price')}
             </label>
             <input
               type="number"
@@ -1563,7 +1683,7 @@ function AddEditHoldingModal({
             />
             {selectedCoin && (
               <div className="mt-2 text-sm text-gray-400">
-                Prix actuel : {selectedCoin.current_price > 0 ? 
+                {t('portfolio.current_price_label')} {selectedCoin.current_price > 0 ? 
                   selectedCoin.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) :
                   'Chargement...'
                 }
@@ -1617,7 +1737,7 @@ function AddEditHoldingModal({
             disabled={!selectedCoin || !quantity || !avgPrice}
             className="flex-1 px-4 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl hover:from-[#5B21B6] hover:to-[#7C3AED] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {holding ? 'Modifier' : 'Ajouter'}
+            {holding ? t('portfolio.modify') : t('portfolio.add')}
           </button>
         </div>
       </div>
@@ -1626,6 +1746,8 @@ function AddEditHoldingModal({
 }
 
 export default function PortefeuillePage() {
+  const { t } = useLanguage()
+
   const exchanges = [
     { 
       name: 'Binance', 
@@ -1766,7 +1888,7 @@ export default function PortefeuillePage() {
               </div>
               <button className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl">
                 <Plus className="w-4 h-4" />
-                <span>Ajouter un Exchange</span>
+                <span>{t('portfolio.add_exchange')}</span>
               </button>
             </div>
 

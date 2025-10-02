@@ -1,151 +1,132 @@
-// hooks/useAuth.ts - Version corrigée
+// hooks/useAuth.ts - Version PostgreSQL
 'use client'
 
 import { useState, useEffect } from 'react'
-import { User, Session } from '@supabase/supabase-js'
-import { supabase, authHelpers, UserProfile } from '@/lib/supabase'
+import { DatabaseAuthService, AuthenticatedUser } from '@/services/databaseAuthService'
 
 interface UseAuthReturn {
-  user: User | null
-  profile: UserProfile | null
-  session: Session | null
+  user: AuthenticatedUser | null
   loading: boolean
-  signIn: (email: string, password: string) => Promise<{ data?: any; error?: any }>
-  signUp: (email: string, password: string) => Promise<{ data?: any; error?: any }>
-  signOut: () => Promise<{ error?: any }>
+  signIn: (email: string, password: string) => Promise<{ success?: boolean; error?: string }>
+  signUp: (email: string, password: string, displayName?: string) => Promise<{ success?: boolean; error?: string }>
+  signOut: () => void
 }
 
 export const useAuth = (): UseAuthReturn => {
-  const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<AuthenticatedUser | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Fonction séparée pour gérer le profil
-  const handleUserProfile = async (userId: string) => {
-    try {
-      console.log('Récupération du profil pour:', userId)
-      
-      // D'abord, essayer de récupérer le profil existant
-      const { data: existingProfile, error: fetchError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle() // Utilise maybeSingle au lieu de single pour éviter l'erreur si pas trouvé
-
-      if (fetchError) {
-        console.error('Erreur lors de la récupération du profil:', fetchError)
-        return
-      }
-
-      if (existingProfile) {
-        console.log('Profil existant trouvé:', existingProfile)
-        setProfile(existingProfile)
-        return
-      }
-
-      // Si pas de profil, le créer
-      console.log('Création d\'un nouveau profil pour:', userId)
-      const { data: newProfile, error: createError } = await supabase
-        .from('user_profiles')
-        .insert({
-          id: userId,
-          plan: 'free',
-          preferences: {},
-          member_since: new Date().toISOString()
-        })
-        .select()
-        .single()
-
-      if (createError) {
-        console.error('Erreur lors de la création du profil:', createError)
-        return
-      }
-
-      console.log('Nouveau profil créé:', newProfile)
-      setProfile(newProfile)
-
-    } catch (error) {
-      console.error('Erreur inattendue lors de la gestion du profil:', error)
-    }
-  }
-
   useEffect(() => {
-    // Récupérer la session initiale
-    const getInitialSession = async () => {
+    // Charger l'utilisateur depuis le localStorage au démarrage
+    const loadUser = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
-        if (error) {
-          console.error('Erreur session:', error)
-        } else {
-          setSession(session)
-          setUser(session?.user ?? null)
-          
-          // Récupérer le profil si l'utilisateur est connecté
-          if (session?.user) {
-            await handleUserProfile(session.user.id)
-          }
+        const stored = DatabaseAuthService.getCurrentUserFromStorage()
+        if (stored) {
+          // Vérifier la validité du token avec le serveur
+          const verifiedUser = await DatabaseAuthService.verifyCurrentUser()
+          setUser(verifiedUser)
         }
       } catch (error) {
-        console.error('Erreur getInitialSession:', error)
+        console.error('Erreur lors du chargement de l\'utilisateur:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    getInitialSession()
+    loadUser()
 
-    // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email)
-        
-        setSession(session)
-        setUser(session?.user ?? null)
-        
-        if (session?.user) {
-          // Petit délai pour laisser Supabase finaliser l'inscription
-          if (event === 'SIGNED_UP') {
-            setTimeout(() => handleUserProfile(session.user.id), 1000)
-          } else {
-            await handleUserProfile(session.user.id)
-          }
-        } else {
-          setProfile(null)
-        }
-        
-        setLoading(false)
+    // Écouter les changements d'état d'authentification
+    const handleAuthChange = (event: CustomEvent) => {
+      const userData = event.detail
+      if (userData) {
+        setUser(userData.user)
+      } else {
+        setUser(null)
       }
-    )
+    }
 
-    // Cleanup
-    return () => subscription.unsubscribe()
+    window.addEventListener('auth-state-changed', handleAuthChange as EventListener)
+
+    // Vérifier les anciennes données localStorage pour migration
+    DatabaseAuthService.migrateFromLocalStorage()
+
+    return () => {
+      window.removeEventListener('auth-state-changed', handleAuthChange as EventListener)
+    }
   }, [])
 
   const signIn = async (email: string, password: string) => {
     setLoading(true)
-    const result = await authHelpers.signIn(email, password)
-    // Le loading sera mis à false par onAuthStateChange
-    return result
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        return { error: data.error || 'Erreur lors de la connexion' }
+      }
+
+      // Sauvegarder dans le localStorage
+      DatabaseAuthService.saveUserToStorage(data.user, data.token)
+      setUser(data.user)
+
+      return { success: true }
+
+    } catch (error: any) {
+      console.error('Erreur signIn:', error)
+      return { error: error.message || 'Erreur de connexion au serveur' }
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, displayName?: string) => {
     setLoading(true)
-    const result = await authHelpers.signUp(email, password)
-    // Le loading sera mis à false par onAuthStateChange
-    return result
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, displayName }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        return { error: data.error || 'Erreur lors de la création du compte' }
+      }
+
+      // Sauvegarder dans le localStorage
+      DatabaseAuthService.saveUserToStorage(data.user, data.token)
+      setUser(data.user)
+
+      // Nettoyer les anciennes données après inscription réussie
+      DatabaseAuthService.cleanupOldLocalStorage()
+
+      return { success: true }
+
+    } catch (error: any) {
+      console.error('Erreur signUp:', error)
+      return { error: error.message || 'Erreur de connexion au serveur' }
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const signOut = async () => {
-    const result = await authHelpers.signOut()
-    return result
+  const signOut = () => {
+    DatabaseAuthService.logout()
+    setUser(null)
   }
 
   return {
     user,
-    profile,
-    session,
     loading,
     signIn,
     signUp,

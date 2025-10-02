@@ -3,12 +3,16 @@
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter, usePathname } from 'next/navigation'
-import { TrendingUp, BarChart3, Wallet, User, Bell, LogOut, Loader2, Lock, Settings, Shield, HelpCircle, ChevronDown } from 'lucide-react'
+import { TrendingUp, BarChart3, Wallet, User, LogOut, Loader2, Lock, Settings, Shield, Clock, ChevronDown } from 'lucide-react'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { useState, useRef, useEffect } from 'react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function SmartNavigation() {
   const { user, profile, loading, signOut } = useAuth()
+  const { isDarkMode } = useTheme()
+  const { t } = useLanguage()
   const { saveCurrentLocationForRedirect } = useRedirectAfterLogin()
   const router = useRouter()
   const pathname = usePathname()
@@ -45,7 +49,11 @@ export default function SmartNavigation() {
   }, [])
 
   return (
-    <header className="relative z-50 border-b border-gray-800/40 glass-effect sticky top-0">
+    <header className={`relative z-50 sticky top-0 transition-colors duration-300 ${
+      isDarkMode
+        ? 'border-b border-gray-800/40 glass-effect'
+        : 'border-b border-gray-200/60 bg-white/90 backdrop-blur-24'
+    }`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
@@ -57,7 +65,7 @@ export default function SmartNavigation() {
               </div>
               <div>
                 <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">CryptoBacktest</span>
-                <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">Plateforme française</div>
+                <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
               </div>
             </div>
           </Link>
@@ -90,7 +98,7 @@ export default function SmartNavigation() {
                   : 'group-hover:text-[#6366F1]'
               }`} />
               <span className="relative">
-                Cryptomonnaies
+                {t('nav.cryptos')}
                 <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
                   pathname === '/cryptos'
                     ? 'w-full'
@@ -109,7 +117,7 @@ export default function SmartNavigation() {
                   : 'group-hover:text-[#6366F1]'
               }`} />
               <span className="relative">
-                Graphiques
+                {t('nav.charts')}
                 <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
                   pathname === '/graphiques'
                     ? 'w-full'
@@ -132,7 +140,7 @@ export default function SmartNavigation() {
                   : 'group-hover:text-[#6366F1]'
               }`} />
               <span className="relative flex items-center gap-1">
-                Backtest
+                {t('nav.backtest')}
                 {!user && <Lock className="w-3 h-3" />}
                 <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
                   user && pathname === '/backtest'
@@ -155,7 +163,7 @@ export default function SmartNavigation() {
                   : 'group-hover:text-[#6366F1]'
               }`} />
               <span className="relative flex items-center gap-1">
-                Portefeuille
+                {t('nav.portfolio')}
                 {!user && <Lock className="w-3 h-3" />}
                 <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
                   user && pathname === '/portefeuille'
@@ -176,11 +184,6 @@ export default function SmartNavigation() {
             ) : user ? (
               // Utilisateur connecté - Menu utilisateur
               <>
-                <button className="p-2 rounded-xl hover:bg-gray-800/40 transition-colors relative">
-                  <Bell className="w-5 h-5 text-gray-400" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#DC2626] rounded-full"></div>
-                </button>
-                
                 {/* Menu Profil Utilisateur */}
                 <div className="relative" ref={profileMenuRef}>
                   <button
@@ -192,9 +195,9 @@ export default function SmartNavigation() {
                     </div>
                     <div className="hidden sm:block">
                       <div className="text-sm font-semibold text-[#F9FAFB]">
-                        {user.email?.split('@')[0] || 'Utilisateur'}
+                        {user.email?.split('@')[0] || t('nav.user')}
                       </div>
-                      <div className="text-xs text-gray-400">Plan {profile?.plan || 'free'}</div>
+                      <div className="text-xs text-gray-400">{t('nav.plan')} {profile?.plan || 'free'}</div>
                     </div>
                     <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
                       isProfileMenuOpen ? 'rotate-180' : ''
@@ -212,11 +215,11 @@ export default function SmartNavigation() {
                           </div>
                           <div>
                             <div className="text-sm font-semibold text-[#F9FAFB]">
-                              {user.email?.split('@')[0] || 'Utilisateur'}
+                              {user.email?.split('@')[0] || t('nav.user')}
                             </div>
                             <div className="text-xs text-gray-400">{user.email}</div>
                             <div className="text-xs text-[#6366F1] font-medium uppercase">
-                              Plan {profile?.plan || 'free'}
+                              {t('nav.plan')} {profile?.plan || 'free'}
                             </div>
                           </div>
                         </div>
@@ -231,8 +234,8 @@ export default function SmartNavigation() {
                         >
                           <User className="w-5 h-5" />
                           <div>
-                            <div className="text-sm font-medium">Mon Profil</div>
-                            <div className="text-xs text-gray-500">Informations personnelles</div>
+                            <div className="text-sm font-medium">{t('nav.my_profile')}</div>
+                            <div className="text-xs text-gray-500">{t('nav.personal_info')}</div>
                           </div>
                         </Link>
 
@@ -243,8 +246,8 @@ export default function SmartNavigation() {
                         >
                           <Settings className="w-5 h-5" />
                           <div>
-                            <div className="text-sm font-medium">Paramètres</div>
-                            <div className="text-xs text-gray-500">Configuration du compte</div>
+                            <div className="text-sm font-medium">{t('nav.settings')}</div>
+                            <div className="text-xs text-gray-500">{t('nav.account_config')}</div>
                           </div>
                         </Link>
 
@@ -255,24 +258,24 @@ export default function SmartNavigation() {
                         >
                           <Shield className="w-5 h-5" />
                           <div>
-                            <div className="text-sm font-medium">Sécurité</div>
-                            <div className="text-xs text-gray-500">Mot de passe et 2FA</div>
+                            <div className="text-sm font-medium">{t('nav.security')}</div>
+                            <div className="text-xs text-gray-500">{t('nav.password_2fa')}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/account?tab=activity"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                          className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 transition-colors"
+                        >
+                          <Clock className="w-5 h-5" />
+                          <div>
+                            <div className="text-sm font-medium">{t('nav.activity')}</div>
+                            <div className="text-xs text-gray-500">{t('nav.recent_actions')}</div>
                           </div>
                         </Link>
 
                         <div className="border-t border-gray-800/40 my-2"></div>
-
-                        <Link
-                          href="#"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 transition-colors"
-                        >
-                          <HelpCircle className="w-5 h-5" />
-                          <div>
-                            <div className="text-sm font-medium">Centre d'aide</div>
-                            <div className="text-xs text-gray-500">Support et documentation</div>
-                          </div>
-                        </Link>
 
                         <button
                           onClick={() => {
@@ -283,8 +286,8 @@ export default function SmartNavigation() {
                         >
                           <LogOut className="w-5 h-5" />
                           <div>
-                            <div className="text-sm font-medium">Se déconnecter</div>
-                            <div className="text-xs text-gray-500">Quitter la session</div>
+                            <div className="text-sm font-medium">{t('nav.signout')}</div>
+                            <div className="text-xs text-gray-500">{t('nav.quit_session')}</div>
                           </div>
                         </button>
                       </div>
@@ -299,13 +302,13 @@ export default function SmartNavigation() {
                   href="/auth/signin"
                   className="text-gray-400 hover:text-[#F9FAFB] transition-all duration-300 font-medium px-3 sm:px-5 py-2.5 rounded-xl hover:bg-gray-800/40 relative group text-sm sm:text-base"
                 >
-                  <span className="relative z-10">Connexion</span>
+                  <span className="relative z-10">{t('nav.signin')}</span>
                 </Link>
                 <Link
                   href="/auth/signup"
                   className="relative bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-4 sm:px-7 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#6366F1]/40 text-sm sm:text-base"
                 >
-                  <span className="relative z-10">S'inscrire</span>
+                  <span className="relative z-10">{t('nav.signup')}</span>
                 </Link>
               </div>
             )}
@@ -328,7 +331,7 @@ export default function SmartNavigation() {
                   }`}
                 >
                   <TrendingUp className="w-5 h-5" />
-                  <span className="font-medium">Cryptomonnaies</span>
+                  <span className="font-medium">{t('nav.cryptos')}</span>
                 </Link>
 
                 <Link
@@ -341,7 +344,7 @@ export default function SmartNavigation() {
                   }`}
                 >
                   <BarChart3 className="w-5 h-5" />
-                  <span className="font-medium">Graphiques</span>
+                  <span className="font-medium">{t('nav.charts')}</span>
                 </Link>
 
                 <Link
@@ -356,7 +359,7 @@ export default function SmartNavigation() {
                 >
                   <BarChart3 className="w-5 h-5" />
                   <span className="font-medium flex items-center gap-2">
-                    Backtest
+                    {t('nav.backtest')}
                     {!user && <Lock className="w-4 h-4" />}
                   </span>
                 </Link>
@@ -373,7 +376,7 @@ export default function SmartNavigation() {
                 >
                   <Wallet className="w-5 h-5" />
                   <span className="font-medium flex items-center gap-2">
-                    Portefeuille
+                    {t('nav.portfolio')}
                     {!user && <Lock className="w-4 h-4" />}
                   </span>
                 </Link>
@@ -390,7 +393,7 @@ export default function SmartNavigation() {
                         }}
                         className="block w-full text-center px-6 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 rounded-xl transition-colors font-medium"
                       >
-                        Connexion
+                        {t('nav.signin')}
                       </Link>
                       <Link
                         href="/auth/signup"
@@ -400,7 +403,7 @@ export default function SmartNavigation() {
                         }}
                         className="block w-full text-center px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105"
                       >
-                        S'inscrire
+                        {t('nav.signup')}
                       </Link>
                     </div>
                   </div>

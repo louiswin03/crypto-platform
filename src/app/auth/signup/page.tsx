@@ -7,8 +7,10 @@ import { useAuth } from '@/hooks/useAuth'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { Eye, EyeOff, Mail, Lock, User, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import Footer from '@/components/Footer'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function SignUpPage() {
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -27,19 +29,19 @@ export default function SignUpPage() {
 
     // Validation
     if (!email || !password || !confirmPassword) {
-      setMessage({ type: 'error', text: 'Veuillez remplir tous les champs' })
+      setMessage({ type: 'error', text: t('auth.signup.error.fill_fields') })
       setLoading(false)
       return
     }
 
     if (password !== confirmPassword) {
-      setMessage({ type: 'error', text: 'Les mots de passe ne correspondent pas' })
+      setMessage({ type: 'error', text: t('auth.signup.error.password_mismatch') })
       setLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setMessage({ type: 'error', text: 'Le mot de passe doit contenir au moins 6 caractères' })
+      setMessage({ type: 'error', text: t('auth.signup.error.password_length') })
       setLoading(false)
       return
     }
@@ -50,9 +52,9 @@ export default function SignUpPage() {
       if (error) {
         setMessage({ type: 'error', text: error.message })
       } else {
-        setMessage({ 
-          type: 'success', 
-          text: 'Compte créé avec succès ! Vous allez être connecté automatiquement...' 
+        setMessage({
+          type: 'success',
+          text: t('auth.signup.success')
         })
         // Attendre un peu puis utiliser la redirection intelligente
         setTimeout(() => {
@@ -60,7 +62,7 @@ export default function SignUpPage() {
         }, 2000)
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Une erreur inattendue s\'est produite' })
+      setMessage({ type: 'error', text: t('auth.signin.error.unexpected') })
       console.error('Auth error:', error)
     } finally {
       setLoading(false)
@@ -82,12 +84,12 @@ export default function SignUpPage() {
 
         <div className="relative w-full max-w-md">
           {/* Back to home */}
-          <Link 
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-gray-400 hover:text-[#F9FAFB] transition-colors mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
-            Retour à l'accueil
+            {t('auth.back_home')}
           </Link>
 
           {/* Header */}
@@ -96,8 +98,8 @@ export default function SignUpPage() {
               <User className="w-8 h-8 text-white" />
               <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
             </div>
-            <h1 className="text-4xl font-bold text-[#F9FAFB] mb-4 tracking-tight text-shadow">Créer un compte</h1>
-            <p className="text-gray-400 text-lg font-light">Rejoignez la plateforme CryptoBacktest</p>
+            <h1 className="text-4xl font-bold text-[#F9FAFB] mb-4 tracking-tight text-shadow">{t('auth.signup.title')}</h1>
+            <p className="text-gray-400 text-lg font-light">{t('auth.signup.subtitle')}</p>
           </div>
 
           {/* Form Card */}
@@ -118,7 +120,7 @@ export default function SignUpPage() {
             {/* Email */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                Adresse email
+                {t('auth.signin.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -127,7 +129,7 @@ export default function SignUpPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
-                  placeholder="votre@email.com"
+                  placeholder={t('auth.signin.email_placeholder')}
                   disabled={loading}
                 />
               </div>
@@ -136,7 +138,7 @@ export default function SignUpPage() {
             {/* Password */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                Mot de passe
+                {t('auth.signin.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -145,7 +147,7 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-12 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
-                  placeholder="••••••••"
+                  placeholder={t('auth.signin.password_placeholder')}
                   disabled={loading}
                 />
                 <button
@@ -157,13 +159,13 @@ export default function SignUpPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Au moins 6 caractères</p>
+              <p className="text-xs text-gray-500 mt-1">{t('auth.signup.password_hint')}</p>
             </div>
 
             {/* Confirm Password */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                Confirmer le mot de passe
+                {t('auth.signup.confirm_password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -172,7 +174,7 @@ export default function SignUpPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
-                  placeholder="••••••••"
+                  placeholder={t('auth.signin.password_placeholder')}
                   disabled={loading}
                 />
               </div>
@@ -187,13 +189,13 @@ export default function SignUpPage() {
                 required
               />
               <label htmlFor="terms" className="text-sm text-gray-400">
-                J'accepte les{' '}
+                {t('auth.signup.terms1')}{' '}
                 <Link href="#" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors">
-                  conditions d'utilisation
+                  {t('auth.signup.terms2')}
                 </Link>{' '}
-                et la{' '}
+                {t('auth.signup.terms3')}{' '}
                 <Link href="#" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors">
-                  politique de confidentialité
+                  {t('auth.signup.terms4')}
                 </Link>
               </label>
             </div>
@@ -207,10 +209,10 @@ export default function SignUpPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Création...
+                  {t('auth.signup.loading')}
                 </>
               ) : (
-                'Créer mon compte'
+                t('auth.signup.submit')
               )}
             </button>
           </form>
@@ -218,12 +220,13 @@ export default function SignUpPage() {
           {/* Switch to signin */}
           <div className="mt-6 text-center">
             <p className="text-gray-400 text-sm">
-              Déjà un compte ?
+              {t('auth.signup.have_account')}
+              {' '}
               <Link
                 href="/auth/signin"
                 className="text-[#6366F1] hover:text-[#8B5CF6] font-semibold ml-1 transition-colors"
               >
-                Se connecter
+                {t('auth.signup.signin')}
               </Link>
             </p>
           </div>
@@ -232,19 +235,19 @@ export default function SignUpPage() {
           {/* Features preview */}
           <div className="mt-8">
             <div className="glass-effect rounded-2xl border border-gray-800/30 p-6">
-              <h4 className="text-[#F9FAFB] font-bold mb-4 tracking-tight">Votre compte inclut :</h4>
+              <h4 className="text-[#F9FAFB] font-bold mb-4 tracking-tight">{t('auth.signup.features.title')}</h4>
               <ul className="text-gray-400 space-y-3">
                 <li className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
-                  <span className="font-medium">Synchronisation de portefeuille</span>
+                  <span className="font-medium">{t('auth.signup.features.sync')}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
-                  <span className="font-medium">Backtests illimités (plan gratuit)</span>
+                  <span className="font-medium">{t('auth.signup.features.backtest')}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
-                  <span className="font-medium">Analyses et graphiques temps réel</span>
+                  <span className="font-medium">{t('auth.signup.features.analysis')}</span>
                 </li>
               </ul>
             </div>

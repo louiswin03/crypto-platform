@@ -4,6 +4,7 @@
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
 import { useAuth } from '@/hooks/useAuth'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 import Link from 'next/link'
 import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCw, Loader2, AlertCircle, Clock, Eye, EyeOff, MoreHorizontal, ExternalLink, Image as ImageIcon, Calendar, Layers, ChevronDown, ChevronUp, Sparkles, Crown, TrendingUp as Rising, TrendingDown as Falling, Trophy, BarChart2, Menu, Bookmark, Heart, List, X, Trash2, Lock } from 'lucide-react'
@@ -20,7 +21,8 @@ type ViewMode = 'market' | 'watchlist'
 export default function CompleteCryptosPage() {
   // Hook pour récupérer l'utilisateur connecté (pour les fonctionnalités watchlist)
   const { user } = useAuth()
-  
+  const { t } = useLanguage()
+
   const { prices, stats, loading, error, hasMore, totalCoins, refetch, loadMore, getCoinsWithTradingView, searchCoins, sortCoins, formatters } = useExtendedCoinGeckoPrices(50)
   const {
     watchlists,
@@ -278,7 +280,7 @@ export default function CompleteCryptosPage() {
                           </>
                         ) : (
                           <span className="bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift font-display">
-                            Mes Listes de Suivi
+                            {t('cryptos.my_watchlists')}
                           </span>
                         )}
                       </h1>
@@ -304,7 +306,7 @@ export default function CompleteCryptosPage() {
                           <TrendingUp className={`w-6 h-6 transition-all duration-300 ${
                             viewMode === 'market' ? 'animate-pulse' : 'group-hover:scale-110'
                           }`} />
-                          <span className="text-lg">Marché Global</span>
+                          <span className="text-lg">{t('cryptos.market_global')}</span>
                           <div className={`text-sm px-3 py-1 rounded-full font-bold ${
                             viewMode === 'market'
                               ? 'bg-white/25 text-white animate-shimmer'
@@ -324,12 +326,12 @@ export default function CompleteCryptosPage() {
                               : user ? 'text-gray-300 hover:text-white hover:bg-gray-800/60 hover:scale-102' : 'text-gray-500 cursor-not-allowed opacity-60'
                           }`}
                           disabled={!user}
-                          title={!user ? 'Connexion requise pour accéder aux listes personnalisées' : 'Vos listes de suivi personnalisées'}
+                          title={!user ? t('cryptos.connection_required') : t('cryptos.your_custom_lists')}
                         >
                           <Star className={`w-6 h-6 transition-all duration-300 ${
                             viewMode === 'watchlist' ? 'animate-pulse' : user ? 'group-hover:scale-110' : ''
                           }`} />
-                          <span className="text-lg">Mes Listes</span>
+                          <span className="text-lg">{t('cryptos.my_lists')}</span>
                           {user && watchlists.length > 0 ? (
                             <div className={`text-sm px-3 py-1 rounded-full font-bold ${
                               viewMode === 'watchlist'
@@ -365,8 +367,8 @@ export default function CompleteCryptosPage() {
                           <div className="text-3xl font-bold text-[#16A34A] mb-2 font-mono text-shadow animate-counter">
                             {stats ? formatters.marketCap(stats.totalMarketCap) : '---'}
                           </div>
-                          <div className="text-gray-300 text-sm font-semibold tracking-wide">Market Cap Global</div>
-                          <div className="text-xs text-[#16A34A] mt-2 opacity-70">Total des marchés</div>
+                          <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.market_cap_global')}</div>
+                          <div className="text-xs text-[#16A34A] mt-2 opacity-70">{t('cryptos.total_markets')}</div>
                         </div>
                         {!loading && (
                           <div className="absolute top-3 right-3 w-3 h-3 bg-[#16A34A] rounded-full animate-pulse-glow shadow-lg shadow-[#16A34A]/50"></div>
@@ -379,8 +381,8 @@ export default function CompleteCryptosPage() {
                           <div className="text-3xl font-bold text-[#6366F1] mb-2 font-mono text-shadow animate-counter">
                             {stats ? formatters.marketCap(stats.totalVolume) : '---'}
                           </div>
-                          <div className="text-gray-300 text-sm font-semibold tracking-wide">Volume 24h</div>
-                          <div className="text-xs text-[#6366F1] mt-2 opacity-70">Trading global</div>
+                          <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.volume_24h')}</div>
+                          <div className="text-xs text-[#6366F1] mt-2 opacity-70">{t('cryptos.global_trading')}</div>
                         </div>
                         {!loading && (
                           <div className="absolute top-3 right-3 w-3 h-3 bg-[#6366F1] rounded-full animate-pulse-glow shadow-lg shadow-[#6366F1]/50"></div>
@@ -393,8 +395,8 @@ export default function CompleteCryptosPage() {
                           <div className="text-3xl font-bold text-[#F59E0B] mb-2 font-mono text-shadow">
                             {stats ? `${stats.btcDominance.toFixed(1)}%` : '---'}
                           </div>
-                          <div className="text-gray-300 text-sm font-semibold tracking-wide">Dominance BTC</div>
-                          <div className="text-xs text-[#F59E0B] mt-2 opacity-70">Part de marché</div>
+                          <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.dominance_btc')}</div>
+                          <div className="text-xs text-[#F59E0B] mt-2 opacity-70">{t('cryptos.market_share')}</div>
                         </div>
                       </div>
 
@@ -404,7 +406,7 @@ export default function CompleteCryptosPage() {
                           <div className="text-3xl font-bold text-[#8B5CF6] mb-2 font-mono text-shadow">
                             {stats ? `${stats.ethDominance.toFixed(1)}%` : '---'}
                           </div>
-                          <div className="text-gray-300 text-sm font-semibold tracking-wide">Dominance ETH</div>
+                          <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.dominance_eth')}</div>
                           <div className="text-xs text-[#8B5CF6] mt-2 opacity-70">Altcoin leader</div>
                         </div>
                       </div>
@@ -481,7 +483,7 @@ export default function CompleteCryptosPage() {
                             <div className="p-2 bg-[#16A34A]/20 rounded-xl">
                               <Trophy className="w-6 h-6 animate-bounce-subtle" />
                             </div>
-                            <span className="text-shadow">Top Performers 24h</span>
+                            <span className="text-shadow">{t('cryptos.top_performers')}</span>
                           </h3>
                           <div className="space-y-3">
                             {topGainers.slice(0, 3).map((coin, index) => (
@@ -519,7 +521,7 @@ export default function CompleteCryptosPage() {
                             <div className="p-2 bg-[#DC2626]/20 rounded-xl">
                               <Falling className="w-6 h-6 animate-bounce-subtle" />
                             </div>
-                            <span className="text-shadow">Top Declins 24h</span>
+                            <span className="text-shadow">{t('cryptos.top_declines')}</span>
                           </h3>
                           <div className="space-y-3">
                             {topLosers.slice(0, 3).map((coin, index) => (
@@ -556,7 +558,7 @@ export default function CompleteCryptosPage() {
 
               {/* Contenu Principal selon le Mode */}
               {viewMode === 'market' ? (
-                <MarketView 
+                <MarketView
                   cryptos={filteredAndSortedCryptos}
                   loading={loading}
                   error={error}
@@ -570,6 +572,7 @@ export default function CompleteCryptosPage() {
                   hasMore={hasMore}
                   loadMore={loadMore}
                   user={user}
+                  t={t}
                 />
               ) : (
                 // Watchlist view : accessible seulement si connecté
@@ -580,6 +583,7 @@ export default function CompleteCryptosPage() {
                     totalWatchedCryptos={getTotalWatchedCryptos()}
                     onCreateWatchlist={() => setShowCreateModal(true)}
                     onDeleteWatchlist={deleteWatchlist}
+                    t={t}
                   />
                 ) : (
                   <div className="glass-effect rounded-2xl border border-gray-800/40 p-16 text-center">
@@ -676,11 +680,11 @@ export default function CompleteCryptosPage() {
 }
 
 // Vue Marché - Fonctionnalité de base accessible à tous
-function MarketView({ 
-  cryptos, loading, error, searchTerm, setSearchTerm, sortBy, sortOrder, 
-  handleSort, formatters, 
+function MarketView({
+  cryptos, loading, error, searchTerm, setSearchTerm, sortBy, sortOrder,
+  handleSort, formatters,
   refetch, hasMore, loadMore,
-  user
+  user, t
 }: any) {
   return (
     <>
@@ -694,7 +698,7 @@ function MarketView({
             </div>
             <input
               type="text"
-              placeholder="Rechercher par nom, symbole, ID ou tag..."
+              placeholder={t('cryptos.search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-gray-800/60 backdrop-blur-xl border border-gray-600/50 rounded-2xl pl-14 pr-6 py-5 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#6366F1]/60 focus:ring-4 focus:ring-[#6366F1]/20 transition-all duration-300 text-lg font-medium shadow-xl hover:shadow-2xl hover:scale-102 group"
@@ -722,10 +726,10 @@ function MarketView({
         <div className="flex flex-wrap gap-3">
           {[
             { key: 'market_cap_rank' as const, label: 'Classement', icon: Crown, color: 'from-[#F59E0B] to-[#D97706]' },
-            { key: 'current_price' as const, label: 'Prix', icon: DollarSign, color: 'from-[#16A34A] to-[#15803D]' },
-            { key: 'price_change_percentage_24h' as const, label: 'Performance 24h', icon: TrendingUp, color: 'from-[#6366F1] to-[#4F46E5]' },
-            { key: 'market_cap' as const, label: 'Capitalisation', icon: Target, color: 'from-[#8B5CF6] to-[#7C3AED]' },
-            { key: 'total_volume' as const, label: 'Volume', icon: BarChart3, color: 'from-[#06B6D4] to-[#0891B2]' },
+            { key: 'current_price' as const, label: t('cryptos.price'), icon: DollarSign, color: 'from-[#16A34A] to-[#15803D]' },
+            { key: 'price_change_percentage_24h' as const, label: t('cryptos.variation'), icon: TrendingUp, color: 'from-[#6366F1] to-[#4F46E5]' },
+            { key: 'market_cap' as const, label: t('cryptos.market_cap'), icon: Target, color: 'from-[#8B5CF6] to-[#7C3AED]' },
+            { key: 'total_volume' as const, label: t('cryptos.volume'), icon: BarChart3, color: 'from-[#06B6D4] to-[#0891B2]' },
             { key: 'ath_change_percentage' as const, label: 'ATH Distance', icon: Trophy, color: 'from-[#F59E0B] to-[#D97706]' },
           ].map(({ key, label, icon: Icon, color }) => (
             <button
@@ -799,13 +803,14 @@ function MarketView({
       </div>
 
       {/* Table des Cryptos */}
-      <CryptoTable 
+      <CryptoTable
         cryptos={cryptos}
         loading={loading}
         error={error}
         searchTerm={searchTerm}
         formatters={formatters}
         user={user}
+        t={t}
       />
 
       {/* Load More - identiques */}
@@ -829,13 +834,15 @@ function WatchlistView({
   activeWatchlist,
   totalWatchedCryptos,
   onCreateWatchlist,
-  onDeleteWatchlist
+  onDeleteWatchlist,
+  t
 }: {
   watchlists: any[],
   activeWatchlist: string | null,
   totalWatchedCryptos: number,
   onCreateWatchlist: () => void,
-  onDeleteWatchlist: (listId: string) => Promise<boolean>
+  onDeleteWatchlist: (listId: string) => Promise<boolean>,
+  t: any
 }) {
   const [selectedList, setSelectedList] = useState<string | null>(activeWatchlist)
 
@@ -850,7 +857,7 @@ function WatchlistView({
             Aucune liste créée
           </h2>
           <p className="text-gray-400 mb-8 leading-relaxed">
-            Commencez par créer votre première liste de suivi ou ajoutez des cryptos depuis l'onglet Marché.
+            {t('cryptos.create_first_list')}
           </p>
           <div className="space-y-4">
             <button
@@ -860,7 +867,7 @@ function WatchlistView({
               Créer ma première liste
             </button>
             <div className="text-sm text-gray-500">
-              💡 Astuce : Cliquez sur ⭐ dans l'onglet Marché pour ajouter des cryptos
+              {t('cryptos.tip')}
             </div>
           </div>
         </div>
@@ -875,7 +882,7 @@ function WatchlistView({
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-[#F9FAFB] flex items-center space-x-2">
             <Star className="w-6 h-6 text-[#6366F1]" />
-            <span>Mes Listes de Suivi</span>
+            <span>{t('cryptos.my_watchlists')}</span>
           </h2>
           <button
             onClick={onCreateWatchlist}
@@ -910,7 +917,7 @@ function WatchlistView({
                     }
                   }}
                   className="absolute top-2 right-2 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-all opacity-0 group-hover:opacity-100 z-10"
-                  title="Supprimer cette liste"
+                  title={t('cryptos.delete_list')}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -965,7 +972,7 @@ function WatchlistView({
 }
 
 // Table des cryptos - Accessible à tous avec fonctionnalités conditionnelles
-function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user }: any) {
+function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t }: any) {
   if (loading && cryptos.length === 0) {
     return (
       <div className="glass-effect rounded-2xl border border-gray-800/40 p-12 text-center">
@@ -1006,14 +1013,14 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user }: 
         <div className="grid grid-cols-12 gap-3 p-8 text-gray-300 font-bold text-sm uppercase tracking-[0.1em]">
           <div className="col-span-1 flex items-center space-x-2">
             <Crown className="w-4 h-4 text-[#F59E0B]" />
-            <span>Rang</span>
+            <span>{t('cryptos.rank')}</span>
           </div>
           <div className="col-span-3 flex items-center space-x-2">
             <span>Cryptomonnaie</span>
           </div>
           <div className="col-span-2 text-right flex items-center justify-end space-x-2">
             <DollarSign className="w-4 h-4 text-[#16A34A]" />
-            <span>Prix & H/L</span>
+            <span>{t('cryptos.price_and_hl')}</span>
           </div>
           <div className="col-span-1 text-right flex items-center justify-end space-x-2">
             <TrendingUp className="w-4 h-4 text-[#6366F1]" />
@@ -1021,7 +1028,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user }: 
           </div>
           <div className="col-span-2 text-right flex items-center justify-end space-x-2">
             <Target className="w-4 h-4 text-[#8B5CF6]" />
-            <span>Market Cap</span>
+            <span>{t('cryptos.market_cap')}</span>
           </div>
           <div className="col-span-1 text-right flex items-center justify-end space-x-2">
             <BarChart3 className="w-4 h-4 text-[#06B6D4]" />

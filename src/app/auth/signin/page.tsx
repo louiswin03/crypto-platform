@@ -7,8 +7,10 @@ import { useAuth } from '@/hooks/useAuth'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { Eye, EyeOff, Mail, Lock, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import Footer from '@/components/Footer'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function SignInPage() {
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -26,7 +28,7 @@ export default function SignInPage() {
 
     // Validation
     if (!email || !password) {
-      setMessage({ type: 'error', text: 'Veuillez remplir tous les champs' })
+      setMessage({ type: 'error', text: t('auth.signin.error.fill_fields') })
       setLoading(false)
       return
     }
@@ -39,16 +41,16 @@ export default function SignInPage() {
       
       if (error) {
         console.error('❌ Erreur de connexion:', error)
-        setMessage({ 
-          type: 'error', 
-          text: error.message === 'Invalid login credentials' 
-            ? 'Email ou mot de passe incorrect' 
-            : error.message 
+        setMessage({
+          type: 'error',
+          text: error.message === 'Invalid login credentials'
+            ? t('auth.signin.error.invalid_credentials')
+            : error.message
         })
         setLoading(false)
       } else {
         console.log('✅ Connexion réussie!')
-        setMessage({ type: 'success', text: 'Connexion réussie ! Redirection...' })
+        setMessage({ type: 'success', text: t('auth.signin.success') })
         // Utiliser la redirection intelligente
         setTimeout(() => {
           handleRedirectAfterLogin()
@@ -56,7 +58,7 @@ export default function SignInPage() {
       }
     } catch (error) {
       console.error('💥 Erreur inattendue:', error)
-      setMessage({ type: 'error', text: 'Une erreur inattendue s\'est produite' })
+      setMessage({ type: 'error', text: t('auth.signin.error.unexpected') })
       setLoading(false)
     }
   }
@@ -76,12 +78,12 @@ export default function SignInPage() {
 
         <div className="relative w-full max-w-md">
           {/* Back to home */}
-          <Link 
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-gray-400 hover:text-[#F9FAFB] transition-colors mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
-            Retour à l'accueil
+            {t('auth.back_home')}
           </Link>
 
           {/* Header */}
@@ -90,8 +92,8 @@ export default function SignInPage() {
               <Lock className="w-8 h-8 text-white" />
               <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
             </div>
-            <h1 className="text-4xl font-bold text-[#F9FAFB] mb-4 tracking-tight text-shadow">Connexion</h1>
-            <p className="text-gray-400 text-lg font-light">Accédez à votre plateforme CryptoBacktest</p>
+            <h1 className="text-4xl font-bold text-[#F9FAFB] mb-4 tracking-tight text-shadow">{t('auth.signin.title')}</h1>
+            <p className="text-gray-400 text-lg font-light">{t('auth.signin.subtitle')}</p>
           </div>
 
           {/* Form Card */}
@@ -112,7 +114,7 @@ export default function SignInPage() {
             {/* Email */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                Adresse email
+                {t('auth.signin.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -121,7 +123,7 @@ export default function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
-                  placeholder="votre@email.com"
+                  placeholder={t('auth.signin.email_placeholder')}
                   disabled={loading}
                 />
               </div>
@@ -130,7 +132,7 @@ export default function SignInPage() {
             {/* Password */}
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
-                Mot de passe
+                {t('auth.signin.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -139,7 +141,7 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-12 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
-                  placeholder="••••••••"
+                  placeholder={t('auth.signin.password_placeholder')}
                   disabled={loading}
                 />
                 <button
@@ -160,7 +162,7 @@ export default function SignInPage() {
                 className="text-sm text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium"
                 disabled={loading}
               >
-                Mot de passe oublié ?
+                {t('auth.signin.forgot_password')}
               </button>
             </div>
 
@@ -173,10 +175,10 @@ export default function SignInPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Connexion...
+                  {t('auth.signin.loading')}
                 </>
               ) : (
-                'Se connecter'
+                t('auth.signin.submit')
               )}
             </button>
           </form>
@@ -184,12 +186,13 @@ export default function SignInPage() {
           {/* Switch to signup */}
           <div className="mt-6 text-center">
             <p className="text-gray-400 text-sm">
-              Pas encore de compte ?
+              {t('auth.signin.no_account')}
+              {' '}
               <Link
                 href="/auth/signup"
                 className="text-[#6366F1] hover:text-[#8B5CF6] font-semibold ml-1 transition-colors"
               >
-                Créer un compte
+                {t('auth.signin.create_account')}
               </Link>
             </p>
           </div>
@@ -199,7 +202,7 @@ export default function SignInPage() {
           <div className="mt-8 text-center">
             <div className="glass-effect rounded-2xl border border-gray-800/30 p-6">
               <p className="text-gray-400 font-light">
-                🚀 <strong className="text-[#F9FAFB] font-semibold">Demo:</strong> Testez la plateforme avec votre compte
+                🚀 <strong className="text-[#F9FAFB] font-semibold">Demo:</strong> {t('auth.signin.demo')}
               </p>
             </div>
           </div>

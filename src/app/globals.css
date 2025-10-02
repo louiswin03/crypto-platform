@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
+/* Variables CSS pour le thème dynamique */
 :root {
+  --bg-primary: #111827;
+  --bg-secondary: #1F2937;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --border-primary: rgba(31, 41, 55, 0.4);
+  --glass-bg: rgba(17, 24, 39, 0.95);
+
+  /* Variables Tailwind originales */
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -12,11 +21,175 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Forcer le thème sur certaines classes existantes */
+.glass-effect,
+.glass-effect-strong {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-primary) !important;
+}
+
+/* Mode clair spécifique */
+.light .glass-effect,
+.light .glass-effect-strong {
+  background: rgba(255, 255, 255, 0.90) !important;
+  border: 1px solid rgba(203, 213, 225, 0.6) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Override des couleurs de texte pour le mode clair */
+.light .text-\[\#F9FAFB\] {
+  color: #1E293B !important;
+}
+
+.light .text-gray-400 {
+  color: #64748B !important;
+}
+
+.light .text-gray-500 {
+  color: #64748B !important;
+}
+
+.light .text-gray-300 {
+  color: #374151 !important;
+}
+
+.light .text-white {
+  color: #1E293B !important;
+}
+
+/* Override des backgrounds pour le mode clair */
+.light .bg-\[\#111827\] {
+  background-color: #F8FAFC !important;
+}
+
+.light .bg-\[\#1F2937\] {
+  background-color: #FFFFFF !important;
+}
+
+.light .bg-gray-900 {
+  background-color: #F8FAFC !important;
+}
+
+.light .bg-gray-800 {
+  background-color: #FFFFFF !important;
+}
+
+.light .bg-gray-700 {
+  background-color: #F1F5F9 !important;
+}
+
+/* Override des bordures pour le mode clair */
+.light .border-gray-800 {
+  border-color: #E2E8F0 !important;
+}
+
+.light .border-gray-700 {
+  border-color: #CBD5E1 !important;
+}
+
+.light .border-gray-600 {
+  border-color: #94A3B8 !important;
+}
+
+/* Override pour les éléments avec background gradient */
+.light .bg-gradient-to-br {
+  background: #FFFFFF !important;
+}
+
+.light .bg-gradient-to-r {
+  background: #F8FAFC !important;
+}
+
+/* Cards et containers */
+.light .bg-gray-900\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.light .bg-gray-800\/50 {
+  background-color: rgba(248, 250, 252, 0.8) !important;
+}
+
+.light .bg-gray-800\/40 {
+  background-color: rgba(248, 250, 252, 0.7) !important;
+}
+
+/* Hovers pour le mode clair */
+.light .hover\:bg-gray-800:hover {
+  background-color: #F1F5F9 !important;
+}
+
+.light .hover\:bg-gray-700:hover {
+  background-color: #E2E8F0 !important;
+}
+
+.light .hover\:text-white:hover {
+  color: #1E293B !important;
+}
+
+/* Patterns et effets pour le mode clair */
+.light .pattern-dots {
+  background-image: radial-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px) !important;
+}
+
+.light .pattern-grid {
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px) !important;
+}
+
+/* Dégradés pour le mode clair */
+.light .from-gray-900\/60 {
+  --tw-gradient-from: rgba(248, 250, 252, 0.8) !important;
+}
+
+.light .via-gray-900\/30 {
+  --tw-gradient-via: rgba(248, 250, 252, 0.5) !important;
+}
+
+.light .to-gray-900\/60 {
+  --tw-gradient-to: rgba(248, 250, 252, 0.8) !important;
+}
+
+/* Placeholder et input pour le mode clair */
+.light .placeholder-gray-500::placeholder {
+  color: #6B7280 !important;
+}
+
+.light .placeholder-gray-400::placeholder {
+  color: #9CA3AF !important;
+}
+
+/* Éléments spéciaux */
+.light .text-shadow {
+  text-shadow: 0 4px 40px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Liens et navigation */
+.light .text-gray-600 {
+  color: #4B5563 !important;
+}
+
+.light .hover\:text-gray-900:hover {
+  color: #111827 !important;
+}
+
+/* États de focus et active */
+.light .focus\:border-blue-500:focus {
+  border-color: #3B82F6 !important;
+}
+
+.light .focus\:ring-blue-500:focus {
+  --tw-ring-color: rgb(59 130 246) !important;
+}
+
+/* Ombres et effets */
+.light .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03) !important;
+}
+
+.light .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
 }
 
 body {
