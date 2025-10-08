@@ -11,6 +11,9 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   }
 })
 
+// Export pour utilisation dans les API routes
+export const supabase = supabaseAdmin
+
 // Interfaces pour votre schéma Supabase
 export interface DatabaseUser {
   id: string

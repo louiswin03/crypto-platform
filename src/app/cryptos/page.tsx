@@ -13,6 +13,7 @@ import { useWatchlistContext } from '@/contexts/WatchlistContext'
 import { WatchlistDetailView } from '@/components/Watchlists'
 import SupabaseAddToWatchlistButton from '@/components/SupabaseAddToWatchlistButton'
 import CreateWatchlistModal from '@/components/CreateWatchlistModal'
+import FearAndGreedIndex from '@/components/FearAndGreedIndex'
 import { useState, useMemo, useEffect } from 'react'
 
 type SortField = 'market_cap' | 'current_price' | 'price_change_percentage_24h' | 'total_volume' | 'market_cap_rank' | 'ath_change_percentage'
@@ -471,6 +472,13 @@ export default function CompleteCryptosPage() {
                         </div>
                       </div>
                     )
+                  )}
+
+                  {/* Fear & Greed Index */}
+                  {viewMode === 'market' && (
+                    <div className="mb-8">
+                      <FearAndGreedIndex />
+                    </div>
                   )}
 
                   {/* Top Gainers & Losers Premium avec animations */}

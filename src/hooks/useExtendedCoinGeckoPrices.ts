@@ -183,7 +183,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       const now = Date.now()
 
       if (cached && (now - cached.timestamp) < CACHE_DURATION) {
-        console.log('📦 Utilisation du cache pour:', cacheKey)
         const enrichedData = cached.data.map((coin: any) => {
           let tradingViewSymbol = TRADINGVIEW_MAPPING[coin.id]
           if (!tradingViewSymbol) {
@@ -223,7 +222,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       })
 
       const url = `https://api.coingecko.com/api/v3/coins/markets?${params}`
-      console.log('🌍 Fetching CoinGecko data from:', url)
 
       // OPTIMISATION: Ajouter retry logic et timeout
       const controller = new AbortController()
@@ -307,7 +305,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         setError('Erreur de connexion - Rechargement automatique dans 5 secondes...')
         // Retry automatique après 5 secondes pour les erreurs de réseau
         setTimeout(() => {
-          console.log('🔄 Retry automatique après erreur de réseau')
           fetchPrices(pageNum, append)
         }, 5000)
       } else if (err instanceof Error && err.message.includes('429')) {
@@ -317,7 +314,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       } else if (err instanceof Error && err.name === 'AbortError') {
         setError('Requête timeout - Retry automatique...')
         setTimeout(() => {
-          console.log('🔄 Retry automatique après timeout')
           fetchPrices(pageNum, append)
         }, 3000)
       } else if (err instanceof Error) {
@@ -333,7 +329,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
 
   // OPTIMISATION: Fonction pour utiliser les données de fallback
   const useFallbackData = () => {
-    console.log('🚨 Utilisation des données de fallback')
     const enrichedData: ExtendedCoinPrice[] = FALLBACK_DATA.map((coin: any) => {
       let tradingViewSymbol = TRADINGVIEW_MAPPING[coin.id]
       if (!tradingViewSymbol) {

@@ -29,7 +29,6 @@ export default function AuthDebug() {
     updateDebugInfo()
 
     const handleUserChange = () => {
-      console.log('🔔 Événement user-auth-changed détecté')
       updateDebugInfo()
     }
 
@@ -92,8 +91,6 @@ export default function AuthDebug() {
       <div className="mt-2 pt-2 border-t border-gray-700 space-y-1">
         <button
           onClick={() => {
-            console.log('🔍 Debug Info complète:', debugInfo)
-            console.log('🔍 localStorage complet:', { ...localStorage })
           }}
           className="text-purple-400 hover:text-purple-300 text-xs block"
         >
@@ -104,10 +101,8 @@ export default function AuthDebug() {
           onClick={() => {
             try {
               const testUser = AuthService.createUser('testuser', 'test@example.com')
-              console.log('✅ Utilisateur test créé:', testUser)
               updateDebugInfo()
             } catch (error) {
-              console.log('❌ Erreur création utilisateur:', error)
             }
           }}
           className="text-green-400 hover:text-green-300 text-xs block"
@@ -118,7 +113,6 @@ export default function AuthDebug() {
         <button
           onClick={() => {
             localStorage.clear()
-            console.log('🗑️ localStorage vidé')
             updateDebugInfo()
           }}
           className="text-red-400 hover:text-red-300 text-xs block"

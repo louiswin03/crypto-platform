@@ -216,14 +216,11 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null)
 
-      console.log('🔍 WATCHLIST CONTEXT - Trying to add crypto with ID:', crypto.id, 'symbol:', crypto.symbol, 'name:', crypto.name)
 
       // Vérifier si l'item existe déjà
       const exists = await watchlistService.isItemInWatchlist(listId, crypto.id)
-      console.log('🔍 WATCHLIST CONTEXT - Already exists?', exists, 'for ID:', crypto.id)
       if (exists) {
         setError('Cette cryptomonnaie est déjà dans la liste')
-        console.log('❌ WATCHLIST CONTEXT - Crypto already exists in list!')
         return false
       }
 

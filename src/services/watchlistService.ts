@@ -352,6 +352,5 @@ export const watchlistService = {
   // Mettre à jour les prix des items dans les watchlists (pour l'instant, on skip cette fonction avancée)
   async updateItemsPrices(userId: string, pricesData: { [cryptoId: string]: { price: number, change24h: number } }): Promise<void> {
     // TODO: Implémenter si nécessaire via API route
-    console.log('updateItemsPrices: pas encore implémenté avec le nouveau système')
   }
 }

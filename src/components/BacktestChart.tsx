@@ -356,11 +356,13 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
   const [replayService, setReplayService] = useState<ReplayService | null>(null)
   const [replayState, setReplayState] = useState<ReplayState | null>(null)
   const [zoomedTrade, setZoomedTrade] = useState<any>(null)
+  const [showOnlySelectedTrade, setShowOnlySelectedTrade] = useState(false)
 
   // Gérer le trade sélectionné pour le zoom
   useEffect(() => {
     if (selectedTrade) {
       setZoomedTrade(selectedTrade)
+      setShowOnlySelectedTrade(true) // Activer par défaut le mode "uniquement ce trade"
       // Scroll vers le graphique
       const chartElement = document.getElementById('main-chart')
       if (chartElement) {
@@ -485,9 +487,16 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
       const windowStart = filteredPrices[0]?.timestamp
       const windowEnd = filteredPrices[filteredPrices.length - 1]?.timestamp
 
-      const filteredTrades = backtestData.state.trades.filter(trade =>
+      let filteredTrades = backtestData.state.trades.filter(trade =>
         trade.timestamp >= windowStart && trade.timestamp <= windowEnd
       )
+
+      // Si "uniquement ce trade" est activé, ne garder que le trade sélectionné
+      if (showOnlySelectedTrade && zoomedTrade) {
+        filteredTrades = filteredTrades.filter(trade =>
+          trade.id === zoomedTrade.openTrade.id || trade.id === zoomedTrade.closeTrade.id
+        )
+      }
 
       // Filtrer les indicateurs correspondants aux nouvelles données
       const filteredIndicators: any = {}
@@ -516,7 +525,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
     }
 
     return backtestData
-  }, [backtestData, replayMode, replayState?.currentIndex, replayState?.visibleData?.prices?.length, zoomedTrade])
+  }, [backtestData, replayMode, replayState?.currentIndex, replayState?.visibleData?.prices?.length, zoomedTrade, showOnlySelectedTrade])
 
   const chartData = useMemo(() => {
     const { priceData, state, indicators, config } = currentBacktestData
@@ -829,9 +838,22 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                   <span className="text-blue-400 text-xs bg-blue-800/50 px-2 py-0.5 rounded">
                     {currentBacktestData.priceData.length} bougies
                   </span>
+                  {/* Toggle pour afficher/masquer les autres trades */}
+                  <button
+                    onClick={() => setShowOnlySelectedTrade(!showOnlySelectedTrade)}
+                    className={`px-2 py-0.5 text-xs rounded transition-colors ${
+                      showOnlySelectedTrade
+                        ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                        : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                    }`}
+                    title={showOnlySelectedTrade ? 'Afficher tous les trades' : 'Masquer les autres trades'}
+                  >
+                    {showOnlySelectedTrade ? '1 trade' : 'Tous'}
+                  </button>
                   <button
                     onClick={() => {
                       setZoomedTrade(null)
+                      setShowOnlySelectedTrade(false)
                       onTradeZoomComplete?.()
                     }}
                     className="px-2 py-0.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
@@ -981,23 +1003,25 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         </div>
       </div>
 
-      {/* Sous-graphiques pour oscillateurs */}
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">Oscillateurs Techniques</h3>
-          <div className="text-sm text-[#9CA3AF] font-medium">
-            Indicateurs de momentum et cycles
+      {/* Sous-graphiques pour oscillateurs - Afficher seulement s'il y en a */}
+      {(backtestData.indicators.rsi || backtestData.indicators.macd || backtestData.indicators.stochastic || backtestData.indicators.williamsR || backtestData.indicators.obv) && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">Oscillateurs Techniques</h3>
+            <div className="text-sm text-[#9CA3AF] font-medium">
+              Indicateurs de momentum et cycles
+            </div>
+          </div>
+          <div className="space-y-6">
+            <OscillatorCharts
+              backtestData={currentBacktestData}
+              chartData={chartData}
+            />
           </div>
         </div>
-        <div className="space-y-6">
-          <OscillatorCharts
-            backtestData={currentBacktestData}
-            chartData={chartData}
-          />
-        </div>
-      </div>
+      )}
 
-      {/* Résumé des performances */}
+      {/* Résumé des performances - Pleine largeur */}
       {backtestData.state.summary && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
           <div className="border-b border-gray-700/30 px-6 py-3">
@@ -1039,6 +1063,102 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           </div>
         </div>
       )}
+
+      {/* Equity Curve - Pleine largeur */}
+      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="border-b border-white/10 px-8 py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
+              Courbe d'Équité (Equity Curve)
+            </h3>
+            <div className="text-sm text-gray-400">
+              Évolution du capital au fil du temps
+            </div>
+          </div>
+        </div>
+        <div className="p-8">
+          <div className="h-80 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={backtestData.state.capitalHistory.map(point => ({
+                  timestamp: point.timestamp,
+                  value: point.value,
+                  displayDate: formatDate(point.timestamp)
+                }))}
+                margin={{ top: 10, right: 40, left: 30, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
+                <XAxis
+                  dataKey="displayDate"
+                  stroke="#D1D5DB"
+                  fontSize={12}
+                  interval="preserveStartEnd"
+                />
+                <YAxis
+                  stroke="#D1D5DB"
+                  fontSize={12}
+                  tickFormatter={(value) => `$${value.toFixed(0)}`}
+                  domain={[
+                    (dataMin: number) => Math.floor(dataMin * 0.99),
+                    (dataMax: number) => Math.ceil(dataMax * 1.01)
+                  ]}
+                  scale="linear"
+                />
+                <Tooltip
+                  content={({ active, payload }: any) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload
+                      const initialCapital = backtestData.config.initialCapital
+                      const pnl = data.value - initialCapital
+                      const pnlPercent = ((pnl / initialCapital) * 100).toFixed(2)
+                      return (
+                        <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl">
+                          <p className="text-[#F9FAFB] font-medium mb-2">{data.displayDate}</p>
+                          <p className="text-[#F9FAFB] mb-1">
+                            Capital: <span className="font-mono">${data.value.toFixed(2)}</span>
+                          </p>
+                          <p className={`${pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                            P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
+                          </p>
+                        </div>
+                      )
+                    }
+                    return null
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#6366F1"
+                  strokeWidth={3}
+                  dot={false}
+                  name="Capital"
+                />
+                <ReferenceDot
+                  y={backtestData.config.initialCapital}
+                  stroke="#9CA3AF"
+                  strokeDasharray="5 5"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 flex items-center justify-between text-sm">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-0.5 bg-[#6366F1]"></div>
+                <span className="text-gray-300">Capital Total</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-0.5 bg-[#9CA3AF] border-dashed border-t"></div>
+                <span className="text-gray-400">Capital Initial (${backtestData.config.initialCapital.toFixed(0)})</span>
+              </div>
+            </div>
+            <div className="text-gray-400">
+              {backtestData.state.capitalHistory.length} points de données
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -17,8 +17,119 @@ import { useExtendedCoinGeckoPrices } from '@/hooks/useExtendedCoinGeckoPrices' 
 // Remplacez SmartCryptoSelector par un nouveau composant qui utilise les données CoinGecko
 import CoinGeckoCryptoSelector from '@/components/CryptoSelector/CoinGeckoCryptoSelector'
 
-import { Search, AlertCircle } from 'lucide-react'
+import { Search, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import ImprovedCryptoSearch from '@/components/CryptoSelector/ImprovedCryptoSearch'
+
+// Composant pour affichage accordéon des listes
+function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }: any) {
+  const [expandedList, setExpandedList] = useState<string | null>(null)
+
+  return (
+    <div className="space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
+      {watchlists.map((list: any) => {
+        const isExpanded = expandedList === list.id
+
+        return (
+          <div
+            key={list.id}
+            className="border border-gray-600/50 bg-gray-800/30 rounded-xl overflow-hidden hover:border-gray-500/50 transition-all"
+          >
+            {/* Header cliquable de la liste */}
+            <button
+              onClick={() => setExpandedList(isExpanded ? null : list.id)}
+              className="w-full flex items-center justify-between p-3 hover:bg-gray-700/30 transition-all"
+            >
+              <div className="flex items-center space-x-2">
+                <div
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold"
+                  style={{ backgroundColor: list.color || '#6366F1' }}
+                >
+                  {list.icon || '📋'}
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-white text-sm flex items-center space-x-1.5">
+                    <span>{list.name}</span>
+                    {list.is_pinned && <Star className="w-3 h-3 text-[#F59E0B] fill-current" />}
+                  </div>
+                  <div className="text-gray-400 text-xs">
+                    {list.items?.length || 0} crypto{(list.items?.length || 0) !== 1 ? 's' : ''}
+                  </div>
+                </div>
+              </div>
+              {isExpanded ? (
+                <ChevronUp className="w-4 h-4 text-gray-400" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+              )}
+            </button>
+
+            {/* Cryptos de la liste (accordéon) */}
+            {isExpanded && (
+              <div className="px-3 pb-3 space-y-1 border-t border-gray-700/30 pt-2">
+                {list.items?.map((item: any) => {
+                  const cryptoData = prices.find((coin: any) => coin.id === item.crypto_id)
+                  let tradingViewSymbol = cryptoData?.tradingview_symbol
+
+                  if (!tradingViewSymbol) {
+                    const upperSymbol = item.symbol.toUpperCase()
+                    if (upperSymbol === 'BTC') tradingViewSymbol = 'CRYPTO:BTCUSD'
+                    else if (upperSymbol === 'ETH') tradingViewSymbol = 'CRYPTO:ETHUSD'
+                    else if (upperSymbol === 'BNB') tradingViewSymbol = 'CRYPTO:BNBUSD'
+                    else if (upperSymbol === 'ADA') tradingViewSymbol = 'CRYPTO:ADAUSD'
+                    else if (upperSymbol === 'SOL') tradingViewSymbol = 'CRYPTO:SOLUSD'
+                    else if (upperSymbol === 'DOT') tradingViewSymbol = 'CRYPTO:DOTUSD'
+                    else if (upperSymbol === 'AVAX') tradingViewSymbol = 'CRYPTO:AVAXUSD'
+                    else if (upperSymbol === 'MATIC') tradingViewSymbol = 'CRYPTO:MATICUSD'
+                    else if (upperSymbol === 'UNI') tradingViewSymbol = 'CRYPTO:UNIUSD'
+                    else if (upperSymbol === 'LINK') tradingViewSymbol = 'CRYPTO:LINKUSD'
+                    else if (upperSymbol === 'LTC') tradingViewSymbol = 'CRYPTO:LTCUSD'
+                    else if (upperSymbol === 'XRP') tradingViewSymbol = 'CRYPTO:XRPUSD'
+                    else tradingViewSymbol = `CRYPTO:${upperSymbol}USD`
+                  }
+
+                  return (
+                    <button
+                      key={item.crypto_id}
+                      onClick={() => onCryptoSelect(tradingViewSymbol, item.crypto_id)}
+                      className={`w-full flex items-center justify-between p-2 rounded-lg transition-all duration-300 group/crypto ${
+                        selectedPair === tradingViewSymbol
+                          ? 'bg-[#6366F1]/20 border border-[#6366F1]/40'
+                          : 'hover:bg-gray-600/30 border border-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        {item.image && (
+                          <img src={item.image} alt={item.name} className="w-5 h-5 rounded-full" />
+                        )}
+                        <div className="text-left">
+                          <div className="font-semibold text-white text-xs">{item.symbol.toUpperCase()}</div>
+                        </div>
+                      </div>
+                      <BarChart3 className={`w-3.5 h-3.5 transition-colors ${
+                        selectedPair === tradingViewSymbol ? 'text-[#6366F1]' : 'text-gray-400 group-hover/crypto:text-[#6366F1]'
+                      }`} />
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      {/* Lien gérer les listes */}
+      <Link
+        href="/cryptos"
+        onClick={() => {
+          localStorage.setItem('cryptos-view-mode', 'watchlist')
+        }}
+        className="block text-center py-2 text-[#6366F1] hover:text-[#8B5CF6] text-sm font-semibold transition-colors"
+      >
+        Gérer mes listes →
+      </Link>
+    </div>
+  )
+}
 
 export default function GraphiquesPage() {
   // Hook pour récupérer l'utilisateur connecté (pour conditionner certains boutons)
@@ -44,13 +155,11 @@ export default function GraphiquesPage() {
     if (coinGeckoId) {
       // ID fourni directement (depuis les listes de suivi)
       setSelectedCryptoId(coinGeckoId)
-      console.log('🎯 SELECTION - Direct ID provided:', coinGeckoId, 'for symbol:', tradingViewSymbol)
     } else {
       // Trouver l'ID dans les données CoinGecko (depuis la recherche)
       const cryptoData = prices.find(coin => coin.tradingview_symbol === tradingViewSymbol)
       if (cryptoData?.id) {
         setSelectedCryptoId(cryptoData.id)
-        console.log('🎯 SELECTION - Found ID in data:', cryptoData.id, 'for symbol:', tradingViewSymbol)
       } else {
         // Fallback - mapping manuel
         const cleanSymbol = tradingViewSymbol.replace(/CRYPTO:|USD|EUR|USDT/g, '').toLowerCase()
@@ -70,7 +179,6 @@ export default function GraphiquesPage() {
         }
         const mappedId = symbolToIdMapping[cleanSymbol] || 'bitcoin'
         setSelectedCryptoId(mappedId)
-        console.log('⚠️ SELECTION - Using fallback ID:', mappedId, 'for symbol:', cleanSymbol)
       }
     }
   }
@@ -125,10 +233,8 @@ export default function GraphiquesPage() {
       // Trouver la crypto dans les données
       const foundCrypto = prices.find(coin => coin.id === cryptoParam)
       if (foundCrypto && foundCrypto.tradingview_symbol) {
-        console.log('🔗 URL: Sélection automatique de', foundCrypto.name, 'avec symbol', foundCrypto.tradingview_symbol)
         handleCryptoSelection(foundCrypto.tradingview_symbol, foundCrypto.id)
       } else {
-        console.log('⚠️ URL: Crypto non trouvée ou pas de symbol TradingView pour:', cryptoParam)
       }
     }
   }, [searchParams, prices])
@@ -379,171 +485,104 @@ export default function GraphiquesPage() {
               </button>
             </div>
 
-            {/* Section de recherche améliorée - TOUTE LARGEUR */}
-            <div className="mb-8">
-            <div className="glass-effect rounded-2xl border border-gray-800/40 p-6">
-                <div className="mb-4">
-                <h2 className="text-xl font-semibold text-white mb-2 flex items-center space-x-2">
-                    <Search className="w-5 h-5 text-[#6366F1]" />
-                    <span>{t('charts.search_crypto')}</span>
-                </h2>
-                <p className="text-gray-400 text-sm">
-                    Sélectionnez parmi {cryptoOptions.length} cryptomonnaies avec graphiques professionnels
-                </p>
+            {/* Section unifiée : Sélectionner une cryptomonnaie */}
+            <div className="mb-6">
+              <div className="glass-effect rounded-2xl border border-gray-800/40 p-5">
+                {/* Header de la section */}
+                <div className="mb-5">
+                  <h2 className="text-xl font-bold text-white mb-2 flex items-center space-x-2">
+                    <BarChart3 className="w-5 h-5 text-[#6366F1]" />
+                    <span>Sélectionner une cryptomonnaie</span>
+                  </h2>
+                  <p className="text-gray-400 text-sm">
+                    Recherchez parmi {cryptoOptions.length} cryptos ou accédez rapidement à vos listes de suivi
+                  </p>
                 </div>
 
-                {loading ? (
-                <div className="animate-pulse">
-                    <div className="h-12 bg-gray-700 rounded-xl mb-4"></div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {[1,2,3].map(i => (
-                        <div key={i} className="h-16 bg-gray-700 rounded-lg"></div>
-                    ))}
+                {/* Grille 2 colonnes : Recherche + Listes de suivi */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Colonne gauche : Recherche */}
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Search className="w-4 h-4 text-[#6366F1]" />
+                      <h3 className="text-base font-semibold text-white">{t('charts.search_crypto')}</h3>
                     </div>
-                </div>
-                ) : error ? (
-                <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <AlertCircle className="w-6 h-6 text-red-400" />
-                    </div>
-                    <div className="text-red-400 font-medium mb-2">Erreur de chargement</div>
-                    <div className="text-gray-400 text-sm">{error}</div>
-                </div>
-                ) : (
-                <ImprovedCryptoSearch
-                    cryptoOptions={cryptoOptions}
-                    selectedCrypto={selectedPair}
-                    onCryptoSelect={(symbol) => handleCryptoSelection(symbol)}
-                />
-                )}
-            </div>
-            </div>
 
-            {/* {t('charts.my_watchlists')} - Section pour naviguer rapidement */}
-            {user && watchlists.length > 0 && (
-              <div className="mb-12">
-                <div className="glass-effect-strong rounded-3xl border border-gray-700/50 p-8">
-                  <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-white mb-3 flex items-center space-x-3 font-display">
-                      <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
-                        <Star className="w-6 h-6 text-[#F59E0B]" />
-                      </div>
-                      <span>{t('charts.my_watchlists')}</span>
-                      <div className="text-sm bg-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#F59E0B] px-3 py-1 rounded-full font-bold">
-                        {watchlists.length} liste{watchlists.length > 1 ? 's' : ''}
-                      </div>
-                    </h2>
-                    <p className="text-gray-400 font-display">
-                      Accédez rapidement aux graphiques de vos cryptomonnaies favorites
-                    </p>
-                  </div>
-
-                  {/* Grille des listes de suivi */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {watchlists.map((list) => (
-                      <div
-                        key={list.id}
-                        className="relative p-6 rounded-2xl border border-gray-600/50 bg-gradient-to-br from-gray-800/50 to-gray-900/50 hover:from-gray-700/50 hover:to-gray-800/50 transition-all duration-300 hover:scale-105 group overflow-hidden"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out"></div>
-
-                        {/* Header de la liste */}
-                        <div className="flex items-center space-x-4 mb-4 relative z-10">
-                          <div
-                            className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold shadow-lg"
-                            style={{ backgroundColor: list.color || '#6366F1' }}
-                          >
-                            {list.icon || '📋'}
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-bold text-white text-lg font-display flex items-center space-x-2">
-                              <span>{list.name}</span>
-                              {list.is_pinned && <Star className="w-4 h-4 text-[#F59E0B] fill-current" />}
-                            </div>
-                            <div className="text-gray-400 text-sm">
-                              {list.items?.length || 0} crypto{(list.items?.length || 0) !== 1 ? 's' : ''}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Cryptos de la liste avec boutons graphiques */}
-                        <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-track-gray-800/20 scrollbar-thumb-gray-600/50 relative z-10">
-                          {list.items?.map((item: any) => {
-                            // Trouver les données TradingView pour cette crypto
-                            const cryptoData = prices.find(coin => coin.id === item.crypto_id)
-                            // Améliorer le mapping TradingView avec fallbacks plus intelligents
-                            let tradingViewSymbol = cryptoData?.tradingview_symbol
-
-                            if (!tradingViewSymbol) {
-                              // Fallback intelligent selon le symbol - utilisation du format CRYPTO: avec USD
-                              const upperSymbol = item.symbol.toUpperCase()
-                              if (upperSymbol === 'BTC') tradingViewSymbol = 'CRYPTO:BTCUSD'
-                              else if (upperSymbol === 'ETH') tradingViewSymbol = 'CRYPTO:ETHUSD'
-                              else if (upperSymbol === 'BNB') tradingViewSymbol = 'CRYPTO:BNBUSD'
-                              else if (upperSymbol === 'ADA') tradingViewSymbol = 'CRYPTO:ADAUSD'
-                              else if (upperSymbol === 'SOL') tradingViewSymbol = 'CRYPTO:SOLUSD'
-                              else if (upperSymbol === 'DOT') tradingViewSymbol = 'CRYPTO:DOTUSD'
-                              else if (upperSymbol === 'AVAX') tradingViewSymbol = 'CRYPTO:AVAXUSD'
-                              else if (upperSymbol === 'MATIC') tradingViewSymbol = 'CRYPTO:MATICUSD'
-                              else if (upperSymbol === 'UNI') tradingViewSymbol = 'CRYPTO:UNIUSD'
-                              else if (upperSymbol === 'LINK') tradingViewSymbol = 'CRYPTO:LINKUSD'
-                              else if (upperSymbol === 'LTC') tradingViewSymbol = 'CRYPTO:LTCUSD'
-                              else if (upperSymbol === 'XRP') tradingViewSymbol = 'CRYPTO:XRPUSD'
-                              else tradingViewSymbol = `CRYPTO:${upperSymbol}USD`
-                            }
-
-                            return (
-                              <button
-                                key={item.crypto_id}
-                                onClick={() => handleCryptoSelection(tradingViewSymbol, item.crypto_id)}
-                                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300 group/crypto ${
-                                  selectedPair === tradingViewSymbol
-                                    ? 'bg-[#6366F1]/20 border border-[#6366F1]/40 shadow-lg shadow-[#6366F1]/20'
-                                    : 'hover:bg-gray-700/50 border border-transparent hover:border-gray-600/50'
-                                }`}
-                              >
-                                <div className="flex items-center space-x-3">
-                                  {item.image && (
-                                    <img src={item.image} alt={item.name} className="w-8 h-8 rounded-full" />
-                                  )}
-                                  <div className="text-left">
-                                    <div className="font-semibold text-white text-sm">{item.symbol.toUpperCase()}</div>
-                                    <div className="text-gray-400 text-xs">{item.name}</div>
-                                  </div>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  {selectedPair === tradingViewSymbol && (
-                                    <div className="w-2 h-2 bg-[#6366F1] rounded-full animate-pulse"></div>
-                                  )}
-                                  <BarChart3 className={`w-4 h-4 transition-colors ${
-                                    selectedPair === tradingViewSymbol ? 'text-[#6366F1]' : 'text-gray-400 group-hover/crypto:text-[#6366F1]'
-                                  }`} />
-                                </div>
-                              </button>
-                            )
-                          })}
+                    {loading ? (
+                      <div className="animate-pulse">
+                        <div className="h-12 bg-gray-700 rounded-xl mb-4"></div>
+                        <div className="space-y-2">
+                          {[1,2,3].map(i => (
+                            <div key={i} className="h-16 bg-gray-700 rounded-lg"></div>
+                          ))}
                         </div>
                       </div>
-                    ))}
+                    ) : error ? (
+                      <div className="text-center py-8">
+                        <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <AlertCircle className="w-6 h-6 text-red-400" />
+                        </div>
+                        <div className="text-red-400 font-medium mb-2">Erreur de chargement</div>
+                        <div className="text-gray-400 text-sm">{error}</div>
+                      </div>
+                    ) : (
+                      <ImprovedCryptoSearch
+                        cryptoOptions={cryptoOptions}
+                        selectedCrypto={selectedPair}
+                        onCryptoSelect={(symbol) => handleCryptoSelection(symbol)}
+                      />
+                    )}
                   </div>
 
-                  {/* Liens vers la gestion des listes */}
-                  <div className="mt-8 text-center">
-                    <Link
-                      href="/cryptos"
-                      onClick={() => {
-                        // Forcer le mode watchlist via localStorage pour synchronisation
-                        localStorage.setItem('cryptos-view-mode', 'watchlist')
-                      }}
-                      className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#6366F1]/20 to-[#8B5CF6]/20 border border-[#6366F1]/40 text-[#6366F1] rounded-xl font-bold hover:scale-105 transition-all duration-300"
-                    >
-                      <Star className="w-5 h-5" />
-                      <span>Gérer mes listes</span>
-                    </Link>
+                  {/* Colonne droite : Listes de suivi */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <Star className="w-4 h-4 text-[#F59E0B]" />
+                        <h3 className="text-base font-semibold text-white">{t('charts.my_watchlists')}</h3>
+                        {user && watchlists.length > 0 && (
+                          <div className="text-xs bg-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#F59E0B] px-2 py-0.5 rounded-full font-bold">
+                            {watchlists.length}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {!user ? (
+                      <div className="text-center py-8 border border-gray-700/50 rounded-xl bg-gray-800/30">
+                        <Star className="w-8 h-8 text-gray-500 mx-auto mb-3" />
+                        <p className="text-gray-400 text-sm mb-3">Connectez-vous pour accéder à vos listes</p>
+                        <Link
+                          href="/auth/signin"
+                          className="inline-flex items-center px-4 py-2 bg-[#6366F1] text-white rounded-lg text-sm hover:bg-[#5B21B6] transition-all"
+                        >
+                          Se connecter
+                        </Link>
+                      </div>
+                    ) : watchlists.length === 0 ? (
+                      <div className="text-center py-8 border border-gray-700/50 rounded-xl bg-gray-800/30">
+                        <Star className="w-8 h-8 text-gray-500 mx-auto mb-3" />
+                        <p className="text-gray-400 text-sm mb-3">Créez votre première liste de suivi</p>
+                        <Link
+                          href="/cryptos"
+                          className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-lg text-sm hover:scale-105 transition-all"
+                        >
+                          <Star className="w-4 h-4" />
+                          <span>Créer une liste</span>
+                        </Link>
+                      </div>
+                    ) : (
+                      <WatchlistAccordion
+                        watchlists={watchlists}
+                        prices={prices}
+                        selectedPair={selectedPair}
+                        onCryptoSelect={handleCryptoSelection}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* Message pour encourager à créer des listes si pas connecté ou aucune liste */}
             {user && watchlists.length === 0 && !watchlistLoading && (
@@ -570,19 +609,19 @@ export default function GraphiquesPage() {
             )}
 
             {/* Info Crypto Premium avec données CoinGecko */}
-            <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 mb-12 relative overflow-hidden group hover:scale-[1.01] transition-all duration-300">
+            <div className="glass-effect-strong rounded-2xl p-5 border border-gray-700/50 mb-8 relative overflow-hidden group hover:scale-[1.01] transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#6366F1]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
 
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
-                <div className="flex items-center space-x-6">
-                  <div className="relative w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl overflow-hidden bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] p-3 animate-pulse-glow">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-3xl blur-xl"></div>
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 relative z-10">
+                <div className="flex items-center space-x-4">
+                  <div className="relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl overflow-hidden bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] p-2 animate-pulse-glow">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
                     {currentCrypto.image ? (
                       <img
                         src={currentCrypto.image}
                         alt={currentCrypto.name}
-                        className="w-full h-full object-contain rounded-2xl relative z-10"
+                        className="w-full h-full object-contain rounded-xl relative z-10"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.style.display = 'none';
@@ -591,36 +630,36 @@ export default function GraphiquesPage() {
                         }}
                       />
                     ) : null}
-                    <span className={`text-white text-3xl font-bold font-display relative z-10 ${currentCrypto.image ? 'hidden' : ''}`}>
+                    <span className={`text-white text-2xl font-bold font-display relative z-10 ${currentCrypto.image ? 'hidden' : ''}`}>
                       {symbolWithoutExchange.replace(/EUR|USD|USDT/g, '').slice(0, 2) || 'BT'}
                     </span>
                   </div>
                   <div>
-                    <div className="text-4xl font-bold text-[#F9FAFB] flex flex-wrap items-center gap-4 mb-2 font-display">
+                    <div className="text-2xl font-bold text-[#F9FAFB] flex flex-wrap items-center gap-2 mb-1 font-display">
                       <span className="bg-gradient-to-r from-[#F9FAFB] to-[#6366F1] bg-clip-text text-transparent">{symbolWithoutExchange || 'BTCUSD'}</span>
                       {currentCrypto.price && (
-                        <span className="text-2xl text-gray-300 font-mono">
+                        <span className="text-lg text-gray-300 font-mono">
                           ${currentCrypto.price.toLocaleString('en-US', {
                             minimumFractionDigits: currentCrypto.price < 1 ? 4 : 2,
                             maximumFractionDigits: currentCrypto.price < 1 ? 4 : 2
                           })}
                         </span>
                       )}
-                      <div className="flex items-center space-x-2 bg-[#16A34A]/20 px-3 py-1 rounded-full border border-[#16A34A]/30">
-                        <div className="w-3 h-3 bg-[#16A34A] rounded-full animate-pulse-glow shadow-lg shadow-[#16A34A]/50"></div>
-                        <span className="text-[#16A34A] font-bold text-sm">LIVE</span>
+                      <div className="flex items-center space-x-1.5 bg-[#16A34A]/20 px-2 py-0.5 rounded-full border border-[#16A34A]/30">
+                        <div className="w-2 h-2 bg-[#16A34A] rounded-full animate-pulse-glow shadow-lg shadow-[#16A34A]/50"></div>
+                        <span className="text-[#16A34A] font-bold text-xs">LIVE</span>
                       </div>
                     </div>
-                    <div className="text-gray-300 flex flex-wrap items-center gap-3">
-                      <span className="font-semibold text-lg font-display">{currentCrypto.name}</span>
+                    <div className="text-gray-300 flex flex-wrap items-center gap-2 text-sm">
+                      <span className="font-semibold font-display">{currentCrypto.name}</span>
                       <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
-                      <span className="px-3 py-1 bg-gradient-to-r from-[#6366F1]/20 to-[#8B5CF6]/20 text-[#6366F1] rounded-full text-sm font-bold border border-[#6366F1]/30">
+                      <span className="px-2 py-0.5 bg-gradient-to-r from-[#6366F1]/20 to-[#8B5CF6]/20 text-[#6366F1] rounded-full text-xs font-bold border border-[#6366F1]/30">
                         {currentCrypto.category}
                       </span>
                       {currentCrypto.change24h && (
                         <>
                           <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
-                          <span className={`font-bold text-lg px-3 py-1 rounded-full ${
+                          <span className={`font-bold text-sm px-2 py-0.5 rounded-full ${
                             currentCrypto.change24h >= 0
                               ? 'text-[#16A34A] bg-[#16A34A]/10 border border-[#16A34A]/30'
                               : 'text-[#DC2626] bg-[#DC2626]/10 border border-[#DC2626]/30'
@@ -630,37 +669,27 @@ export default function GraphiquesPage() {
                           </span>
                         </>
                       )}
-                      <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
-                      <span className="text-gray-400 text-sm font-mono">TradingView Pro</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex space-x-3">
+                <div className="flex space-x-2">
                   <button
                     onClick={toggleFullscreen}
-                    className="group/btn p-4 rounded-2xl bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#6366F1]/20 hover:to-[#4F46E5]/20 border border-gray-600/50 hover:border-[#6366F1]/60 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#6366F1]/20"
+                    className="group/btn p-2.5 rounded-xl bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#6366F1]/20 hover:to-[#4F46E5]/20 border border-gray-600/50 hover:border-[#6366F1]/60 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#6366F1]/20"
                     title="Mode plein écran"
                   >
-                    <Maximize2 className="w-6 h-6 text-gray-400 group-hover/btn:text-[#6366F1] transition-colors" />
+                    <Maximize2 className="w-5 h-5 text-gray-400 group-hover/btn:text-[#6366F1] transition-colors" />
                   </button>
                   <button
                     onClick={handleRefresh}
-                    className="group/btn p-4 rounded-2xl bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#8B5CF6]/20 hover:to-[#7C3AED]/20 border border-gray-600/50 hover:border-[#8B5CF6]/60 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#8B5CF6]/20"
+                    className="group/btn p-2.5 rounded-xl bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#8B5CF6]/20 hover:to-[#7C3AED]/20 border border-gray-600/50 hover:border-[#8B5CF6]/60 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#8B5CF6]/20"
                     title={t('charts.refresh')}
                   >
-                    <RotateCcw className="w-6 h-6 text-gray-400 group-hover/btn:text-[#8B5CF6] group-hover/btn:rotate-180 transition-all duration-500" />
+                    <RotateCcw className="w-5 h-5 text-gray-400 group-hover/btn:text-[#8B5CF6] group-hover/btn:rotate-180 transition-all duration-500" />
                   </button>
                 </div>
               </div>
-
-              {currentCrypto.description && (
-                <div className="mt-6 p-4 bg-gray-800/30 rounded-2xl border border-gray-700/30">
-                  <div className="text-gray-300 font-medium font-display">
-                    {currentCrypto.description}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 

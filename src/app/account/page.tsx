@@ -95,7 +95,6 @@ export default function AccountPage() {
         return
       }
 
-      console.log('🔍 Chargement direct depuis Supabase pour userId:', authData.user.id)
 
       // 📋 Récupérer le profil directement depuis user_profiles
       const supabaseAdmin = createSupabaseAdmin()
@@ -105,12 +104,8 @@ export default function AccountPage() {
         .eq('id', authData.user.id)
         .single()
 
-      console.log('📱 Profil récupéré:', profile)
-      console.log('❌ Erreur profil:', profileError)
 
       if (profile) {
-        console.log('✅ Téléphone trouvé:', profile.phone)
-        console.log('✅ Localisation trouvée:', profile.location)
 
         // Mettre à jour les états avec les vraies données
         setEditForm({
@@ -124,7 +119,6 @@ export default function AccountPage() {
           location: profile.location || ''
         })
       } else {
-        console.log('⚠️ Aucun profil trouvé, création d\'un profil vide')
 
         // Créer un profil vide si il n'existe pas
         const { data: newProfile, error: createError } = await supabaseAdmin
@@ -138,7 +132,6 @@ export default function AccountPage() {
           .single()
 
         if (!createError && newProfile) {
-          console.log('✅ Nouveau profil créé:', newProfile)
         }
       }
 
@@ -148,7 +141,6 @@ export default function AccountPage() {
         .select('*')
         .eq('user_id', authData.user.id)
 
-      console.log('📋 Listes de suivis trouvées:', watchlists?.length || 0)
 
       // Récupérer les éléments de watchlist pour calculer le nombre total de cryptos suivies
       const { data: watchlistItems } = await supabaseAdmin
@@ -156,7 +148,6 @@ export default function AccountPage() {
         .select('*')
         .eq('user_id', authData.user.id)
 
-      console.log('💰 Cryptos suivies:', watchlistItems?.length || 0)
 
       // 📈 Récupérer les stratégies de backtest
       const { data: strategies } = await supabaseAdmin
@@ -164,7 +155,6 @@ export default function AccountPage() {
         .select('*')
         .eq('user_id', authData.user.id)
 
-      console.log('🎯 Stratégies backtest trouvées:', strategies?.length || 0)
 
       const stats: UserStats = {
         watchlists_count: watchlists?.length || 0,
@@ -177,7 +167,6 @@ export default function AccountPage() {
       setActivityLog([]) // TODO: implémenter l'activité plus tard
       setPerformanceData(null) // TODO: implémenter les performances plus tard
 
-      console.log('🎯 Chargement direct terminé avec succès!')
 
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error)
@@ -218,9 +207,6 @@ export default function AccountPage() {
         return
       }
 
-      console.log('💾 Sauvegarde directe vers Supabase')
-      console.log('📱 Téléphone à sauver:', editForm.phone)
-      console.log('📍 Localisation à sauver:', editForm.location)
 
       // Préparer les données à mettre à jour
       const updateData: any = {
@@ -231,7 +217,6 @@ export default function AccountPage() {
       updateData.phone = editForm.phone || null
       updateData.location = editForm.location || null
 
-      console.log('📝 Données à sauvegarder:', updateData)
 
       // Sauvegarder directement dans Supabase
       const supabaseAdmin = createSupabaseAdmin()
@@ -249,7 +234,6 @@ export default function AccountPage() {
         throw new Error('Erreur lors de la sauvegarde: ' + error.message)
       }
 
-      console.log('✅ Sauvegarde réussie:', data)
 
       // Mettre à jour l'affichage immédiatement
       setProfileDisplay({
@@ -258,7 +242,6 @@ export default function AccountPage() {
       })
 
       setIsEditing(false)
-      console.log('🎯 Sauvegarde directe terminée avec succès!')
 
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error)

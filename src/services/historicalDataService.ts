@@ -127,11 +127,9 @@ export async function fetchHistoricalPrices(
   // Vérifier le cache d'abord
   const cached = cache.get(cryptoConfig.coinGeckoId, period)
   if (cached) {
-    console.log(`📊 Cache hit pour ${crypto} ${period}`)
     return cached
   }
 
-  console.log(`🔄 Récupération des données historiques pour ${crypto} ${period}`)
 
   try {
     // Binance en premier, Yahoo Finance en fallback
@@ -141,16 +139,13 @@ export async function fetchHistoricalPrices(
 
     // 1. Essayer Binance API d'abord
     try {
-      console.log(`🔄 Tentative avec Binance API pour ${crypto}...`)
       const binanceSymbol = crypto === 'BTC' ? 'BTCUSDT' : 'ETHUSDT'
       const days = periodToDays(period)
       const numDays = days
 
-      console.log(`📊 Demande de ${numDays} jours pour ${crypto} (période: ${period})`)
 
       // Si on demande plus de 1000 jours, on fait plusieurs requêtes
       if (numDays > 1000) {
-        console.log(`📊 Période longue détectée (${numDays} jours), requêtes multiples...`)
 
         const allPrices: any[] = []
         const batchSize = 1000
@@ -163,7 +158,6 @@ export async function fetchHistoricalPrices(
           const endTime = now - (batch * batchSize * 24 * 60 * 60 * 1000)
           const url = `https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=1d&limit=${actualLimit}&endTime=${endTime}`
 
-          console.log(`📈 Batch ${batch + 1}/${numBatches}: demande de ${actualLimit} points (restant: ${remainingDays})`)
 
           try {
             const batchResponse = await fetch(url, {
@@ -175,14 +169,12 @@ export async function fetchHistoricalPrices(
               const batchData = await batchResponse.json()
               if (Array.isArray(batchData)) {
                 allPrices.unshift(...batchData)
-                console.log(`✅ Batch ${batch + 1}/${numBatches}: récupéré ${batchData.length} points`)
               }
             }
 
             // Petite pause entre requêtes
             await new Promise(resolve => setTimeout(resolve, 100))
           } catch (batchError) {
-            console.log(`⚠️ Erreur batch ${batch + 1}: ${batchError}`)
             break
           }
         }
@@ -204,7 +196,6 @@ export async function fetchHistoricalPrices(
           )
           prices = uniquePrices.sort((a, b) => a.timestamp - b.timestamp)
 
-          console.log(`✅ Binance API (multi-batch): ${prices.length} points récupérés pour ${crypto}`)
 
           const result: HistoricalDataResponse = {
             symbol: cryptoConfig.symbol,
@@ -217,7 +208,6 @@ export async function fetchHistoricalPrices(
           }
 
           cache.set(cryptoConfig.coinGeckoId, period, result)
-          console.log(`✅ Données Binance récupérées: ${prices.length} points pour ${crypto} ${period}`)
           return result
         }
       } else {
@@ -254,19 +244,16 @@ export async function fetchHistoricalPrices(
             }
 
             cache.set(cryptoConfig.coinGeckoId, period, result)
-            console.log(`✅ Binance API: ${prices.length} points récupérés pour ${crypto} ${period}`)
             return result
           }
         }
       }
     } catch (binanceError) {
-      console.log(`⚠️ Binance API échec pour ${crypto}: ${binanceError}, tentative Yahoo Finance...`)
     }
 
     // 2. Si Binance échoue, essayer Yahoo Finance
     if (prices.length === 0) {
       try {
-        console.log(`🔄 Tentative avec Yahoo Finance pour ${crypto}...`)
         const yahooSymbol = crypto === 'BTC' ? 'BTC-USD' : 'ETH-USD'
         const days = periodToDays(period)
         const numDays = days
@@ -334,13 +321,11 @@ export async function fetchHistoricalPrices(
               }
 
               cache.set(cryptoConfig.coinGeckoId, period, yahooResult)
-              console.log(`✅ Yahoo Finance: ${prices.length} points récupérés pour ${crypto} ${period}`)
               return yahooResult
             }
           }
         }
       } catch (yahooError) {
-        console.log(`⚠️ Yahoo Finance échec pour ${crypto}: ${yahooError}`)
       }
     }
 
@@ -355,7 +340,6 @@ export async function fetchHistoricalPrices(
     // Si on a des données en cache (même expirées), on les retourne plutôt que de fail
     const expiredCache = cache.get(cryptoConfig.coinGeckoId, period)
     if (expiredCache) {
-      console.log(`🔄 Utilisation du cache expiré pour ${crypto} ${period}`)
       return expiredCache
     }
 
@@ -369,7 +353,6 @@ export async function fetchMultipleHistoricalPrices(
   cryptos: SupportedCrypto[],
   period: BacktestPeriod = BacktestPeriod.ONE_YEAR
 ): Promise<Record<SupportedCrypto, HistoricalDataResponse>> {
-  console.log(`🔄 Récupération de ${cryptos.length} cryptos en parallèle`)
 
   try {
     const promises = cryptos.map(async (crypto) => {
@@ -393,7 +376,6 @@ export async function fetchMultipleHistoricalPrices(
       console.warn('⚠️ Certaines cryptos ont échoué:', errors)
     }
 
-    console.log(`✅ ${Object.keys(successResults).length}/${cryptos.length} cryptos récupérées avec succès`)
 
     return successResults as Record<SupportedCrypto, HistoricalDataResponse>
 
@@ -415,7 +397,6 @@ export function getSupportedCryptos(): Array<{ symbol: SupportedCrypto; name: st
 // Fonction pour vider le cache (utile pour le debug)
 export function clearHistoricalDataCache(): void {
   cache.clear()
-  console.log('🗑️ Cache des données historiques vidé')
 }
 
 // Fonction pour obtenir des stats sur le cache

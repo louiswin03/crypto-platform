@@ -147,7 +147,6 @@ class BacktestEngine {
 
   async runBacktest(): Promise<BacktestResult> {
     try {
-      console.log(`🚀 Démarrage du backtest pour ${this.config.crypto} sur ${this.config.period}`)
 
       // 1. Récupérer les données historiques
       const historicalData = await fetchHistoricalPrices(this.config.crypto, this.config.period)
@@ -174,7 +173,6 @@ class BacktestEngine {
         totalReturn: metrics.totalReturnPercentage / 100
       }
 
-      console.log(`✅ Backtest terminé: ${this.state.trades.length} trades, ROI: ${metrics.totalReturnPercentage.toFixed(2)}%`)
 
       return {
         config: this.config,
@@ -206,7 +204,6 @@ class BacktestEngine {
   }
 
   private calculateIndicators() {
-    console.log('📊 Calcul des indicateurs techniques...')
 
     // Gestion des stratégies personnalisées
     if (this.config.strategyType === 'custom' && this.config.customStrategy) {
@@ -273,17 +270,35 @@ class BacktestEngine {
   }
 
   private simulateTrading() {
-    console.log('⚡ Simulation du trading...')
 
     for (let i = 1; i < this.priceData.length; i++) {
       const currentPrice = this.priceData[i]
       const previousPrice = this.priceData[i - 1]
 
-      // Mettre à jour la position courante
-      this.updatePosition(currentPrice)
-
-      // Vérifier les conditions de stop loss / take profit
+      // ✅ ORDRE CORRECT: Vérifier AVANT les stops avant de mettre à jour avec le prix de clôture
+      // Vérifier les conditions de stop loss / take profit en PREMIER
+      // Car les stops s'exécutent sur les mèches (low/high), pas sur le close
       this.checkStopConditions(currentPrice, i)
+
+      // Si la position a été fermée par un stop, ne pas continuer
+      if (!this.state.position.isOpen) {
+        // Enregistrer l'historique du capital même si position fermée
+        const totalValue = this.state.currentCapital
+        this.state.capitalHistory.push({
+          timestamp: currentPrice.timestamp,
+          value: totalValue
+        })
+
+        // Vérifier les signaux d'achat pour potentiellement ouvrir une nouvelle position
+        const signal = this.getSignal(i, currentPrice)
+        if (signal === 'BUY') {
+          this.executeBuy(currentPrice, i)
+        }
+        continue
+      }
+
+      // Mettre à jour la position courante (seulement si toujours ouverte)
+      this.updatePosition(currentPrice)
 
       // Vérifier les signaux de trading
       const signal = this.getSignal(i, currentPrice)
@@ -358,8 +373,6 @@ class BacktestEngine {
   private calculateCustomIndicators() {
     if (!this.config.customStrategy) return
 
-    console.log(`📊 Calcul des indicateurs personnalisés pour "${this.config.customStrategy.name}"`)
-    console.log('📋 Indicateurs à calculer:', this.config.customStrategy.indicators.map(i => i.type))
 
     for (const indicatorConfig of this.config.customStrategy.indicators) {
       switch (indicatorConfig.type) {
@@ -448,15 +461,6 @@ class BacktestEngine {
       }
     }
 
-    // Debug : afficher les indicateurs calculés
-    console.log('✅ Indicateurs calculés:', Object.keys(this.indicators))
-    Object.keys(this.indicators).forEach(key => {
-      const indicator = this.indicators[key]
-      if (Array.isArray(indicator)) {
-        console.log(`  ${key}: ${indicator.length} points, premiers non-null:`,
-          indicator.filter(p => (p.value !== null && p.value !== undefined) || (p.vwap !== null && p.vwap !== undefined) || (p.supertrend !== null && p.supertrend !== undefined)).slice(0, 3))
-      }
-    })
   }
 
   private getCustomStrategySignal(index: number, currentPrice: HistoricalPrice): 'BUY' | 'SELL' | 'HOLD' {
@@ -471,7 +475,6 @@ class BacktestEngine {
       for (const entryCondition of indicatorConfig.conditions.entry) {
         // Ignorer les conditions 'custom' non configurées
         if (entryCondition.condition === 'custom') {
-          console.warn(`Condition 'custom' ignorée pour ${indicatorConfig.type}`, entryCondition)
           continue
         }
         const entryResult = this.evaluateCondition(indicatorConfig, entryCondition, index, currentPrice, 'entry')
@@ -482,7 +485,6 @@ class BacktestEngine {
       for (const exitCondition of indicatorConfig.conditions.exit) {
         // Ignorer les conditions 'custom' non configurées
         if (exitCondition.condition === 'custom') {
-          console.warn(`Condition 'custom' ignorée pour ${indicatorConfig.type}`, exitCondition)
           continue
         }
         const exitResult = this.evaluateCondition(indicatorConfig, exitCondition, index, currentPrice, 'exit')
@@ -504,17 +506,6 @@ class BacktestEngine {
       shouldSell = exitSignals.length > 0 && exitSignals.every(signal => signal)
     } else if (this.config.customStrategy.exitLogic === 'ANY_OR') {
       shouldSell = exitSignals.some(signal => signal)
-    }
-
-    // Debug logging pour les premiers trades
-    if (index < 100 && (shouldBuy || shouldSell)) {
-      console.log(`Signal détecté à l'index ${index}:`, {
-        signal: shouldBuy ? 'BUY' : 'SELL',
-        entrySignals,
-        exitSignals,
-        price: currentPrice.close,
-        timestamp: currentPrice.timestamp
-      })
     }
 
     if (shouldBuy) return 'BUY'
@@ -562,7 +553,6 @@ class BacktestEngine {
         return this.evaluateOBVCondition(condition, index)
 
       default:
-        console.warn(`Type d'indicateur non reconnu: ${indicatorConfig.type}`, { condition, indicatorConfig })
         return false
     }
   }
@@ -1238,14 +1228,17 @@ class BacktestEngine {
 
     this.state.trades.push(trade)
 
-    console.log(`📈 ACHAT: ${quantity.toFixed(6)} ${this.config.crypto} à ${price.close.toFixed(2)}$ (${trade.reason})`)
   }
 
   private executeSell(price: HistoricalPrice, index: number, reason: string) {
     if (!this.state.position.isOpen) return
 
-    const fees = this.state.position.currentValue * this.FEES_PERCENTAGE
-    const netAmount = this.state.position.currentValue - fees
+    // ✅ FIX: Utiliser price.close comme prix d'exécution réel
+    const executionPrice = price.close
+    const currentValue = this.state.position.quantity * executionPrice
+
+    const fees = currentValue * this.FEES_PERCENTAGE
+    const netAmount = currentValue - fees
     const pnl = netAmount - this.state.position.totalInvested
     const pnlPercentage = (pnl / this.state.position.totalInvested) * 100
 
@@ -1254,7 +1247,7 @@ class BacktestEngine {
       type: 'SELL',
       timestamp: price.timestamp,
       date: price.date,
-      price: price.close,
+      price: executionPrice,
       quantity: this.state.position.quantity,
       amount: netAmount,
       reason,
@@ -1277,7 +1270,6 @@ class BacktestEngine {
 
     this.state.trades.push(trade)
 
-    console.log(`📉 VENTE: ${trade.quantity.toFixed(6)} ${this.config.crypto} à ${price.close.toFixed(2)}$ | P&L: ${pnl.toFixed(2)}$ (${pnlPercentage.toFixed(2)}%)`)
   }
 
   private checkStopConditions(price: HistoricalPrice, index: number) {
@@ -1287,24 +1279,53 @@ class BacktestEngine {
     const stopLossPrice = this.state.position.averagePrice * (1 - this.config.riskManagement.stopLoss / 100)
     const takeProfitPrice = this.state.position.averagePrice * (1 + this.config.riskManagement.takeProfit / 100)
 
-    // 🔥 RÉALISTE: Vérifier si les mèches ont touché les niveaux
-    // Stop Loss: si le prix bas (low) a touché le stop loss
-    if (price.low <= stopLossPrice) {
-      // Créer un prix modifié avec le prix d'exécution du stop loss
+    const slTouched = price.low <= stopLossPrice
+    const tpTouched = price.high >= takeProfitPrice
+
+    // Si aucun niveau n'est touché, sortir
+    if (!slTouched && !tpTouched) return
+
+    // ✅ RÉALISME AMÉLIORÉ: Déterminer quel niveau est touché en premier
+    // selon le sens de la bougie (baissière vs haussière)
+    const isBearishCandle = price.open > price.close
+
+    // Si les deux sont touchés, déterminer l'ordre selon le sens de la bougie
+    if (slTouched && tpTouched) {
+      // Bougie baissière: le high (TP) est touché avant le low (SL)
+      if (isBearishCandle) {
+        // Take Profit en premier
+        const takeProfitExecutionPrice: HistoricalPrice = {
+          ...price,
+          close: takeProfitPrice
+        }
+        this.executeSell(takeProfitExecutionPrice, index, `Take Profit (+${this.config.riskManagement.takeProfit}%) - Mèche touchée`)
+        return
+      } else {
+        // Bougie haussière: le low (SL) est touché avant le high (TP)
+        // Stop Loss en premier
+        const stopExecutionPrice: HistoricalPrice = {
+          ...price,
+          close: stopLossPrice
+        }
+        this.executeSell(stopExecutionPrice, index, `Stop Loss (-${this.config.riskManagement.stopLoss}%) - Mèche touchée`)
+        return
+      }
+    }
+
+    // Un seul niveau est touché
+    if (slTouched) {
       const stopExecutionPrice: HistoricalPrice = {
         ...price,
-        close: stopLossPrice // Le stop s'exécute au niveau défini
+        close: stopLossPrice
       }
       this.executeSell(stopExecutionPrice, index, `Stop Loss (-${this.config.riskManagement.stopLoss}%) - Mèche touchée`)
       return
     }
 
-    // Take Profit: si le prix haut (high) a touché le take profit
-    if (price.high >= takeProfitPrice) {
-      // Créer un prix modifié avec le prix d'exécution du take profit
+    if (tpTouched) {
       const takeProfitExecutionPrice: HistoricalPrice = {
         ...price,
-        close: takeProfitPrice // Le take profit s'exécute au niveau défini
+        close: takeProfitPrice
       }
       this.executeSell(takeProfitExecutionPrice, index, `Take Profit (+${this.config.riskManagement.takeProfit}%) - Mèche touchée`)
       return
@@ -1386,7 +1407,8 @@ class BacktestEngine {
     const { maxDrawdown, maxDrawdownPercentage } = this.calculateMaxDrawdown()
 
     return {
-      totalTrades: trades.length,
+      // ✅ FIX: Un trade complet = 1 BUY + 1 SELL, donc compter seulement les SELL
+      totalTrades: sellTrades.length,
       winningTrades,
       losingTrades,
       winRate,

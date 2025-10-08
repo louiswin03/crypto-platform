@@ -71,7 +71,7 @@ export default function Footer() {
               <li><Link href="/aide" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Centre d'aide</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Documentation API</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Tutoriels vidéo</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Support technique</Link></li>
+              <li><Link href="/support" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Support technique</Link></li>
             </ul>
           </div>
 

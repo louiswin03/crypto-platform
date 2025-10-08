@@ -7,6 +7,7 @@ import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useEffect, useState } from 'react'
+import emailjs from '@emailjs/browser'
 
 export default function ContactPage() {
   const { language } = useLanguage()
@@ -19,24 +20,21 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submitError, setSubmitError] = useState(false)
 
   useEffect(() => {
     // Rien à faire, l'origine est déjà sauvegardée par le Footer avant de cliquer
-    console.log('📍 Contact - Storage on mount:', sessionStorage.getItem('legalPagesOrigin'))
   }, [])
 
   const handleBack = () => {
     const origin = sessionStorage.getItem('legalPagesOrigin')
 
-    console.log('🔙 Contact Back - Origin from storage:', origin)
 
     sessionStorage.removeItem('legalPagesOrigin')
 
     if (origin) {
-      console.log('🔙 Contact Back - Pushing to:', origin)
       router.push(origin)
     } else {
-      console.log('🔙 Contact Back - No origin, going to home')
       router.push('/')
     }
   }
@@ -44,18 +42,61 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitError(false)
 
-    // Simuler l'envoi
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    try {
+      // Configuration EmailJS
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-    setSubmitSuccess(true)
-    setIsSubmitting(false)
+      console.log('🔧 EmailJS Config:', {
+        serviceId: serviceId ? '✅ Configuré' : '❌ Manquant',
+        templateId: templateId ? '✅ Configuré' : '❌ Manquant',
+        publicKey: publicKey ? '✅ Configuré' : '❌ Manquant'
+      })
 
-    // Reset form après 3 secondes
-    setTimeout(() => {
-      setFormData({ name: '', email: '', subject: '', message: '' })
-      setSubmitSuccess(false)
-    }, 3000)
+      // Vérifier que les clés sont configurées
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error('EmailJS not configured - check your .env.local file')
+      }
+
+      console.log('📧 Envoi de l\'email...')
+
+      // Envoyer l'email via EmailJS
+      const response = await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        publicKey
+      )
+
+      console.log('✅ Email envoyé avec succès!', response)
+
+      setSubmitSuccess(true)
+
+      // Reset form après 3 secondes
+      setTimeout(() => {
+        setFormData({ name: '', email: '', subject: '', message: '' })
+        setSubmitSuccess(false)
+      }, 3000)
+    } catch (error: any) {
+      console.error('❌ Erreur détaillée:', {
+        message: error?.message || 'Unknown error',
+        text: error?.text || 'No text',
+        status: error?.status || 'No status',
+        error: error
+      })
+      setSubmitError(true)
+      setTimeout(() => setSubmitError(false), 5000)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -230,6 +271,23 @@ export default function ContactPage() {
                         ? 'Nous vous répondrons dans les plus brefs délais.'
                         : 'We will respond to you as soon as possible.'}
                     </p>
+                  </div>
+                ) : submitError ? (
+                  <div className="p-6 bg-[#DC2626]/10 border border-[#DC2626]/30 rounded-xl text-center">
+                    <h3 className="text-xl font-bold text-[#DC2626] mb-2">
+                      {language === 'fr' ? 'Erreur d\'envoi' : 'Sending error'}
+                    </h3>
+                    <p className="text-gray-300 mb-4">
+                      {language === 'fr'
+                        ? 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement par email.'
+                        : 'An error occurred. Please try again or contact us directly by email.'}
+                    </p>
+                    <button
+                      onClick={() => setSubmitError(false)}
+                      className="text-[#6366F1] hover:text-[#8B5CF6] font-semibold"
+                    >
+                      {language === 'fr' ? 'Réessayer' : 'Try again'}
+                    </button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">

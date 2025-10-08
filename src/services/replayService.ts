@@ -144,7 +144,6 @@ export class ReplayService {
 
       // Debug pour vérifier le centrage
       const isTargetCentered = targetIndex >= startIndex && targetIndex <= endIndex
-      console.log(`Replay: target=${targetIndex}, window=[${startIndex}, ${endIndex}], centered=${isTargetCentered}, size=${endIndex - startIndex + 1}`)
     } else {
       // Mode traditionnel : du début jusqu'à l'index courant
       startIndex = 0

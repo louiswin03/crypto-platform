@@ -52,8 +52,8 @@ export default function ImprovedCryptoSearch({
     localStorage.setItem('crypto-recent-searches', JSON.stringify(newRecentSearches))
   }
 
-  // Top cryptos populaires (affichage par défaut)
-  const topCryptos = cryptoOptions.slice(0, 6)
+  // Top cryptos populaires (affichage par défaut) - réduit à 3
+  const topCryptos = cryptoOptions.slice(0, 3)
   
   // Résultats de recherche filtrés et triés
   const filteredOptions = useMemo(() => {
@@ -97,9 +97,9 @@ export default function ImprovedCryptoSearch({
       }
     })
 
-    // Limiter les résultats si pas de recherche
+    // Limiter les résultats si pas de recherche - réduit à 3
     if (!searchTerm && !showAll) {
-      return filtered.slice(0, 6)
+      return filtered.slice(0, 3)
     }
 
     return filtered
@@ -275,26 +275,26 @@ export default function ImprovedCryptoSearch({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-2">
             {filteredOptions.map((crypto, index) => (
               <button
                 key={crypto.id}
                 onClick={() => handleCryptoSelect(crypto)}
-                className={`group p-4 rounded-xl border transition-all duration-300 text-left hover:scale-105 hover:shadow-lg animate-fade-in-up ${
+                className={`group p-2 rounded-lg border transition-all duration-300 text-left hover:scale-[1.02] animate-fade-in-up ${
                   crypto.tradingview_symbol === selectedCrypto
-                    ? 'border-[#6366F1] bg-[#6366F1]/10 shadow-lg shadow-[#6366F1]/20'
+                    ? 'border-[#6366F1] bg-[#6366F1]/10'
                     : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600/50 hover:bg-gray-800/50'
                 }`}
                 style={{
-                  animationDelay: `${index * 50}ms`
+                  animationDelay: `${index * 30}ms`
                 }}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden ${
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden ${
                       crypto.tradingview_symbol === selectedCrypto
-                        ? 'ring-2 ring-[#6366F1] ring-offset-2 ring-offset-gray-800 scale-110'
-                        : 'group-hover:scale-110 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:from-blue-400 group-hover:to-purple-500'
+                        ? 'ring-2 ring-[#6366F1]'
+                        : 'bg-gradient-to-r from-blue-500 to-purple-600'
                     }`}>
                       {crypto.image ? (
                         <img
@@ -302,7 +302,6 @@ export default function ImprovedCryptoSearch({
                           alt={crypto.name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            // Fallback au texte si l'image ne charge pas
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
                             const fallback = target.nextElementSibling as HTMLElement;
@@ -310,66 +309,35 @@ export default function ImprovedCryptoSearch({
                           }}
                         />
                       ) : null}
-                      <span className={`text-white text-sm font-bold ${crypto.image ? 'hidden' : ''}`}>
+                      <span className={`text-white text-xs font-bold ${crypto.image ? 'hidden' : ''}`}>
                         {crypto.symbol.slice(0, 2)}
                       </span>
                     </div>
-                    <div>
-                      <div className="font-semibold text-white group-hover:text-[#6366F1] transition-colors duration-300">
+                    <div className="flex-1">
+                      <div className="font-semibold text-white text-sm group-hover:text-[#6366F1] transition-colors">
                         {crypto.name}
                       </div>
-                      <div className="text-sm text-gray-400 flex items-center space-x-1">
-                        <Hash className="w-3 h-3" />
-                        <span>{crypto.rank}</span>
-                        <span>•</span>
+                      <div className="text-xs text-gray-400 flex items-center space-x-1">
                         <span className="font-mono">{crypto.symbol}</span>
+                        {crypto.price && (
+                          <>
+                            <span>•</span>
+                            <span>{formatPrice(crypto.price)}</span>
+                          </>
+                        )}
+                        {crypto.change24h !== null && (
+                          <span className={crypto.change24h >= 0 ? 'text-green-400' : 'text-red-400'}>
+                            {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(1)}%
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    {crypto.tradingview_symbol === selectedCrypto && (
-                      <div className="w-6 h-6 bg-[#6366F1] rounded-full flex items-center justify-center animate-pulse">
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  {crypto.price && (
-                    <div className="flex items-center space-x-2 group-hover:scale-105 transition-transform duration-300">
-                      <DollarSign className="w-4 h-4 text-gray-400 group-hover:text-green-400 transition-colors duration-300" />
-                      <span className="font-semibold text-white">
-                        {formatPrice(crypto.price)}
-                      </span>
-                    </div>
-                  )}
-
-                  {crypto.change24h !== null && (
-                    <div className={`flex items-center space-x-1 text-sm font-medium group-hover:scale-105 transition-all duration-300 ${
-                      crypto.change24h >= 0 ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                      {crypto.change24h >= 0 ? (
-                        <TrendingUp className="w-4 h-4 animate-pulse" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4 animate-pulse" />
-                      )}
-                      <span>
-                        {crypto.change24h >= 0 ? '+' : ''}
-                        {crypto.change24h.toFixed(2)}%
-                      </span>
-                      <span className="text-gray-500">24h</span>
-                    </div>
-                  )}
-
-                  {/* Indicateur de tendance */}
-                  {crypto.change24h !== null && Math.abs(crypto.change24h) > 10 && (
-                    <div className="flex items-center space-x-1">
-                      <Flame className="w-3 h-3 text-orange-400 animate-bounce" />
-                      <span className="text-xs text-orange-400 font-medium">HOT</span>
+                  {crypto.tradingview_symbol === selectedCrypto && (
+                    <div className="w-5 h-5 bg-[#6366F1] rounded-full flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
                     </div>
                   )}
                 </div>

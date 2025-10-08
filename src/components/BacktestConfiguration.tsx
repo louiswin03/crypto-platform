@@ -66,12 +66,13 @@ interface BacktestConfig {
 interface BacktestConfigurationProps {
   onStartBacktest: (config: BacktestConfig) => void
   isRunning?: boolean
+  initialConfig?: BacktestConfig
 }
 
-export default function BacktestConfiguration({ onStartBacktest, isRunning = false }: BacktestConfigurationProps) {
+export default function BacktestConfiguration({ onStartBacktest, isRunning = false, initialConfig }: BacktestConfigurationProps) {
   const { t } = useLanguage()
 
-  const [config, setConfig] = useState<BacktestConfig>({
+  const [config, setConfig] = useState<BacktestConfig>(initialConfig || {
     crypto: 'BTC',
     period: BacktestPeriod.ONE_YEAR,
     strategyType: 'recommended',
@@ -107,6 +108,14 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
   const [showLoadModal, setShowLoadModal] = useState(false)
   const [strategyName, setStrategyName] = useState('')
   const [strategyDescription, setStrategyDescription] = useState('')
+
+  // Mettre à jour la config quand initialConfig change (quand on revient de l'onglet résultats)
+  React.useEffect(() => {
+    if (initialConfig) {
+      setConfig(initialConfig)
+      setActiveTab(initialConfig.strategyType)
+    }
+  }, [initialConfig])
 
   // Charger les stratégies sauvegardées au montage
   React.useEffect(() => {
@@ -633,7 +642,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   className="w-full bg-gray-700/50 border border-gray-600/50 rounded px-2 py-1 text-xs text-[#F9FAFB]"
                 >
                   {conditionEntries.map(([key, info]) => (
-                    <option key={key} value={key}>{info.label}</option>
+                    <option key={key} value={key} className="bg-gray-800 text-white">{info.label}</option>
                   ))}
                 </select>
 
@@ -682,7 +691,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   className="w-full bg-gray-700/50 border border-gray-600/50 rounded px-2 py-1 text-xs text-[#F9FAFB]"
                 >
                   {conditionEntries.map(([key, info]) => (
-                    <option key={key} value={key}>{info.label}</option>
+                    <option key={key} value={key} className="bg-gray-800 text-white">{info.label}</option>
                   ))}
                 </select>
 
@@ -817,8 +826,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   onChange={(e) => setConfig(prev => ({ ...prev, crypto: e.target.value as 'BTC' | 'ETH' }))}
                   className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
                 >
-                  <option value="BTC">Bitcoin (BTC)</option>
-                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="BTC" className="bg-gray-800 text-white">Bitcoin (BTC)</option>
+                  <option value="ETH" className="bg-gray-800 text-white">Ethereum (ETH)</option>
                 </select>
               </div>
 
@@ -833,7 +842,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
                 >
                   {periods.map(period => (
-                    <option key={period.value} value={period.value}>
+                    <option key={period.value} value={period.value} className="bg-gray-800 text-white">
                       {period.label} - {period.description}
                     </option>
                   ))}
@@ -1064,8 +1073,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                           }))}
                           className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
                         >
-                          <option value="ALL_AND">{t('indicator.all_and')}</option>
-                          <option value="ANY_OR">{t('indicator.any_or')}</option>
+                          <option value="ALL_AND" className="bg-gray-800 text-white">{t('indicator.all_and')}</option>
+                          <option value="ANY_OR" className="bg-gray-800 text-white">{t('indicator.any_or')}</option>
                         </select>
                         <p className="text-xs text-gray-500 mt-1">
                           {config.customStrategy.entryLogic === 'ALL_AND'
@@ -1089,8 +1098,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                           }))}
                           className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
                         >
-                          <option value="ALL_AND">{t('indicator.all_and')}</option>
-                          <option value="ANY_OR">{t('indicator.any_or')}</option>
+                          <option value="ALL_AND" className="bg-gray-800 text-white">{t('indicator.all_and')}</option>
+                          <option value="ANY_OR" className="bg-gray-800 text-white">{t('indicator.any_or')}</option>
                         </select>
                         <p className="text-xs text-gray-500 mt-1">
                           {config.customStrategy.exitLogic === 'ALL_AND'

@@ -27,7 +27,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Token invalide' }, { status: 401 })
     }
 
-    console.log('🔍 Recherche du profil pour userId:', userId)
 
     // Récupérer l'utilisateur depuis la table users pour avoir l'email
     const { data: userData, error: userError } = await supabase
@@ -36,8 +35,6 @@ export async function GET(request: NextRequest) {
       .eq('id', userId)
       .single()
 
-    console.log('👤 Données utilisateur:', userData)
-    console.log('❌ Erreur utilisateur:', userError)
 
     // Récupérer le profil utilisateur depuis user_profiles (table existante)
     const { data: profile, error: profileError } = await supabase
@@ -46,14 +43,9 @@ export async function GET(request: NextRequest) {
       .eq('id', userId)  // user_profiles utilise 'id' directement
       .single()
 
-    console.log('📋 Données profil COMPLÈTES:', profile)
-    console.log('📱 Téléphone récupéré de la base:', profile?.phone)
-    console.log('📍 Localisation récupérée de la base:', profile?.location)
-    console.log('❌ Erreur profil:', profileError)
 
     // Si pas de profil, créer un profil vide
     if (profileError && profileError.code === 'PGRST116') {
-      console.log('⚠️ Aucun profil trouvé pour cet utilisateur')
     }
 
     // Récupérer les vraies données de backtests

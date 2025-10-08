@@ -254,7 +254,7 @@ export default function SmartNavigation() {
                         <Link
                           href="/account?tab=security"
                           onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 transition-colors"
+                          className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 transition-colors border-t border-gray-800/40"
                         >
                           <Shield className="w-5 h-5" />
                           <div>

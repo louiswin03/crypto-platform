@@ -146,8 +146,6 @@ export class DatabaseAuthService {
       const oldUsers = localStorage.getItem('crypto_platform_users')
 
       if (oldCurrentUser || oldUsers) {
-        console.log('🔄 Données d\'authentification localStorage détectées')
-        console.log('Veuillez créer un compte avec votre email/mot de passe pour migrer vos données')
 
         // Optionnel: afficher une notification à l'utilisateur
         window.dispatchEvent(new CustomEvent('migration-needed', {
@@ -174,7 +172,6 @@ export class DatabaseAuthService {
 
     keysToRemove.forEach(key => {
       localStorage.removeItem(key)
-      console.log(`🗑️ Nettoyage clé localStorage: ${key}`)
     })
   }
 }

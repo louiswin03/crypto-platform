@@ -613,6 +613,35 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Disclaimer Légal */}
+        <section className="relative py-16 px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-yellow-900/20 border-2 border-yellow-600/50 rounded-2xl p-6 sm:p-8 shadow-xl">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-yellow-600/30 rounded-xl flex items-center justify-center">
+                    <span className="text-2xl">⚠️</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-yellow-200 font-bold text-lg mb-3">Avertissement Important</h3>
+                  <p className="text-yellow-200/90 text-sm sm:text-base leading-relaxed">
+                    Cette plateforme est fournie à <strong>titre éducatif uniquement</strong>.
+                    Les performances passées ne garantissent pas les résultats futurs. Le trading de cryptomonnaies
+                    comporte des <strong>risques importants de perte en capital</strong>. Ne tradez qu'avec des fonds que vous pouvez
+                    vous permettre de perdre. <strong>Ceci n'est pas un conseil financier</strong>.
+                  </p>
+                  <div className="mt-4 pt-4 border-t border-yellow-600/30">
+                    <p className="text-yellow-200/70 text-xs">
+                      En utilisant cette plateforme, vous reconnaissez avoir pris connaissance de cet avertissement et acceptez les risques associés au trading de cryptomonnaies.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Footer */}
         <footer className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#111827]/20"></div>
@@ -668,7 +697,7 @@ export default function Home() {
                   <li><Link href="/aide" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.help')}</Link></li>
                   <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.api_docs')}</Link></li>
                   <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tutorials')}</Link></li>
-                  <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tech_support')}</Link></li>
+                  <li><Link href="/support" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tech_support')}</Link></li>
                 </ul>
               </div>
 

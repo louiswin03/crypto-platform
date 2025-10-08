@@ -34,10 +34,8 @@ export default function SignInPage() {
     }
 
     try {
-      console.log('🚀 Tentative de connexion avec:', email)
       const { data, error } = await signIn(email, password)
       
-      console.log('📥 Résultat signIn:', { data, error })
       
       if (error) {
         console.error('❌ Erreur de connexion:', error)
@@ -49,7 +47,6 @@ export default function SignInPage() {
         })
         setLoading(false)
       } else {
-        console.log('✅ Connexion réussie!')
         setMessage({ type: 'success', text: t('auth.signin.success') })
         // Utiliser la redirection intelligente
         setTimeout(() => {

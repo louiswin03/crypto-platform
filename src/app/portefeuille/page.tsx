@@ -5,6 +5,12 @@ import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Sh
 import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
+import BinanceConnection from '@/components/BinanceConnection'
+import BinanceBalances from '@/components/BinanceBalances'
+import CoinbaseConnection from '@/components/CoinbaseConnection'
+import CoinbaseBalances from '@/components/CoinbaseBalances'
+import KrakenConnection from '@/components/KrakenConnection'
+import KrakenBalances from '@/components/KrakenBalances'
 import React, { useState, useEffect, useMemo } from 'react'
 import { DatabaseAuthService } from '@/services/databaseAuthService'
 import { useAuth } from '@/hooks/useAuth'
@@ -319,7 +325,6 @@ function ManualPortfolioSection() {
         current_price_usd: newHolding.currentPrice
       }
 
-      console.log('💾 Saving holding:', payload)
 
       const response = await fetch('/api/holdings', {
         method: 'POST',
@@ -330,7 +335,6 @@ function ManualPortfolioSection() {
         body: JSON.stringify(payload)
       })
 
-      console.log('📡 Response status:', response.status)
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -858,24 +862,24 @@ function ManualPortfolioSection() {
                     </div>
                   </div>
                 )}
-                {totalProfitLoss > 0 && (totalProfitLoss / totalInvested) > 0.5 && (
+                {totalPnL > 0 && (totalPnL / totalInvested) > 0.5 && (
                   <div className="flex items-start gap-3 p-3 bg-[#16A34A]/10 border border-[#16A34A]/30 rounded-xl">
                     <TrendingUp className="w-5 h-5 text-[#16A34A] mt-0.5 flex-shrink-0" />
                     <div>
                       <div className="font-semibold text-[#16A34A] mb-1">Performance excellente</div>
                       <div className="text-gray-400">
-                        Gain de {((totalProfitLoss / totalInvested) * 100).toFixed(1)}%. Pensez à sécuriser une partie des profits (take profit) selon votre stratégie.
+                        Gain de {((totalPnL / totalInvested) * 100).toFixed(1)}%. Pensez à sécuriser une partie des profits (take profit) selon votre stratégie.
                       </div>
                     </div>
                   </div>
                 )}
-                {totalProfitLoss < 0 && Math.abs(totalProfitLoss / totalInvested) > 0.2 && (
+                {totalPnL < 0 && Math.abs(totalPnL / totalInvested) > 0.2 && (
                   <div className="flex items-start gap-3 p-3 bg-[#DC2626]/10 border border-[#DC2626]/30 rounded-xl">
                     <TrendingDown className="w-5 h-5 text-[#DC2626] mt-0.5 flex-shrink-0" />
                     <div>
                       <div className="font-semibold text-[#DC2626] mb-1">Perte importante</div>
                       <div className="text-gray-400">
-                        Perte de {Math.abs((totalProfitLoss / totalInvested) * 100).toFixed(1)}%. Revoyez votre stratégie et utilisez le backtest pour optimiser vos positions.
+                        Perte de {Math.abs((totalPnL / totalInvested) * 100).toFixed(1)}%. Revoyez votre stratégie et utilisez le backtest pour optimiser vos positions.
                       </div>
                     </div>
                   </div>
@@ -1747,31 +1751,34 @@ function AddEditHoldingModal({
 
 export default function PortefeuillePage() {
   const { t } = useLanguage()
+  const [binanceConnected, setBinanceConnected] = useState(false)
+  const [binanceBalance, setBinanceBalance] = useState(0)
+  const [coinbaseConnected, setCoinbaseConnected] = useState(false)
+  const [coinbaseBalance, setCoinbaseBalance] = useState(0)
+  const [krakenConnected, setKrakenConnected] = useState(false)
+  const [krakenBalance, setKrakenBalance] = useState(0)
 
   const exchanges = [
-    { 
-      name: 'Binance', 
-      logo: '🔶', 
-      connected: false,
-      lastSync: null, 
-      status: 'disconnected',
-      balance: 0
+    {
+      name: 'Binance',
+      logo: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+      connected: binanceConnected,
+      status: binanceConnected ? 'active' : 'disconnected',
+      balance: binanceBalance
     },
-    { 
-      name: 'Coinbase', 
-      logo: '🔵', 
-      connected: false, 
-      lastSync: null, 
-      status: 'disconnected',
-      balance: 0 
+    {
+      name: 'Coinbase',
+      logo: 'https://assets.coingecko.com/coins/images/44/small/Coinbase_Coin_Primary.png',
+      connected: coinbaseConnected,
+      status: coinbaseConnected ? 'active' : 'disconnected',
+      balance: coinbaseBalance
     },
-    { 
-      name: 'Kraken', 
-      logo: '🟣', 
-      connected: false,
-      lastSync: null, 
-      status: 'disconnected',
-      balance: 0
+    {
+      name: 'Kraken',
+      logo: 'https://assets.coingecko.com/coins/images/23468/small/kraken.png',
+      connected: krakenConnected,
+      status: krakenConnected ? 'active' : 'disconnected',
+      balance: krakenBalance
     },
   ]
 
@@ -1876,6 +1883,27 @@ export default function PortefeuillePage() {
           {/* Portfolio Manuel */}
           <ManualPortfolioSection />
 
+          {/* Binance Portfolio */}
+          {binanceConnected && (
+            <div className="mb-12">
+              <BinanceBalances />
+            </div>
+          )}
+
+          {/* Coinbase Portfolio */}
+          {coinbaseConnected && (
+            <div className="mb-12">
+              <CoinbaseBalances />
+            </div>
+          )}
+
+          {/* Kraken Portfolio */}
+          {krakenConnected && (
+            <div className="mb-12">
+              <KrakenBalances />
+            </div>
+          )}
+
           {/* Exchange Connections */}
           <div className="mb-12">
             <div className="flex items-center justify-between mb-8">
@@ -1899,11 +1927,13 @@ export default function PortefeuillePage() {
                 }}>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-4">
-                      <div className="text-4xl group-hover:scale-110 transition-transform">{exchange.logo}</div>
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <img src={exchange.logo} alt={exchange.name} className="w-full h-full object-cover" />
+                      </div>
                       <div>
                         <div className="font-bold text-[#F9FAFB] text-lg group-hover:text-[#6366F1] transition-colors">{exchange.name}</div>
                         <div className="text-gray-400 text-sm font-medium">
-                          {exchange.connected ? `Sync: ${exchange.lastSync}` : 'Non connecté'}
+                          {exchange.connected ? 'Connecté' : 'Non connecté'}
                         </div>
                       </div>
                     </div>
@@ -1915,7 +1945,7 @@ export default function PortefeuillePage() {
                       {exchange.status === 'active' ? 'Actif' : 'Inactif'}
                     </div>
                   </div>
-                  
+
                   <div className="mb-6">
                     <div className="text-gray-400 text-sm mb-2 font-semibold uppercase tracking-wider">Solde Total</div>
                     <div className="font-mono font-black text-[#F9FAFB] text-2xl group-hover:text-[#6366F1] transition-colors">
@@ -1928,25 +1958,28 @@ export default function PortefeuillePage() {
                     )}
                   </div>
 
-                  <div className="flex space-x-3">
-                    {exchange.connected ? (
-                      <>
-                        <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 hover:scale-105 transition-all text-sm font-semibold">
-                          <Settings className="w-4 h-4" />
-                          <span>Config</span>
-                        </button>
-                        <button className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#DC2626] hover:border-[#DC2626]/50 hover:scale-105 transition-all text-sm font-semibold">
-                          <Trash2 className="w-4 h-4" />
-                          <span>Suppr</span>
-                        </button>
-                      </>
-                    ) : (
-                      <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl hover:scale-105 transition-all text-sm font-bold shadow-lg hover:shadow-xl">
-                        <Key className="w-4 h-4" />
-                        <span>Connecter</span>
-                      </button>
-                    )}
-                  </div>
+                  {/* Composants de connexion par exchange */}
+                  {exchange.name === 'Binance' ? (
+                    <BinanceConnection
+                      onConnectionChange={setBinanceConnected}
+                      onBalanceChange={setBinanceBalance}
+                    />
+                  ) : exchange.name === 'Coinbase' ? (
+                    <CoinbaseConnection
+                      onConnectionChange={setCoinbaseConnected}
+                      onBalanceChange={setCoinbaseBalance}
+                    />
+                  ) : exchange.name === 'Kraken' ? (
+                    <KrakenConnection
+                      onConnectionChange={setKrakenConnected}
+                      onBalanceChange={setKrakenBalance}
+                    />
+                  ) : (
+                    <button disabled className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-600 cursor-not-allowed text-sm font-semibold opacity-50">
+                      <Key className="w-4 h-4" />
+                      <span>Bientôt disponible</span>
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

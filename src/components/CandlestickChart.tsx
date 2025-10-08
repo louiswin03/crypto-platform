@@ -427,7 +427,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   // Réinitialiser la vue quand disableZoom change
   useEffect(() => {
     if (disableZoom) {
-      console.log('Mode replay activé - réinitialisation de la vue zoom')
       setViewStart(0)
       setViewEnd(1)
       setZoomLocked(true)
@@ -455,7 +454,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
           if (Math.abs(prev.width - newWidth) < 5 && Math.abs(prev.height - newHeight) < 5) {
             return prev // Pas de changement significatif
           }
-          console.log(`CandlestickChart resize: ${prev.width}x${prev.height} → ${newWidth}x${newHeight}`)
           return { width: newWidth, height: newHeight }
         })
       }
@@ -469,15 +467,8 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   }, [])
 
   if (!data || data.length === 0) {
-    console.log('CandlestickChart: Aucune donnée reçue')
     return <div className="text-gray-500 p-4">Aucune donnée de prix disponible</div>
   }
-
-  console.log('CandlestickChart: Données reçues:', {
-    dataLength: data.length,
-    firstCandle: data[0],
-    tradesLength: trades.length
-  })
 
   // Calculer les données visibles selon le zoom
   const startIndex = Math.floor(viewStart * data.length)
@@ -545,7 +536,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   // Gestionnaires d'événements pour le zoom et le déplacement
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (zoomLocked || disableZoom) {
-      console.log('Zoom bloqué (mode replay ou verrou)')
       return
     }
 
@@ -566,7 +556,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
       const newStart = Math.max(0, centerPoint - newRange / 2)
       const newEnd = Math.min(1, newStart + newRange)
 
-      console.log(`Zoom via molette: [${viewStart.toFixed(3)}, ${viewEnd.toFixed(3)}] → [${newStart.toFixed(3)}, ${newEnd.toFixed(3)}]`)
       setViewStart(newStart)
       setViewEnd(newEnd)
     }
@@ -574,7 +563,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (disableZoom) {
-      console.log('Panning désactivé en mode replay')
       return
     }
     setIsPanning(true)
@@ -909,7 +897,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
       resetZoom,
       toggleFullscreen,
       toggleZoomLock: () => {
-        console.log(`Toggle zoom lock: ${zoomLocked} → ${!zoomLocked}`)
         setZoomLocked(prev => !prev)
       }
     }

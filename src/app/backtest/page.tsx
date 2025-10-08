@@ -7,8 +7,10 @@ import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
 import BacktestConfiguration from '@/components/BacktestConfiguration'
 import BacktestChart from '@/components/BacktestChart'
+import OptimizationAdviceComponent from '@/components/OptimizationAdvice'
 import type { BacktestConfig } from '@/components/BacktestConfiguration'
 import { runBacktest, type BacktestResult } from '@/services/backtestEngine'
+import { analyzeBacktest } from '@/services/backtestOptimizationService'
 import { useAuth } from '@/hooks/useAuth'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -41,10 +43,108 @@ function groupTradesIntoPairs(trades: any[]) {
 export default function BacktestPage() {
   const [currentTab, setCurrentTab] = useState('backtest') // 'backtest' | 'results'
   const [backtestResults, setBacktestResults] = useState<BacktestResult | null>(null)
+  const [lastUsedConfig, setLastUsedConfig] = useState<BacktestConfig | null>(null) // Nouvelle state pour garder la config
   const [isRunning, setIsRunning] = useState(false)
   const [selectedTrade, setSelectedTrade] = useState<any>(null) // Trade sélectionné pour le zoom
+  const [showExportMenu, setShowExportMenu] = useState(false)
   const { user: currentUser } = useAuth()
   const { t } = useLanguage()
+
+  // Fonction pour exporter en CSV
+  const exportToCSV = () => {
+    if (!backtestResults) return
+
+    const { state, config } = backtestResults
+
+    // En-têtes CSV
+    let csv = 'Type,Date,Prix,Capital,Quantité,P&L,Frais,Raison\n'
+
+    // Ajouter toutes les transactions
+    state.trades.forEach(trade => {
+      const date = new Date(trade.timestamp).toLocaleString('fr-FR')
+      const row = [
+        trade.type,
+        `"${date}"`,
+        trade.price?.toFixed(2) || '',
+        trade.capital?.toFixed(2) || '',
+        trade.quantity?.toFixed(8) || '',
+        trade.pnl?.toFixed(2) || '',
+        trade.fees?.toFixed(2) || '',
+        `"${trade.reason || ''}"`
+      ].join(',')
+      csv += row + '\n'
+    })
+
+    // Ajouter le résumé
+    csv += '\n\nRÉSUMÉ\n'
+    csv += `Trades Totaux,${state.summary?.totalTrades || 0}\n`
+    csv += `Trades Gagnants,${state.summary?.winningTrades || 0}\n`
+    csv += `Trades Perdants,${state.summary?.losingTrades || 0}\n`
+    csv += `Taux de Réussite,${((state.summary?.winRate || 0) * 100).toFixed(2)}%\n`
+    csv += `P&L Total,$${state.summary?.totalPnL?.toFixed(2) || '0.00'}\n`
+    csv += `Rendement Total,${((state.summary?.totalReturn || 0) * 100).toFixed(2)}%\n`
+    csv += `Capital Final,$${state.capital?.toFixed(2) || config.initialCapital}\n`
+    csv += `Capital Initial,$${config.initialCapital}\n`
+    csv += `Profit Moyen,$${state.summary?.averageWin?.toFixed(2) || '0.00'}\n`
+    csv += `Perte Moyenne,$${state.summary?.averageLoss?.toFixed(2) || '0.00'}\n`
+    csv += `Max Drawdown,${((state.summary?.maxDrawdown || 0) * 100).toFixed(2)}%\n`
+
+    // Télécharger le fichier avec BOM UTF-8 pour compatibilité Excel
+    const BOM = '\uFEFF'
+    const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `backtest_${config.crypto}_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setShowExportMenu(false)
+  }
+
+  // Fonction pour exporter en JSON
+  const exportToJSON = () => {
+    if (!backtestResults) return
+
+    const { state, config, indicators } = backtestResults
+
+    const exportData = {
+      config: {
+        crypto: config.crypto,
+        period: config.period,
+        strategy: config.strategy,
+        initialCapital: config.initialCapital,
+        positionSize: config.positionSize,
+        stopLoss: config.riskManagement.stopLoss,
+        takeProfit: config.riskManagement.takeProfit
+      },
+      summary: state.summary,
+      trades: state.trades.map(trade => ({
+        type: trade.type,
+        date: new Date(trade.timestamp).toISOString(),
+        price: trade.price,
+        capital: trade.capital,
+        quantity: trade.quantity,
+        pnl: trade.pnl,
+        fees: trade.fees,
+        reason: trade.reason
+      })),
+      capitalHistory: state.capitalHistory,
+      indicators: Object.keys(indicators).filter(key => indicators[key])
+    }
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `backtest_${config.crypto}_${new Date().toISOString().split('T')[0]}.json`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setShowExportMenu(false)
+  }
 
   // Style global pour harmoniser avec les autres pages
   const globalStyles = `
@@ -134,9 +234,9 @@ export default function BacktestPage() {
   const handleStartBacktest = async (config: BacktestConfig) => {
     setIsRunning(true)
     try {
-      console.log('🚀 Lancement du backtest avec config:', config)
       const results = await runBacktest(config)
       setBacktestResults(results)
+      setLastUsedConfig(config) // Sauvegarder la config utilisée
       setCurrentTab('results')
     } catch (error) {
       console.error('❌ Erreur lors du backtest:', error)
@@ -156,8 +256,8 @@ export default function BacktestPage() {
         {/* Navigation */}
         <SmartNavigation />
 
-        {/* Hero Section - Masqué quand on a des résultats */}
-        {currentTab === 'backtest' && !backtestResults && (
+        {/* Hero Section - Toujours visible sur l'onglet backtest */}
+        {currentTab === 'backtest' && (
           <section className="relative pt-24 sm:pt-32 pb-16 overflow-hidden">
             {/* Background Effects */}
             <div className="absolute inset-0">
@@ -207,45 +307,56 @@ export default function BacktestPage() {
         )}
 
         {/* Smooth gradient transition between hero and navigation */}
-        {currentTab === 'backtest' && !backtestResults && (
+        {currentTab === 'backtest' && (
           <div className="h-32 -mt-16 relative" style={{
             background: 'linear-gradient(to bottom, transparent 0%, rgba(17, 24, 39, 0.5) 50%, rgba(17, 24, 39, 0.95) 100%)'
           }}></div>
         )}
 
         {/* Navigation Tabs */}
-        <div className={`sticky top-0 z-10 glass-effect-strong ${
-          currentTab === 'backtest' && !backtestResults ? '-mt-16' : 'mt-24'
+        <div className={`sticky top-0 z-10 backdrop-blur-xl bg-[#111827]/80 ${
+          currentTab === 'backtest' ? '-mt-16' : 'mt-24'
         }`} style={{
-          borderBottom: '1px solid rgba(31, 41, 55, 0.2)'
+          borderBottom: '1px solid rgba(99, 102, 241, 0.2)',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
         }}>
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center justify-between">
-              <div className="flex space-x-8">
-              <button
-                onClick={() => setCurrentTab('backtest')}
-                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                  currentTab === 'backtest'
-                    ? 'border-[#6366F1] text-[#6366F1]'
-                    : 'border-transparent text-gray-400 hover:text-[#F9FAFB] hover:border-gray-300'
-                }`}
-              >
-                {t('backtest.tab.strategy')}
-              </button>
-              {currentTab === 'results' && (
+              <div className="flex">
                 <button
-                  onClick={() => setCurrentTab('results')}
-                  className="py-4 px-2 border-b-2 border-[#16A34A] text-[#16A34A] font-medium text-sm"
+                  onClick={() => setCurrentTab('backtest')}
+                  className={`relative py-4 px-6 font-semibold text-sm transition-all duration-200 ${
+                    currentTab === 'backtest'
+                      ? 'text-[#6366F1]'
+                      : 'text-gray-400 hover:text-[#F9FAFB]'
+                  }`}
                 >
-                  {t('backtest.tab.results')}
+                  <span className="relative z-10">{t('backtest.tab.strategy')}</span>
+                  {currentTab === 'backtest' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full"></div>
+                  )}
                 </button>
-              )}
+                {backtestResults && (
+                  <button
+                    onClick={() => setCurrentTab('results')}
+                    className={`relative py-4 px-6 font-semibold text-sm transition-all duration-200 ${
+                      currentTab === 'results'
+                        ? 'text-[#16A34A]'
+                        : 'text-gray-400 hover:text-[#F9FAFB]'
+                    }`}
+                  >
+                    <span className="relative z-10">{t('backtest.tab.results')}</span>
+                    {currentTab === 'results' && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#16A34A] to-[#22C55E] rounded-full"></div>
+                    )}
+                  </button>
+                )}
               </div>
 
               {/* Utilisateur connecté */}
               {currentUser && (
                 <div className="py-2 text-sm text-gray-400">
-                  {t('backtest.connected_as')} {currentUser.displayName || currentUser.email}
+                  {t('backtest.connected_as')} <span className="text-[#F9FAFB] font-medium">{currentUser.displayName || currentUser.email}</span>
                 </div>
               )}
             </div>
@@ -255,11 +366,24 @@ export default function BacktestPage() {
         {/* Main Content */}
         {currentTab === 'backtest' ? (
           <main className="relative py-12 px-6 lg:px-8 max-w-7xl mx-auto">
-            {(() => {
-              console.log('🔍 État utilisateur dans rendu:', currentUser)
-              return currentUser
-            })() ? (
-              <BacktestConfiguration onStartBacktest={handleStartBacktest} isRunning={isRunning} />
+            {/* Disclaimer Légal */}
+            <div className="max-w-4xl mx-auto mb-8">
+              <div className="bg-yellow-900/20 border border-yellow-600/50 rounded-xl p-4">
+                <p className="text-yellow-200 text-sm leading-relaxed">
+                  <span className="font-bold">⚠️ Avertissement :</span> Cette plateforme est fournie à titre éducatif uniquement.
+                  Les performances passées ne garantissent pas les résultats futurs. Le trading de cryptomonnaies
+                  comporte des risques importants de perte en capital. Ne tradez qu'avec des fonds que vous pouvez
+                  vous permettre de perdre. Ceci n'est pas un conseil financier.
+                </p>
+              </div>
+            </div>
+
+            {currentUser ? (
+              <BacktestConfiguration
+                onStartBacktest={handleStartBacktest}
+                isRunning={isRunning}
+                initialConfig={lastUsedConfig || undefined}
+              />
             ) : (
               <div className="text-center py-12">
                 <div className="glass-effect rounded-2xl p-8 max-w-md mx-auto">
@@ -514,6 +638,11 @@ export default function BacktestPage() {
                   })()}
                 </div>
 
+                {/* Conseils d'Optimisation */}
+                <div className="mb-8">
+                  <OptimizationAdviceComponent advice={analyzeBacktest(backtestResults)} />
+                </div>
+
                 {/* Boutons d'action */}
                 <div className="flex justify-center gap-4">
                   <button
@@ -522,12 +651,36 @@ export default function BacktestPage() {
                   >
                     ← {t('backtest.actions.new_strategy')}
                   </button>
-                  <button
-                    onClick={() => console.log('Export results:', backtestResults)}
-                    className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300"
-                  >
-                    📊 {t('backtest.actions.export')}
-                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowExportMenu(!showExportMenu)}
+                      className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300"
+                    >
+                      📊 {t('backtest.actions.export')}
+                    </button>
+                    {showExportMenu && (
+                      <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-50">
+                        <button
+                          onClick={exportToCSV}
+                          className="w-full text-left px-4 py-3 hover:bg-gray-700 text-green-400 font-medium rounded-t-xl transition-colors flex items-center gap-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Exporter en CSV
+                        </button>
+                        <button
+                          onClick={exportToJSON}
+                          className="w-full text-left px-4 py-3 hover:bg-gray-700 text-blue-400 font-medium rounded-b-xl transition-colors flex items-center gap-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                          </svg>
+                          Exporter en JSON
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ) : (

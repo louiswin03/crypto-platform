@@ -61,9 +61,6 @@ export async function PUT(request: NextRequest) {
       updateData.preferences = preferences
     }
 
-    console.log('🔧 Tentative de mise à jour du profil pour user:', userId)
-    console.log('📝 Données reçues:', { phone, location, preferences })
-    console.log('📋 updateData préparé:', updateData)
 
     // D'abord récupérer le profil existant avec toutes ses données
     const { data: existingProfile, error: fetchError } = await supabaseAdmin
@@ -72,8 +69,6 @@ export async function PUT(request: NextRequest) {
       .eq('id', userId)
       .single()
 
-    console.log('🔍 Profil existant:', existingProfile)
-    console.log('❌ Erreur de récupération:', fetchError)
 
     let result
 
@@ -89,7 +84,6 @@ export async function PUT(request: NextRequest) {
       delete mergedData.id
       delete mergedData.created_at
 
-      console.log('Fusion des données:', { existing: existingProfile, new: updateData, merged: mergedData })
 
       // Mettre à jour le profil existant
       const { data, error } = await supabaseAdmin
@@ -120,7 +114,6 @@ export async function PUT(request: NextRequest) {
 
       // Si c'est une erreur de contrainte de clé étrangère, on essaie une approche différente
       if (result.error.message && result.error.message.includes('foreign key constraint')) {
-        console.log('Contrainte de clé étrangère détectée, tentative sans foreign key...')
 
         // Essayer de créer d'abord un utilisateur dans auth.users si nécessaire
         // Ou modifier la structure pour ne pas dépendre de auth.users
