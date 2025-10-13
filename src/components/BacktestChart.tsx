@@ -17,6 +17,7 @@ import CandlestickChart from './CandlestickChart'
 import ReplayControls from './ReplayControls'
 import type { BacktestResult } from '@/services/backtestEngine'
 import { ReplayService, ReplayState } from '@/services/replayService'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 // Format date utility
 const formatDate = (timestamp: number) => {
@@ -31,7 +32,7 @@ const formatDate = (timestamp: number) => {
 }
 
 // Composant pour les graphiques d'oscillateurs
-const OscillatorCharts = ({ backtestData, chartData }: any) => {
+const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
   const { config, indicators } = backtestData
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -99,8 +100,8 @@ const OscillatorCharts = ({ backtestData, chartData }: any) => {
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex justify-between text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#16A34A] rounded-full"></span>Survente &lt; 30</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>Surachat &gt; 70</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#16A34A] rounded-full"></span>{t('backtest.chart.oversold')} &lt; 30</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>{t('backtest.chart.overbought')} &gt; 70</span>
             </div>
           </div>
         </div>
@@ -165,9 +166,9 @@ const OscillatorCharts = ({ backtestData, chartData }: any) => {
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex gap-4 text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#16A34A] rounded"></div>MACD</span>
-              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#DC2626] rounded"></div>Signal</span>
-              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#F59E0B] rounded"></div>Histogramme</span>
+              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#16A34A] rounded"></div>{t('backtest.chart.macd_line')}</span>
+              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#DC2626] rounded"></div>{t('backtest.chart.signal')}</span>
+              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#F59E0B] rounded"></div>{t('backtest.chart.histogram')}</span>
             </div>
           </div>
         </div>
@@ -226,8 +227,8 @@ const OscillatorCharts = ({ backtestData, chartData }: any) => {
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex justify-between text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#16A34A] rounded-full"></span>Survente &lt; 20</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>Surachat &gt; 80</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#16A34A] rounded-full"></span>{t('backtest.chart.oversold')} &lt; 20</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>{t('backtest.chart.overbought')} &gt; 80</span>
             </div>
           </div>
         </div>
@@ -278,8 +279,8 @@ const OscillatorCharts = ({ backtestData, chartData }: any) => {
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex justify-between text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#16A34A] rounded-full"></span>Survente &gt; -80</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>Surachat &lt; -20</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#16A34A] rounded-full"></span>{t('backtest.chart.oversold')} &gt; -80</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>{t('backtest.chart.overbought')} &lt; -20</span>
             </div>
           </div>
         </div>
@@ -352,6 +353,7 @@ interface BacktestChartProps {
 }
 
 export default function BacktestChart({ backtestData, selectedTrade, onTradeZoomComplete }: BacktestChartProps) {
+  const { t } = useLanguage()
   const [replayMode, setReplayMode] = useState(false)
   const [replayService, setReplayService] = useState<ReplayService | null>(null)
   const [replayState, setReplayState] = useState<ReplayState | null>(null)
@@ -669,7 +671,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl">
           <p className="text-[#F9FAFB] font-medium mb-2">{data.displayDate}</p>
           <p className="text-[#F9FAFB] mb-1">
-            Prix: <span className="font-mono">${data.price?.toFixed(2)}</span>
+            {t('backtest.chart.price')}: <span className="font-mono">${data.price?.toFixed(2)}</span>
           </p>
 
           {/* Afficher les indicateurs selon la stratégie */}
@@ -696,7 +698,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               <p className={`font-medium ${
                 data.trade.type === 'BUY' ? 'text-[#16A34A]' : 'text-[#DC2626]'
               }`}>
-                {data.trade.type === 'BUY' ? '📈 ACHAT' : '📉 VENTE'}
+                {data.trade.type === 'BUY' ? `📈 ${t('backtest.chart.buy').toUpperCase()}` : `📉 ${t('backtest.chart.sell').toUpperCase()}`}
               </p>
               <p className="text-gray-300 text-sm">{data.trade.reason}</p>
               {data.trade.pnl !== undefined && (
@@ -724,39 +726,64 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
     const isStopLoss = payload.trade.reason?.includes('Stop Loss')
     const isTakeProfit = payload.trade.reason?.includes('Take Profit')
+    const isBuy = type === 'BUY'
 
-    let color = type === 'BUY' ? '#16A34A' : '#DC2626'
-    let symbol = type === 'BUY' ? '▲' : '▼'
+    // Couleurs plus vives et distinctives
+    let fillColor = isBuy ? '#22C55E' : '#EF4444'  // Vert vif / Rouge vif
+    let glowColor = isBuy ? '#22C55E' : '#EF4444'
 
-    if (isStopLoss) {
-      color = '#DC2626'
-      symbol = '🛑'
-    } else if (isTakeProfit) {
-      color = '#16A34A'
-      symbol = '🎯'
-    }
+    // Taille augmentée pour meilleure visibilité
+    const radius = 8
 
     return (
       <g>
+        {/* Cercle de glow externe pour effet lumineux */}
         <circle
           cx={cx}
           cy={cy}
-          r={6}
-          fill={color}
-          stroke="white"
-          strokeWidth={2}
-          className="opacity-90"
+          r={radius + 4}
+          fill={glowColor}
+          opacity={0.2}
+          className="animate-pulse"
         />
-        <text
-          x={cx}
-          y={cy + 1}
-          textAnchor="middle"
-          fill="white"
-          fontSize="8"
-          fontWeight="bold"
-        >
-          {type === 'BUY' ? '↗' : '↘'}
-        </text>
+
+        {/* Cercle principal */}
+        <circle
+          cx={cx}
+          cy={cy}
+          r={radius}
+          fill={fillColor}
+          stroke="#FFFFFF"
+          strokeWidth={2.5}
+          opacity={0.95}
+        />
+
+        {/* Icône au centre selon le type */}
+        {isBuy ? (
+          // Flèche vers le haut pour BUY (verte)
+          <path
+            d={`M ${cx} ${cy - 4} L ${cx + 3} ${cy + 2} L ${cx + 1.5} ${cy + 2} L ${cx + 1.5} ${cy + 4} L ${cx - 1.5} ${cy + 4} L ${cx - 1.5} ${cy + 2} L ${cx - 3} ${cy + 2} Z`}
+            fill="white"
+          />
+        ) : isStopLoss ? (
+          // Croix pour Stop Loss (rouge)
+          <>
+            <line x1={cx - 3} y1={cy - 3} x2={cx + 3} y2={cy + 3} stroke="white" strokeWidth={2} strokeLinecap="round" />
+            <line x1={cx + 3} y1={cy - 3} x2={cx - 3} y2={cy + 3} stroke="white" strokeWidth={2} strokeLinecap="round" />
+          </>
+        ) : isTakeProfit ? (
+          // Étoile pour Take Profit (verte)
+          <path
+            d={`M ${cx} ${cy - 4} L ${cx + 1} ${cy - 1} L ${cx + 4} ${cy} L ${cx + 1} ${cy + 1} L ${cx} ${cy + 4} L ${cx - 1} ${cy + 1} L ${cx - 4} ${cy} L ${cx - 1} ${cy - 1} Z`}
+            fill="white"
+          />
+        ) : (
+          // Flèche vers le bas pour SELL normal (rouge)
+          <path
+            d={`M ${cx} ${cy + 4} L ${cx + 3} ${cy - 2} L ${cx + 1.5} ${cy - 2} L ${cx + 1.5} ${cy - 4} L ${cx - 1.5} ${cy - 4} L ${cx - 1.5} ${cy - 2} L ${cx - 3} ${cy - 2} Z`}
+            fill="white"
+          />
+        )}
       </g>
     )
   }
@@ -776,7 +803,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           </div>
         </div>
         <div className="text-sm text-[#9CA3AF] font-medium">
-          Période: {chartData.length} points de données
+          {t('backtest.chart.period')}: {chartData.length} {t('backtest.chart.data_points')}
         </div>
       </div>
 
@@ -785,11 +812,11 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         {/* En-tête compact */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-bold text-[#F9FAFB]">Mode Replay</h3>
+            <h3 className="text-lg font-bold text-[#F9FAFB]">{t('backtest.chart.replay_mode')}</h3>
             {replayMode && (
               <div className="px-2 py-1 bg-red-600/20 border border-red-600/50 rounded-full text-xs text-red-400 flex items-center gap-1">
                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-                Actif
+                {t('backtest.chart.active')}
               </div>
             )}
           </div>
@@ -803,12 +830,12 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               }`}
             >
               {replayMode ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {replayMode ? 'Quitter' : 'Activer'}
+              {replayMode ? t('backtest.chart.quit') : t('backtest.chart.activate')}
             </button>
             <div className="text-xs text-gray-400">
               {replayMode && replayState
                 ? `${replayState.visibleData.prices.length} / ${backtestData.priceData.length} pts`
-                : 'Revivez vos trades'
+                : t('backtest.chart.relive_trades')
               }
             </div>
           </div>
@@ -826,14 +853,14 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
-                Prix & Indicateurs
+                {t('backtest.chart.price_indicators')}
               </h3>
               {/* Bannière de zoom intégrée */}
               {zoomedTrade && (
                 <div className="flex items-center gap-2 bg-blue-900/50 border border-blue-600/50 rounded-lg px-3 py-1">
                   <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                   <span className="text-blue-200 text-sm font-medium">
-                    Vue zoomée - Trade #{zoomedTrade.number}
+                    {t('backtest.chart.zoomed_view')} - Trade #{zoomedTrade.number}
                   </span>
                   <span className="text-blue-400 text-xs bg-blue-800/50 px-2 py-0.5 rounded">
                     {currentBacktestData.priceData.length} bougies
@@ -890,43 +917,86 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           </div>
         </div>
 
-        {/* Légende simplifiée et propre */}
-        <div className="border-t border-gray-700/30 px-6 py-4">
-          <div className="flex flex-wrap items-center gap-6 text-sm">
+        {/* Légende améliorée avec symboles visuels */}
+        <div className="border-t border-gray-700/30 px-6 py-4 bg-gray-800/20">
+          <div className="flex flex-wrap items-center gap-8 text-sm">
             {/* Bougies */}
             <div className="flex items-center gap-4">
-              <span className="text-gray-400 font-medium">Prix:</span>
+              <span className="text-gray-400 font-semibold">{t('backtest.chart.candles_label')}:</span>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-[#16A34A] rounded"></div>
-                <span className="text-gray-300">Haussier</span>
+                <div className="w-4 h-4 bg-[#16A34A] rounded"></div>
+                <span className="text-gray-200">{t('backtest.chart.bullish')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-[#DC2626] rounded"></div>
-                <span className="text-gray-300">Baissier</span>
+                <div className="w-4 h-4 bg-[#DC2626] rounded"></div>
+                <span className="text-gray-200">{t('backtest.chart.bearish')}</span>
               </div>
             </div>
 
             {/* Trades */}
             <div className="flex items-center gap-4">
-              <span className="text-gray-400 font-medium">Trades:</span>
-              <div className="flex items-center gap-2">
-                <span className="text-[#16A34A] text-lg">⬆</span>
-                <span className="text-gray-300">Achats</span>
+              <span className="text-gray-400 font-semibold">{t('backtest.chart.trading_signals')}:</span>
+              <div className="flex items-center gap-2 bg-[#3B82F6]/10 px-3 py-1.5 rounded-lg border border-[#3B82F6]/30">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                  {/* Cercle externe blanc */}
+                  <circle cx="10" cy="10" r="8" fill="white"/>
+                  {/* Cercle principal bleu */}
+                  <circle cx="10" cy="10" r="7" fill="#3B82F6"/>
+                  {/* Cercle interne blanc */}
+                  <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
+                  {/* Flèche UP blanche */}
+                  <path d="M 10 6 L 13 12 L 11.5 12 L 11.5 14 L 8.5 14 L 8.5 12 L 7 12 Z" fill="white"/>
+                </svg>
+                <span className="text-[#3B82F6] font-bold">{t('backtest.chart.buy')}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[#DC2626] text-lg">⬇</span>
-                <span className="text-gray-300">Ventes</span>
+              <div className="flex items-center gap-2 bg-gradient-to-r from-[#10B981]/10 to-[#EF4444]/10 px-3 py-1.5 rounded-lg border border-gray-500/30">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                  {/* Cercle externe blanc */}
+                  <circle cx="10" cy="10" r="8" fill="white"/>
+                  {/* Dégradé vert/rouge */}
+                  <defs>
+                    <linearGradient id="sellGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style={{stopColor: '#10B981', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: '#EF4444', stopOpacity: 1}} />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="10" cy="10" r="7" fill="url(#sellGradient)"/>
+                  {/* Cercle interne blanc */}
+                  <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
+                  {/* Flèche DOWN blanche */}
+                  <path d="M 10 14 L 13 8 L 11.5 8 L 11.5 6 L 8.5 6 L 8.5 8 L 7 8 Z" fill="white"/>
+                </svg>
+                <span className="text-gray-300 font-bold">{t('backtest.chart.sell')} <span className="text-xs text-gray-400">(Vert si +, Rouge si -)</span></span>
               </div>
               {stopLossTrades.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-[#DC2626]">🛑</span>
-                  <span className="text-gray-300">SL</span>
+                <div className="flex items-center gap-2 bg-[#DC2626]/10 px-3 py-1.5 rounded-lg border border-[#DC2626]/30">
+                  <svg width="20" height="20" viewBox="0 0 20 20">
+                    {/* Cercle externe blanc */}
+                    <circle cx="10" cy="10" r="8" fill="white"/>
+                    {/* Cercle principal rouge */}
+                    <circle cx="10" cy="10" r="7" fill="#DC2626"/>
+                    {/* Cercle interne blanc */}
+                    <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
+                    {/* Croix blanche */}
+                    <line x1="6" y1="6" x2="14" y2="14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="14" y1="6" x2="6" y2="14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  <span className="text-[#DC2626] font-bold">Stop Loss</span>
                 </div>
               )}
               {takeProfitTrades.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-[#16A34A]">🎯</span>
-                  <span className="text-gray-300">TP</span>
+                <div className="flex items-center gap-2 bg-[#10B981]/10 px-3 py-1.5 rounded-lg border border-[#10B981]/30">
+                  <svg width="20" height="20" viewBox="0 0 20 20">
+                    {/* Cercle externe blanc */}
+                    <circle cx="10" cy="10" r="8" fill="white"/>
+                    {/* Cercle principal vert */}
+                    <circle cx="10" cy="10" r="7" fill="#10B981"/>
+                    {/* Cercle interne blanc */}
+                    <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
+                    {/* Étoile blanche */}
+                    <path d="M 10 5 L 11 8 L 14 10 L 11 12 L 10 15 L 9 12 L 6 10 L 9 8 Z" fill="white"/>
+                  </svg>
+                  <span className="text-[#10B981] font-bold">Take Profit</span>
                 </div>
               )}
             </div>
@@ -934,7 +1004,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
             {/* Indicateurs */}
             {(backtestData.indicators.ema1 || backtestData.indicators.ema2 || backtestData.indicators.sma1 || backtestData.indicators.sma2 || backtestData.indicators.bollinger || backtestData.indicators.vwap || backtestData.indicators.supertrend || backtestData.indicators.ichimoku || backtestData.indicators.pivotPoints) && (
               <div className="flex items-center gap-4">
-                <span className="text-gray-400 font-medium">Indicateurs:</span>
+                <span className="text-gray-400 font-medium">{t('backtest.chart.indicators')}:</span>
                 <div className="flex items-center gap-3">
                   {backtestData.indicators.ema1 && (
                     <div className="flex items-center gap-1">
@@ -1007,7 +1077,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
       {(backtestData.indicators.rsi || backtestData.indicators.macd || backtestData.indicators.stochastic || backtestData.indicators.williamsR || backtestData.indicators.obv) && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">Oscillateurs Techniques</h3>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">{t('backtest.chart.technical_oscillators')}</h3>
             <div className="text-sm text-[#9CA3AF] font-medium">
               Indicateurs de momentum et cycles
             </div>
@@ -1016,6 +1086,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
             <OscillatorCharts
               backtestData={currentBacktestData}
               chartData={chartData}
+              t={t}
             />
           </div>
         </div>
@@ -1025,7 +1096,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
       {backtestData.state.summary && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
           <div className="border-b border-gray-700/30 px-6 py-3">
-            <h3 className="text-lg font-semibold text-[#F9FAFB]">Résumé de Performance</h3>
+            <h3 className="text-lg font-semibold text-[#F9FAFB]">{t('backtest.chart.performance_summary')}</h3>
           </div>
           <div className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -1033,7 +1104,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                 <div className="text-2xl font-bold text-[#F9FAFB] mb-1">
                   {backtestData.state.summary.totalTrades || 0}
                 </div>
-                <div className="text-sm text-gray-400">Trades Totaux</div>
+                <div className="text-sm text-gray-400">{t('backtest.chart.total_trades')}</div>
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold mb-1 ${
@@ -1041,7 +1112,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                 }`}>
                   {((backtestData.state.summary.winRate || 0) * 100).toFixed(1)}%
                 </div>
-                <div className="text-sm text-gray-400">Taux de Réussite</div>
+                <div className="text-sm text-gray-400">{t('backtest.chart.success_rate')}</div>
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold mb-1 ${
@@ -1049,7 +1120,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                 }`}>
                   ${(backtestData.state.summary.totalPnL || 0).toFixed(2)}
                 </div>
-                <div className="text-sm text-gray-400">P&L Total</div>
+                <div className="text-sm text-gray-400">{t('backtest.chart.total_pnl')}</div>
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold mb-1 ${
@@ -1057,7 +1128,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                 }`}>
                   {((backtestData.state.summary.totalReturn || 0) * 100).toFixed(1)}%
                 </div>
-                <div className="text-sm text-gray-400">Rendement</div>
+                <div className="text-sm text-gray-400">{t('backtest.chart.return')}</div>
               </div>
             </div>
           </div>
@@ -1069,10 +1140,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         <div className="border-b border-white/10 px-8 py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
-              Courbe d'Équité (Equity Curve)
+              {t('backtest.chart.equity_curve')}
             </h3>
             <div className="text-sm text-gray-400">
-              Évolution du capital au fil du temps
+              {t('backtest.chart.capital_evolution')}
             </div>
           </div>
         </div>
@@ -1115,7 +1186,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                         <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl">
                           <p className="text-[#F9FAFB] font-medium mb-2">{data.displayDate}</p>
                           <p className="text-[#F9FAFB] mb-1">
-                            Capital: <span className="font-mono">${data.value.toFixed(2)}</span>
+                            {t('backtest.chart.capital')}: <span className="font-mono">${data.value.toFixed(2)}</span>
                           </p>
                           <p className={`${pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                             P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
@@ -1132,7 +1203,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                   stroke="#6366F1"
                   strokeWidth={3}
                   dot={false}
-                  name="Capital"
+                  name={t('backtest.chart.capital')}
                 />
                 <ReferenceDot
                   y={backtestData.config.initialCapital}
@@ -1146,15 +1217,15 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-0.5 bg-[#6366F1]"></div>
-                <span className="text-gray-300">Capital Total</span>
+                <span className="text-gray-300">{t('backtest.chart.total_capital')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-0.5 bg-[#9CA3AF] border-dashed border-t"></div>
-                <span className="text-gray-400">Capital Initial (${backtestData.config.initialCapital.toFixed(0)})</span>
+                <span className="text-gray-400">{t('backtest.chart.initial_capital')} (${backtestData.config.initialCapital.toFixed(0)})</span>
               </div>
             </div>
             <div className="text-gray-400">
-              {backtestData.state.capitalHistory.length} points de données
+              {backtestData.state.capitalHistory.length} {t('backtest.chart.data_points')}
             </div>
           </div>
         </div>

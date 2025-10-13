@@ -187,8 +187,8 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
         {/* Header */}
         <div className="bg-gradient-to-r from-[#0052FF]/10 to-[#1652F0]/10 border-b border-gray-700/50 p-6 flex items-center justify-between rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white">
-              <img src="https://assets.coingecko.com/coins/images/44/small/Coinbase_Coin_Primary.png" alt="Coinbase" className="w-full h-full object-cover" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white p-2">
+              <img src="/coinbase.png" alt="Coinbase" className="w-full h-full object-contain" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-[#F9FAFB]">Connecter Coinbase</h2>

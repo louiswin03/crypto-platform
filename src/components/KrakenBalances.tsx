@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function KrakenBalances() {
+  const { t } = useLanguage()
   const [balances, setBalances] = useState<any[]>([])
   const [totalValueUsd, setTotalValueUsd] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -20,7 +22,7 @@ export default function KrakenBalances() {
 
       const token = localStorage.getItem('crypto_platform_auth')
       if (!token) {
-        setError('Non authentifié')
+        setError(t('portfolio.not_authenticated'))
         return
       }
 
@@ -32,7 +34,7 @@ export default function KrakenBalances() {
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || 'Erreur lors du chargement')
+        throw new Error(data.error || t('portfolio.loading_error'))
       }
 
       const data = await response.json()
@@ -40,7 +42,7 @@ export default function KrakenBalances() {
       setTotalValueUsd(data.totalValueUsd || 0)
       setLastUpdate(data.lastUpdate || '')
     } catch (err: any) {
-      setError(err.message || 'Erreur lors du chargement des balances')
+      setError(err.message || t('portfolio.loading_error'))
     } finally {
       setIsLoading(false)
     }
@@ -69,7 +71,7 @@ export default function KrakenBalances() {
               onClick={loadBalances}
               className="mt-2 text-xs text-red-400 hover:text-red-300 underline"
             >
-              Réessayer
+              {t('portfolio.retry')}
             </button>
           </div>
         </div>
@@ -81,7 +83,7 @@ export default function KrakenBalances() {
     return (
       <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-8 text-center">
         <div className="text-4xl mb-3">🐙</div>
-        <p className="text-gray-400 text-sm">Aucun actif sur Kraken</p>
+        <p className="text-gray-400 text-sm">{t('portfolio.no_assets')}</p>
       </div>
     )
   }
@@ -89,18 +91,23 @@ export default function KrakenBalances() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-[#F9FAFB]">Portfolio Kraken</h3>
-          {lastUpdate && (
-            <p className="text-xs text-gray-500 mt-1">
-              Dernière mise à jour: {new Date(lastUpdate).toLocaleString()}
-            </p>
-          )}
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2">
+            <img src="/kraken.png" alt="Kraken" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-[#F9FAFB]">{t('portfolio.kraken_portfolio')}</h3>
+            {lastUpdate && (
+              <p className="text-xs text-gray-500 mt-1">
+                {t('portfolio.last_update_label')}: {new Date(lastUpdate).toLocaleString()}
+              </p>
+            )}
+          </div>
         </div>
         <button
           onClick={loadBalances}
           className="p-2 text-gray-400 hover:text-[#5741D9] transition-colors"
-          title="Rafraîchir"
+          title={t('portfolio.refresh_button')}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -109,7 +116,7 @@ export default function KrakenBalances() {
       </div>
 
       <div className="bg-gradient-to-br from-[#5741D9] to-[#4731C9] rounded-xl p-6 text-white">
-        <p className="text-sm opacity-90 mb-1">Valeur Totale</p>
+        <p className="text-sm opacity-90 mb-1">{t('portfolio.total_value')}</p>
         <p className="text-3xl font-bold">${totalValueUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
       </div>
 

@@ -275,7 +275,7 @@ export default function ImprovedCryptoSearch({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-2">
+          <div className={`grid grid-cols-1 gap-2 ${showAll ? 'max-h-[400px] overflow-y-auto custom-scrollbar pr-2' : ''}`}>
             {filteredOptions.map((crypto, index) => (
               <button
                 key={crypto.id}

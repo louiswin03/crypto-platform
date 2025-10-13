@@ -2,18 +2,20 @@
 
 import { OptimizationAdvice } from '@/services/backtestOptimizationService'
 import { AlertTriangle, AlertCircle, Lightbulb, CheckCircle, TrendingUp, Shield, Clock, BarChart3, Target } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface OptimizationAdviceProps {
   advice: OptimizationAdvice[]
 }
 
 export default function OptimizationAdviceComponent({ advice }: OptimizationAdviceProps) {
+  const { t } = useLanguage()
   if (advice.length === 0) {
     return (
       <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 p-8 text-center">
         <CheckCircle className="w-16 h-16 text-[#16A34A] mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-[#F9FAFB] mb-2">Stratégie optimale</h3>
-        <p className="text-gray-400">Aucune optimisation majeure détectée. Vos paramètres semblent bien calibrés !</p>
+        <h3 className="text-xl font-bold text-[#F9FAFB] mb-2">{t('optimization.optimal_strategy')}</h3>
+        <p className="text-gray-400">{t('optimization.no_optimization')}</p>
       </div>
     )
   }
@@ -87,9 +89,9 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
     }
 
     const labels = {
-      high: 'Impact Élevé',
-      medium: 'Impact Moyen',
-      low: 'Impact Faible'
+      high: t('optimization.impact_high'),
+      medium: t('optimization.impact_medium'),
+      low: t('optimization.impact_low')
     }
 
     return (
@@ -101,11 +103,11 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
 
   const getCategoryLabel = (category: OptimizationAdvice['category']) => {
     const labels = {
-      risk_management: 'Gestion du Risque',
-      strategy: 'Stratégie',
-      timing: 'Timing',
-      indicators: 'Indicateurs',
-      performance: 'Performance'
+      risk_management: t('optimization.category.risk_management'),
+      strategy: t('optimization.category.strategy'),
+      timing: t('optimization.category.timing'),
+      indicators: t('optimization.category.indicators'),
+      performance: t('optimization.category.performance')
     }
     return labels[category]
   }
@@ -124,9 +126,11 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
       <div className="border-b border-gray-700/30 px-6 py-4 bg-gradient-to-r from-[#6366F1]/10 to-[#8B5CF6]/10">
         <h3 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-3">
           <Lightbulb className="w-6 h-6 text-[#6366F1]" />
-          Conseils d'Optimisation
+          {t('optimization.title')}
           <span className="text-sm font-normal text-gray-400">
-            ({advice.length} suggestion{advice.length > 1 ? 's' : ''} détectée{advice.length > 1 ? 's' : ''})
+            ({advice.length} {t('optimization.suggestions_detected')
+              .replace('{s}', advice.length > 1 ? 's' : '')
+              .replace('{s}', advice.length > 1 ? 's' : '')})
           </span>
         </h3>
       </div>
@@ -177,7 +181,7 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
                             <div className="flex items-center gap-4 mb-3 p-2 bg-gray-800/50 rounded-lg">
                               {item.currentValue && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs text-gray-500">Actuel:</span>
+                                  <span className="text-xs text-gray-500">{t('optimization.current')}:</span>
                                   <span className="text-sm font-mono font-semibold text-gray-300">
                                     {item.currentValue}
                                   </span>
@@ -187,7 +191,7 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
                                 <>
                                   <span className="text-gray-600">→</span>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-500">Suggéré:</span>
+                                    <span className="text-xs text-gray-500">{t('optimization.suggested')}:</span>
                                     <span className={`text-sm font-mono font-semibold ${styles.text}`}>
                                       {item.suggestedValue}
                                     </span>
@@ -220,24 +224,24 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <span className="text-gray-400">
-                {advice.filter(a => a.type === 'critical').length} Critique{advice.filter(a => a.type === 'critical').length > 1 ? 's' : ''}
+                {advice.filter(a => a.type === 'critical').length} {t('optimization.critical')}{advice.filter(a => a.type === 'critical').length > 1 ? 's' : ''}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <span className="text-gray-400">
-                {advice.filter(a => a.type === 'warning').length} Avertissement{advice.filter(a => a.type === 'warning').length > 1 ? 's' : ''}
+                {advice.filter(a => a.type === 'warning').length} {t('optimization.warning')}{advice.filter(a => a.type === 'warning').length > 1 ? 's' : ''}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               <span className="text-gray-400">
-                {advice.filter(a => a.type === 'suggestion').length} Suggestion{advice.filter(a => a.type === 'suggestion').length > 1 ? 's' : ''}
+                {advice.filter(a => a.type === 'suggestion').length} {t('optimization.suggestion')}{advice.filter(a => a.type === 'suggestion').length > 1 ? 's' : ''}
               </span>
             </div>
           </div>
           <span className="text-gray-500 italic">
-            Analysé avec IA • {new Date().toLocaleDateString('fr-FR')}
+            {t('optimization.analyzed_ai')} • {new Date().toLocaleDateString('fr-FR')}
           </span>
         </div>
       </div>

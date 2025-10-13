@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Trophy } from 'lucide-react'
@@ -170,6 +171,18 @@ export default function Home() {
 
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
             <div className="text-center">
+              {/* Logo centered */}
+              <div className="flex justify-center mb-8 sm:mb-12">
+                <Image
+                  src="/logo.png"
+                  alt="Cryptium Logo"
+                  width={300}
+                  height={100}
+                  className="object-contain opacity-90"
+                  priority
+                />
+              </div>
+
               {/* Enhanced Main Title */}
               <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black mb-6 sm:mb-8 md:mb-10 leading-[1.2] tracking-tighter text-shadow font-display py-2 sm:py-4">
                 <span className={cn("block font-extrabold mb-1 sm:mb-2", themeClasses.text.primary(isDarkMode))}>{t('home.hero.title1')}</span>
@@ -624,16 +637,13 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-yellow-200 font-bold text-lg mb-3">Avertissement Important</h3>
+                  <h3 className="text-yellow-200 font-bold text-lg mb-3">{t('warning.title')}</h3>
                   <p className="text-yellow-200/90 text-sm sm:text-base leading-relaxed">
-                    Cette plateforme est fournie à <strong>titre éducatif uniquement</strong>.
-                    Les performances passées ne garantissent pas les résultats futurs. Le trading de cryptomonnaies
-                    comporte des <strong>risques importants de perte en capital</strong>. Ne tradez qu'avec des fonds que vous pouvez
-                    vous permettre de perdre. <strong>Ceci n'est pas un conseil financier</strong>.
+                    {t('warning.past_performance')} <strong>{t('warning.significant_risks')}</strong>. {t('warning.risk_capital')} <strong>{t('warning.not_advice')}</strong>.
                   </p>
                   <div className="mt-4 pt-4 border-t border-yellow-600/30">
                     <p className="text-yellow-200/70 text-xs">
-                      En utilisant cette plateforme, vous reconnaissez avoir pris connaissance de cet avertissement et acceptez les risques associés au trading de cryptomonnaies.
+                      {t('warning.platform_use')}
                     </p>
                   </div>
                 </div>
@@ -652,12 +662,15 @@ export default function Home() {
               {/* Brand Section */}
               <div className="lg:col-span-1">
                 <div className="flex items-center space-x-4 mb-6">
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl float-animation">
-                    <TrendingUp className="w-7 h-7 text-white" />
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-                  </div>
+                  <Image
+                    src="/logo.png"
+                    alt="Cryptium Logo"
+                    width={48}
+                    height={48}
+                    className="object-contain opacity-75"
+                  />
                   <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">CryptoBacktest</span>
+                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">Cryptium</span>
                     <div className="text-xs text-[#6366F1] font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
                   </div>
                 </div>

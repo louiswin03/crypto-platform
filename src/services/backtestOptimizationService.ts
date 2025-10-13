@@ -2,6 +2,15 @@
 
 import { BacktestResult } from './backtestEngine'
 
+// Helper function to replace placeholders in translated strings
+function replacePlaceholders(text: string, values: Record<string, string | number>): string {
+  let result = text
+  Object.entries(values).forEach(([key, value]) => {
+    result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value))
+  })
+  return result
+}
+
 export interface OptimizationAdvice {
   id: string
   type: 'critical' | 'warning' | 'suggestion' | 'success'
@@ -16,9 +25,11 @@ export interface OptimizationAdvice {
 
 export class BacktestOptimizationService {
   private result: BacktestResult
+  private t: (key: string) => string
 
-  constructor(result: BacktestResult) {
+  constructor(result: BacktestResult, translateFn?: (key: string) => string) {
     this.result = result
+    this.t = translateFn || ((key: string) => key)
   }
 
   analyzeAndGenerateAdvice(): OptimizationAdvice[] {
@@ -90,10 +101,16 @@ export class BacktestOptimizationService {
           id: 'tp-too-conservative',
           type: 'warning',
           category: 'risk_management',
-          title: 'Take Profit trop conservateur',
-          description: `Dans ${missedOpportunityRate.toFixed(0)}% des cas, le prix continue de monter après votre TP. Vous manquez en moyenne ${avgMissedProfit.toFixed(1)}% de profit supplémentaire.`,
+          title: this.t('optimization.advice.tp_conservative.title'),
+          description: replacePlaceholders(this.t('optimization.advice.tp_conservative.desc'), {
+            rate: missedOpportunityRate.toFixed(0),
+            profit: avgMissedProfit.toFixed(1)
+          }),
           impact: 'high',
-          suggestion: `Augmentez votre Take Profit pour capturer plus de gains. Testez avec ${suggestedTP}% au lieu de ${currentTP}%.`,
+          suggestion: replacePlaceholders(this.t('optimization.advice.tp_conservative.suggestion'), {
+            suggested: suggestedTP,
+            current: currentTP
+          }),
           currentValue: `${currentTP}%`,
           suggestedValue: `${suggestedTP}%`
         })
@@ -102,10 +119,10 @@ export class BacktestOptimizationService {
           id: 'tp-optimal',
           type: 'success',
           category: 'risk_management',
-          title: 'Take Profit bien calibré',
-          description: 'Votre TP est bien positionné, vous capturez la majorité des gains sans laisser trop d\'opportunités.',
+          title: this.t('optimization.advice.tp_optimal.title'),
+          description: this.t('optimization.advice.tp_optimal.desc'),
           impact: 'low',
-          suggestion: 'Votre paramétrage de TP est optimal pour cette stratégie.'
+          suggestion: this.t('optimization.advice.tp_optimal.suggestion')
         })
       }
     }
@@ -153,10 +170,15 @@ export class BacktestOptimizationService {
           id: 'sl-too-tight',
           type: 'warning',
           category: 'risk_management',
-          title: 'Stop Loss trop serré',
-          description: `${prematureStopRate.toFixed(0)}% de vos Stop Loss se déclenchent alors que le prix récupère ensuite. Vous sortez trop tôt de positions potentiellement gagnantes.`,
+          title: this.t('optimization.advice.sl_tight.title'),
+          description: replacePlaceholders(this.t('optimization.advice.sl_tight.desc'), {
+            rate: prematureStopRate.toFixed(0)
+          }),
           impact: 'high',
-          suggestion: `Élargissez votre Stop Loss pour laisser respirer les positions. Testez ${suggestedSL}% au lieu de ${currentSL}%.`,
+          suggestion: replacePlaceholders(this.t('optimization.advice.sl_tight.suggestion'), {
+            suggested: suggestedSL,
+            current: currentSL
+          }),
           currentValue: `${currentSL}%`,
           suggestedValue: `${suggestedSL}%`
         })
@@ -175,10 +197,12 @@ export class BacktestOptimizationService {
         id: 'low-winrate',
         type: 'critical',
         category: 'strategy',
-        title: 'Taux de réussite très faible',
-        description: `Seulement ${metrics.winRate.toFixed(0)}% de vos trades sont gagnants. Votre stratégie génère trop de faux signaux.`,
+        title: this.t('optimization.advice.low_winrate.title'),
+        description: replacePlaceholders(this.t('optimization.advice.low_winrate.desc'), {
+          rate: metrics.winRate.toFixed(0)
+        }),
         impact: 'high',
-        suggestion: 'Ajoutez des filtres de confirmation ou changez de stratégie. Considérez combiner plusieurs indicateurs pour réduire les faux signaux.',
+        suggestion: this.t('optimization.advice.low_winrate.suggestion'),
         currentValue: `${metrics.winRate.toFixed(0)}%`
       })
     } else if (metrics.winRate > 70) {
@@ -186,20 +210,24 @@ export class BacktestOptimizationService {
         id: 'high-winrate',
         type: 'success',
         category: 'strategy',
-        title: 'Excellent taux de réussite',
-        description: `${metrics.winRate.toFixed(0)}% de trades gagnants ! Votre stratégie est très efficace.`,
+        title: this.t('optimization.advice.high_winrate.title'),
+        description: replacePlaceholders(this.t('optimization.advice.high_winrate.desc'), {
+          rate: metrics.winRate.toFixed(0)
+        }),
         impact: 'low',
-        suggestion: 'Maintenez cette stratégie. Assurez-vous que le ratio gain/perte reste favorable.'
+        suggestion: this.t('optimization.advice.high_winrate.suggestion')
       })
     } else if (metrics.winRate >= 50 && metrics.winRate <= 70) {
       advice.push({
         id: 'good-winrate',
         type: 'success',
         category: 'performance',
-        title: 'Taux de réussite solide',
-        description: `${metrics.winRate.toFixed(0)}% de trades gagnants, c'est un bon équilibre.`,
+        title: this.t('optimization.advice.good_winrate.title'),
+        description: replacePlaceholders(this.t('optimization.advice.good_winrate.desc'), {
+          rate: metrics.winRate.toFixed(0)
+        }),
         impact: 'low',
-        suggestion: 'Concentrez-vous maintenant sur l\'optimisation du ratio gain/perte.'
+        suggestion: this.t('optimization.advice.good_winrate.suggestion')
       })
     }
 
@@ -215,20 +243,24 @@ export class BacktestOptimizationService {
         id: 'negative-profit-factor',
         type: 'critical',
         category: 'performance',
-        title: 'Profit Factor négatif',
-        description: `Vos pertes (${Math.abs(metrics.profitFactor * 100).toFixed(0)}%) dépassent vos gains. Cette stratégie perd de l'argent.`,
+        title: this.t('optimization.advice.negative_pf.title'),
+        description: replacePlaceholders(this.t('optimization.advice.negative_pf.desc'), {
+          value: Math.abs(metrics.profitFactor * 100).toFixed(0)
+        }),
         impact: 'high',
-        suggestion: 'Stratégie non rentable. Revoyez complètement vos paramètres ou changez d\'approche.'
+        suggestion: this.t('optimization.advice.negative_pf.suggestion')
       })
     } else if (metrics.profitFactor > 2) {
       advice.push({
         id: 'excellent-profit-factor',
         type: 'success',
         category: 'performance',
-        title: 'Profit Factor excellent',
-        description: `Vos gains sont ${metrics.profitFactor.toFixed(1)}x supérieurs à vos pertes !`,
+        title: this.t('optimization.advice.excellent_pf.title'),
+        description: replacePlaceholders(this.t('optimization.advice.excellent_pf.desc'), {
+          value: metrics.profitFactor.toFixed(1)
+        }),
         impact: 'low',
-        suggestion: 'Excellente stratégie ! Surveillez la stabilité sur différentes périodes.'
+        suggestion: this.t('optimization.advice.excellent_pf.suggestion')
       })
     }
 
@@ -244,10 +276,12 @@ export class BacktestOptimizationService {
         id: 'high-drawdown',
         type: 'critical',
         category: 'risk_management',
-        title: 'Drawdown dangereux',
-        description: `Perte maximale de ${metrics.maxDrawdownPercentage.toFixed(1)}%. Vous risquez de perdre plus de 30% de votre capital.`,
+        title: this.t('optimization.advice.high_drawdown.title'),
+        description: replacePlaceholders(this.t('optimization.advice.high_drawdown.desc'), {
+          value: metrics.maxDrawdownPercentage.toFixed(1)
+        }),
         impact: 'high',
-        suggestion: 'Réduisez la taille de vos positions ou resserrez vos stops. Risque trop élevé.',
+        suggestion: this.t('optimization.advice.high_drawdown.suggestion'),
         currentValue: `${metrics.maxDrawdownPercentage.toFixed(1)}%`
       })
     } else if (metrics.maxDrawdownPercentage < 10) {
@@ -255,10 +289,12 @@ export class BacktestOptimizationService {
         id: 'low-drawdown',
         type: 'success',
         category: 'risk_management',
-        title: 'Risque bien maîtrisé',
-        description: `Drawdown de seulement ${metrics.maxDrawdownPercentage.toFixed(1)}%, excellent contrôle du risque.`,
+        title: this.t('optimization.advice.low_drawdown.title'),
+        description: replacePlaceholders(this.t('optimization.advice.low_drawdown.desc'), {
+          value: metrics.maxDrawdownPercentage.toFixed(1)
+        }),
         impact: 'low',
-        suggestion: 'Gestion du risque exemplaire. Vous pourriez légèrement augmenter la taille des positions.'
+        suggestion: this.t('optimization.advice.low_drawdown.suggestion')
       })
     }
 
@@ -294,10 +330,12 @@ export class BacktestOptimizationService {
           id: 'entry-too-early',
           type: 'warning',
           category: 'timing',
-          title: 'Entrées trop anticipées',
-          description: `${earlyEntryRate.toFixed(0)}% de vos entrées sont suivies d'une baisse. Vous entrez trop tôt.`,
+          title: this.t('optimization.advice.entry_early.title'),
+          description: replacePlaceholders(this.t('optimization.advice.entry_early.desc'), {
+            rate: earlyEntryRate.toFixed(0)
+          }),
           impact: 'medium',
-          suggestion: 'Attendez une confirmation supplémentaire avant d\'entrer en position. Ajoutez un filtre de volume ou de momentum.'
+          suggestion: this.t('optimization.advice.entry_early.suggestion')
         })
       }
     }
@@ -321,10 +359,10 @@ export class BacktestOptimizationService {
           id: 'manual-exit-negative',
           type: 'warning',
           category: 'timing',
-          title: 'Sorties manuelles perdantes',
-          description: 'Vos sorties manuelles (hors TP/SL) sont majoritairement perdantes.',
+          title: this.t('optimization.advice.manual_exit_negative.title'),
+          description: this.t('optimization.advice.manual_exit_negative.desc'),
           impact: 'medium',
-          suggestion: 'Laissez vos TP/SL travailler. Évitez de sortir prématurément par peur.'
+          suggestion: this.t('optimization.advice.manual_exit_negative.suggestion')
         })
       }
     }
@@ -360,66 +398,126 @@ export class BacktestOptimizationService {
       ? config.customStrategy?.indicators?.some(i => i.type === 'STOCHASTIC' && i.enabled) || false
       : config.strategy === 'stochastic'
 
+    // Compter le nombre d'indicateurs actifs
+    const activeIndicators = [hasRSI, hasEMA, hasMACD, hasBB, hasStochastic].filter(Boolean).length
+
     // Analyser selon les indicateurs réellement utilisés
-    if (hasRSI && !hasEMA && !hasMACD && metrics.winRate < 50) {
+    // IMPORTANT : Ne suggérer d'ajouter des indicateurs QUE si l'utilisateur utilise un seul indicateur
+    if (hasRSI && !hasEMA && !hasMACD && !hasBB && !hasStochastic && metrics.winRate < 50) {
       advice.push({
         id: 'rsi-inefficient',
         type: 'suggestion',
         category: 'indicators',
-        title: 'RSI peu efficace sur cette période',
-        description: 'Le RSI seul ne semble pas suffisant pour cette crypto/période.',
+        title: this.t('optimization.advice.rsi_inefficient.title'),
+        description: this.t('optimization.advice.rsi_inefficient.desc'),
         impact: 'medium',
-        suggestion: 'Combinez le RSI avec un indicateur de tendance (EMA, MACD) pour filtrer les faux signaux.'
+        suggestion: this.t('optimization.advice.rsi_inefficient.suggestion')
+      })
+    } else if (hasRSI && activeIndicators >= 2 && metrics.winRate < 50) {
+      // Si plusieurs indicateurs mais toujours mauvais winrate
+      advice.push({
+        id: 'combined-indicators-inefficient',
+        type: 'suggestion',
+        category: 'indicators',
+        title: this.t('optimization.advice.combined_inefficient.title'),
+        description: replacePlaceholders(this.t('optimization.advice.combined_inefficient.desc'), {
+          count: activeIndicators,
+          rate: metrics.winRate.toFixed(0)
+        }),
+        impact: 'medium',
+        suggestion: this.t('optimization.advice.combined_inefficient.suggestion')
       })
     }
 
-    if (hasEMA && metrics.profitFactor < 1.5) {
+    if (hasEMA && activeIndicators === 1 && metrics.profitFactor < 1.5) {
       advice.push({
         id: 'ema-needs-improvement',
         type: 'suggestion',
         category: 'indicators',
-        title: 'Performance EMA à améliorer',
-        description: 'Vos signaux EMA génèrent un profit factor faible.',
+        title: this.t('optimization.advice.ema_weak.title'),
+        description: this.t('optimization.advice.ema_weak.desc'),
         impact: 'medium',
-        suggestion: hasRSI || hasMACD
-          ? 'Ajustez les périodes de vos EMA ou affinez les conditions de combinaison.'
-          : 'Combinez vos EMA avec RSI ou MACD pour confirmation des signaux.'
+        suggestion: this.t('optimization.advice.ema_weak.suggestion')
+      })
+    } else if (hasEMA && activeIndicators >= 2 && metrics.profitFactor < 1.5) {
+      advice.push({
+        id: 'ema-combined-weak',
+        type: 'suggestion',
+        category: 'indicators',
+        title: this.t('optimization.advice.ema_combined_weak.title'),
+        description: this.t('optimization.advice.ema_combined_weak.desc'),
+        impact: 'medium',
+        suggestion: this.t('optimization.advice.ema_combined_weak.suggestion')
       })
     }
 
-    if (hasMACD && metrics.winRate < 45) {
+    if (hasMACD && activeIndicators === 1 && metrics.winRate < 45) {
       advice.push({
         id: 'macd-low-winrate',
         type: 'suggestion',
         category: 'indicators',
-        title: 'MACD génère trop de faux signaux',
-        description: `Seulement ${metrics.winRate.toFixed(0)}% de trades gagnants avec MACD.`,
+        title: this.t('optimization.advice.macd_low_winrate.title'),
+        description: replacePlaceholders(this.t('optimization.advice.macd_low_winrate.desc'), {
+          rate: metrics.winRate.toFixed(0)
+        }),
         impact: 'medium',
-        suggestion: 'Ajoutez un filtre de tendance (EMA) ou de momentum (RSI) pour valider les signaux MACD.'
+        suggestion: this.t('optimization.advice.macd_low_winrate.suggestion')
+      })
+    } else if (hasMACD && activeIndicators >= 2 && metrics.winRate < 45) {
+      advice.push({
+        id: 'macd-combined-weak',
+        type: 'suggestion',
+        category: 'indicators',
+        title: this.t('optimization.advice.macd_combined_weak.title'),
+        description: replacePlaceholders(this.t('optimization.advice.macd_combined_weak.desc'), {
+          rate: metrics.winRate.toFixed(0)
+        }),
+        impact: 'medium',
+        suggestion: this.t('optimization.advice.macd_combined_weak.suggestion')
       })
     }
 
-    if (hasBB && metrics.winRate < 50) {
+    if (hasBB && activeIndicators === 1 && metrics.winRate < 50) {
       advice.push({
         id: 'bb-inefficient',
         type: 'suggestion',
         category: 'indicators',
-        title: 'Bollinger Bands peu efficaces',
-        description: 'Les rebonds sur les bandes génèrent trop de faux signaux.',
+        title: this.t('optimization.advice.bb_inefficient.title'),
+        description: this.t('optimization.advice.bb_inefficient.desc'),
         impact: 'medium',
-        suggestion: 'Combinez avec RSI pour détecter les vraies surventes/surachats aux bandes.'
+        suggestion: this.t('optimization.advice.bb_inefficient.suggestion')
+      })
+    } else if (hasBB && activeIndicators >= 2 && metrics.winRate < 50) {
+      advice.push({
+        id: 'bb-combined-weak',
+        type: 'suggestion',
+        category: 'indicators',
+        title: this.t('optimization.advice.bb_combined_weak.title'),
+        description: this.t('optimization.advice.bb_combined_weak.desc'),
+        impact: 'medium',
+        suggestion: this.t('optimization.advice.bb_combined_weak.suggestion')
       })
     }
 
-    if (hasStochastic && metrics.profitFactor < 1.3) {
+    if (hasStochastic && activeIndicators === 1 && metrics.profitFactor < 1.3) {
       advice.push({
         id: 'stochastic-weak',
         type: 'suggestion',
         category: 'indicators',
-        title: 'Stochastic peu rentable',
-        description: 'Le Stochastic seul ne génère pas assez de profit.',
+        title: this.t('optimization.advice.stochastic_weak.title'),
+        description: this.t('optimization.advice.stochastic_weak.desc'),
         impact: 'medium',
-        suggestion: 'Utilisez le Stochastic comme filtre secondaire avec une EMA de tendance.'
+        suggestion: this.t('optimization.advice.stochastic_weak.suggestion')
+      })
+    } else if (hasStochastic && activeIndicators >= 2 && metrics.profitFactor < 1.3) {
+      advice.push({
+        id: 'stochastic-combined-weak',
+        type: 'suggestion',
+        category: 'indicators',
+        title: this.t('optimization.advice.stochastic_combined_weak.title'),
+        description: this.t('optimization.advice.stochastic_combined_weak.desc'),
+        impact: 'medium',
+        suggestion: this.t('optimization.advice.stochastic_combined_weak.suggestion')
       })
     }
 
@@ -436,10 +534,12 @@ export class BacktestOptimizationService {
         id: 'underperform-hold',
         type: 'critical',
         category: 'performance',
-        title: 'Sous-performance vs Buy & Hold',
-        description: `Vous auriez gagné ${Math.abs(metrics.alpha).toFixed(1)}% de plus en achetant et gardant.`,
+        title: this.t('optimization.advice.underperform_hold.title'),
+        description: replacePlaceholders(this.t('optimization.advice.underperform_hold.desc'), {
+          value: Math.abs(metrics.alpha).toFixed(1)
+        }),
         impact: 'high',
-        suggestion: 'Cette stratégie active ne bat pas le simple achat. Repensez votre approche ou restez passif.',
+        suggestion: this.t('optimization.advice.underperform_hold.suggestion'),
         currentValue: `${metrics.totalReturnPercentage.toFixed(1)}%`,
         suggestedValue: `${metrics.holdStrategyReturnPercentage.toFixed(1)}% (Hold)`
       })
@@ -448,10 +548,12 @@ export class BacktestOptimizationService {
         id: 'outperform-hold',
         type: 'success',
         category: 'performance',
-        title: 'Surperformance remarquable',
-        description: `Vous battez le Buy & Hold de ${metrics.alpha.toFixed(1)}% !`,
+        title: this.t('optimization.advice.outperform_hold.title'),
+        description: replacePlaceholders(this.t('optimization.advice.outperform_hold.desc'), {
+          value: metrics.alpha.toFixed(1)
+        }),
         impact: 'low',
-        suggestion: 'Excellente stratégie active. Vérifiez sa robustesse sur d\'autres périodes.'
+        suggestion: this.t('optimization.advice.outperform_hold.suggestion')
       })
     }
 
@@ -461,10 +563,12 @@ export class BacktestOptimizationService {
         id: 'excellent-sharpe',
         type: 'success',
         category: 'performance',
-        title: 'Ratio Sharpe excellent',
-        description: `Sharpe de ${metrics.sharpeRatio.toFixed(2)}, rendement très stable par rapport au risque.`,
+        title: this.t('optimization.advice.excellent_sharpe.title'),
+        description: replacePlaceholders(this.t('optimization.advice.excellent_sharpe.desc'), {
+          value: metrics.sharpeRatio.toFixed(2)
+        }),
         impact: 'low',
-        suggestion: 'Rendement ajusté au risque optimal. Stratégie très équilibrée.'
+        suggestion: this.t('optimization.advice.excellent_sharpe.suggestion')
       })
     }
 
@@ -473,7 +577,7 @@ export class BacktestOptimizationService {
 }
 
 // Fonction helper pour analyser un backtest
-export function analyzeBacktest(result: BacktestResult): OptimizationAdvice[] {
-  const service = new BacktestOptimizationService(result)
+export function analyzeBacktest(result: BacktestResult, translateFn?: (key: string) => string): OptimizationAdvice[] {
+  const service = new BacktestOptimizationService(result, translateFn)
   return service.analyzeAndGenerateAdvice()
 }

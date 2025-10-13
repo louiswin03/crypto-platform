@@ -1,9 +1,14 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { TrendingUp, Users, Star, Activity, BarChart3, Wallet, PieChart, Shield, CheckCircle } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Footer() {
+  const { t } = useLanguage()
   const pathname = usePathname()
 
   const handleLegalLinkClick = () => {
@@ -26,17 +31,20 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-4 mb-6">
-              <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl float-animation">
-                <TrendingUp className="w-7 h-7 text-white" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Cryptium Logo"
+                width={48}
+                height={48}
+                className="object-contain opacity-75"
+              />
               <div>
-                <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">CryptoBacktest</span>
-                <div className="text-xs text-[#6366F1] font-medium tracking-[0.15em] uppercase">Plateforme française</div>
+                <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">Cryptium</span>
+                <div className="text-xs text-[#6366F1] font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
               </div>
             </div>
             <p className="text-gray-400 leading-relaxed text-sm mb-6">
-              La référence française pour le backtesting et l'analyse de stratégies crypto. Conçu par des traders, pour des traders.
+              {t('home.footer.brand_desc')}
             </p>
 
             {/* Social Links */}
@@ -55,32 +63,32 @@ export default function Footer() {
 
           {/* Platform */}
           <div>
-            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">Plateforme</h4>
+            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">{t('home.footer.platform')}</h4>
             <ul className="space-y-4">
-              <li><Link href="/cryptos" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><TrendingUp className="w-4 h-4" /><span>Cryptomonnaies</span></Link></li>
-              <li><Link href="/graphiques" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><BarChart3 className="w-4 h-4" /><span>Graphiques</span></Link></li>
-              <li><Link href="/backtest" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><Activity className="w-4 h-4" /><span>Backtest</span></Link></li>
-              <li><Link href="/portefeuille" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><Wallet className="w-4 h-4" /><span>Portefeuille</span></Link></li>
+              <li><Link href="/cryptos" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><TrendingUp className="w-4 h-4" /><span>{t('nav.cryptos')}</span></Link></li>
+              <li><Link href="/graphiques" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><BarChart3 className="w-4 h-4" /><span>{t('nav.charts')}</span></Link></li>
+              <li><Link href="/backtest" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><Activity className="w-4 h-4" /><span>{t('nav.backtest')}</span></Link></li>
+              <li><Link href="/portefeuille" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300 flex items-center space-x-2"><Wallet className="w-4 h-4" /><span>{t('nav.portfolio')}</span></Link></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">Support</h4>
+            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">{t('home.footer.support')}</h4>
             <ul className="space-y-4">
-              <li><Link href="/aide" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Centre d'aide</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Documentation API</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Tutoriels vidéo</Link></li>
-              <li><Link href="/support" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Support technique</Link></li>
+              <li><Link href="/aide" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.help')}</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.api_docs')}</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tutorials')}</Link></li>
+              <li><Link href="/support" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tech_support')}</Link></li>
             </ul>
           </div>
 
           {/* Legal & Company */}
           <div>
-            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">Entreprise</h4>
+            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">{t('home.footer.company')}</h4>
             <ul className="space-y-4">
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">À propos</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Notre équipe</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.about')}</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.team')}</Link></li>
             </ul>
           </div>
         </div>
@@ -90,26 +98,26 @@ export default function Footer() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="glass-effect rounded-2xl p-6 text-center">
               <Shield className="w-8 h-8 text-[#16A34A] mx-auto mb-3" />
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">RGPD</div>
-              <div className="text-xs text-gray-400">Conforme</div>
+              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.rgpd')}</div>
+              <div className="text-xs text-gray-400">{t('home.footer.compliant')}</div>
             </div>
 
             <div className="glass-effect rounded-2xl p-6 text-center">
               <CheckCircle className="w-8 h-8 text-[#6366F1] mx-auto mb-3" />
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">ISO 27001</div>
-              <div className="text-xs text-gray-400">Certifié</div>
+              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.iso')}</div>
+              <div className="text-xs text-gray-400">{t('home.footer.certified')}</div>
             </div>
 
             <div className="glass-effect rounded-2xl p-6 text-center">
               <span className="text-2xl mb-3 block">🇫🇷</span>
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">Français</div>
+              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.french')}</div>
               <div className="text-xs text-gray-400">100%</div>
             </div>
 
             <div className="glass-effect rounded-2xl p-6 text-center">
               <div className="w-2 h-2 bg-[#16A34A] rounded-full mx-auto mb-3 animate-pulse"></div>
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">Status</div>
-              <div className="text-xs text-[#16A34A] font-semibold">OPERATIONAL</div>
+              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
+              <div className="text-xs text-[#16A34A] font-semibold">{t('home.footer.operational')}</div>
             </div>
           </div>
         </div>
@@ -118,13 +126,13 @@ export default function Footer() {
         <div className="border-t border-gray-800/40 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-500 text-sm">
-              © 2025 CryptoBacktest SAS. Tous droits réservés. • Siège social: Paris, France • RCS: 123 456 789
+              {t('home.footer.copyright')}
             </div>
             <div className="flex space-x-6 text-sm">
-              <Link href="/conditions-utilisation" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Conditions d'utilisation</Link>
-              <Link href="/politique-confidentialite" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Politique de confidentialité</Link>
-              <Link href="/mentions-legales" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Mentions légales</Link>
-              <Link href="/contact" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">Contact</Link>
+              <Link href="/conditions-utilisation" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.terms')}</Link>
+              <Link href="/politique-confidentialite" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.privacy')}</Link>
+              <Link href="/mentions-legales" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.legal')}</Link>
+              <Link href="/contact" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.contact')}</Link>
             </div>
           </div>
         </div>

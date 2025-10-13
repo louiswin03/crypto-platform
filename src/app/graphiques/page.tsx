@@ -16,12 +16,14 @@ import TradingViewWidget from '@/components/TradingViewWidget'
 import { useExtendedCoinGeckoPrices } from '@/hooks/useExtendedCoinGeckoPrices' // AJOUT
 // Remplacez SmartCryptoSelector par un nouveau composant qui utilise les données CoinGecko
 import CoinGeckoCryptoSelector from '@/components/CryptoSelector/CoinGeckoCryptoSelector'
+import { useTheme } from '@/contexts/ThemeContext'
 
 import { Search, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import ImprovedCryptoSearch from '@/components/CryptoSelector/ImprovedCryptoSearch'
 
 // Composant pour affichage accordéon des listes
 function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }: any) {
+  const { t } = useLanguage()
   const [expandedList, setExpandedList] = useState<string | null>(null)
 
   return (
@@ -52,7 +54,7 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
                     {list.is_pinned && <Star className="w-3 h-3 text-[#F59E0B] fill-current" />}
                   </div>
                   <div className="text-gray-400 text-xs">
-                    {list.items?.length || 0} crypto{(list.items?.length || 0) !== 1 ? 's' : ''}
+                    {list.items?.length || 0} {(list.items?.length || 0) !== 1 ? t('charts.cryptos') : t('charts.crypto')}
                   </div>
                 </div>
               </div>
@@ -65,7 +67,7 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
 
             {/* Cryptos de la liste (accordéon) */}
             {isExpanded && (
-              <div className="px-3 pb-3 space-y-1 border-t border-gray-700/30 pt-2">
+              <div className="px-3 pb-3 space-y-1 border-t border-gray-700/30 pt-2 max-h-[300px] overflow-y-auto custom-scrollbar">
                 {list.items?.map((item: any) => {
                   const cryptoData = prices.find((coin: any) => coin.id === item.crypto_id)
                   let tradingViewSymbol = cryptoData?.tradingview_symbol
@@ -125,7 +127,7 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
         }}
         className="block text-center py-2 text-[#6366F1] hover:text-[#8B5CF6] text-sm font-semibold transition-colors"
       >
-        Gérer mes listes →
+        {t('charts.manage_lists')}
       </Link>
     </div>
   )
@@ -135,6 +137,7 @@ export default function GraphiquesPage() {
   // Hook pour récupérer l'utilisateur connecté (pour conditionner certains boutons)
   const { user } = useAuth()
   const { t } = useLanguage()
+  const { isDarkMode } = useTheme()
   const searchParams = useSearchParams()
 
   const [selectedPair, setSelectedPair] = useState('CRYPTO:BTCUSD')
@@ -434,7 +437,9 @@ export default function GraphiquesPage() {
         }
       `}</style>
       
-      <div className="min-h-screen bg-[#111827] text-[#F9FAFB] relative overflow-hidden">
+      <div className={`min-h-screen relative overflow-hidden ${
+        isDarkMode ? 'bg-[#111827] text-[#F9FAFB]' : 'bg-gray-50 text-gray-900'
+      }`}>
         {/* Background Pattern avec effets animés */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
 
@@ -458,19 +463,33 @@ export default function GraphiquesPage() {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-12 relative z-10">
               <div className="text-center lg:text-left">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] py-4">
-                  <span className="bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift font-display flex items-center justify-center lg:justify-start space-x-4">
-                    <span>Graphiques</span>
+                  <span className={`font-display flex items-center justify-center lg:justify-start space-x-4 ${
+                    isDarkMode
+                      ? 'bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift'
+                      : 'text-[#1E293B]'
+                  }`}>
+                    <span>{t('charts.page_title')}</span>
                     <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-[#6366F1] animate-pulse" />
                   </span>
-                  <div className="text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent font-display font-semibold mt-4 animate-shimmer">
-                    Analyse Technique Avancée
+                  <div className={`text-3xl md:text-4xl lg:text-5xl font-display font-semibold mt-4 ${
+                    isDarkMode
+                      ? 'bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent animate-shimmer'
+                      : 'text-[#6366F1]'
+                  }`}>
+                    {t('charts.advanced_analysis')}
                   </div>
                 </h1>
-                <p className="text-gray-300 text-xl md:text-2xl font-light max-w-3xl leading-relaxed font-display">
-                  Graphiques TradingView professionnels et outils d'analyse technique pour les cryptomonnaies
+                <p className={`text-xl md:text-2xl font-light max-w-3xl leading-relaxed font-display ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                }`}>
+                  {t('charts.description')}
                   {cryptoOptions.length > 0 && (
-                    <span className="block text-lg mt-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent font-semibold">
-                      {cryptoOptions.length} cryptomonnaies avec graphiques disponibles
+                    <span className={`block text-lg mt-3 font-semibold ${
+                      isDarkMode
+                        ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent'
+                        : 'text-[#6366F1]'
+                    }`}>
+                      {cryptoOptions.length} {t('charts.available_charts')}
                     </span>
                   )}
                 </p>
@@ -478,24 +497,34 @@ export default function GraphiquesPage() {
               
               <button
                 onClick={handleRefresh}
-                className="group flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-gray-800/80 to-gray-700/80 backdrop-blur-xl border border-gray-600/50 rounded-2xl text-gray-300 hover:text-white hover:border-[#6366F1]/50 hover:from-[#6366F1]/20 hover:to-[#8B5CF6]/20 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 font-bold"
+                className={`group flex items-center space-x-3 px-8 py-4 backdrop-blur-xl border rounded-2xl hover:border-[#6366F1]/50 hover:from-[#6366F1]/20 hover:to-[#8B5CF6]/20 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 font-bold ${
+                  isDarkMode
+                    ? 'bg-gradient-to-r from-gray-800/80 to-gray-700/80 border-gray-600/50 text-gray-300 hover:text-white'
+                    : 'bg-white/90 border-gray-300 text-gray-700 hover:text-[#6366F1]'
+                }`}
               >
                 <RotateCcw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                <span>Actualiser les Données</span>
+                <span>{t('charts.refresh_data')}</span>
               </button>
             </div>
 
             {/* Section unifiée : Sélectionner une cryptomonnaie */}
             <div className="mb-6">
-              <div className="glass-effect rounded-2xl border border-gray-800/40 p-5">
+              <div className={`rounded-2xl border p-5 ${
+                isDarkMode
+                  ? 'glass-effect border-gray-800/40'
+                  : 'bg-white/95 border-gray-200/60'
+              }`}>
                 {/* Header de la section */}
                 <div className="mb-5">
-                  <h2 className="text-xl font-bold text-white mb-2 flex items-center space-x-2">
+                  <h2 className={`text-xl font-bold mb-2 flex items-center space-x-2 ${
+                    isDarkMode ? 'text-white' : 'text-[#1E293B]'
+                  }`}>
                     <BarChart3 className="w-5 h-5 text-[#6366F1]" />
-                    <span>Sélectionner une cryptomonnaie</span>
+                    <span>{t('charts.select_crypto')}</span>
                   </h2>
-                  <p className="text-gray-400 text-sm">
-                    Recherchez parmi {cryptoOptions.length} cryptos ou accédez rapidement à vos listes de suivi
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {t('charts.search_among')} {cryptoOptions.length} {t('charts.cryptos_or_lists')}
                   </p>
                 </div>
 
@@ -505,7 +534,9 @@ export default function GraphiquesPage() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2 mb-3">
                       <Search className="w-4 h-4 text-[#6366F1]" />
-                      <h3 className="text-base font-semibold text-white">{t('charts.search_crypto')}</h3>
+                      <h3 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-[#1E293B]'}`}>
+                        {t('charts.search_crypto')}
+                      </h3>
                     </div>
 
                     {loading ? (
@@ -522,7 +553,7 @@ export default function GraphiquesPage() {
                         <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
                           <AlertCircle className="w-6 h-6 text-red-400" />
                         </div>
-                        <div className="text-red-400 font-medium mb-2">Erreur de chargement</div>
+                        <div className="text-red-400 font-medium mb-2">{t('charts.loading_error')}</div>
                         <div className="text-gray-400 text-sm">{error}</div>
                       </div>
                     ) : (
@@ -539,7 +570,9 @@ export default function GraphiquesPage() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         <Star className="w-4 h-4 text-[#F59E0B]" />
-                        <h3 className="text-base font-semibold text-white">{t('charts.my_watchlists')}</h3>
+                        <h3 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-[#1E293B]'}`}>
+                          {t('charts.my_watchlists')}
+                        </h3>
                         {user && watchlists.length > 0 && (
                           <div className="text-xs bg-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#F59E0B] px-2 py-0.5 rounded-full font-bold">
                             {watchlists.length}
@@ -551,24 +584,24 @@ export default function GraphiquesPage() {
                     {!user ? (
                       <div className="text-center py-8 border border-gray-700/50 rounded-xl bg-gray-800/30">
                         <Star className="w-8 h-8 text-gray-500 mx-auto mb-3" />
-                        <p className="text-gray-400 text-sm mb-3">Connectez-vous pour accéder à vos listes</p>
+                        <p className="text-gray-400 text-sm mb-3">{t('charts.connect_for_lists')}</p>
                         <Link
                           href="/auth/signin"
                           className="inline-flex items-center px-4 py-2 bg-[#6366F1] text-white rounded-lg text-sm hover:bg-[#5B21B6] transition-all"
                         >
-                          Se connecter
+                          {t('charts.signin')}
                         </Link>
                       </div>
                     ) : watchlists.length === 0 ? (
                       <div className="text-center py-8 border border-gray-700/50 rounded-xl bg-gray-800/30">
                         <Star className="w-8 h-8 text-gray-500 mx-auto mb-3" />
-                        <p className="text-gray-400 text-sm mb-3">Créez votre première liste de suivi</p>
+                        <p className="text-gray-400 text-sm mb-3">{t('charts.create_first_list')}</p>
                         <Link
                           href="/cryptos"
                           className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-lg text-sm hover:scale-105 transition-all"
                         >
                           <Star className="w-4 h-4" />
-                          <span>Créer une liste</span>
+                          <span>{t('charts.create_list')}</span>
                         </Link>
                       </div>
                     ) : (
@@ -587,29 +620,43 @@ export default function GraphiquesPage() {
             {/* Message pour encourager à créer des listes si pas connecté ou aucune liste */}
             {user && watchlists.length === 0 && !watchlistLoading && (
               <div className="mb-12">
-                <div className="glass-effect-strong rounded-3xl border border-gray-700/50 p-12 text-center">
-                  <div className="w-20 h-20 bg-gray-800/50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <div className={`rounded-3xl border p-12 text-center ${
+                  isDarkMode
+                    ? 'glass-effect-strong border-gray-700/50'
+                    : 'bg-white/95 border-gray-200/60'
+                }`}>
+                  <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 ${
+                    isDarkMode ? 'bg-gray-800/50' : 'bg-gray-100'
+                  }`}>
                     <Star className="w-10 h-10 text-gray-500" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4 font-display">
-                    Créez vos premières listes de suivi
+                  <h3 className={`text-2xl font-bold mb-4 font-display ${
+                    isDarkMode ? 'text-white' : 'text-[#1E293B]'
+                  }`}>
+                    {t('charts.create_first_lists')}
                   </h3>
-                  <p className="text-gray-400 mb-6 max-w-md mx-auto font-display">
-                    Organisez vos cryptomonnaies favorites et accédez rapidement à leurs graphiques depuis cette page
+                  <p className={`mb-6 max-w-md mx-auto font-display ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    {t('charts.organize_favorites')}
                   </p>
                   <Link
                     href="/cryptos"
                     className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-2xl font-bold hover:scale-105 transition-all duration-300 shadow-xl"
                   >
                     <Star className="w-5 h-5" />
-                    <span>Créer ma première liste</span>
+                    <span>{t('charts.create_my_first_list')}</span>
                   </Link>
                 </div>
               </div>
             )}
 
             {/* Info Crypto Premium avec données CoinGecko */}
-            <div className="glass-effect-strong rounded-2xl p-5 border border-gray-700/50 mb-8 relative overflow-hidden group hover:scale-[1.01] transition-all duration-300">
+            <div className={`rounded-2xl p-5 border mb-8 relative overflow-hidden group hover:scale-[1.01] transition-all duration-300 ${
+              isDarkMode
+                ? 'glass-effect-strong border-gray-700/50'
+                : 'bg-white/95 border-gray-200/60'
+            }`}>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#6366F1]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
 
@@ -635,10 +682,18 @@ export default function GraphiquesPage() {
                     </span>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-[#F9FAFB] flex flex-wrap items-center gap-2 mb-1 font-display">
-                      <span className="bg-gradient-to-r from-[#F9FAFB] to-[#6366F1] bg-clip-text text-transparent">{symbolWithoutExchange || 'BTCUSD'}</span>
+                    <div className={`text-2xl font-bold flex flex-wrap items-center gap-2 mb-1 font-display ${
+                      isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
+                    }`}>
+                      <span className={`${
+                        isDarkMode
+                          ? 'bg-gradient-to-r from-[#F9FAFB] to-[#6366F1] bg-clip-text text-transparent'
+                          : 'text-[#1E293B]'
+                      }`}>
+                        {symbolWithoutExchange || 'BTCUSD'}
+                      </span>
                       {currentCrypto.price && (
-                        <span className="text-lg text-gray-300 font-mono">
+                        <span className={`text-lg font-mono ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                           ${currentCrypto.price.toLocaleString('en-US', {
                             minimumFractionDigits: currentCrypto.price < 1 ? 4 : 2,
                             maximumFractionDigits: currentCrypto.price < 1 ? 4 : 2
@@ -650,7 +705,9 @@ export default function GraphiquesPage() {
                         <span className="text-[#16A34A] font-bold text-xs">LIVE</span>
                       </div>
                     </div>
-                    <div className="text-gray-300 flex flex-wrap items-center gap-2 text-sm">
+                    <div className={`flex flex-wrap items-center gap-2 text-sm ${
+                      isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                    }`}>
                       <span className="font-semibold font-display">{currentCrypto.name}</span>
                       <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
                       <span className="px-2 py-0.5 bg-gradient-to-r from-[#6366F1]/20 to-[#8B5CF6]/20 text-[#6366F1] rounded-full text-xs font-bold border border-[#6366F1]/30">
@@ -677,7 +734,7 @@ export default function GraphiquesPage() {
                   <button
                     onClick={toggleFullscreen}
                     className="group/btn p-2.5 rounded-xl bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#6366F1]/20 hover:to-[#4F46E5]/20 border border-gray-600/50 hover:border-[#6366F1]/60 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#6366F1]/20"
-                    title="Mode plein écran"
+                    title={t('charts.fullscreen_mode')}
                   >
                     <Maximize2 className="w-5 h-5 text-gray-400 group-hover/btn:text-[#6366F1] transition-colors" />
                   </button>
@@ -705,7 +762,7 @@ export default function GraphiquesPage() {
               <button
                 onClick={exitFullscreen}
                 className="absolute top-4 right-4 z-[10000] p-3 bg-gray-800/90 hover:bg-gray-700/90 rounded-xl text-white transition-colors backdrop-blur-sm shadow-lg border border-gray-600/50"
-                title="Quitter le plein écran (Échap)"
+                title={t('charts.exit_fullscreen')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -755,16 +812,16 @@ export default function GraphiquesPage() {
                 className="group flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] text-white rounded-2xl font-bold hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-[#6366F1]/40 relative overflow-hidden"
               >
                 <Activity className="w-6 h-6 animate-pulse" />
-                <span>Backtest {currentCrypto.name}</span>
+                <span>{t('charts.backtest')} {currentCrypto.name}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out"></div>
               </Link>
             ) : (
               <div
                 className="flex items-center space-x-3 px-8 py-4 bg-gray-700/50 text-gray-500 rounded-2xl font-bold cursor-not-allowed opacity-60"
-                title="Connexion requise pour le backtest"
+                title={t('charts.login_required_backtest')}
               >
                 <Activity className="w-6 h-6" />
-                <span>Backtest {currentCrypto.name}</span>
+                <span>{t('charts.backtest')} {currentCrypto.name}</span>
               </div>
             )}
 
@@ -781,7 +838,7 @@ export default function GraphiquesPage() {
             ) : (
               <div
                 className="flex items-center space-x-3 px-8 py-4 bg-gray-800/30 border border-gray-700/30 text-gray-500 rounded-2xl font-bold cursor-not-allowed opacity-60"
-                title="Connexion requise pour la gestion de portefeuille"
+                title={t('charts.login_required_portfolio')}
               >
                 <Wallet className="w-6 h-6" />
                 <span>{t('charts.add_to_portfolio')}</span>
@@ -794,27 +851,31 @@ export default function GraphiquesPage() {
               className="group flex items-center space-x-3 px-8 py-4 glass-effect-strong border border-gray-600/50 text-gray-300 hover:text-white rounded-2xl font-bold hover:border-[#6366F1]/50 transition-all duration-300 hover:scale-105 relative overflow-hidden"
             >
               <BarChart3 className="w-6 h-6 group-hover:text-[#6366F1]" />
-              <span>Explorer les Cryptos</span>
+              <span>{t('charts.explore_cryptos')}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#6366F1]/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out"></div>
             </Link>
           </div>
 
           {/* AJOUT : Message d'encouragement pour les utilisateurs non connectés */}
           {!user && (
-            <div className="mt-12 glass-effect rounded-2xl p-6 border border-[#6366F1]/40 bg-[#6366F1]/5">
+            <div className={`mt-12 rounded-2xl p-6 border border-[#6366F1]/40 bg-[#6366F1]/5 ${
+              isDarkMode ? 'glass-effect' : 'bg-blue-50/90'
+            }`}>
               <div className="text-center">
                 <BarChart3 className="w-12 h-12 text-[#6366F1] mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">
-                  Analysez vos stratégies avec nos outils avancés
+                <h3 className={`text-lg font-semibold mb-2 ${
+                  isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
+                }`}>
+                  {t('charts.analyze_strategies')}
                 </h3>
-                <p className="text-gray-400 mb-4">
-                  Connectez-vous pour accéder au backtest de stratégies et à la gestion de portefeuille
+                <p className={`mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {t('charts.connect_for_tools')}
                 </p>
                 <Link
                   href="/auth/signin"
                   className="inline-flex items-center px-6 py-3 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-semibold"
                 >
-                  Se connecter
+                  {t('charts.signin')}
                 </Link>
               </div>
             </div>

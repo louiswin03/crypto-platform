@@ -515,9 +515,9 @@ function ManualPortfolioSection() {
         <div>
           <h2 className="text-2xl font-bold text-[#F9FAFB] flex items-center gap-3">
             <Coins className="w-6 h-6 text-[#6366F1]" />
-            Portfolio Manuel
+            {t('portfolio.manual_portfolio')}
           </h2>
-          <p className="text-gray-400 mt-1">Gérez vos positions crypto manuellement</p>
+          <p className="text-gray-400 mt-1">{t('portfolio.manage_positions')}</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -525,7 +525,7 @@ function ManualPortfolioSection() {
             className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm"
           >
             {showValues ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            {showValues ? 'Masquer' : 'Afficher'}
+            {showValues ? t('portfolio.hide') : t('portfolio.show')}
           </button>
           <button
             onClick={refreshPrices}
@@ -533,7 +533,7 @@ function ManualPortfolioSection() {
             className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm disabled:opacity-50"
           >
             <RefreshCcw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Actualiser
+            {t('portfolio.update')}
           </button>
           <button
             onClick={() => setShowAddModal(true)}
@@ -550,18 +550,18 @@ function ManualPortfolioSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Valeur Totale</span>
+              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.total_value')}</span>
               <div className="p-3 bg-[#16A34A]/20 rounded-xl group-hover:scale-110 transition-transform">
                 <DollarSign className="w-6 h-6 text-[#16A34A]" />
               </div>
             </div>
             <div className="text-3xl font-black text-[#F9FAFB] font-mono mb-2">{formatCurrency(totalValue)}</div>
-            <div className="text-sm text-gray-400 font-medium">{consolidatedHoldings.length} assets • {manualHoldings.length} positions</div>
+            <div className="text-sm text-gray-400 font-medium">{consolidatedHoldings.length} {t('portfolio.assets')} • {manualHoldings.length} {t('portfolio.positions')}</div>
           </div>
 
           <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">P&L Total</span>
+              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.profit_loss')} Total</span>
               <div className={`p-3 rounded-xl group-hover:scale-110 transition-transform ${
                 totalPnL >= 0 ? 'bg-[#16A34A]/20' : 'bg-[#DC2626]/20'
               }`}>
@@ -581,18 +581,18 @@ function ManualPortfolioSection() {
 
           <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Investissement</span>
+              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.total_invested')}</span>
               <div className="p-3 bg-[#6366F1]/20 rounded-xl group-hover:scale-110 transition-transform">
                 <BarChart3 className="w-6 h-6 text-[#6366F1]" />
               </div>
             </div>
             <div className="text-3xl font-black text-[#F9FAFB] font-mono mb-2">{formatCurrency(totalInvested)}</div>
-            <div className="text-sm text-gray-400 font-medium">Capital investi</div>
+            <div className="text-sm text-gray-400 font-medium">{t('portfolio.invested_capital')}</div>
           </div>
 
           <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Meilleur Asset</span>
+              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.best_asset')}</span>
               <div className="p-3 bg-[#F59E0B]/20 rounded-xl group-hover:scale-110 transition-transform">
                 <Target className="w-6 h-6 text-[#F59E0B]" />
               </div>
@@ -764,8 +764,8 @@ function ManualPortfolioSection() {
           </>
         ) : (
           <div className="p-12 text-center">
-            <div className="text-gray-400 text-lg mb-2">Portfolio manuel vide</div>
-            <div className="text-gray-500 text-sm mb-6">Ajoutez vos premières positions crypto manuellement</div>
+            <div className="text-gray-400 text-lg mb-2">{t('portfolio.empty_portfolio')}</div>
+            <div className="text-gray-500 text-sm mb-6">{t('portfolio.add_first')}</div>
             <button
               onClick={() => setShowAddModal(true)}
               className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
@@ -783,14 +783,14 @@ function ManualPortfolioSection() {
           <div className="lg:col-span-2 space-y-6">
             <h3 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-3">
               <BarChart3 className="w-5 h-5 text-[#6366F1]" />
-              Analyse Détaillée du Portfolio
+              {t('portfolio.detailed_analysis')}
             </h3>
 
             {/* Analytics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm font-medium">Plus Grande Position</span>
+                  <span className="text-gray-400 text-sm font-medium">{t('portfolio.largest_position')}</span>
                   <TrendingUp className="w-4 h-4 text-[#16A34A]" />
                 </div>
                 {holdingsWithAllocation.length > 0 && (
@@ -799,7 +799,7 @@ function ManualPortfolioSection() {
                       {holdingsWithAllocation[0].symbol}
                     </div>
                     <div className="text-sm text-gray-400">
-                      {holdingsWithAllocation[0].allocation.toFixed(1)}% du portfolio
+                      {holdingsWithAllocation[0].allocation.toFixed(1)}% {t('portfolio.of_portfolio')}
                     </div>
                   </>
                 )}
@@ -807,28 +807,28 @@ function ManualPortfolioSection() {
 
               <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm font-medium">Diversification</span>
+                  <span className="text-gray-400 text-sm font-medium">{t('portfolio.diversification')}</span>
                   <PieChart className="w-4 h-4 text-[#6366F1]" />
                 </div>
                 <div className="text-xl font-bold text-[#F9FAFB] mb-1">
                   {holdingsWithAllocation.filter(h => h.allocation >= 5).length}
                 </div>
                 <div className="text-sm text-gray-400">
-                  Positions significatives
+                  {t('portfolio.significant_positions')}
                 </div>
               </div>
 
               <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm font-medium">Risque</span>
+                  <span className="text-gray-400 text-sm font-medium">{t('portfolio.risk')}</span>
                   <Activity className="w-4 h-4 text-[#F59E0B]" />
                 </div>
                 <div className="text-xl font-bold text-[#F9FAFB] mb-1">
-                  {holdingsWithAllocation[0]?.allocation > 50 ? 'Élevé' :
-                   holdingsWithAllocation[0]?.allocation > 30 ? 'Moyen' : 'Faible'}
+                  {holdingsWithAllocation[0]?.allocation > 50 ? t('portfolio.high') :
+                   holdingsWithAllocation[0]?.allocation > 30 ? t('portfolio.medium') : t('portfolio.low')}
                 </div>
                 <div className="text-sm text-gray-400">
-                  Concentration du portefeuille
+                  {t('portfolio.concentration')}
                 </div>
               </div>
             </div>
@@ -837,16 +837,18 @@ function ManualPortfolioSection() {
             <div className="glass-effect rounded-2xl p-6 border border-[#6366F1]/30">
               <h4 className="text-lg font-semibold text-[#F9FAFB] mb-4 flex items-center gap-2">
                 <Target className="w-5 h-5 text-[#6366F1]" />
-                Conseils de Gestion
+                {t('portfolio.management_tips')}
               </h4>
               <div className="space-y-3 text-sm">
                 {holdingsWithAllocation[0]?.allocation > 50 && (
                   <div className="flex items-start gap-3 p-3 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl">
                     <AlertTriangle className="w-5 h-5 text-[#F59E0B] mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-semibold text-[#F59E0B] mb-1">Forte concentration détectée</div>
+                      <div className="font-semibold text-[#F59E0B] mb-1">{t('portfolio.high_concentration')}</div>
                       <div className="text-gray-400">
-                        Votre position {holdingsWithAllocation[0].symbol} représente {holdingsWithAllocation[0].allocation.toFixed(1)}% de votre portfolio. Envisagez de diversifier pour réduire le risque.
+                        {t('portfolio.concentration_warning')
+                          .replace('{symbol}', holdingsWithAllocation[0].symbol)
+                          .replace('{percent}', holdingsWithAllocation[0].allocation.toFixed(1))}
                       </div>
                     </div>
                   </div>
@@ -855,9 +857,12 @@ function ManualPortfolioSection() {
                   <div className="flex items-start gap-3 p-3 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-xl">
                     <PieChart className="w-5 h-5 text-[#6366F1] mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-semibold text-[#6366F1] mb-1">Diversification à améliorer</div>
+                      <div className="font-semibold text-[#6366F1] mb-1">{t('portfolio.improve_diversification')}</div>
                       <div className="text-gray-400">
-                        Avec {holdingsWithAllocation.filter(h => h.allocation >= 5).length} position{holdingsWithAllocation.filter(h => h.allocation >= 5).length > 1 ? 's' : ''} significative{holdingsWithAllocation.filter(h => h.allocation >= 5).length > 1 ? 's' : ''}, pensez à diversifier davantage (idéalement 5-10 positions).
+                        {holdingsWithAllocation.filter(h => h.allocation >= 5).length === 1
+                          ? t('portfolio.diversification_tip').replace('{count}', '1')
+                          : t('portfolio.diversification_tips').replace('{count}', String(holdingsWithAllocation.filter(h => h.allocation >= 5).length))
+                        }
                       </div>
                     </div>
                   </div>
@@ -952,6 +957,7 @@ function ManualPortfolioSection() {
 
 // Composant de diagramme de répartition du portfolio
 function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: string; allocation: number; currentValue: number }> }) {
+  const { t } = useLanguage()
   const [selectedSegment, setSelectedSegment] = React.useState<string | null>(null)
   const [hoveredSegment, setHoveredSegment] = React.useState<string | null>(null)
 
@@ -1024,7 +1030,7 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
     <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50">
       <h3 className="text-xl font-bold text-[#F9FAFB] mb-6 flex items-center gap-2">
         <PieChart className="w-5 h-5 text-[#6366F1]" />
-        Répartition du Portfolio
+        {t('portfolio.allocation')}
       </h3>
 
       <div className="flex flex-col items-center space-y-6">
@@ -1122,7 +1128,7 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
               ) : (
                 <>
                   <div className="text-2xl font-bold text-[#F9FAFB]">{displayHoldings.length}</div>
-                  <div className="text-gray-400 text-xs">Assets</div>
+                  <div className="text-gray-400 text-xs">{t('portfolio.assets')}</div>
                 </>
               )}
             </div>
@@ -1187,7 +1193,7 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
         {/* Instruction pour l'utilisateur */}
         <div className="text-center mt-4">
           <div className="text-xs text-gray-400 bg-gray-800/30 rounded-lg px-4 py-2 border border-gray-700/30">
-            💡 <strong>Cliquez</strong> sur un segment ou une crypto pour la mettre en surbrillance
+            {t('portfolio.click_highlight')}
           </div>
         </div>
       </div>
@@ -1761,21 +1767,21 @@ export default function PortefeuillePage() {
   const exchanges = [
     {
       name: 'Binance',
-      logo: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+      logo: '/Binance.png',
       connected: binanceConnected,
       status: binanceConnected ? 'active' : 'disconnected',
       balance: binanceBalance
     },
     {
       name: 'Coinbase',
-      logo: 'https://assets.coingecko.com/coins/images/44/small/Coinbase_Coin_Primary.png',
+      logo: '/coinbase.png',
       connected: coinbaseConnected,
       status: coinbaseConnected ? 'active' : 'disconnected',
       balance: coinbaseBalance
     },
     {
       name: 'Kraken',
-      logo: 'https://assets.coingecko.com/coins/images/23468/small/kraken.png',
+      logo: '/kraken.png',
       connected: krakenConnected,
       status: krakenConnected ? 'active' : 'disconnected',
       balance: krakenBalance
@@ -1866,15 +1872,15 @@ export default function PortefeuillePage() {
               <div className="text-center lg:text-left">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] py-4">
                   <span className="bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift font-display flex items-center justify-center lg:justify-start space-x-4">
-                    <span>Portfolio</span>
+                    <span>{t('portfolio.title')}</span>
                     <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-[#6366F1] animate-pulse" />
                   </span>
                   <div className="text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent font-display font-semibold mt-4">
-                    Gestion Avancée
+                    {t('portfolio.advanced_management')}
                   </div>
                 </h1>
                 <p className="text-gray-300 text-xl md:text-2xl font-light max-w-3xl leading-relaxed font-display">
-                  Suivez vos investissements crypto avec des outils professionnels
+                  {t('portfolio.track_investments')}
                 </p>
               </div>
             </div>
@@ -1910,9 +1916,9 @@ export default function PortefeuillePage() {
               <div>
                 <h2 className="text-2xl font-bold text-[#F9FAFB] flex items-center gap-3">
                   <Zap className="w-6 h-6 text-[#6366F1]" />
-                  Exchanges Connectés
+                  {t('portfolio.exchange_portfolio')}
                 </h2>
-                <p className="text-gray-400 mt-1">Synchronisez vos comptes d'exchange en toute sécurité</p>
+                <p className="text-gray-400 mt-1">{t('portfolio.synced_wallet')}</p>
               </div>
               <button className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl">
                 <Plus className="w-4 h-4" />
@@ -1927,13 +1933,13 @@ export default function PortefeuillePage() {
                 }}>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <img src={exchange.logo} alt={exchange.name} className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-white flex items-center justify-center group-hover:scale-110 transition-transform p-2">
+                        <img src={exchange.logo} alt={exchange.name} className="w-full h-full object-contain" />
                       </div>
                       <div>
                         <div className="font-bold text-[#F9FAFB] text-lg group-hover:text-[#6366F1] transition-colors">{exchange.name}</div>
                         <div className="text-gray-400 text-sm font-medium">
-                          {exchange.connected ? 'Connecté' : 'Non connecté'}
+                          {exchange.connected ? t('portfolio.connected') : t('portfolio.not_connected')}
                         </div>
                       </div>
                     </div>
@@ -1942,18 +1948,18 @@ export default function PortefeuillePage() {
                         ? 'bg-[#16A34A]/20 text-[#16A34A] border border-[#16A34A]/40 shadow-lg shadow-[#16A34A]/20'
                         : 'bg-gray-700/50 text-gray-400 border border-gray-700'
                     }`}>
-                      {exchange.status === 'active' ? 'Actif' : 'Inactif'}
+                      {exchange.status === 'active' ? t('portfolio.active') : t('portfolio.inactive')}
                     </div>
                   </div>
 
                   <div className="mb-6">
-                    <div className="text-gray-400 text-sm mb-2 font-semibold uppercase tracking-wider">Solde Total</div>
+                    <div className="text-gray-400 text-sm mb-2 font-semibold uppercase tracking-wider">{t('portfolio.total_balance')}</div>
                     <div className="font-mono font-black text-[#F9FAFB] text-2xl group-hover:text-[#6366F1] transition-colors">
                       {exchange.connected ? formatCurrency(exchange.balance) : formatCurrency(0)}
                     </div>
                     {exchange.connected && (
                       <div className="text-xs text-gray-400 mt-1 font-medium">
-                        Dernière mise à jour: il y a 5 min
+                        {t('portfolio.last_update')}: {t('portfolio.minutes_ago').replace('{count}', '5')}
                       </div>
                     )}
                   </div>
@@ -1995,25 +2001,25 @@ export default function PortefeuillePage() {
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-[#F9FAFB] mb-3 text-xl flex items-center gap-2">
-                    Sécurité de Niveau Bancaire
+                    {t('portfolio.bank_level_security')}
                     <CheckCircle className="w-5 h-5 text-[#16A34A]" />
                   </div>
                   <div className="text-gray-300 leading-relaxed space-y-2">
                     <div className="flex items-center gap-2">
                       <Lock className="w-4 h-4 text-[#16A34A]" />
-                      <span>Clés API en <strong>lecture seule uniquement</strong></span>
+                      <span>{t('portfolio.api_read_only')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Key className="w-4 h-4 text-[#16A34A]" />
-                      <span>Chiffrement AES-256 pour toutes les données</span>
+                      <span>{t('portfolio.aes_encryption')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Shield className="w-4 h-4 text-[#16A34A]" />
-                      <span>Impossible de trader ou retirer vos fonds</span>
+                      <span>{t('portfolio.no_trade_withdraw')}</span>
                     </div>
                   </div>
                   <div className="mt-4 text-xs text-gray-400 font-medium">
-                    🔒 Vos données sont protégées selon les standards financiers les plus stricts
+                    {t('portfolio.data_protected')}
                   </div>
                 </div>
               </div>
@@ -2025,9 +2031,9 @@ export default function PortefeuillePage() {
           {exchanges.some(ex => ex.connected) && (
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-[#F9FAFB]">Transactions récentes</h2>
+                <h2 className="text-2xl font-bold text-[#F9FAFB]">{t('portfolio.recent_transactions')}</h2>
                 <button className="flex items-center space-x-2 text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
-                  <span>Voir tout</span>
+                  <span>{t('portfolio.view_all')}</span>
                   <ExternalLink className="w-4 h-4" />
                 </button>
               </div>

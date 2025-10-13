@@ -5,6 +5,7 @@ import { Play, Settings, TrendingUp, Calendar, DollarSign, Target, BarChart3, Ac
 import { BacktestPeriod } from '@/services/historicalDataService'
 import { StrategyDatabaseService as StrategyStorageService, SavedStrategy } from '@/services/strategyDatabaseService'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface IndicatorConfig {
   id: string
@@ -71,6 +72,7 @@ interface BacktestConfigurationProps {
 
 export default function BacktestConfiguration({ onStartBacktest, isRunning = false, initialConfig }: BacktestConfigurationProps) {
   const { t } = useLanguage()
+  const { isDarkMode } = useTheme()
 
   const [config, setConfig] = useState<BacktestConfig>(initialConfig || {
     crypto: 'BTC',
@@ -794,10 +796,16 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-[#F9FAFB] via-[#E5E7EB] to-[#D1D5DB] bg-clip-text text-transparent mb-6">
+        <h2 className={`text-4xl font-bold mb-6 ${
+          isDarkMode
+            ? 'bg-gradient-to-r from-[#F9FAFB] via-[#E5E7EB] to-[#D1D5DB] bg-clip-text text-transparent'
+            : 'text-[#1E293B]'
+        }`}>
           {t('backtest.config.title')}
         </h2>
-        <p className="text-[#9CA3AF] max-w-2xl mx-auto text-lg leading-relaxed">
+        <p className={`max-w-2xl mx-auto text-lg leading-relaxed ${
+          isDarkMode ? 'text-[#9CA3AF]' : 'text-gray-600'
+        }`}>
           {t('backtest.config.subtitle')}
         </p>
       </div>
@@ -807,8 +815,14 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
         <div className="lg:col-span-2 space-y-6">
 
           {/* Paramètres de base */}
-          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent mb-8 flex items-center gap-3">
+          <div className={`backdrop-blur-xl border rounded-2xl p-8 shadow-2xl ${
+            isDarkMode ? 'bg-white/[0.03] border-white/10' : 'bg-white/95 border-gray-200'
+          }`}>
+            <h3 className={`text-2xl font-bold mb-8 flex items-center gap-3 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent'
+                : 'text-[#1E293B]'
+            }`}>
               <div className="p-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-lg">
                 <Settings className="w-5 h-5 text-white" />
               </div>
@@ -818,13 +832,19 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Cryptomonnaie */}
               <div>
-                <label className="block text-sm font-semibold text-[#E5E7EB] mb-3">
+                <label className={`block text-sm font-semibold mb-3 ${
+                  isDarkMode ? 'text-[#E5E7EB]' : 'text-gray-700'
+                }`}>
                   {t('backtest.config.cryptocurrency')}
                 </label>
                 <select
                   value={config.crypto}
                   onChange={(e) => setConfig(prev => ({ ...prev, crypto: e.target.value as 'BTC' | 'ETH' }))}
-                  className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200 ${
+                    isDarkMode
+                      ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
                 >
                   <option value="BTC" className="bg-gray-800 text-white">Bitcoin (BTC)</option>
                   <option value="ETH" className="bg-gray-800 text-white">Ethereum (ETH)</option>
@@ -833,13 +853,19 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
 
               {/* Période */}
               <div>
-                <label className="block text-sm font-semibold text-[#E5E7EB] mb-3">
+                <label className={`block text-sm font-semibold mb-3 ${
+                  isDarkMode ? 'text-[#E5E7EB]' : 'text-gray-700'
+                }`}>
                   {t('backtest.config.test_period')}
                 </label>
                 <select
                   value={config.period}
                   onChange={(e) => setConfig(prev => ({ ...prev, period: e.target.value as BacktestPeriod }))}
-                  className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200 ${
+                    isDarkMode
+                      ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
                 >
                   {periods.map(period => (
                     <option key={period.value} value={period.value} className="bg-gray-800 text-white">
@@ -851,14 +877,20 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
 
               {/* Capital initial */}
               <div>
-                <label className="block text-sm font-semibold text-[#E5E7EB] mb-3">
+                <label className={`block text-sm font-semibold mb-3 ${
+                  isDarkMode ? 'text-[#E5E7EB]' : 'text-gray-700'
+                }`}>
                   {t('backtest.config.initial_capital')}
                 </label>
                 <input
                   type="number"
                   value={config.initialCapital}
                   onChange={(e) => setConfig(prev => ({ ...prev, initialCapital: Number(e.target.value) }))}
-                  className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200 ${
+                    isDarkMode
+                      ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
                   min="1000"
                   step="1000"
                 />
@@ -866,14 +898,20 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
 
               {/* Taille de position */}
               <div>
-                <label className="block text-sm font-semibold text-[#E5E7EB] mb-3">
+                <label className={`block text-sm font-semibold mb-3 ${
+                  isDarkMode ? 'text-[#E5E7EB]' : 'text-gray-700'
+                }`}>
                   {t('backtest.config.position_size')}
                 </label>
                 <input
                   type="number"
                   value={config.positionSize}
                   onChange={(e) => setConfig(prev => ({ ...prev, positionSize: Number(e.target.value) }))}
-                  className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-4 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200"
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-200 ${
+                    isDarkMode
+                      ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
                   min="1"
                   max="100"
                 />

@@ -216,10 +216,9 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null)
 
-
-      // Vérifier si l'item existe déjà
-      const exists = await watchlistService.isItemInWatchlist(listId, crypto.id)
-      if (exists) {
+      // Vérification locale d'abord (instantanée)
+      const list = watchlists.find(l => l.id === listId)
+      if (list?.items.some(item => item.crypto_id === crypto.id)) {
         setError('Cette cryptomonnaie est déjà dans la liste')
         return false
       }
@@ -249,7 +248,13 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
       return true
     } catch (err) {
       console.error('Erreur lors de l\'ajout:', err)
-      setError(err instanceof Error ? err.message : 'Erreur lors de l\'ajout')
+      // Gérer spécifiquement l'erreur de doublon
+      const errorMsg = err instanceof Error ? err.message : 'Erreur lors de l\'ajout'
+      if (errorMsg.includes('duplicate') || errorMsg.includes('already exists')) {
+        setError('Cette cryptomonnaie est déjà dans la liste')
+      } else {
+        setError(errorMsg)
+      }
       return false
     }
   }

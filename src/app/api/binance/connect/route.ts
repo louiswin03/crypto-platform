@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import { encrypt } from '@/lib/encryption'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import jwt from 'jsonwebtoken'
+import { verifyCsrfToken } from '@/lib/csrf'
+import { sanitizeInput } from '@/lib/sanitize'
 
 interface BinanceAccountInfo {
   accountType: string
@@ -57,6 +59,15 @@ async function verifyBinanceConnection(apiKey: string, apiSecret: string): Promi
 
 export async function POST(request: NextRequest) {
   try {
+    // Vérifier le token CSRF
+    const csrfCheck = await verifyCsrfToken(request.headers)
+    if (!csrfCheck.valid) {
+      return NextResponse.json(
+        { error: csrfCheck.error || 'Protection CSRF échouée' },
+        { status: 403 }
+      )
+    }
+
     const { apiKey, apiSecret } = await request.json()
 
     if (!apiKey || !apiSecret) {
@@ -65,6 +76,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Sanitize les inputs
+    const sanitizedApiKey = sanitizeInput(apiKey, { maxLength: 500 })
+    const sanitizedApiSecret = sanitizeInput(apiSecret, { maxLength: 500 })
 
     // Récupérer l'utilisateur depuis le token JWT
     const authHeader = request.headers.get('authorization')
@@ -98,12 +113,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Vérifier la connexion Binance
-    const accountInfo = await verifyBinanceConnection(apiKey, apiSecret)
+    // Vérifier la connexion Binance avec les clés sanitizées
+    const accountInfo = await verifyBinanceConnection(sanitizedApiKey, sanitizedApiSecret)
 
     // Chiffrer les clés avec AES-256-GCM
-    const encryptedApiKey = encrypt(apiKey)
-    const encryptedApiSecret = encrypt(apiSecret)
+    const encryptedApiKey = encrypt(sanitizedApiKey)
+    const encryptedApiSecret = encrypt(sanitizedApiSecret)
 
     // Vérifier si une clé existe déjà pour cet utilisateur
     const { data: existingKey } = await supabase

@@ -574,8 +574,8 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
 
     const deltaX = e.clientX - lastMouseX
     const range = viewEnd - viewStart
-    // Sensibilité encore plus réduite pour un déplacement très fluide
-    const deltaRatio = (deltaX / chartWidth) * range * 0.3
+    // Sensibilité augmentée pour un déplacement plus rapide
+    const deltaRatio = (deltaX / chartWidth) * range * 1.5
 
     let newStart = viewStart - deltaRatio
     let newEnd = viewEnd - deltaRatio
@@ -1164,7 +1164,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
           )
         })}
 
-        {/* Points de trade */}
+        {/* Points de trade - VERSION AMÉLIORÉE */}
         {tradePoints.map((point, index) => {
           if (!point) return null
 
@@ -1178,89 +1178,147 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             point.trade.timestamp === highlightedTrade.closeTrade.timestamp
           )
 
-          let color = isBuy ? '#16A34A' : '#DC2626'
-          if (isStopLoss) color = '#DC2626'
-          if (isTakeProfit) color = '#16A34A'
+          // Couleurs ultra vives et contrastées
+          let color = '#3B82F6'  // Bleu vif pour achat par défaut
+
+          if (isBuy) {
+            color = '#3B82F6'  // Bleu pour point d'entrée
+          } else if (isStopLoss) {
+            color = '#DC2626'  // Rouge foncé pour Stop Loss
+          } else if (isTakeProfit) {
+            color = '#10B981'  // Vert pour Take Profit
+          } else {
+            // Vente normale (conditions de sortie) - selon la performance
+            // Vérifier si le trade est rentable
+            const tradeProfit = point.trade.profit || 0
+            color = tradeProfit >= 0 ? '#10B981' : '#EF4444'  // Vert si positif, rouge si négatif
+          }
 
           // Couleur spéciale pour le trade mis en évidence
           if (isHighlighted) {
             color = '#F59E0B' // Orange vif pour le trade sélectionné
           }
 
+          // Tailles augmentées pour meilleure visibilité
+          const outerRadius = isHighlighted ? (isFullscreen ? 22 : 14) : (isFullscreen ? 18 : 12)
+          const innerRadius = isHighlighted ? (isFullscreen ? 16 : 10) : (isFullscreen ? 12 : 8)
+          const glowRadius = isHighlighted ? (isFullscreen ? 30 : 20) : (isFullscreen ? 25 : 16)
+
           return (
             <g key={`trade-${index}`}>
-              {/* Ligne verticale étendue */}
-              <line
-                x1={point.x}
-                y1={margin.top}
-                x2={point.x}
-                y2={actualHeight - margin.bottom}
-                stroke={color}
-                strokeWidth={isHighlighted ? "4" : "2"}
-                strokeDasharray={isHighlighted ? "8 4" : "6 6"}
-                opacity={isHighlighted ? "1" : "0.8"}
+              {/* Halo pulsant externe - TOUJOURS visible */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={glowRadius}
+                fill={color}
+                opacity="0.15"
+              >
+                <animate
+                  attributeName="r"
+                  values={`${outerRadius + 2};${glowRadius};${outerRadius + 2}`}
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.3;0.1;0.3"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+
+              {/* Cercle externe blanc pour contraste maximal */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={outerRadius + 2}
+                fill="white"
+                opacity="1"
+              />
+
+              {/* Cercle principal TRÈS visible */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={outerRadius}
+                fill={color}
+                opacity="1"
+              />
+
+              {/* Cercle blanc interne pour effet 3D */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={innerRadius}
+                fill="white"
                 opacity="0.4"
               />
 
-              {/* Cercle principal adaptatif */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r={isHighlighted ? (isFullscreen ? 18 : 12) : (isFullscreen ? 15 : 10)}
-                fill={color}
-                stroke="white"
-                strokeWidth={isHighlighted ? (isFullscreen ? 5 : 3) : (isFullscreen ? 4 : 2)}
-                opacity={isHighlighted ? "1" : "0.95"}
-              />
-
-              {/* Cercle interne pour plus de visibilité */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r={isHighlighted ? (isFullscreen ? 12 : 8) : (isFullscreen ? 10 : 7)}
-                fill="white"
-                opacity={isHighlighted ? "0.4" : "0.3"}
-              />
-
-              {/* Halo pour le trade mis en évidence */}
-              {isHighlighted && (
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r={isFullscreen ? 25 : 18}
-                  fill="none"
-                  stroke={color}
-                  strokeWidth="2"
-                  opacity="0.3"
-                  strokeDasharray="4 4"
-                >
-                  <animate
-                    attributeName="r"
-                    values={`${isFullscreen ? 18 : 12};${isFullscreen ? 28 : 20};${isFullscreen ? 18 : 12}`}
-                    dur="2s"
-                    repeatCount="indefinite"
+              {/* Icône SVG au centre selon le type - SIMPLIFIÉ */}
+              {isBuy ? (
+                // Flèche UP blanche pour BUY
+                <path
+                  d={`M ${point.x} ${point.y - innerRadius/2}
+                      L ${point.x + innerRadius/2.5} ${point.y + innerRadius/2.5}
+                      L ${point.x + innerRadius/4} ${point.y + innerRadius/2.5}
+                      L ${point.x + innerRadius/4} ${point.y + innerRadius/1.5}
+                      L ${point.x - innerRadius/4} ${point.y + innerRadius/1.5}
+                      L ${point.x - innerRadius/4} ${point.y + innerRadius/2.5}
+                      L ${point.x - innerRadius/2.5} ${point.y + innerRadius/2.5} Z`}
+                  fill="white"
+                  opacity="1"
+                />
+              ) : isStopLoss ? (
+                // Croix blanche pour Stop Loss
+                <g>
+                  <line
+                    x1={point.x - innerRadius/2}
+                    y1={point.y - innerRadius/2}
+                    x2={point.x + innerRadius/2}
+                    y2={point.y + innerRadius/2}
+                    stroke="white"
+                    strokeWidth={Math.max(2, innerRadius/4)}
+                    strokeLinecap="round"
                   />
-                  <animate
-                    attributeName="opacity"
-                    values="0.3;0.1;0.3"
-                    dur="2s"
-                    repeatCount="indefinite"
+                  <line
+                    x1={point.x + innerRadius/2}
+                    y1={point.y - innerRadius/2}
+                    x2={point.x - innerRadius/2}
+                    y2={point.y + innerRadius/2}
+                    stroke="white"
+                    strokeWidth={Math.max(2, innerRadius/4)}
+                    strokeLinecap="round"
                   />
-                </circle>
+                </g>
+              ) : isTakeProfit ? (
+                // Étoile blanche pour Take Profit
+                <path
+                  d={`M ${point.x} ${point.y - innerRadius/1.5}
+                      L ${point.x + innerRadius/5} ${point.y - innerRadius/5}
+                      L ${point.x + innerRadius/1.5} ${point.y}
+                      L ${point.x + innerRadius/5} ${point.y + innerRadius/5}
+                      L ${point.x} ${point.y + innerRadius/1.5}
+                      L ${point.x - innerRadius/5} ${point.y + innerRadius/5}
+                      L ${point.x - innerRadius/1.5} ${point.y}
+                      L ${point.x - innerRadius/5} ${point.y - innerRadius/5} Z`}
+                  fill="white"
+                  opacity="1"
+                />
+              ) : (
+                // Flèche DOWN blanche pour SELL
+                <path
+                  d={`M ${point.x} ${point.y + innerRadius/2}
+                      L ${point.x + innerRadius/2.5} ${point.y - innerRadius/2.5}
+                      L ${point.x + innerRadius/4} ${point.y - innerRadius/2.5}
+                      L ${point.x + innerRadius/4} ${point.y - innerRadius/1.5}
+                      L ${point.x - innerRadius/4} ${point.y - innerRadius/1.5}
+                      L ${point.x - innerRadius/4} ${point.y - innerRadius/2.5}
+                      L ${point.x - innerRadius/2.5} ${point.y - innerRadius/2.5} Z`}
+                  fill="white"
+                  opacity="1"
+                />
               )}
-
-              {/* Icône adaptative */}
-              <text
-                x={point.x}
-                y={point.y + (isFullscreen ? 3 : 2)}
-                textAnchor="middle"
-                fill="white"
-                fontSize={isFullscreen ? 16 : 10}
-                fontWeight="bold"
-                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
-              >
-                {isStopLoss ? '🛑' : isTakeProfit ? '🎯' : isBuy ? '⬆' : '⬇'}
-              </text>
 
               {/* Label avec les détails - Adaptatif */}
               {isFullscreen && (

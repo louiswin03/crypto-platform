@@ -222,3 +222,46 @@ body {
 .animate-scaleIn {
   animation: scaleIn 0.3s ease-out;
 }
+
+/* Scrollbar personnalisée pour mode sombre */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.5) rgba(31, 41, 55, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.5);
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.7);
+}
+
+/* Scrollbar personnalisée pour mode clair */
+.light .custom-scrollbar {
+  scrollbar-color: rgba(99, 102, 241, 0.4) rgba(226, 232, 240, 0.5);
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.5);
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.4);
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}

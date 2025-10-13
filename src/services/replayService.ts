@@ -249,12 +249,19 @@ export class ReplayService {
   // Contrôle de la vitesse
   setSpeed(speed: number): void {
     const wasPlaying = this.state.isPlaying
-    if (wasPlaying) this.pause()
+
+    // Toujours pause d'abord pour clear l'ancien intervalle
+    this.pause()
 
     this.state.speed = Math.max(0.25, Math.min(10, speed))
 
-    if (wasPlaying) this.play()
-    else this.notifyListeners()
+    // Notifier même si on ne rejoue pas pour mettre à jour l'UI
+    this.notifyListeners()
+
+    // Relancer si c'était en cours
+    if (wasPlaying) {
+      this.play()
+    }
   }
 
   // Contrôle de la fenêtre d'affichage

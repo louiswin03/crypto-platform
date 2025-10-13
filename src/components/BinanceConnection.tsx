@@ -195,8 +195,8 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
         {/* Header */}
         <div className="bg-gradient-to-r from-[#F0B90B]/10 to-[#F8D12F]/10 border-b border-gray-700/50 p-6 flex items-center justify-between rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-black">
-              <img src="https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png" alt="Binance" className="w-full h-full object-cover" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white p-2">
+              <img src="/Binance.png" alt="Binance" className="w-full h-full object-contain" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-[#F9FAFB]">Connecter Binance</h2>

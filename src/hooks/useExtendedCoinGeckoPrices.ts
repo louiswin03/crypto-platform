@@ -1,7 +1,7 @@
 // src/hooks/useExtendedCoinGeckoPrices.ts
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 interface ExtendedCoinPrice {
   id: string
@@ -150,9 +150,8 @@ const TRADINGVIEW_MAPPING: Record<string, string> = {
   'loopring': 'CRYPTO:LRCUSD',
 }
 
-// OPTIMISATION: Cache global pour éviter les appels API redondants
-const globalCache = new Map<string, { data: any[], timestamp: number }>()
-const CACHE_DURATION = 60000 // 1 minute de cache
+// Note: Le cache et rate limiting sont maintenant gérés côté serveur (API routes)
+// Plus besoin de cache client ni de rate limiting ici
 
 // OPTIMISATION: Données de fallback pour les cas d'urgence
 const FALLBACK_DATA = [
@@ -172,43 +171,48 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
   const [hasMore, setHasMore] = useState(true)
   const [totalCoins, setTotalCoins] = useState(0)
 
+  const fetchGlobalStats = async () => {
+    try {
+      // Utiliser l'API proxy au lieu d'appeler directement CoinGecko
+      const response = await fetch('/api/crypto/global', {
+        headers: {
+          'Accept': 'application/json',
+        },
+        cache: 'default',
+      })
+
+      if (!response.ok) {
+        console.warn('Impossible de récupérer les stats globales')
+        return
+      }
+
+      const data = await response.json()
+
+      if (data && data.data) {
+        const globalData = data.data
+        setStats({
+          totalMarketCap: globalData.total_market_cap?.usd || 0,
+          totalVolume: globalData.total_volume?.usd || 0,
+          btcDominance: globalData.market_cap_percentage?.btc || 0,
+          ethDominance: globalData.market_cap_percentage?.eth || 0,
+          marketCapChange24h: globalData.market_cap_change_percentage_24h_usd || 0,
+          volumeChange24h: 0
+        })
+
+        // Récupérer le nombre total de cryptos disponibles
+        if (globalData.active_cryptocurrencies) {
+          setTotalCoins(globalData.active_cryptocurrencies)
+        }
+      }
+    } catch (err) {
+      console.error('Erreur lors de la récupération des stats globales:', err)
+    }
+  }
+
   const fetchPrices = async (pageNum: number = 1, append: boolean = false) => {
     try {
       setError(null)
       if (!append) setLoading(true)
-
-      // OPTIMISATION: Vérifier le cache d'abord
-      const cacheKey = `${perPage}-${pageNum}-${includeSparkline}`
-      const cached = globalCache.get(cacheKey)
-      const now = Date.now()
-
-      if (cached && (now - cached.timestamp) < CACHE_DURATION) {
-        const enrichedData = cached.data.map((coin: any) => {
-          let tradingViewSymbol = TRADINGVIEW_MAPPING[coin.id]
-          if (!tradingViewSymbol) {
-            const cleanSymbol = coin.symbol.toUpperCase()
-            tradingViewSymbol = `CRYPTO:${cleanSymbol}USD`
-          }
-          return {
-            ...coin,
-            tradingview_symbol: tradingViewSymbol,
-            has_tradingview: true
-          }
-        })
-
-        if (append) {
-          setPrices(prev => [...prev, ...enrichedData])
-        } else {
-          setPrices(enrichedData)
-        }
-        setLoading(false)
-        return
-      }
-
-      // OPTIMISATION: Ajouter un délai entre les requêtes pour éviter la limite de taux
-      if (pageNum > 1) {
-        await new Promise(resolve => setTimeout(resolve, 1000)) // 1 seconde de délai
-      }
 
       // Paramètres optimisés - réduire les données demandées
       const params = new URLSearchParams({
@@ -221,7 +225,8 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         locale: 'en' // Changé en anglais pour réduire la charge
       })
 
-      const url = `https://api.coingecko.com/api/v3/coins/markets?${params}`
+      // Utiliser l'API proxy au lieu d'appeler directement CoinGecko
+      const url = `/api/crypto/markets?${params}`
 
       // OPTIMISATION: Ajouter retry logic et timeout
       const controller = new AbortController()
@@ -230,16 +235,30 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       const response = await fetch(url, {
         headers: {
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         },
-        cache: 'default', // Utiliser le cache par défaut au lieu de no-cache
-        mode: 'cors',
+        cache: 'default', // Utiliser le cache par défaut
         signal: controller.signal
       })
 
       clearTimeout(timeoutId)
 
       if (!response.ok) {
+        // Le serveur gère maintenant le rate limiting et le cache
+        // En cas d'erreur, utiliser les données de fallback
+        if ((response.status === 429 || response.status >= 500) && pageNum === 1) {
+          console.warn(`⚠️ Erreur API (${response.status}). Utilisation du fallback.`)
+
+          const enrichedFallback = FALLBACK_DATA.map((coin: any) => ({
+            ...coin,
+            tradingview_symbol: TRADINGVIEW_MAPPING[coin.id] || `CRYPTO:${coin.symbol.toUpperCase()}USD`,
+            has_tradingview: true
+          }))
+          setPrices(enrichedFallback)
+          setLoading(false)
+          setError('Erreur temporaire. Données limitées affichées.')
+          return
+        }
+
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
@@ -250,8 +269,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         return
       }
 
-      // OPTIMISATION: Mettre en cache les données brutes
-      globalCache.set(cacheKey, { data, timestamp: now })
+      // Le cache est maintenant géré côté serveur
 
       // Enrichir les données avec le mapping TradingView (automatique pour tous)
       const enrichedData: ExtendedCoinPrice[] = data.map((coin: any) => {
@@ -277,24 +295,12 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         setPrices(enrichedData)
       }
 
-      // Calculer les stats globales
+      // Récupérer les stats globales via l'API CoinGecko /global
       if (pageNum === 1) {
-        const totalMarketCap = enrichedData.reduce((sum, coin) => sum + (coin.market_cap || 0), 0)
-        const totalVolume = enrichedData.reduce((sum, coin) => sum + (coin.total_volume || 0), 0)
-        const btcMarketCap = enrichedData.find(coin => coin.id === 'bitcoin')?.market_cap || 0
-        const ethMarketCap = enrichedData.find(coin => coin.id === 'ethereum')?.market_cap || 0
-        
-        setStats({
-          totalMarketCap,
-          totalVolume,
-          btcDominance: totalMarketCap > 0 ? (btcMarketCap / totalMarketCap) * 100 : 0,
-          ethDominance: totalMarketCap > 0 ? (ethMarketCap / totalMarketCap) * 100 : 0,
-          marketCapChange24h: enrichedData.reduce((sum, coin) => sum + (coin.market_cap_change_24h || 0), 0),
-          volumeChange24h: 0 // Calculé différemment si nécessaire
-        })
+        fetchGlobalStats()
       }
 
-      setTotalCoins(pageNum * perPage)
+      // Vérifier s'il y a plus de pages disponibles
       setHasMore(data.length === perPage)
       setLoading(false)
     } catch (err) {
@@ -384,15 +390,71 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
     return prices.filter(coin => coin.has_tradingview)
   }
 
-  // Recherche avancée
-  const searchCoins = (query: string) => {
+  // État pour la recherche externe
+  const [searchResults, setSearchResults] = useState<ExtendedCoinPrice[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+
+  // Recherche avancée avec fallback API (mémorisée)
+  const searchCoins = useCallback(async (query: string) => {
     const lowerQuery = query.toLowerCase()
-    return prices.filter(coin => 
+
+    // D'abord chercher localement
+    const localResults = prices.filter(coin =>
       coin.name.toLowerCase().includes(lowerQuery) ||
       coin.symbol.toLowerCase().includes(lowerQuery) ||
       coin.id.toLowerCase().includes(lowerQuery)
     )
-  }
+
+    // Si on a des résultats locaux, les retourner
+    if (localResults.length > 0) {
+      setSearchResults([])
+      return localResults
+    }
+
+    // Sinon, chercher via l'API CoinGecko (charger plus de cryptos)
+    if (query.length >= 2) {
+      setIsSearching(true)
+      try {
+        // Charger les 250 premières cryptos et filtrer
+        const searchResponse = await fetch(`/api/crypto/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h&locale=en`)
+
+        if (searchResponse.ok) {
+          const allData = await searchResponse.json()
+          const filteredData = allData.filter((coin: any) =>
+            coin.name.toLowerCase().includes(lowerQuery) ||
+            coin.symbol.toLowerCase().includes(lowerQuery) ||
+            coin.id.toLowerCase().includes(lowerQuery)
+          )
+
+          if (filteredData.length > 0) {
+            const enrichedData: ExtendedCoinPrice[] = filteredData.map((coin: any) => {
+              let tradingViewSymbol = TRADINGVIEW_MAPPING[coin.id]
+              if (!tradingViewSymbol) {
+                const cleanSymbol = coin.symbol.toUpperCase()
+                tradingViewSymbol = `CRYPTO:${cleanSymbol}USD`
+              }
+              return {
+                ...coin,
+                tradingview_symbol: tradingViewSymbol,
+                has_tradingview: true
+              }
+            })
+
+            setSearchResults(enrichedData)
+            setIsSearching(false)
+            return enrichedData
+          }
+        }
+      } catch (err) {
+        console.error('Erreur lors de la recherche externe:', err)
+      } finally {
+        setIsSearching(false)
+      }
+    }
+
+    setSearchResults([])
+    return []
+  }, [prices]) // Dépend uniquement de prices pour éviter les re-renders inutiles
 
   // Tri avancé
   const sortCoins = (coins: ExtendedCoinPrice[], sortBy: keyof ExtendedCoinPrice, order: 'asc' | 'desc' = 'desc') => {
@@ -435,6 +497,8 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
     getCoinsWithTradingView,
     searchCoins,
     sortCoins,
+    isSearching,
+    searchResults,
     // Utilitaires
     formatters: {
       price: (price: number | null | undefined) => {

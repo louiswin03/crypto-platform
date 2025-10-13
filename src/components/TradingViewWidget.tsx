@@ -44,38 +44,44 @@ const TradingViewWidget = ({
       containerRef.current.innerHTML = ''
     }
 
-    // Créer le script TradingView
-    const script = document.createElement('script')
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js'
-    script.type = 'text/javascript'
-    script.async = true
-    
-    // Configuration du widget
-    script.innerHTML = JSON.stringify({
-      autosize: true,
-      symbol: symbol,
-      interval: interval,
-      timezone: "Europe/Paris",
-      theme: theme,
-      style: style,
-      locale: locale,
-      toolbar_bg: toolbar_bg,
-      enable_publishing: enable_publishing,
-      allow_symbol_change: allow_symbol_change,
-      details: details,
-      hotlist: hotlist,
-      calendar: calendar,
-      studies: studies,
-      container_id: "tradingview_widget"
-    })
+    // Attendre que le DOM soit prêt avant de charger TradingView
+    const timeoutId = setTimeout(() => {
+      if (!containerRef.current) return
 
-    // Ajouter le script au container
-    if (containerRef.current) {
-      containerRef.current.appendChild(script)
-    }
+      // Créer le script TradingView
+      const script = document.createElement('script')
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js'
+      script.type = 'text/javascript'
+      script.async = true
+
+      // Configuration du widget
+      script.innerHTML = JSON.stringify({
+        autosize: true,
+        symbol: symbol,
+        interval: interval,
+        timezone: "Europe/Paris",
+        theme: theme,
+        style: style,
+        locale: locale,
+        toolbar_bg: toolbar_bg,
+        enable_publishing: enable_publishing,
+        allow_symbol_change: allow_symbol_change,
+        details: details,
+        hotlist: hotlist,
+        calendar: calendar,
+        studies: studies,
+        container_id: "tradingview_widget"
+      })
+
+      // Ajouter le script au container
+      if (containerRef.current) {
+        containerRef.current.appendChild(script)
+      }
+    }, 100) // Délai de 100ms pour s'assurer que le DOM est prêt
 
     // Cleanup function
     return () => {
+      clearTimeout(timeoutId)
       if (containerRef.current) {
         containerRef.current.innerHTML = ''
       }

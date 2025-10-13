@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter, usePathname } from 'next/navigation'
 import { TrendingUp, BarChart3, Wallet, User, LogOut, Loader2, Lock, Settings, Shield, Clock, ChevronDown } from 'lucide-react'
@@ -59,12 +60,15 @@ export default function SmartNavigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <div className="flex items-center space-x-4">
-              <div className="relative w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center shadow-2xl">
-                <TrendingUp className="w-7 h-7 text-white" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Cryptium Logo"
+                width={48}
+                height={48}
+                className="object-contain opacity-80 hover:opacity-100 transition-opacity"
+              />
               <div>
-                <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">CryptoBacktest</span>
+                <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">Cryptium</span>
                 <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
               </div>
             </div>

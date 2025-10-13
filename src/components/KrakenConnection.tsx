@@ -185,8 +185,8 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
             <div className="p-6 border-b border-gray-800">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
-                    <img src="https://assets.coingecko.com/coins/images/23468/small/kraken.png" alt="Kraken" className="w-full h-full object-cover" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white p-2">
+                    <img src="/kraken.png" alt="Kraken" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-[#F9FAFB]">Connecter Kraken</h2>
