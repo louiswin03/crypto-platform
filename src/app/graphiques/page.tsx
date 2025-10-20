@@ -462,19 +462,18 @@ export default function GraphiquesPage() {
 
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-12 relative z-10">
               <div className="text-center lg:text-left">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] py-4">
-                  <span className={`font-display flex items-center justify-center lg:justify-start space-x-4 ${
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight leading-[1.1] py-4">
+                  <span className={`font-display ${
                     isDarkMode
-                      ? 'bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift'
+                      ? 'bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent'
                       : 'text-[#1E293B]'
                   }`}>
-                    <span>{t('charts.page_title')}</span>
-                    <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-[#6366F1] animate-pulse" />
+                    {t('charts.page_title')}
                   </span>
-                  <div className={`text-3xl md:text-4xl lg:text-5xl font-display font-semibold mt-4 ${
+                  <div className={`text-2xl md:text-3xl lg:text-4xl font-display font-medium mt-3 ${
                     isDarkMode
-                      ? 'bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent animate-shimmer'
-                      : 'text-[#6366F1]'
+                      ? 'text-gray-400'
+                      : 'text-gray-600'
                   }`}>
                     {t('charts.advanced_analysis')}
                   </div>

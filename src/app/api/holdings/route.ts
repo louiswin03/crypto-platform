@@ -30,7 +30,7 @@ async function getUserFromToken(request: NextRequest): Promise<string | null> {
   }
 }
 
-// GET - Récupérer tous les holdings d'un utilisateur
+// GET - Récupérer tous les holdings d'un utilisateur (optionnellement filtrés par portfolio)
 export async function GET(request: NextRequest) {
   try {
     const userId = await getUserFromToken(request)
@@ -38,11 +38,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const { data, error } = await supabaseAdmin
+    // Récupérer le portfolio_id depuis les query params si fourni
+    const { searchParams } = new URL(request.url)
+    const portfolioId = searchParams.get('portfolio_id')
+
+    let query = supabaseAdmin
       .from('holdings')
       .select('*')
       .eq('user_id', userId)
-      .order('created_at', { ascending: false })
+
+    // Filtrer par portfolio_id si fourni
+    if (portfolioId) {
+      query = query.eq('portfolio_id', portfolioId)
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false })
 
     if (error) {
       console.error('Erreur récupération holdings:', error)
@@ -66,6 +76,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const {
+      portfolio_id,
       crypto_id,
       symbol,
       quantity,
@@ -85,6 +96,7 @@ export async function POST(request: NextRequest) {
       .from('holdings')
       .insert({
         user_id: userId,
+        portfolio_id: portfolio_id || null,
         crypto_id,
         symbol,
         quantity,

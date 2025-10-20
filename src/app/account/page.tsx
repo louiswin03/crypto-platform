@@ -386,10 +386,8 @@ export default function AccountPage() {
                   <h1 className={cn("text-5xl md:text-6xl font-black tracking-tight font-display mb-2", themeClasses.text.primary(isDarkMode))}>
                     {user?.email?.split('@')[0] || t('account.title')}
                   </h1>
-                  <p className={cn("text-lg flex items-center space-x-2", themeClasses.text.secondary(isDarkMode))}>
-                    <span>{t('account.subtitle')}</span>
-                    <span>•</span>
-                    <span className="text-[#6366F1] font-semibold">{user?.profile?.preferences?.plan || 'Free'}</span>
+                  <p className={cn("text-lg", themeClasses.text.secondary(isDarkMode))}>
+                    {t('account.subtitle')}
                   </p>
                 </div>
               </div>
@@ -463,9 +461,6 @@ export default function AccountPage() {
                         <div className="space-y-2">
                           <div className={cn("text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>
                             {user?.email?.split('@')[0] || 'Utilisateur'}
-                          </div>
-                          <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#6366F1]/20 text-[#6366F1] text-sm font-semibold">
-                            {t('profile.plan')} {user?.profile?.preferences?.plan || t('common.free')}
                           </div>
                           <div className={cn("", themeClasses.text.secondary(isDarkMode))}>{t('profile.member_since')} {getMemberSince()}</div>
                         </div>
@@ -860,17 +855,6 @@ export default function AccountPage() {
                     </div>
                   </div>
 
-                  <div className="glass-effect rounded-2xl p-6">
-                    <h3 className="font-semibold text-[#F9FAFB] mb-4 flex items-center">
-                      <Key className="w-5 h-5 mr-2" />
-                      {t('security.api_keys')}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-4">{t('security.api_keys_desc')}</p>
-                    <button className="flex items-center space-x-2 px-6 py-3 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-colors font-semibold">
-                      <Plus className="w-5 h-5" />
-                      <span>{t('security.add_api_key')}</span>
-                    </button>
-                  </div>
                 </div>
               </div>
             )}

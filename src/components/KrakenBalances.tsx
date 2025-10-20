@@ -122,7 +122,7 @@ export default function KrakenBalances() {
 
       <div className="bg-[#1A1B23] border border-gray-800 rounded-xl overflow-hidden">
         <div className="divide-y divide-gray-800">
-          {balances.map((balance, index) => (
+          {balances.filter(balance => balance.valueUsd > 0.1).map((balance, index) => (
             <div key={index} className="p-4 hover:bg-gray-800/30 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

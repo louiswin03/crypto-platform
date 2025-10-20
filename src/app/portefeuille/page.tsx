@@ -11,6 +11,8 @@ import CoinbaseConnection from '@/components/CoinbaseConnection'
 import CoinbaseBalances from '@/components/CoinbaseBalances'
 import KrakenConnection from '@/components/KrakenConnection'
 import KrakenBalances from '@/components/KrakenBalances'
+import PortfolioManager from '@/components/PortfolioManager'
+import ConsolidatedPortfolioView from '@/components/ConsolidatedPortfolioView'
 import React, { useState, useEffect, useMemo } from 'react'
 import { DatabaseAuthService } from '@/services/databaseAuthService'
 import { useAuth } from '@/hooks/useAuth'
@@ -47,8 +49,24 @@ interface CoinGeckoPrice {
   price_change_percentage_24h: number
 }
 
+interface Portfolio {
+  id: string
+  user_id: string
+  name: string
+  description: string | null
+  is_default: boolean
+  total_value_usd: number | null
+  created_at: string
+  sources?: {
+    manual: boolean
+    binance: boolean
+    coinbase: boolean
+    kraken: boolean
+  }
+}
+
 // Composant du portfolio manuel
-function ManualPortfolioSection() {
+function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolioId: string | null, onTransactionAdded?: () => void }) {
   const { user } = useAuth()
   const { t } = useLanguage()
   const [manualHoldings, setManualHoldings] = useState<Holding[]>([])
@@ -72,7 +90,7 @@ function ManualPortfolioSection() {
 
   // Charger les holdings depuis l'API
   const loadHoldings = async () => {
-    if (!user) return
+    if (!user || !portfolioId) return
 
     setIsLoading(true)
     try {
@@ -82,7 +100,7 @@ function ManualPortfolioSection() {
         return
       }
 
-      const response = await fetch('/api/holdings', {
+      const response = await fetch(`/api/holdings?portfolio_id=${portfolioId}`, {
         headers: {
           'Authorization': `Bearer ${authData.token}`,
           'Content-Type': 'application/json',
@@ -124,10 +142,12 @@ function ManualPortfolioSection() {
     }
   }
 
-  // Charger les holdings au montage du composant
+  // Charger les holdings au montage du composant et quand le portfolio change
   useEffect(() => {
-    loadHoldings()
-  }, [user])
+    if (portfolioId) {
+      loadHoldings()
+    }
+  }, [user, portfolioId])
 
   // Actualiser les prix pour les holdings existants
   const updatePricesForHoldings = async (holdings: Holding[]) => {
@@ -318,6 +338,7 @@ function ManualPortfolioSection() {
 
       // Sauvegarder en DB via API
       const payload = {
+        portfolio_id: portfolioId,
         crypto_id: newHolding.cryptoId,
         symbol: newHolding.symbol,
         quantity: newHolding.quantity,
@@ -367,6 +388,9 @@ function ManualPortfolioSection() {
         lastUpdated: new Date().toLocaleTimeString()
       }
       setManualHoldings(prev => [...prev, holding])
+
+      // Déclencher le rafraîchissement du portfolio consolidé
+      onTransactionAdded?.()
     } catch (error) {
       console.error('Erreur lors de l\'ajout:', error)
       alert('Erreur lors de la sauvegarde. Veuillez réessayer.')
@@ -411,6 +435,9 @@ function ManualPortfolioSection() {
           ? { ...holding, ...updatedHolding, lastUpdated: new Date().toLocaleTimeString() }
           : holding
       ))
+
+      // Déclencher le rafraîchissement du portfolio consolidé
+      onTransactionAdded?.()
     } catch (error) {
       console.error('Erreur lors de la mise à jour:', error)
       alert('Erreur lors de la mise à jour. Veuillez réessayer.')
@@ -444,6 +471,9 @@ function ManualPortfolioSection() {
 
       // Supprimer du state local
       setManualHoldings(prev => prev.filter(holding => holding.id !== id))
+
+      // Déclencher le rafraîchissement du portfolio consolidé
+      onTransactionAdded?.()
     } catch (error) {
       console.error('Erreur lors de la suppression:', error)
       alert('Erreur lors de la suppression. Veuillez réessayer.')
@@ -510,34 +540,32 @@ function ManualPortfolioSection() {
 
   return (
     <div className="mb-12">
-      {/* Header du portfolio manuel */}
+      {/* Simplified Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-[#F9FAFB] flex items-center gap-3">
-            <Coins className="w-6 h-6 text-[#6366F1]" />
-            {t('portfolio.manual_portfolio')}
+          <h2 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-2">
+            <History className="w-5 h-5 text-[#6366F1]" />
+            Transactions Manuelles
           </h2>
-          <p className="text-gray-400 mt-1">{t('portfolio.manage_positions')}</p>
+          <p className="text-gray-400 text-sm mt-1">Gérez vos transactions crypto manuelles</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <button
             onClick={() => setShowValues(!showValues)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm"
+            className="flex items-center space-x-2 px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm"
           >
             {showValues ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            {showValues ? t('portfolio.hide') : t('portfolio.show')}
           </button>
           <button
             onClick={refreshPrices}
             disabled={isRefreshing}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm disabled:opacity-50"
+            className="flex items-center space-x-2 px-3 py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 transition-all text-sm disabled:opacity-50"
           >
             <RefreshCcw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            {t('portfolio.update')}
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-2 rounded-lg font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
+            className="flex items-center space-x-2 bg-[#6366F1] hover:bg-[#5B21B6] text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
             {t('portfolio.add')}
@@ -545,87 +573,17 @@ function ManualPortfolioSection() {
         </div>
       </div>
 
-      {/* Enhanced Stats Cards */}
-      {consolidatedHoldings.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.total_value')}</span>
-              <div className="p-3 bg-[#16A34A]/20 rounded-xl group-hover:scale-110 transition-transform">
-                <DollarSign className="w-6 h-6 text-[#16A34A]" />
-              </div>
-            </div>
-            <div className="text-3xl font-black text-[#F9FAFB] font-mono mb-2">{formatCurrency(totalValue)}</div>
-            <div className="text-sm text-gray-400 font-medium">{consolidatedHoldings.length} {t('portfolio.assets')} • {manualHoldings.length} {t('portfolio.positions')}</div>
-          </div>
-
-          <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.profit_loss')} Total</span>
-              <div className={`p-3 rounded-xl group-hover:scale-110 transition-transform ${
-                totalPnL >= 0 ? 'bg-[#16A34A]/20' : 'bg-[#DC2626]/20'
-              }`}>
-                {totalPnL >= 0 ?
-                  <TrendingUp className="w-6 h-6 text-[#16A34A]" /> :
-                  <TrendingDown className="w-6 h-6 text-[#DC2626]" />
-                }
-              </div>
-            </div>
-            <div className={`text-3xl font-black font-mono mb-2 ${totalPnL >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
-              {formatCurrency(totalPnL)}
-            </div>
-            <div className={`text-sm font-semibold ${totalPnL >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
-              {showValues ? `${totalPnL >= 0 ? '+' : ''}${totalPnLPercent.toFixed(2)}%` : '••••'}
-            </div>
-          </div>
-
-          <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.total_invested')}</span>
-              <div className="p-3 bg-[#6366F1]/20 rounded-xl group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-6 h-6 text-[#6366F1]" />
-              </div>
-            </div>
-            <div className="text-3xl font-black text-[#F9FAFB] font-mono mb-2">{formatCurrency(totalInvested)}</div>
-            <div className="text-sm text-gray-400 font-medium">{t('portfolio.invested_capital')}</div>
-          </div>
-
-          <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50 hover:scale-105 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-400 text-sm font-semibold uppercase tracking-wider">{t('portfolio.best_asset')}</span>
-              <div className="p-3 bg-[#F59E0B]/20 rounded-xl group-hover:scale-110 transition-transform">
-                <Target className="w-6 h-6 text-[#F59E0B]" />
-              </div>
-            </div>
-            {holdingsWithAllocation.length > 0 && (
-              <>
-                <div className="text-2xl font-black text-[#F9FAFB] mb-2">
-                  {holdingsWithAllocation.reduce((best, current) =>
-                    current.pnlPercent > best.pnlPercent ? current : best
-                  ).symbol}
-                </div>
-                <div className="text-sm text-[#16A34A] font-semibold">
-                  +{holdingsWithAllocation.reduce((best, current) =>
-                    current.pnlPercent > best.pnlPercent ? current : best
-                  ).pnlPercent.toFixed(1)}% de gain
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Table Portfolio Manuel */}
-      <div className="glass-effect rounded-2xl border border-gray-800/40 overflow-hidden">
+      {/* Simplified Table Portfolio Manuel */}
+      <div className="glass-effect rounded-xl border border-gray-800/40 overflow-hidden">
         {isLoading ? (
-          <div className="p-12 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#6366F1] mb-4"></div>
-            <div className="text-gray-400">Chargement de votre portfolio...</div>
+          <div className="p-8 text-center">
+            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#6366F1] mb-3"></div>
+            <div className="text-gray-400 text-sm">Chargement de votre portfolio...</div>
           </div>
         ) : manualHoldings.length > 0 ? (
           <>
             <div className="border-b border-gray-800/40 bg-gray-900/30">
-              <div className="grid grid-cols-9 gap-4 p-6 text-gray-400 font-semibold text-sm uppercase tracking-wider">
+              <div className="grid grid-cols-8 gap-4 p-4 text-gray-400 font-medium text-xs uppercase tracking-wide">
                 <div className="col-span-2">Asset</div>
                 <div className="text-right">{t('portfolio.current_price')}</div>
                 <div className="text-right">24h</div>
@@ -633,7 +591,6 @@ function ManualPortfolioSection() {
                 <div className="text-right">{t('portfolio.avg_price')}</div>
                 <div className="text-right">{t('portfolio.value')}</div>
                 <div className="text-right">P&L</div>
-                <div className="text-right">Allocation</div>
                 <div className="text-center">Actions</div>
               </div>
             </div>
@@ -641,60 +598,57 @@ function ManualPortfolioSection() {
               {holdingsWithAllocation.map((holding) => {
                 return (
                   <div key={holding.cryptoId} className="border-b border-gray-800/20 hover:bg-gray-800/20 transition-colors">
-                    <div className="grid grid-cols-9 gap-4 p-6 items-center">
-                      <div className="col-span-2 flex items-center space-x-4">
+                    <div className="grid grid-cols-8 gap-4 p-4 items-center">
+                      <div className="col-span-2 flex items-center space-x-3">
                         {getCryptoImage(holding.cryptoId) ? (
                           <img
                             src={getCryptoImage(holding.cryptoId)}
                             alt={holding.name}
-                            className="w-12 h-12 rounded-full shadow-lg"
+                            className="w-10 h-10 rounded-full"
                           />
                         ) : (
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                          <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
                             {holding.symbol[0]}
                           </div>
                         )}
                         <div>
-                          <div className="font-bold text-[#F9FAFB] text-lg">{holding.symbol}</div>
-                          <div className="text-gray-400 text-sm font-medium">{holding.name}</div>
+                          <div className="font-bold text-[#F9FAFB]">{holding.symbol}</div>
+                          <div className="text-gray-400 text-xs">{holding.name}</div>
                         </div>
                       </div>
-                      
+
                       <div className="text-right">
-                        <div className="font-mono font-semibold text-[#F9FAFB]">{formatCurrency(holding.currentPrice)}</div>
-                        <div className="text-xs text-gray-400">Mis à jour {holding.lastUpdated}</div>
+                        <div className="font-mono font-medium text-[#F9FAFB]">{formatCurrency(holding.currentPrice)}</div>
+                        <div className="text-xs text-gray-400">{holding.lastUpdated}</div>
                       </div>
-                      
-                      <div className={`text-right font-mono font-semibold flex items-center justify-end space-x-1 ${
+
+                      <div className={`text-right font-mono font-medium flex items-center justify-end space-x-1 ${
                         holding.priceChange24h >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
                       }`}>
                         {holding.priceChange24h >= 0 ? (
-                          <TrendingUp className="w-4 h-4" />
+                          <TrendingUp className="w-3 h-3" />
                         ) : (
-                          <TrendingDown className="w-4 h-4" />
+                          <TrendingDown className="w-3 h-3" />
                         )}
-                        <span>{showValues ? `${holding.priceChange24h >= 0 ? '+' : ''}${holding.priceChange24h.toFixed(1)}%` : '••••'}</span>
+                        <span className="text-sm">{showValues ? `${holding.priceChange24h >= 0 ? '+' : ''}${holding.priceChange24h.toFixed(1)}%` : '••••'}</span>
                       </div>
-                      
+
                       <div className="text-right">
-                        <div className="font-mono text-[#F9FAFB] font-semibold">{formatNumber(holding.quantity)}</div>
+                        <div className="font-mono text-[#F9FAFB] font-medium">{formatNumber(holding.quantity)}</div>
                         <div className="text-xs text-gray-400">
                           {showValues ? formatCurrency(holding.investedValue) : '••••••'}
                         </div>
                       </div>
-                      
+
                       <div className="text-right">
-                        <div className="font-mono text-[#F9FAFB] font-semibold">{formatCurrency(holding.avgPurchasePrice)}</div>
-                        <div className="text-xs text-gray-400">Prix moyen pondéré</div>
+                        <div className="font-mono text-[#F9FAFB] font-medium">{formatCurrency(holding.avgPurchasePrice)}</div>
+                        <div className="text-xs text-gray-400">Prix moyen</div>
                       </div>
-                      
+
                       <div className="text-right">
                         <div className="font-mono font-bold text-[#F9FAFB]">{formatCurrency(holding.currentValue)}</div>
-                        <div className="text-xs text-gray-400">
-                          {showValues ? `${holding.allocation.toFixed(1)}% du portfolio` : '••••'}
-                        </div>
                       </div>
-                      
+
                       <div className="text-right">
                         <div className={`font-mono font-bold ${holding.pnlAmount >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                           {showValues ? formatCurrency(holding.pnlAmount) : '••••••'}
@@ -703,27 +657,7 @@ function ManualPortfolioSection() {
                           {showValues ? `${holding.pnlPercent >= 0 ? '+' : ''}${holding.pnlPercent.toFixed(1)}%` : '••••'}
                         </div>
                       </div>
-                      
-                      <div className="text-right">
-                        <div className="flex items-center justify-end space-x-2 mb-1">
-                          <div className="w-16 h-2 bg-gray-800 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full"
-                              style={{ width: `${Math.min(holding.allocation, 100)}%` }}
-                            ></div>
-                          </div>
-                          <span className="font-mono text-xs text-gray-400 w-12 text-right">
-                            {holding.allocation.toFixed(1)}%
-                          </span>
-                        </div>
-                        <div className="text-xs text-gray-400 text-right">
-                          {holding.allocation >= 50 ? 'Position dominante' :
-                           holding.allocation >= 25 ? 'Position importante' :
-                           holding.allocation >= 10 ? 'Position significative' :
-                           'Position mineure'}
-                        </div>
-                      </div>
-                      
+
                       <div className="flex items-center justify-center space-x-2">
                         <button
                           onClick={() => {
@@ -763,12 +697,12 @@ function ManualPortfolioSection() {
             </div>
           </>
         ) : (
-          <div className="p-12 text-center">
-            <div className="text-gray-400 text-lg mb-2">{t('portfolio.empty_portfolio')}</div>
-            <div className="text-gray-500 text-sm mb-6">{t('portfolio.add_first')}</div>
+          <div className="p-8 text-center">
+            <div className="text-gray-400 mb-2">{t('portfolio.empty_portfolio')}</div>
+            <div className="text-gray-500 text-sm mb-4">{t('portfolio.add_first')}</div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
+              className="inline-flex items-center space-x-2 bg-[#6366F1] hover:bg-[#5B21B6] text-white px-4 py-2 rounded-lg font-medium transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>{t('portfolio.add_first_crypto')}</span>
@@ -776,140 +710,6 @@ function ManualPortfolioSection() {
           </div>
         )}
       </div>
-
-      {/* Analyse Détaillée et Diagramme */}
-      {consolidatedHoldings.length > 0 && (
-        <div className="grid lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2 space-y-6">
-            <h3 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-3">
-              <BarChart3 className="w-5 h-5 text-[#6366F1]" />
-              {t('portfolio.detailed_analysis')}
-            </h3>
-
-            {/* Analytics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm font-medium">{t('portfolio.largest_position')}</span>
-                  <TrendingUp className="w-4 h-4 text-[#16A34A]" />
-                </div>
-                {holdingsWithAllocation.length > 0 && (
-                  <>
-                    <div className="text-xl font-bold text-[#F9FAFB] mb-1">
-                      {holdingsWithAllocation[0].symbol}
-                    </div>
-                    <div className="text-sm text-gray-400">
-                      {holdingsWithAllocation[0].allocation.toFixed(1)}% {t('portfolio.of_portfolio')}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm font-medium">{t('portfolio.diversification')}</span>
-                  <PieChart className="w-4 h-4 text-[#6366F1]" />
-                </div>
-                <div className="text-xl font-bold text-[#F9FAFB] mb-1">
-                  {holdingsWithAllocation.filter(h => h.allocation >= 5).length}
-                </div>
-                <div className="text-sm text-gray-400">
-                  {t('portfolio.significant_positions')}
-                </div>
-              </div>
-
-              <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm font-medium">{t('portfolio.risk')}</span>
-                  <Activity className="w-4 h-4 text-[#F59E0B]" />
-                </div>
-                <div className="text-xl font-bold text-[#F9FAFB] mb-1">
-                  {holdingsWithAllocation[0]?.allocation > 50 ? t('portfolio.high') :
-                   holdingsWithAllocation[0]?.allocation > 30 ? t('portfolio.medium') : t('portfolio.low')}
-                </div>
-                <div className="text-sm text-gray-400">
-                  {t('portfolio.concentration')}
-                </div>
-              </div>
-            </div>
-
-            {/* Conseils de gestion */}
-            <div className="glass-effect rounded-2xl p-6 border border-[#6366F1]/30">
-              <h4 className="text-lg font-semibold text-[#F9FAFB] mb-4 flex items-center gap-2">
-                <Target className="w-5 h-5 text-[#6366F1]" />
-                {t('portfolio.management_tips')}
-              </h4>
-              <div className="space-y-3 text-sm">
-                {holdingsWithAllocation[0]?.allocation > 50 && (
-                  <div className="flex items-start gap-3 p-3 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl">
-                    <AlertTriangle className="w-5 h-5 text-[#F59E0B] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-semibold text-[#F59E0B] mb-1">{t('portfolio.high_concentration')}</div>
-                      <div className="text-gray-400">
-                        {t('portfolio.concentration_warning')
-                          .replace('{symbol}', holdingsWithAllocation[0].symbol)
-                          .replace('{percent}', holdingsWithAllocation[0].allocation.toFixed(1))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {holdingsWithAllocation.filter(h => h.allocation >= 5).length < 3 && totalValue > 1000 && (
-                  <div className="flex items-start gap-3 p-3 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-xl">
-                    <PieChart className="w-5 h-5 text-[#6366F1] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-semibold text-[#6366F1] mb-1">{t('portfolio.improve_diversification')}</div>
-                      <div className="text-gray-400">
-                        {holdingsWithAllocation.filter(h => h.allocation >= 5).length === 1
-                          ? t('portfolio.diversification_tip').replace('{count}', '1')
-                          : t('portfolio.diversification_tips').replace('{count}', String(holdingsWithAllocation.filter(h => h.allocation >= 5).length))
-                        }
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {totalPnL > 0 && (totalPnL / totalInvested) > 0.5 && (
-                  <div className="flex items-start gap-3 p-3 bg-[#16A34A]/10 border border-[#16A34A]/30 rounded-xl">
-                    <TrendingUp className="w-5 h-5 text-[#16A34A] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-semibold text-[#16A34A] mb-1">Performance excellente</div>
-                      <div className="text-gray-400">
-                        Gain de {((totalPnL / totalInvested) * 100).toFixed(1)}%. Pensez à sécuriser une partie des profits (take profit) selon votre stratégie.
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {totalPnL < 0 && Math.abs(totalPnL / totalInvested) > 0.2 && (
-                  <div className="flex items-start gap-3 p-3 bg-[#DC2626]/10 border border-[#DC2626]/30 rounded-xl">
-                    <TrendingDown className="w-5 h-5 text-[#DC2626] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-semibold text-[#DC2626] mb-1">Perte importante</div>
-                      <div className="text-gray-400">
-                        Perte de {Math.abs((totalPnL / totalInvested) * 100).toFixed(1)}%. Revoyez votre stratégie et utilisez le backtest pour optimiser vos positions.
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {holdingsWithAllocation.length >= 5 && holdingsWithAllocation.filter(h => h.allocation >= 5).length >= 4 && (
-                  <div className="flex items-start gap-3 p-3 bg-[#16A34A]/10 border border-[#16A34A]/30 rounded-xl">
-                    <CheckCircle className="w-5 h-5 text-[#16A34A] mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-semibold text-[#16A34A] mb-1">Bonne diversification</div>
-                      <div className="text-gray-400">
-                        Votre portfolio est bien diversifié avec {holdingsWithAllocation.length} positions. Continuez à surveiller l'allocation et rééquilibrez si nécessaire.
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Diagramme de répartition */}
-          <div>
-            <PortfolioAllocationChart holdings={holdingsWithAllocation} />
-          </div>
-        </div>
-      )}
 
       {/* Modal d'ajout/édition */}
       {(showAddModal || editingHolding) && (
@@ -1027,8 +827,8 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
   }
 
   return (
-    <div className="glass-effect-strong rounded-3xl p-8 border border-gray-700/50">
-      <h3 className="text-xl font-bold text-[#F9FAFB] mb-6 flex items-center gap-2">
+    <div className="glass-effect rounded-xl p-6 border border-gray-700/50">
+      <h3 className="text-lg font-bold text-[#F9FAFB] mb-4 flex items-center gap-2">
         <PieChart className="w-5 h-5 text-[#6366F1]" />
         {t('portfolio.allocation')}
       </h3>
@@ -1241,64 +1041,64 @@ function TransactionsManagerModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="glass-effect-strong rounded-3xl border border-gray-700 p-8 w-full max-w-4xl max-h-[90vh] overflow-hidden">
+      <div className="glass-effect rounded-2xl border border-gray-700 p-6 w-full max-w-4xl max-h-[90vh] overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
             {getCryptoImage(cryptoId) ? (
               <img
                 src={getCryptoImage(cryptoId)}
                 alt={cryptoName}
-                className="w-12 h-12 rounded-full shadow-lg"
+                className="w-10 h-10 rounded-full"
               />
             ) : (
-              <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
                 {cryptoSymbol[0]}
               </div>
             )}
             <div>
-              <h2 className="text-2xl font-bold text-[#F9FAFB]">
+              <h2 className="text-xl font-bold text-[#F9FAFB]">
                 Transactions {cryptoSymbol}
               </h2>
-              <p className="text-gray-400">{transactions.length} transaction{transactions.length > 1 ? 's' : ''}</p>
+              <p className="text-gray-400 text-sm">{transactions.length} transaction{transactions.length > 1 ? 's' : ''}</p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-[#F9FAFB] p-2 hover:bg-gray-800/50 rounded-lg transition-all"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Résumé */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="glass-effect rounded-2xl p-4 border border-gray-700/50">
-            <div className="text-gray-400 text-sm mb-1">Total Détenu</div>
-            <div className="font-mono font-bold text-[#F9FAFB] text-lg">{formatNumber(totalQuantity)}</div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
+          <div className="glass-effect rounded-lg p-3 border border-gray-700/50">
+            <div className="text-gray-400 text-xs mb-1">Total Détenu</div>
+            <div className="font-mono font-bold text-[#F9FAFB]">{formatNumber(totalQuantity)}</div>
           </div>
-          <div className="glass-effect rounded-2xl p-4 border border-gray-700/50">
-            <div className="text-gray-400 text-sm mb-1">{t('portfolio.avg_price')}</div>
-            <div className="font-mono font-bold text-[#F9FAFB] text-lg">{formatCurrency(avgPrice)}</div>
+          <div className="glass-effect rounded-lg p-3 border border-gray-700/50">
+            <div className="text-gray-400 text-xs mb-1">{t('portfolio.avg_price')}</div>
+            <div className="font-mono font-bold text-[#F9FAFB]">{formatCurrency(avgPrice)}</div>
           </div>
-          <div className="glass-effect rounded-2xl p-4 border border-gray-700/50">
-            <div className="text-gray-400 text-sm mb-1">Valeur Actuelle</div>
-            <div className="font-mono font-bold text-[#F9FAFB] text-lg">{formatCurrency(currentValue)}</div>
+          <div className="glass-effect rounded-lg p-3 border border-gray-700/50">
+            <div className="text-gray-400 text-xs mb-1">Valeur Actuelle</div>
+            <div className="font-mono font-bold text-[#F9FAFB]">{formatCurrency(currentValue)}</div>
           </div>
-          <div className="glass-effect rounded-2xl p-4 border border-gray-700/50">
-            <div className="text-gray-400 text-sm mb-1">P&L Total</div>
-            <div className={`font-mono font-bold text-lg ${pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+          <div className="glass-effect rounded-lg p-3 border border-gray-700/50">
+            <div className="text-gray-400 text-xs mb-1">P&L Total</div>
+            <div className={`font-mono font-bold ${pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
               {formatCurrency(pnl)}
             </div>
           </div>
         </div>
 
         {/* Liste des transactions */}
-        <div className="glass-effect rounded-2xl border border-gray-800/40 overflow-hidden">
+        <div className="glass-effect rounded-xl border border-gray-800/40 overflow-hidden">
           {/* En-têtes fixes */}
           <div className="border-b border-gray-800/40 bg-gray-900/80 backdrop-blur-md sticky top-0 z-10">
-            <div className="grid grid-cols-6 gap-4 p-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">
+            <div className="grid grid-cols-6 gap-4 p-3 text-gray-400 font-medium text-xs uppercase tracking-wide">
               <div>{t('portfolio.quantity')}</div>
               <div className="text-right">{t('portfolio.purchase_price')}</div>
               <div className="text-right">{t('portfolio.total_invested')}</div>
@@ -1379,13 +1179,13 @@ function TransactionsManagerModal({
         </div>
 
         {/* Footer avec boutons d'action */}
-        <div className="flex justify-between items-center mt-6 pt-6 border-t border-gray-700/50">
-          <div className="text-sm text-gray-400">
+        <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-700/50">
+          <div className="text-xs text-gray-400">
             💡 Vous pouvez modifier ou supprimer chaque transaction individuellement
           </div>
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-xl font-semibold"
+            className="px-4 py-2 bg-[#6366F1] hover:bg-[#5B21B6] text-white rounded-lg transition-colors font-medium"
           >
             Fermer
           </button>
@@ -1449,7 +1249,7 @@ function TransactionsManagerModal({
                       setEditingTransaction(null)
                     }
                   }}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl hover:from-[#5B21B6] hover:to-[#7C3AED] transition-all"
+                  className="flex-1 px-4 py-3 bg-[#6366F1] hover:bg-[#5B21B6] text-white rounded-xl transition-colors"
                 >
                   Sauvegarder
                 </button>
@@ -1745,7 +1545,7 @@ function AddEditHoldingModal({
           <button
             onClick={handleSave}
             disabled={!selectedCoin || !quantity || !avgPrice}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl hover:from-[#5B21B6] hover:to-[#7C3AED] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 bg-[#6366F1] hover:bg-[#5B21B6] text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {holding ? t('portfolio.modify') : t('portfolio.add')}
           </button>
@@ -1757,6 +1557,8 @@ function AddEditHoldingModal({
 
 export default function PortefeuillePage() {
   const { t } = useLanguage()
+  const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [binanceConnected, setBinanceConnected] = useState(false)
   const [binanceBalance, setBinanceBalance] = useState(0)
   const [coinbaseConnected, setCoinbaseConnected] = useState(false)
@@ -1861,104 +1663,90 @@ export default function PortefeuillePage() {
         <SmartNavigation />
 
         {/* Main Content */}
-        <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-12 pb-20">
-          {/* Enhanced Page Header */}
-          <div className="mb-16 relative">
-            {/* Hero background effects */}
-            <div className="absolute -top-20 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-[#6366F1]/15 via-[#8B5CF6]/8 to-transparent rounded-full blur-[120px] animate-pulse"></div>
-            <div className="absolute -top-10 right-1/4 w-[400px] h-[400px] bg-gradient-to-tl from-[#A855F7]/12 to-transparent rounded-full blur-[100px] animate-pulse"></div>
-
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-12 relative z-10">
-              <div className="text-center lg:text-left">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] py-4">
-                  <span className="bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift font-display flex items-center justify-center lg:justify-start space-x-4">
-                    <span>{t('portfolio.title')}</span>
-                    <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-[#6366F1] animate-pulse" />
-                  </span>
-                  <div className="text-3xl md:text-4xl lg:text-5xl bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent font-display font-semibold mt-4">
-                    {t('portfolio.advanced_management')}
-                  </div>
+        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
+          {/* Simplified Page Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {t('portfolio.title')}
                 </h1>
-                <p className="text-gray-300 text-xl md:text-2xl font-light max-w-3xl leading-relaxed font-display">
+                <p className="text-gray-400 text-sm md:text-base">
                   {t('portfolio.track_investments')}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Portfolio Manuel */}
-          <ManualPortfolioSection />
-
-          {/* Binance Portfolio */}
-          {binanceConnected && (
-            <div className="mb-12">
-              <BinanceBalances />
-            </div>
-          )}
-
-          {/* Coinbase Portfolio */}
-          {coinbaseConnected && (
-            <div className="mb-12">
-              <CoinbaseBalances />
-            </div>
-          )}
-
-          {/* Kraken Portfolio */}
-          {krakenConnected && (
-            <div className="mb-12">
-              <KrakenBalances />
-            </div>
-          )}
-
-          {/* Exchange Connections */}
+          {/* Gestionnaire de Portfolios */}
           <div className="mb-12">
-            <div className="flex items-center justify-between mb-8">
+            <PortfolioManager
+              onPortfolioSelect={setSelectedPortfolio}
+              selectedPortfolioId={selectedPortfolio?.id || null}
+            />
+          </div>
+
+          {/* Vue Consolidée du Portfolio */}
+          {selectedPortfolio && (
+            <ConsolidatedPortfolioView
+              portfolio={selectedPortfolio}
+              refreshTrigger={refreshTrigger}
+            />
+          )}
+
+          {/* Section manuelle pour gérer l'ajout/modification (uniquement si manuel est coché) */}
+          {selectedPortfolio?.sources?.manual && (
+            <div className="mt-6">
+              <ManualPortfolioSection
+                portfolioId={selectedPortfolio.id}
+                onTransactionAdded={() => setRefreshTrigger(prev => prev + 1)}
+              />
+            </div>
+          )}
+
+          {/* Simplified Exchange Connections */}
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-[#F9FAFB] flex items-center gap-3">
-                  <Zap className="w-6 h-6 text-[#6366F1]" />
+                <h2 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#6366F1]" />
                   {t('portfolio.exchange_portfolio')}
                 </h2>
-                <p className="text-gray-400 mt-1">{t('portfolio.synced_wallet')}</p>
+                <p className="text-gray-400 text-sm mt-1">{t('portfolio.synced_wallet')}</p>
               </div>
-              <button className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl">
-                <Plus className="w-4 h-4" />
-                <span>{t('portfolio.add_exchange')}</span>
-              </button>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-4">
               {exchanges.map((exchange, index) => (
-                <div key={exchange.name} className="glass-effect-strong rounded-3xl p-6 border border-gray-700/50 hover:scale-105 transition-all duration-300 group" style={{
-                  animationDelay: `${index * 150}ms`
-                }}>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-white flex items-center justify-center group-hover:scale-110 transition-transform p-2">
+                <div key={exchange.name} className="glass-effect rounded-xl p-5 border border-gray-700/50 hover:border-[#6366F1]/50 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-white flex items-center justify-center p-2">
                         <img src={exchange.logo} alt={exchange.name} className="w-full h-full object-contain" />
                       </div>
                       <div>
-                        <div className="font-bold text-[#F9FAFB] text-lg group-hover:text-[#6366F1] transition-colors">{exchange.name}</div>
-                        <div className="text-gray-400 text-sm font-medium">
+                        <div className="font-bold text-[#F9FAFB]">{exchange.name}</div>
+                        <div className="text-gray-400 text-xs">
                           {exchange.connected ? t('portfolio.connected') : t('portfolio.not_connected')}
                         </div>
                       </div>
                     </div>
-                    <div className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider group-hover:scale-105 transition-all ${
+                    <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
                       exchange.status === 'active'
-                        ? 'bg-[#16A34A]/20 text-[#16A34A] border border-[#16A34A]/40 shadow-lg shadow-[#16A34A]/20'
-                        : 'bg-gray-700/50 text-gray-400 border border-gray-700'
+                        ? 'bg-[#16A34A]/20 text-[#16A34A]'
+                        : 'bg-gray-700/50 text-gray-400'
                     }`}>
                       {exchange.status === 'active' ? t('portfolio.active') : t('portfolio.inactive')}
                     </div>
                   </div>
 
-                  <div className="mb-6">
-                    <div className="text-gray-400 text-sm mb-2 font-semibold uppercase tracking-wider">{t('portfolio.total_balance')}</div>
-                    <div className="font-mono font-black text-[#F9FAFB] text-2xl group-hover:text-[#6366F1] transition-colors">
+                  <div className="mb-4">
+                    <div className="text-gray-400 text-xs mb-1">{t('portfolio.total_balance')}</div>
+                    <div className="font-mono font-bold text-[#F9FAFB] text-xl">
                       {exchange.connected ? formatCurrency(exchange.balance) : formatCurrency(0)}
                     </div>
                     {exchange.connected && (
-                      <div className="text-xs text-gray-400 mt-1 font-medium">
+                      <div className="text-xs text-gray-400 mt-1">
                         {t('portfolio.last_update')}: {t('portfolio.minutes_ago').replace('{count}', '5')}
                       </div>
                     )}
@@ -1990,97 +1778,35 @@ export default function PortefeuillePage() {
               ))}
             </div>
 
-            {/* Security Notice - Enhanced */}
-            <div className="mt-8 glass-effect-strong rounded-3xl p-8 border border-[#F59E0B]/40 bg-gradient-to-r from-[#F59E0B]/5 to-[#16A34A]/5 relative overflow-hidden group">
-              {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#F59E0B]/10 to-transparent rounded-full blur-2xl"></div>
-
-              <div className="flex items-start space-x-6 relative z-10">
-                <div className="p-4 bg-[#F59E0B]/20 rounded-2xl group-hover:scale-110 transition-transform">
-                  <Shield className="w-8 h-8 text-[#F59E0B]" />
+            {/* Simplified Security Notice */}
+            <div className="mt-6 glass-effect rounded-xl p-5 border border-[#F59E0B]/30">
+              <div className="flex items-start space-x-4">
+                <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                  <Shield className="w-5 h-5 text-[#F59E0B]" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-bold text-[#F9FAFB] mb-3 text-xl flex items-center gap-2">
+                  <div className="font-bold text-[#F9FAFB] mb-2 flex items-center gap-2">
                     {t('portfolio.bank_level_security')}
-                    <CheckCircle className="w-5 h-5 text-[#16A34A]" />
+                    <CheckCircle className="w-4 h-4 text-[#16A34A]" />
                   </div>
-                  <div className="text-gray-300 leading-relaxed space-y-2">
+                  <div className="text-gray-300 text-sm space-y-1">
                     <div className="flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-[#16A34A]" />
+                      <Lock className="w-3 h-3 text-[#16A34A]" />
                       <span>{t('portfolio.api_read_only')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Key className="w-4 h-4 text-[#16A34A]" />
+                      <Key className="w-3 h-3 text-[#16A34A]" />
                       <span>{t('portfolio.aes_encryption')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-[#16A34A]" />
+                      <Shield className="w-3 h-3 text-[#16A34A]" />
                       <span>{t('portfolio.no_trade_withdraw')}</span>
                     </div>
-                  </div>
-                  <div className="mt-4 text-xs text-gray-400 font-medium">
-                    {t('portfolio.data_protected')}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-
-          {/* Recent Transactions - SEULEMENT SI ON A DES TRANSACTIONS */}
-          {exchanges.some(ex => ex.connected) && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-[#F9FAFB]">{t('portfolio.recent_transactions')}</h2>
-                <button className="flex items-center space-x-2 text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
-                  <span>{t('portfolio.view_all')}</span>
-                  <ExternalLink className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="glass-effect rounded-2xl border border-gray-800/40 overflow-hidden">
-                <div className="border-b border-gray-800/40 bg-gray-900/30">
-                  <div className="grid grid-cols-7 gap-4 p-6 text-gray-400 font-semibold text-sm uppercase tracking-wider">
-                    <div>Type</div>
-                    <div>Asset</div>
-                    <div className="text-right">Quantité</div>
-                    <div className="text-right">Prix</div>
-                    <div className="text-right">Valeur</div>
-                    <div>Exchange</div>
-                    <div className="text-right">Date</div>
-                  </div>
-                </div>
-                <div>
-                  {transactions.map((tx) => (
-                    <div key={tx.id} className="border-b border-gray-800/20 hover:bg-gray-800/20 transition-colors">
-                      <div className="grid grid-cols-7 gap-4 p-6 items-center">
-                        <div className={`px-3 py-1 rounded-full text-xs font-semibold w-fit ${
-                          tx.type === 'buy' 
-                            ? 'bg-[#16A34A]/20 text-[#16A34A]' 
-                            : 'bg-[#DC2626]/20 text-[#DC2626]'
-                        }`}>
-                          {tx.type === 'buy' ? 'Achat' : 'Vente'}
-                        </div>
-                        <div className="font-semibold text-[#F9FAFB]">{tx.symbol}</div>
-                        <div className="text-right font-mono text-[#F9FAFB]">
-                          {formatCrypto(tx.amount)}
-                        </div>
-                        <div className="text-right font-mono text-gray-400">
-                          {formatCurrency(tx.price)}
-                        </div>
-                        <div className="text-right font-mono font-semibold text-[#F9FAFB]">
-                          {formatCurrency(tx.value)}
-                        </div>
-                        <div className="text-gray-400">{tx.exchange}</div>
-                        <div className="text-right text-gray-400 text-sm font-mono">
-                          {tx.date}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </main>
 
         {/* Footer */}

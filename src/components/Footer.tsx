@@ -32,15 +32,15 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-4 mb-6">
               <Image
-                src="/logo.png"
+                src="/logo2.png"
                 alt="Cryptium Logo"
-                width={48}
-                height={48}
+                width={94}
+                height={94}
                 className="object-contain opacity-75"
               />
               <div>
                 <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">Cryptium</span>
-                <div className="text-xs text-[#6366F1] font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
+                <div className="text-xs text-gray-400 font-medium">Votre plateforme d'analyse crypto premium</div>
               </div>
             </div>
             <p className="text-gray-400 leading-relaxed text-sm mb-6">

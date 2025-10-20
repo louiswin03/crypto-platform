@@ -161,7 +161,7 @@ export default function Home() {
         <SmartNavigation />
 
         {/* Hero Section */}
-        <section className="relative pt-24 sm:pt-32 md:pt-40 pb-32 sm:pb-40 md:pb-48 overflow-hidden">
+        <section className="relative pt-0 sm:pt-0 md:pt-0 pb-32 sm:pb-40 md:pb-48 overflow-hidden">
           {/* Enhanced Background Effects */}
           <div className="absolute inset-0">
             <div className="absolute top-1/4 left-1/4 w-[900px] h-[900px] bg-gradient-to-br from-[#6366F1]/12 via-[#8B5CF6]/8 to-transparent rounded-full blur-[120px] float-animation"></div>
@@ -171,34 +171,34 @@ export default function Home() {
 
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
             <div className="text-center">
+              {/* Enhanced Main Title */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 sm:mb-8 md:mb-10 leading-[1.2] tracking-tight text-shadow font-display pt-16 sm:pt-20 md:pt-24">
+                <span className={cn("block font-extrabold mb-1 sm:mb-2", themeClasses.text.primary(isDarkMode))}>Votre plateforme</span>
+                <span className="block text-gradient-animate relative">
+                  d'analyse crypto premium
+                  <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-r from-[#6366F1]/15 via-[#8B5CF6]/15 to-[#A855F7]/15 blur-2xl sm:blur-3xl opacity-60 pulse-glow"></div>
+                </span>
+              </h1>
+
               {/* Logo centered */}
-              <div className="flex justify-center mb-8 sm:mb-12">
+              <div className="flex justify-center my-8 sm:my-12">
                 <Image
-                  src="/logo.png"
+                  src="/logo2.png"
                   alt="Cryptium Logo"
-                  width={300}
-                  height={100}
+                  width={400}
+                  height={400}
                   className="object-contain opacity-90"
                   priority
                 />
               </div>
 
-              {/* Enhanced Main Title */}
-              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black mb-6 sm:mb-8 md:mb-10 leading-[1.2] tracking-tighter text-shadow font-display py-2 sm:py-4">
-                <span className={cn("block font-extrabold mb-1 sm:mb-2", themeClasses.text.primary(isDarkMode))}>{t('home.hero.title1')}</span>
-                <span className="block text-gradient-animate relative">
-                  {t('home.hero.title2')}
-                  <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-r from-[#6366F1]/15 via-[#8B5CF6]/15 to-[#A855F7]/15 blur-2xl sm:blur-3xl opacity-60 pulse-glow"></div>
-                </span>
-              </h1>
-
               {/* Enhanced Subtitle */}
               <div className="max-w-5xl mx-auto mb-12 sm:mb-16 md:mb-20">
                 <p className={cn("text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl mb-4 sm:mb-6 leading-relaxed font-light tracking-wide px-4 sm:px-0", themeClasses.text.secondary(isDarkMode))}>
-                  {t('home.hero.subtitle1')}
+                  Analysez les marchés, backtestez vos stratégies et suivez votre portfolio crypto.
                 </p>
                 <p className={cn("text-base sm:text-lg md:text-xl font-medium px-4 sm:px-0", themeClasses.text.muted(isDarkMode))}>
-                  {t('home.hero.subtitle2')}
+                  Gratuit et no-code. La plateforme tout-en-un pour optimiser vos investissements cryptomonnaies.
                 </p>
 
                 {/* Trust Indicators */}
@@ -246,23 +246,23 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Stats Preview */}
-              <div className="mt-16 sm:mt-20 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-3xl font-black text-[#16A34A] mb-1 sm:mb-2 font-mono">10K+</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.backtests')}</div>
+              {/* Stats Preview - Style professionnel */}
+              <div className="mt-12 sm:mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto px-4 sm:px-0">
+                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-gray-800/40">
+                  <div className="text-3xl sm:text-4xl font-bold text-[#16A34A] mb-2 font-mono">Beta</div>
+                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.backtests')}</div>
                 </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-3xl font-black text-[#6366F1] mb-1 sm:mb-2 font-mono">500+</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.cryptos')}</div>
+                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-gray-800/40">
+                  <div className="text-3xl sm:text-4xl font-bold text-[#6366F1] mb-2 font-mono">15K+</div>
+                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.cryptos')}</div>
                 </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-3xl font-black text-[#8B5CF6] mb-1 sm:mb-2 font-mono">99.9%</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.uptime')}</div>
+                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-gray-800/40">
+                  <div className="text-3xl sm:text-4xl font-bold text-[#8B5CF6] mb-2 font-mono">24/7</div>
+                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.uptime')}</div>
                 </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
-                  <div className="text-2xl sm:text-3xl font-black text-[#F59E0B] mb-1 sm:mb-2 font-mono">&lt;50ms</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.latency')}</div>
+                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-gray-800/40">
+                  <div className="text-3xl sm:text-4xl font-bold text-[#F59E0B] mb-2 font-mono">Fast</div>
+                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.latency')}</div>
                 </div>
               </div>
             </div>
@@ -559,18 +559,18 @@ export default function Home() {
 
                     <div className="grid grid-cols-2 gap-6 mb-8">
                       <div className="text-center glass-effect rounded-2xl p-4">
-                        <div className="text-3xl font-black text-[#16A34A] mb-2 font-mono">99.9%</div>
+                        <div className="text-3xl font-black text-[#16A34A] mb-2 font-mono">24/7</div>
                         <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('home.tech.perf.uptime')}</div>
                         <div className="w-full bg-gray-800 rounded-full h-2 mt-2">
-                          <div className="bg-gradient-to-r from-[#16A34A] to-[#22C55E] h-2 rounded-full" style={{width: '99.9%'}}></div>
+                          <div className="bg-gradient-to-r from-[#16A34A] to-[#22C55E] h-2 rounded-full" style={{width: '90%'}}></div>
                         </div>
                       </div>
 
                       <div className="text-center glass-effect rounded-2xl p-4">
-                        <div className="text-3xl font-black text-[#6366F1] mb-2 font-mono">&lt;50ms</div>
+                        <div className="text-3xl font-black text-[#6366F1] mb-2 font-mono">Fast</div>
                         <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('home.tech.perf.latency')}</div>
                         <div className="w-full bg-gray-800 rounded-full h-2 mt-2">
-                          <div className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] h-2 rounded-full" style={{width: '95%'}}></div>
+                          <div className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] h-2 rounded-full" style={{width: '85%'}}></div>
                         </div>
                       </div>
                     </div>
@@ -663,15 +663,15 @@ export default function Home() {
               <div className="lg:col-span-1">
                 <div className="flex items-center space-x-4 mb-6">
                   <Image
-                    src="/logo.png"
+                    src="/logo2.png"
                     alt="Cryptium Logo"
-                    width={48}
-                    height={48}
+                    width={94}
+                    height={94}
                     className="object-contain opacity-75"
                   />
                   <div>
                     <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">Cryptium</span>
-                    <div className="text-xs text-[#6366F1] font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
+                    <div className="text-xs text-gray-400 font-medium">Votre plateforme d'analyse crypto premium</div>
                   </div>
                 </div>
                 <p className="text-gray-400 leading-relaxed text-sm mb-6">

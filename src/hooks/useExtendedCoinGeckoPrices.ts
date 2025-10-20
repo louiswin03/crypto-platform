@@ -230,7 +230,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
 
       // OPTIMISATION: Ajouter retry logic et timeout
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 secondes timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 secondes timeout (augmenté)
 
       const response = await fetch(url, {
         headers: {
@@ -304,9 +304,22 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       setHasMore(data.length === perPage)
       setLoading(false)
     } catch (err) {
+      // OPTIMISATION: Gestion d'erreur améliorée avec retry automatique
+
+      // Vérifier si c'est une erreur AbortError (timeout)
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        console.warn('⏱️ Timeout de la requête API - Retry automatique...')
+        setError('Chargement en cours, veuillez patienter...')
+        // Retry automatique après 3 secondes avec timeout plus long
+        setTimeout(() => {
+          fetchPrices(pageNum, append)
+        }, 3000)
+        setLoading(false)
+        return
+      }
+
       console.error('🚨 Erreur lors de la récupération des prix CoinGecko:', err)
 
-      // OPTIMISATION: Gestion d'erreur améliorée avec retry automatique
       if (err instanceof TypeError && err.message === 'Failed to fetch') {
         setError('Erreur de connexion - Rechargement automatique dans 5 secondes...')
         // Retry automatique après 5 secondes pour les erreurs de réseau
@@ -317,11 +330,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         setError('Limite API atteinte - Utilisation des données de secours...')
         // Utiliser les données de fallback en cas de limite API
         useFallbackData()
-      } else if (err instanceof Error && err.name === 'AbortError') {
-        setError('Requête timeout - Retry automatique...')
-        setTimeout(() => {
-          fetchPrices(pageNum, append)
-        }, 3000)
       } else if (err instanceof Error) {
         setError(`Erreur API: ${err.message} - Données de secours chargées`)
         useFallbackData()

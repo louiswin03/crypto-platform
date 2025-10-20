@@ -61,15 +61,15 @@ export default function SmartNavigation() {
           <Link href="/" className="flex items-center">
             <div className="flex items-center space-x-4">
               <Image
-                src="/logo.png"
+                src="/logo2.png"
                 alt="Cryptium Logo"
-                width={48}
-                height={48}
+                width={94}
+                height={94}
                 className="object-contain opacity-80 hover:opacity-100 transition-opacity"
               />
               <div>
                 <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight">Cryptium</span>
-                <div className="text-xs text-gray-500 font-medium tracking-[0.15em] uppercase">{t('nav.platform')}</div>
+                <div className="text-xs text-gray-400 font-medium">Analyse, backtest et portfolio crypto</div>
               </div>
             </div>
           </Link>
@@ -201,7 +201,7 @@ export default function SmartNavigation() {
                       <div className="text-sm font-semibold text-[#F9FAFB]">
                         {user.email?.split('@')[0] || t('nav.user')}
                       </div>
-                      <div className="text-xs text-gray-400">{t('nav.plan')} {profile?.plan || 'free'}</div>
+                      <div className="text-xs text-gray-400">{user.email}</div>
                     </div>
                     <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
                       isProfileMenuOpen ? 'rotate-180' : ''
@@ -222,9 +222,6 @@ export default function SmartNavigation() {
                               {user.email?.split('@')[0] || t('nav.user')}
                             </div>
                             <div className="text-xs text-gray-400">{user.email}</div>
-                            <div className="text-xs text-[#6366F1] font-medium uppercase">
-                              {t('nav.plan')} {profile?.plan || 'free'}
-                            </div>
                           </div>
                         </div>
                       </div>

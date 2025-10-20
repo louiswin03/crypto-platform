@@ -146,14 +146,14 @@ export default function CoinbaseBalances() {
       <div className="glass-effect-strong rounded-3xl p-6 border border-gray-700/50">
         <h3 className="text-lg font-bold text-[#F9FAFB] mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-[#0052FF]" />
-          {t('portfolio.your_assets')} ({balances.length})
+          {t('portfolio.your_assets')} ({balances.filter(balance => balance.valueUsd > 0.1).length})
         </h3>
 
         {balances.length === 0 ? (
           <p className="text-center text-gray-400 py-8">{t('portfolio.no_assets')}</p>
         ) : (
           <div className="space-y-3">
-            {balances.map((balance) => (
+            {balances.filter(balance => balance.valueUsd > 0.1).map((balance) => (
               <div
                 key={balance.asset}
                 className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/30 hover:border-gray-600/50 transition-colors"
