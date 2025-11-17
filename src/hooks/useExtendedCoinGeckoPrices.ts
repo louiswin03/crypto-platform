@@ -333,20 +333,20 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       } else if (err instanceof Error && err.message.includes('429')) {
         setError('Limite API atteinte - Utilisation des données de secours...')
         // Utiliser les données de fallback en cas de limite API
-        useFallbackData()
+        loadFallbackData()
       } else if (err instanceof Error) {
         setError(`Erreur API: ${err.message} - Données de secours chargées`)
-        useFallbackData()
+        loadFallbackData()
       } else {
         setError('Erreur inconnue - Données de secours chargées')
-        useFallbackData()
+        loadFallbackData()
       }
       setLoading(false)
     }
   }
 
-  // OPTIMISATION: Fonction pour utiliser les données de fallback
-  const useFallbackData = () => {
+  // OPTIMISATION: Fonction pour charger les données de fallback
+  const loadFallbackData = () => {
     const enrichedData: ExtendedCoinPrice[] = FALLBACK_DATA.map((coin: any) => {
       let tradingViewSymbol = TRADINGVIEW_MAPPING[coin.id]
       if (!tradingViewSymbol) {
