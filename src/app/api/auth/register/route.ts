@@ -106,11 +106,12 @@ export async function POST(request: NextRequest) {
       token
     )
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur API register:', error)
 
+    const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la création du compte'
     return NextResponse.json(
-      { error: error.message || 'Erreur lors de la création du compte' },
+      { error: errorMessage },
       { status: 400 }
     )
   }

@@ -6,11 +6,10 @@ import { getUserIdFromRequest } from '@/lib/jwt'
 export async function GET(request: NextRequest) {
   try {
     // Authentification
-    const authHeader = request.headers.get('authorization')
     let userId: string
 
     try {
-      userId = extractUserIdFromRequest(authHeader)
+      userId = getUserIdFromRequest(request)
     } catch (error) {
       return NextResponse.json(
         { error: 'Non authentifié' },
@@ -65,10 +64,12 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ portfolios })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur API portfolios:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
@@ -78,11 +79,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Authentification
-    const authHeader = request.headers.get('authorization')
     let userId: string
 
     try {
-      userId = extractUserIdFromRequest(authHeader)
+      userId = getUserIdFromRequest(request)
     } catch (error) {
       return NextResponse.json(
         { error: 'Non authentifié' },
@@ -140,10 +140,12 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ portfolio }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur API création portfolio:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

@@ -11,23 +11,13 @@ export async function PUT(
     const { id } = await params
 
     // Authentification
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
     let userId: string
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }
@@ -45,7 +35,12 @@ export async function PUT(
     const body = await request.json()
     const { name, description, is_default, sources } = body
 
-    const updates: any = {}
+    const updates: {
+      name?: string
+      description?: string | null
+      is_default?: boolean
+      sources?: Record<string, boolean>
+    } = {}
 
     if (name !== undefined) {
       if (name.trim() === '') {
@@ -103,10 +98,12 @@ export async function PUT(
     }
 
     return NextResponse.json({ portfolio })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur API modification portfolio:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
@@ -121,23 +118,13 @@ export async function DELETE(
     const { id } = await params
 
     // Authentification
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
     let userId: string
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }
@@ -217,10 +204,12 @@ export async function DELETE(
     }
 
     return NextResponse.json({ success: true, message: 'Portfolio supprimé avec succès' })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur API suppression portfolio:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

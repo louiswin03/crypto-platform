@@ -4,27 +4,36 @@ import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import { decrypt } from '@/lib/encryption'
 import { getUserIdFromRequest } from '@/lib/jwt'
 
+// Types Binance
+interface BinanceBalance {
+  asset: string
+  free: string
+  locked: string
+}
+
+interface BinancePrice {
+  symbol: string
+  price: string
+}
+
+interface EnrichedBalance {
+  asset: string
+  free: number
+  locked: number
+  total: number
+  valueUsd: number
+  priceUsd: number
+}
+
 export async function GET(request: NextRequest) {
   try {
-    // Récupérer l'utilisateur depuis le token JWT
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
-
-    // Vérifier le token JWT
+    // Authentification
     let userId: string
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }
@@ -86,9 +95,9 @@ export async function GET(request: NextRequest) {
     const accountData = await response.json()
 
     // Filtrer les balances non nulles
-    const balances = accountData.balances
-      .filter((b: any) => parseFloat(b.free) > 0 || parseFloat(b.locked) > 0)
-      .map((b: any) => ({
+    const balances = (accountData.balances as BinanceBalance[])
+      .filter((b) => parseFloat(b.free) > 0 || parseFloat(b.locked) > 0)
+      .map((b) => ({
         asset: b.asset,
         free: parseFloat(b.free),
         locked: parseFloat(b.locked),
@@ -96,19 +105,17 @@ export async function GET(request: NextRequest) {
       }))
 
     // Récupérer les prix actuels pour calculer la valeur en USD
-    const symbols = balances.map((b: any) => `${b.asset}USDT`).join(',')
-
     let pricesMap: Record<string, number> = {}
 
     if (balances.length > 0) {
       try {
         const priceResponse = await fetch(`https://api.binance.com/api/v3/ticker/price`)
         if (priceResponse.ok) {
-          const prices = await priceResponse.json()
-          pricesMap = prices.reduce((acc: any, p: any) => {
+          const prices = await priceResponse.json() as BinancePrice[]
+          pricesMap = prices.reduce((acc, p) => {
             acc[p.symbol] = parseFloat(p.price)
             return acc
-          }, {})
+          }, {} as Record<string, number>)
         }
       } catch (err) {
         console.error('Erreur récupération prix:', err)
@@ -116,7 +123,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Enrichir les balances avec les prix
-    const enrichedBalances = balances.map((b: any) => {
+    const enrichedBalances: EnrichedBalance[] = balances.map((b) => {
       let valueUsd = 0
 
       if (b.asset === 'USDT' || b.asset === 'USDC' || b.asset === 'BUSD') {
@@ -136,7 +143,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculer la valeur totale
-    const totalValueUsd = enrichedBalances.reduce((sum: number, b: any) => sum + b.valueUsd, 0)
+    const totalValueUsd = enrichedBalances.reduce((sum, b) => sum + b.valueUsd, 0)
 
     // Mettre à jour last_sync_at dans la base
     await supabase
@@ -146,15 +153,17 @@ export async function GET(request: NextRequest) {
       .eq('exchange_name', 'binance')
 
     return NextResponse.json({
-      balances: enrichedBalances.sort((a: any, b: any) => b.valueUsd - a.valueUsd),
+      balances: enrichedBalances.sort((a, b) => b.valueUsd - a.valueUsd),
       totalValueUsd,
       accountType: accountData.accountType,
       lastUpdate: new Date().toISOString()
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur récupération balances:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

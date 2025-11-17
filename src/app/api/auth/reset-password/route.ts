@@ -116,8 +116,9 @@ export async function POST(request: NextRequest) {
       if (!emailResult.success) {
         console.error('Erreur lors de l\'envoi de l\'email:', emailResult.error)
       }
-    } catch (emailError: any) {
-      console.error('Exception lors de l\'envoi d\'email:', emailError.message)
+    } catch (emailError: unknown) {
+      const errorMessage = emailError instanceof Error ? emailError.message : 'Erreur inconnue'
+      console.error('Exception lors de l\'envoi d\'email:', errorMessage)
       // Continuer quand même - le token est créé
     }
 
@@ -126,17 +127,23 @@ export async function POST(request: NextRequest) {
       message: 'Un email de réinitialisation a été envoyé'
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur lors de la réinitialisation du mot de passe:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue'
+    const errorStack = error instanceof Error ? error.stack : undefined
+    const errorName = error instanceof Error ? error.name : undefined
+
     console.error('Détails de l\'erreur:', {
-      message: error?.message,
-      stack: error?.stack,
-      name: error?.name
+      message: errorMessage,
+      stack: errorStack,
+      name: errorName
     })
+
     return NextResponse.json(
       {
         error: 'Erreur serveur lors de la réinitialisation du mot de passe',
-        details: error?.message
+        details: errorMessage
       },
       { status: 500 }
     )

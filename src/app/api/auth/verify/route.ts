@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur API verify:', error)
 
     return NextResponse.json(
