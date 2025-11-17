@@ -1,11 +1,11 @@
 "use client"
 
 import Link from 'next/link'
-import { ArrowRight, TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Shield, Zap, Target, CheckCircle, Star, Users, DollarSign, TrendingDown, Search, Filter, RefreshCw, Maximize2, Settings, Download, Eye, EyeOff, Plus, ExternalLink, AlertTriangle, Lock, Key, Trash2, Play, Pause, RotateCcw, Calendar, Clock, Percent, MousePointer, Move, Save, Copy, ChevronDown, ChevronRight, Bell, CreditCard, LogOut, Camera, Mail, Phone, MapPin, Globe, Smartphone, Loader2, Edit3, X, Check } from 'lucide-react'
+import { TrendingUp, Activity, User, BarChart3, Shield, Target, Star, Settings, Lock, Camera, Mail, Phone, MapPin, Smartphone, Edit3, Check, Clock } from 'lucide-react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
 import { useAuth } from '@/hooks/useAuth'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { DatabaseAuthService } from '@/services/databaseAuthService'
 import { createClient } from '@supabase/supabase-js'
@@ -48,7 +48,8 @@ const createSupabaseAdmin = () => {
   )
 }
 
-export default function AccountPage() {
+// Component that uses useSearchParams - must be wrapped in Suspense
+function AccountPageContent() {
   const { user, signOut, resetPassword, loading: authLoading } = useAuth()
   const { isDarkMode, toggleTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
@@ -949,5 +950,22 @@ export default function AccountPage() {
         </main>
       </div>
     </ProtectedRoute>
+  )
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <ProtectedRoute>
+        <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-[#00FF88] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-400">Chargement...</p>
+          </div>
+        </div>
+      </ProtectedRoute>
+    }>
+      <AccountPageContent />
+    </Suspense>
   )
 }

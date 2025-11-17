@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import Link from 'next/link'
 import { TrendingUp, PieChart, Activity, Wallet, User, BarChart3, Maximize2, Download, RotateCcw, Sparkles, Star } from 'lucide-react'
 import SupabaseAddToWatchlistButton from '@/components/SupabaseAddToWatchlistButton'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useWatchlistContext } from '@/contexts/WatchlistContext'
 import TradingViewWidget from '@/components/TradingViewWidget'
@@ -133,7 +133,8 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
   )
 }
 
-export default function GraphiquesPage() {
+// Component that uses useSearchParams - must be wrapped in Suspense
+function GraphiquesPageContent() {
   // Hook pour récupérer l'utilisateur connecté (pour conditionner certains boutons)
   const { user } = useAuth()
   const { t } = useLanguage()
@@ -870,5 +871,20 @@ export default function GraphiquesPage() {
         <Footer />
       </div>
     </>
+  )
+}
+
+export default function GraphiquesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#00FF88] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-400">Chargement...</p>
+        </div>
+      </div>
+    }>
+      <GraphiquesPageContent />
+    </Suspense>
   )
 }
