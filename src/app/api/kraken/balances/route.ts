@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import { decrypt } from '@/lib/encryption'
 import { getUserIdFromRequest } from '@/lib/jwt'
+
+// Types Kraken
+interface KrakenBalance {
+  asset: string
+  amount: number
+  valueUsd: number
+}
 
 function generateKrakenSignature(path: string, nonce: string, postData: string, apiSecret: string): string {
   const message = nonce + postData
@@ -15,23 +23,13 @@ function generateKrakenSignature(path: string, nonce: string, postData: string, 
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const userToken = authHeader.substring(7)
-
+    // Authentification
     let userId: string
     try {
-      const decoded = jwt.verify(userToken, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }
@@ -96,7 +94,7 @@ export async function GET(request: NextRequest) {
 
     // Récupérer les prix via l'API publique
     const tickerResponse = await fetch('https://api.kraken.com/0/public/Ticker?pair=XXBTZUSD,XETHZUSD,XLTCZUSD')
-    let prices: any = {}
+    let prices: Record<string, { c: string[] }> = {}
 
     if (tickerResponse.ok) {
       const tickerData = await tickerResponse.json()
@@ -106,10 +104,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Convertir les balances
-    const balances = Object.entries(balanceData.result || {})
-      .filter(([asset, amount]: any) => parseFloat(amount) > 0)
-      .map(([asset, amount]: any) => {
-        const balance = parseFloat(amount)
+    const balances: KrakenBalance[] = Object.entries(balanceData.result || {})
+      .filter(([, amount]) => parseFloat(amount as string) > 0)
+      .map(([asset, amount]) => {
+        const balance = parseFloat(amount as string)
         let valueUsd = 0
 
         // Kraken utilise des noms bizarres (XXBT = BTC, XETH = ETH, ZUSD = USD)
@@ -148,10 +146,12 @@ export async function GET(request: NextRequest) {
       totalValueUsd,
       lastUpdate: new Date().toISOString()
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur récupération balances:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

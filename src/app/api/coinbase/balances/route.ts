@@ -1,8 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import { decrypt } from '@/lib/encryption'
 import { getUserIdFromRequest } from '@/lib/jwt'
+
+// Types Coinbase
+interface CoinbaseAccount {
+  name: string
+  available_balance?: {
+    value: string
+    currency: string
+  }
+  type?: string
+}
+
+interface CoinbaseBalance {
+  asset: string
+  name: string
+  amount: number
+  valueUsd: number
+  type: string
+}
 
 function generateCoinbaseJWT(apiKeyName: string, privateKey: string, requestMethod: string, requestPath: string): string {
   const now = Math.floor(Date.now() / 1000)
@@ -29,25 +48,13 @@ function generateCoinbaseJWT(apiKeyName: string, privateKey: string, requestMeth
 
 export async function GET(request: NextRequest) {
   try {
-    // Récupérer l'utilisateur depuis le token JWT
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const userToken = authHeader.substring(7)
-
-    // Vérifier le token JWT
+    // Authentification
     let userId: string
     try {
-      const decoded = jwt.verify(userToken, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }
@@ -117,10 +124,10 @@ export async function GET(request: NextRequest) {
     const accountData = await response.json()
 
     // Récupérer les prix en USD pour chaque compte avec conversion
-    const balances = await Promise.all(
-      accountData.accounts
-        .filter((account: any) => parseFloat(account.available_balance?.value || 0) > 0)
-        .map(async (account: any) => {
+    const balances: CoinbaseBalance[] = await Promise.all(
+      (accountData.accounts as CoinbaseAccount[])
+        .filter((account) => parseFloat(account.available_balance?.value || '0') > 0)
+        .map(async (account): Promise<CoinbaseBalance> => {
           const amount = parseFloat(account.available_balance?.value || 0)
           const currency = account.available_balance?.currency || 'USD'
 
@@ -173,10 +180,12 @@ export async function GET(request: NextRequest) {
       totalValueUsd,
       lastUpdate: new Date().toISOString()
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Erreur récupération balances:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
-      { error: error.message || 'Erreur serveur' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
