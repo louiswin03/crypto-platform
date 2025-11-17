@@ -423,6 +423,11 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   const [viewStart, setViewStart] = useState(0)
   const [viewEnd, setViewEnd] = useState(1)
   const [zoomLocked, setZoomLocked] = useState(false)
+  const [isPanning, setIsPanning] = useState(false)
+  const [lastMouseX, setLastMouseX] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const svgRef = useRef<SVGSVGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Réinitialiser la vue quand disableZoom change
   useEffect(() => {
@@ -434,11 +439,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
       setZoomLocked(false)
     }
   }, [disableZoom])
-  const [isPanning, setIsPanning] = useState(false)
-  const [lastMouseX, setLastMouseX] = useState(0)
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const svgRef = useRef<SVGSVGElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   // Observer pour détecter les changements de taille
   useEffect(() => {
@@ -466,6 +466,206 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     }
   }, [])
 
+  // Gestionnaires d'événements pour le zoom et le déplacement
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (zoomLocked || disableZoom) {
+      return
+    }
+
+    e.preventDefault()
+
+    // Sensibilité encore plus réduite
+    const zoomFactor = e.deltaY > 0 ? 1.02 : 0.98
+    const currentRange = viewEnd - viewStart
+    const newRange = Math.max(0.01, Math.min(1, currentRange * zoomFactor))
+
+    // Centrer le zoom sur la position de la souris
+    const rect = svgRef.current?.getBoundingClientRect()
+    if (rect) {
+      const mouseX = e.clientX - rect.left
+      const margin = { top: 20, right: 80, bottom: 50, left: 80 }
+      const chartWidth = containerSize.width - margin.left - margin.right
+      const mouseRatio = (mouseX - margin.left) / chartWidth
+      const centerPoint = viewStart + currentRange * mouseRatio
+
+      const newStart = Math.max(0, centerPoint - newRange / 2)
+      const newEnd = Math.min(1, newStart + newRange)
+
+      setViewStart(newStart)
+      setViewEnd(newEnd)
+    }
+  }, [viewStart, viewEnd, zoomLocked, disableZoom, containerSize.width])
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (disableZoom) {
+      return
+    }
+    setIsPanning(true)
+    setLastMouseX(e.clientX)
+  }, [disableZoom])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isPanning) return
+
+    const deltaX = e.clientX - lastMouseX
+    const range = viewEnd - viewStart
+    const margin = { top: 20, right: 80, bottom: 50, left: 80 }
+    const chartWidth = containerSize.width - margin.left - margin.right
+    // Sensibilité augmentée pour un déplacement plus rapide
+    const deltaRatio = (deltaX / chartWidth) * range * 1.5
+
+    let newStart = viewStart - deltaRatio
+    let newEnd = viewEnd - deltaRatio
+
+    // Limites
+    if (newStart < 0) {
+      newEnd += (0 - newStart)
+      newStart = 0
+    }
+    if (newEnd > 1) {
+      newStart -= (newEnd - 1)
+      newEnd = 1
+    }
+
+    setViewStart(Math.max(0, newStart))
+    setViewEnd(Math.min(1, newEnd))
+    setLastMouseX(e.clientX)
+  }, [isPanning, lastMouseX, viewStart, viewEnd, containerSize.width])
+
+  const handleMouseUp = useCallback(() => {
+    setIsPanning(false)
+  }, [])
+
+  const resetZoom = useCallback(() => {
+    setViewStart(0)
+    setViewEnd(1)
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen()
+      setIsFullscreen(true)
+    } else {
+      document.exitFullscreen()
+      setIsFullscreen(false)
+    }
+  }, [])
+
+  // Gestion des touches du clavier (seulement quand le graphique est focus)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ne pas intercepter si on tape dans un input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      // Ne pas intercepter si le graphique n'est pas visible ou focus
+      const container = containerRef.current
+      if (!container || !document.contains(container)) {
+        return
+      }
+
+      // Vérifier si le container ou l'un de ses enfants a le focus
+      if (!container.contains(document.activeElement)) {
+        return
+      }
+
+      const step = 0.05 // 5% de déplacement
+      const range = viewEnd - viewStart
+
+      switch(e.key) {
+        case 'ArrowLeft':
+          e.preventDefault()
+          if (viewStart > 0) {
+            setViewStart(Math.max(0, viewStart - step))
+            setViewEnd(Math.max(step, viewEnd - step))
+          }
+          break
+        case 'ArrowRight':
+          e.preventDefault()
+          if (viewEnd < 1) {
+            setViewStart(Math.min(1 - range, viewStart + step))
+            setViewEnd(Math.min(1, viewEnd + step))
+          }
+          break
+        case '+':
+        case '=':
+          e.preventDefault()
+          if (range > 0.1) {
+            const center = (viewStart + viewEnd) / 2
+            const newRange = range * 0.9
+            setViewStart(Math.max(0, center - newRange / 2))
+            setViewEnd(Math.min(1, center + newRange / 2))
+          }
+          break
+        case '-':
+          e.preventDefault()
+          if (range < 1) {
+            const center = (viewStart + viewEnd) / 2
+            const newRange = Math.min(1, range * 1.1)
+            setViewStart(Math.max(0, center - newRange / 2))
+            setViewEnd(Math.min(1, center + newRange / 2))
+          }
+          break
+        case 'r':
+        case 'R':
+          e.preventDefault()
+          resetZoom()
+          break
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [viewStart, viewEnd, resetZoom])
+
+  // Exposer les contrôles sur window pour les boutons HTML
+  useEffect(() => {
+    const step = 0.1
+    const range = viewEnd - viewStart
+
+    window.chartControls = {
+      moveLeft: () => {
+        if (viewStart > 0) {
+          setViewStart(Math.max(0, viewStart - step))
+          setViewEnd(Math.max(step, viewEnd - step))
+        }
+      },
+      moveRight: () => {
+        if (viewEnd < 1) {
+          setViewStart(Math.min(1 - range, viewStart + step))
+          setViewEnd(Math.min(1, viewEnd + step))
+        }
+      },
+      zoomIn: () => {
+        if (range > 0.1) {
+          const center = (viewStart + viewEnd) / 2
+          const newRange = range * 0.8
+          setViewStart(Math.max(0, center - newRange / 2))
+          setViewEnd(Math.min(1, center + newRange / 2))
+        }
+      },
+      zoomOut: () => {
+        if (range < 1) {
+          const center = (viewStart + viewEnd) / 2
+          const newRange = Math.min(1, range * 1.2)
+          setViewStart(Math.max(0, center - newRange / 2))
+          setViewEnd(Math.min(1, center + newRange / 2))
+        }
+      },
+      resetZoom,
+      toggleFullscreen,
+      toggleZoomLock: () => setZoomLocked(prev => !prev)
+    }
+
+    return () => {
+      delete window.chartControls
+    }
+  }, [viewStart, viewEnd, resetZoom, toggleFullscreen])
+
+  // Vérification des données - APRÈS tous les hooks
   if (!data || data.length === 0) {
     return <div className="text-gray-500 p-4">Aucune donnée de prix disponible</div>
   }
@@ -533,88 +733,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   // Largeur d'une bougie (adaptée au zoom)
   const candleWidth = Math.max(2, chartWidth / visibleData.length * 0.8)
 
-  // Gestionnaires d'événements pour le zoom et le déplacement
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (zoomLocked || disableZoom) {
-      return
-    }
-
-    e.preventDefault()
-
-    // Sensibilité encore plus réduite
-    const zoomFactor = e.deltaY > 0 ? 1.02 : 0.98
-    const currentRange = viewEnd - viewStart
-    const newRange = Math.max(0.01, Math.min(1, currentRange * zoomFactor))
-
-    // Centrer le zoom sur la position de la souris
-    const rect = svgRef.current?.getBoundingClientRect()
-    if (rect) {
-      const mouseX = e.clientX - rect.left
-      const mouseRatio = (mouseX - margin.left) / chartWidth
-      const centerPoint = viewStart + currentRange * mouseRatio
-
-      const newStart = Math.max(0, centerPoint - newRange / 2)
-      const newEnd = Math.min(1, newStart + newRange)
-
-      setViewStart(newStart)
-      setViewEnd(newEnd)
-    }
-  }, [viewStart, viewEnd, zoomLocked, disableZoom, chartWidth, margin.left])
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (disableZoom) {
-      return
-    }
-    setIsPanning(true)
-    setLastMouseX(e.clientX)
-  }, [disableZoom])
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isPanning) return
-
-    const deltaX = e.clientX - lastMouseX
-    const range = viewEnd - viewStart
-    // Sensibilité augmentée pour un déplacement plus rapide
-    const deltaRatio = (deltaX / chartWidth) * range * 1.5
-
-    let newStart = viewStart - deltaRatio
-    let newEnd = viewEnd - deltaRatio
-
-    // Limites
-    if (newStart < 0) {
-      newEnd += (0 - newStart)
-      newStart = 0
-    }
-    if (newEnd > 1) {
-      newStart -= (newEnd - 1)
-      newEnd = 1
-    }
-
-    setViewStart(Math.max(0, newStart))
-    setViewEnd(Math.min(1, newEnd))
-    setLastMouseX(e.clientX)
-  }, [isPanning, lastMouseX, viewStart, viewEnd, chartWidth])
-
-  const handleMouseUp = useCallback(() => {
-    setIsPanning(false)
-  }, [])
-
-  const resetZoom = useCallback(() => {
-    setViewStart(0)
-    setViewEnd(1)
-  }, [])
-
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen()
-      setIsFullscreen(true)
-    } else {
-      document.exitFullscreen()
-      setIsFullscreen(false)
-    }
-  }, [])
-
-  // Gestion des touches du clavier (seulement quand le graphique est focus)
+  // Gestion des contrôles HTML (création des boutons)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ne pas intercepter si on tape dans un input
