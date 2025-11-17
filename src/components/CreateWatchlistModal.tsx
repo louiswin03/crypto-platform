@@ -12,14 +12,14 @@ interface CreateWatchlistModalProps {
 }
 
 const PRESET_COLORS = [
-  { name: 'Bleu', value: '#6366F1' },
+  { name: 'Bleu', value: '#00FF88' },
   { name: 'Violet', value: '#8B5CF6' },
   { name: 'Rose', value: '#EC4899' },
   { name: 'Vert', value: '#10B981' },
-  { name: 'Orange', value: '#F59E0B' },
+  { name: 'Orange', value: '#FFA366' },
   { name: 'Rouge', value: '#EF4444' },
   { name: 'Cyan', value: '#06B6D4' },
-  { name: 'Indigo', value: '#4F46E5' }
+  { name: 'Indigo', value: '#00FFD9' }
 ]
 
 const PRESET_ICONS = [
@@ -35,7 +35,7 @@ export default function CreateWatchlistModal({
 }: CreateWatchlistModalProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [selectedColor, setSelectedColor] = useState('#6366F1')
+  const [selectedColor, setSelectedColor] = useState('#00FF88')
   const [selectedIcon, setSelectedIcon] = useState('⭐')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -59,7 +59,7 @@ export default function CreateWatchlistModal({
         // Réinitialiser le formulaire
         setName('')
         setDescription('')
-        setSelectedColor('#6366F1')
+        setSelectedColor('#00FF88')
         setSelectedIcon('⭐')
         onClose()
       }
@@ -74,7 +74,7 @@ export default function CreateWatchlistModal({
     if (isSubmitting) return
     setName('')
     setDescription('')
-    setSelectedColor('#6366F1')
+    setSelectedColor('#00FF88')
     setSelectedIcon('⭐')
     onClose()
   }
@@ -88,11 +88,11 @@ export default function CreateWatchlistModal({
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md max-h-[90vh] bg-[#111827] border border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="relative w-full max-w-md max-h-[90vh] bg-[#0A0E1A] border border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-xl flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -122,7 +122,7 @@ export default function CreateWatchlistModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="ex: Mes DeFi favoris"
-              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20 focus:outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88]/50 focus:ring-2 focus:ring-[#00FF88]/20 focus:outline-none transition-all"
               disabled={isSubmitting}
               maxLength={50}
               required
@@ -139,7 +139,7 @@ export default function CreateWatchlistModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brève description de cette liste..."
               rows={3}
-              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20 focus:outline-none transition-all resize-none"
+              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88]/50 focus:ring-2 focus:ring-[#00FF88]/20 focus:outline-none transition-all resize-none"
               disabled={isSubmitting}
               maxLength={200}
             />
@@ -211,7 +211,7 @@ export default function CreateWatchlistModal({
                     onClick={() => setSelectedIcon(icon)}
                     className={`w-8 h-8 rounded-lg text-sm transition-all ${
                       selectedIcon === icon
-                        ? 'bg-[#6366F1] scale-110'
+                        ? 'bg-[#00FF88] scale-110'
                         : 'bg-gray-800/50 hover:bg-gray-700/50 hover:scale-105'
                     }`}
                     disabled={isSubmitting}
@@ -228,7 +228,7 @@ export default function CreateWatchlistModal({
                     onClick={() => setSelectedIcon(icon)}
                     className={`w-8 h-8 rounded-lg text-sm transition-all ${
                       selectedIcon === icon
-                        ? 'bg-[#6366F1] scale-110'
+                        ? 'bg-[#00FF88] scale-110'
                         : 'bg-gray-800/50 hover:bg-gray-700/50 hover:scale-105'
                     }`}
                     disabled={isSubmitting}
@@ -264,7 +264,7 @@ export default function CreateWatchlistModal({
         </div>
 
         {/* Footer avec actions - fixe en bas */}
-        <div className="border-t border-gray-700/50 p-4 bg-[#111827]">
+        <div className="border-t border-gray-700/50 p-4 bg-[#0A0E1A]">
           <div className="flex space-x-3">
             <button
               type="button"
@@ -277,7 +277,7 @@ export default function CreateWatchlistModal({
             <button
               onClick={handleSubmit}
               disabled={!name.trim() || isSubmitting}
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50 disabled:hover:scale-100"
+              className="flex-1 px-4 py-3 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-xl font-medium transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center space-x-2">

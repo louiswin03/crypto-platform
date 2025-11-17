@@ -62,7 +62,7 @@ export default function ConditionsUtilisationPage() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-[#111827] text-[#F9FAFB] relative overflow-hidden">
+      <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] relative overflow-hidden">
         {/* Background Pattern */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
 
@@ -168,8 +168,8 @@ export default function ConditionsUtilisationPage() {
               {/* Conditions d'inscription */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#16A34A]/20 rounded-xl">
-                    <Users className="w-6 h-6 text-[#16A34A]" />
+                  <div className="p-2 bg-[#00FF88]/20 rounded-xl">
+                    <Users className="w-6 h-6 text-[#00FF88]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? '3. Conditions d\'inscription et compte utilisateur' : '3. Registration Conditions and User Account'}
@@ -219,8 +219,8 @@ export default function ConditionsUtilisationPage() {
               {/* Utilisation acceptable */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
-                    <Shield className="w-6 h-6 text-[#F59E0B]" />
+                  <div className="p-2 bg-[#FFA366]/20 rounded-xl">
+                    <Shield className="w-6 h-6 text-[#FFA366]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? '4. Utilisation acceptable' : '4. Acceptable Use'}
@@ -341,8 +341,8 @@ export default function ConditionsUtilisationPage() {
               {/* Propriété intellectuelle */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#16A34A]/20 rounded-xl">
-                    <FileText className="w-6 h-6 text-[#16A34A]" />
+                  <div className="p-2 bg-[#00FF88]/20 rounded-xl">
+                    <FileText className="w-6 h-6 text-[#00FF88]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? '7. Propriété intellectuelle' : '7. Intellectual Property'}
@@ -408,8 +408,8 @@ export default function ConditionsUtilisationPage() {
               {/* Modifications */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
-                    <Info className="w-6 h-6 text-[#F59E0B]" />
+                  <div className="p-2 bg-[#FFA366]/20 rounded-xl">
+                    <Info className="w-6 h-6 text-[#FFA366]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? '10. Modifications des CGU' : '10. Changes to Terms'}
@@ -432,8 +432,8 @@ export default function ConditionsUtilisationPage() {
               {/* Contact */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#16A34A]/20 rounded-xl">
-                    <Users className="w-6 h-6 text-[#16A34A]" />
+                  <div className="p-2 bg-[#00FF88]/20 rounded-xl">
+                    <Users className="w-6 h-6 text-[#00FF88]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? '11. Contact' : '11. Contact'}

@@ -174,11 +174,13 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
   const fetchGlobalStats = async () => {
     try {
       // Utiliser l'API proxy au lieu d'appeler directement CoinGecko
-      const response = await fetch('/api/crypto/global', {
+      // Ajouter timestamp pour forcer le rafraîchissement
+      const timestamp = Date.now()
+      const response = await fetch(`/api/crypto/global?_t=${timestamp}`, {
         headers: {
           'Accept': 'application/json',
         },
-        cache: 'default',
+        cache: 'no-store', // Forcer le rafraîchissement
       })
 
       if (!response.ok) {
@@ -226,7 +228,9 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       })
 
       // Utiliser l'API proxy au lieu d'appeler directement CoinGecko
-      const url = `/api/crypto/markets?${params}`
+      // Ajouter timestamp pour éviter le cache navigateur
+      const timestamp = Date.now()
+      const url = `/api/crypto/markets?${params}&_t=${timestamp}`
 
       // OPTIMISATION: Ajouter retry logic et timeout
       const controller = new AbortController()
@@ -236,7 +240,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         headers: {
           'Accept': 'application/json',
         },
-        cache: 'default', // Utiliser le cache par défaut
+        cache: 'no-store', // Forcer le rafraîchissement des données
         signal: controller.signal
       })
 
@@ -424,7 +428,10 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       setIsSearching(true)
       try {
         // Charger les 250 premières cryptos et filtrer
-        const searchResponse = await fetch(`/api/crypto/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h&locale=en`)
+        const timestamp = Date.now()
+        const searchResponse = await fetch(`/api/crypto/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h&locale=en&_t=${timestamp}`, {
+          cache: 'no-store' // Forcer le rafraîchissement
+        })
 
         if (searchResponse.ok) {
           const allData = await searchResponse.json()
@@ -483,15 +490,17 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
   }
 
   useEffect(() => {
+    // Force refresh au chargement initial
     fetchPrices()
 
-    // OPTIMISATION: Augmenter l'intervalle pour réduire les appels API
+    // OPTIMISATION: Rafraîchir automatiquement toutes les 60 secondes
     const interval = setInterval(() => {
       fetchPrices(1, false) // Refresh seulement la première page
-    }, 120000) // Augmenté à 2 minutes (120 secondes) au lieu de 45
+    }, 60000) // Réduit à 1 minute (60 secondes) pour des données plus fraîches
 
     return () => clearInterval(interval)
-  }, [perPage])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Retirer perPage de la dépendance pour éviter les rechargements inutiles
 
   return {
     prices,

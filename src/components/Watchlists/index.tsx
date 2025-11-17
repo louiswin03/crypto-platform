@@ -35,8 +35,8 @@ export const AddToWatchlistButton = ({ crypto, className = "" }: { crypto: any, 
         onClick={() => setShowDropdown(!showDropdown)}
         className={`p-2 rounded-lg transition-all hover:scale-110 ${
           isInAnyList 
-            ? 'text-[#F59E0B] bg-[#F59E0B]/10 hover:bg-[#F59E0B]/20' 
-            : 'text-gray-400 hover:text-[#F59E0B] hover:bg-[#F59E0B]/10'
+            ? 'text-[#FFA366] bg-[#FFA366]/10 hover:bg-[#FFA366]/20' 
+            : 'text-gray-400 hover:text-[#FFA366] hover:bg-[#FFA366]/10'
         } ${className}`}
         disabled={isAdding}
       >
@@ -71,7 +71,7 @@ export const AddToWatchlistButton = ({ crypto, className = "" }: { crypto: any, 
                     </div>
                     <div className="flex items-center space-x-2">
                       {isInThisList && (
-                        <Check className="w-4 h-4 text-[#16A34A]" />
+                        <Check className="w-4 h-4 text-[#00FF88]" />
                       )}
                     </div>
                   </div>
@@ -124,7 +124,7 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
         onClick={() => setActiveWatchlist(list.id)}
         className={`group p-4 rounded-xl cursor-pointer transition-all border ${
           isActive 
-            ? 'bg-gradient-to-r from-[#6366F1]/20 to-[#8B5CF6]/20 border-[#6366F1]/40 shadow-lg' 
+            ? 'bg-gradient-to-r from-[#00FF88]/20 to-[#8B5CF6]/20 border-[#00FF88]/40 shadow-lg' 
             : 'hover:bg-gray-800/40 border-transparent hover:border-gray-700/60'
         }`}
       >
@@ -134,12 +134,12 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
             <div className="min-w-0 flex-1">
               <div className="font-semibold text-[#F9FAFB] flex items-center space-x-2">
                 <span className="truncate">{list.name}</span>
-                {list.is_pinned && <Pin className="w-3 h-3 text-[#F59E0B]" />}
+                {list.is_pinned && <Pin className="w-3 h-3 text-[#FFA366]" />}
               </div>
               <div className="text-gray-400 text-sm">
                 {stats?.count || 0} crypto{(stats?.count || 0) > 1 ? 's' : ''}
                 {stats && stats.avgChange !== 0 && (
-                  <span className={`ml-2 ${stats.avgChange >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                  <span className={`ml-2 ${stats.avgChange >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
                     {stats.avgChange >= 0 ? '+' : ''}{stats.avgChange.toFixed(1)}%
                   </span>
                 )}
@@ -154,9 +154,9 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
                   e.stopPropagation()
                   togglePinWatchlist(list.id)
                 }}
-                className="p-1 rounded hover:bg-gray-700/50 text-gray-400 hover:text-[#F59E0B] transition-all"
+                className="p-1 rounded hover:bg-gray-700/50 text-gray-400 hover:text-[#FFA366] transition-all"
               >
-                <Pin className={`w-3 h-3 ${list.is_pinned ? 'fill-current text-[#F59E0B]' : ''}`} />
+                <Pin className={`w-3 h-3 ${list.is_pinned ? 'fill-current text-[#FFA366]' : ''}`} />
               </button>
               {/* Temporairement permettre la suppression de toutes les listes */}
               {true && (
@@ -212,15 +212,15 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
                   onClick={() => setShowManageMode(!showManageMode)}
                   className={`p-2 rounded-lg transition-all ${
                     showManageMode 
-                      ? 'bg-[#6366F1]/20 text-[#6366F1]' 
+                      ? 'bg-[#00FF88]/20 text-[#00FF88]' 
                       : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
                   }`}
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
-                <button 
+                <button
                   onClick={() => setShowCreateModal(true)}
-                  className="p-2 rounded-lg bg-[#6366F1] hover:bg-[#5B21B6] text-white transition-all hover:scale-105"
+                  className="p-2 rounded-lg bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 transition-all duration-300"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -241,7 +241,7 @@ export const WatchlistSidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose
                 placeholder="Rechercher une liste..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg pl-10 pr-4 py-2 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#6366F1]/50 text-sm"
+                className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg pl-10 pr-4 py-2 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#00FF88]/50 text-sm"
               />
             </div>
           </div>
@@ -320,13 +320,13 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
   const { createWatchlist } = useWatchlistContext()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [color, setColor] = useState('#6366F1')
+  const [color, setColor] = useState('#00FF88')
   const [icon, setIcon] = useState('📋')
   const [isCreating, setIsCreating] = useState(false)
 
   const colors = [
-    '#6366F1', '#8B5CF6', '#EC4899', '#EF4444', 
-    '#F59E0B', '#10B981', '#06B6D4', '#84CC16'
+    '#00FF88', '#8B5CF6', '#EC4899', '#EF4444', 
+    '#FFA366', '#10B981', '#06B6D4', '#84CC16'
   ]
 
   const icons = ['📋', '⭐', '🚀', '💎', '🎯', '🔥', '💰', '🎮', '🏦', '⛓️', '🌟', '💡']
@@ -367,7 +367,7 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex: Mes altcoins favoris"
-              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-4 py-3 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20"
+              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-4 py-3 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#00FF88]/50 focus:ring-2 focus:ring-[#00FF88]/20"
               maxLength={50}
             />
           </div>
@@ -380,7 +380,7 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brève description de cette liste"
-              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-4 py-3 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#6366F1]/50 focus:ring-2 focus:ring-[#6366F1]/20"
+              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-4 py-3 text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:border-[#00FF88]/50 focus:ring-2 focus:ring-[#00FF88]/20"
               maxLength={100}
             />
           </div>
@@ -412,7 +412,7 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
                   onClick={() => setIcon(i)}
                   className={`w-10 h-10 text-xl rounded-lg transition-all hover:scale-110 ${
                     icon === i 
-                      ? 'bg-[#6366F1]/20 border border-[#6366F1]/40' 
+                      ? 'bg-[#00FF88]/20 border border-[#00FF88]/40' 
                       : 'bg-gray-800/50 border border-gray-700/50 hover:border-gray-600/50'
                   }`}
                 >
@@ -443,10 +443,10 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
           >
             Annuler
           </button>
-          <button 
+          <button
             onClick={handleCreate}
             disabled={!name.trim() || isCreating}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-xl disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-lg font-medium transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isCreating ? 'Création...' : 'Créer'}
           </button>
@@ -548,14 +548,14 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
               </div>
               <div className="text-center">
                 <div className={`font-mono font-semibold ${
-                  stats.avgChange >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                  stats.avgChange >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                 }`}>
                   {stats.avgChange >= 0 ? '+' : ''}{stats.avgChange.toFixed(1)}%
                 </div>
                 <div className="text-gray-400">Moy. 24h</div>
               </div>
               <div className="text-center">
-                <div className="font-mono text-[#16A34A] font-semibold">{stats.gainers}</div>
+                <div className="font-mono text-[#00FF88] font-semibold">{stats.gainers}</div>
                 <div className="text-gray-400">Gagnants</div>
               </div>
               <div className="text-center">
@@ -572,8 +572,8 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
               onClick={() => togglePinWatchlist(listId)}
               className={`p-2 rounded-lg transition-all ${
                 list.is_pinned
-                  ? 'bg-[#F59E0B]/10 border border-[#F59E0B]/20 text-[#F59E0B] hover:bg-[#F59E0B]/20'
-                  : 'bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#F59E0B] hover:border-[#F59E0B]/40'
+                  ? 'bg-[#FFA366]/10 border border-[#FFA366]/20 text-[#FFA366] hover:bg-[#FFA366]/20'
+                  : 'bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#FFA366] hover:border-[#FFA366]/40'
               }`}
               title={list.is_pinned ? "Désépingler cette liste" : "Épingler cette liste"}
             >
@@ -620,7 +620,7 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
             }}
             className={`flex items-center space-x-2 px-3 py-2 rounded-lg font-medium transition-all text-sm ${
               sortBy === key 
-                ? 'bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#6366F1]' 
+                ? 'bg-[#00FF88]/20 border border-[#00FF88]/40 text-[#00FF88]' 
                 : 'bg-gray-800/50 border border-gray-700/50 text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50'
             }`}
           >
@@ -649,7 +649,7 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
                   <img src={item.image} alt={item.name} className="w-8 h-8 rounded-full" />
                 )}
                 <div>
-                  <div className="font-semibold text-[#F9FAFB] group-hover:text-[#6366F1] transition-colors">
+                  <div className="font-semibold text-[#F9FAFB] group-hover:text-[#00FF88] transition-colors">
                     {item.name}
                   </div>
                   <div className="text-gray-400 text-sm font-mono uppercase">
@@ -673,7 +673,7 @@ export const WatchlistDetailView = ({ listId }: { listId: string }) => {
                 </div>
                 
                 <div className={`font-mono font-semibold text-right min-w-[80px] ${
-                  (item.price_change_percentage_24h || 0) >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                  (item.price_change_percentage_24h || 0) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                 }`}>
                   {(item.price_change_percentage_24h || 0) >= 0 ? '+' : ''}
                   {(item.price_change_percentage_24h || 0).toFixed(1)}%

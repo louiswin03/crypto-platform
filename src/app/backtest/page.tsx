@@ -219,7 +219,7 @@ export default function BacktestPage() {
     }
 
     .text-gradient-animate {
-      background: linear-gradient(45deg, #6366F1, #8B5CF6, #A855F7, #EC4899, #6366F1);
+      background: linear-gradient(45deg, #00FF88, #00D9FF, #00FFD9, #00FF88);
       background-size: 200% 200%;
       background-clip: text;
       -webkit-background-clip: text;
@@ -252,10 +252,16 @@ export default function BacktestPage() {
       <style jsx global>{globalStyles}</style>
 
       <div className={`min-h-screen relative overflow-hidden ${
-        isDarkMode ? 'bg-[#111827] text-[#F9FAFB]' : 'bg-gray-50 text-gray-900'
+        isDarkMode ? 'bg-[#0A0E1A] text-[#F9FAFB]' : 'bg-gray-50 text-gray-900'
       }`}>
         {/* Background Pattern */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
+
+        {/* Background Effects globaux */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#FFA366]/10 via-[#00D9FF]/6 to-transparent rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-[#8B5CF6]/8 to-transparent rounded-full blur-[100px]"></div>
+        </div>
 
         {/* Navigation */}
         <SmartNavigation />
@@ -265,8 +271,8 @@ export default function BacktestPage() {
           <section className="relative pt-24 sm:pt-32 pb-16 overflow-hidden">
             {/* Background Effects */}
             <div className="absolute inset-0">
-              <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#8B5CF6]/10 via-[#A855F7]/5 to-transparent rounded-full blur-[100px] float-animation"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-[#6366F1]/8 via-[#8B5CF6]/4 to-transparent rounded-full blur-[80px] float-animation" style={{animationDelay: '2s'}}></div>
+              <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#00D9FF]/10 via-[#8B5CF6]/8 to-transparent rounded-full blur-[100px] float-animation"></div>
+              <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-[#00FF88]/8 via-[#8B5CF6]/4 to-transparent rounded-full blur-[80px] float-animation" style={{animationDelay: '2s'}}></div>
             </div>
 
             <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -291,7 +297,7 @@ export default function BacktestPage() {
                   <span className={`block ${
                     isDarkMode
                       ? 'text-gradient-animate'
-                      : 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent'
+                      : 'bg-gradient-to-r from-[#00FF88] via-[#00D9FF] to-[#8B5CF6] bg-clip-text text-transparent'
                   }`}>
                     {t('backtest.hero.title2')}
                   </span>
@@ -307,15 +313,15 @@ export default function BacktestPage() {
                 {/* Quick Stats */}
                 <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-8 text-sm font-medium text-gray-500">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#8B5CF6] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
                     <span>{t('backtest.hero.stat1')}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#16A34A] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#00D9FF] rounded-full animate-pulse"></div>
                     <span>{t('backtest.hero.stat2')}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#FFA366] rounded-full animate-pulse"></div>
                     <span>{t('backtest.hero.stat3')}</span>
                   </div>
                 </div>
@@ -327,15 +333,15 @@ export default function BacktestPage() {
         {/* Smooth gradient transition between hero and navigation */}
         {currentTab === 'backtest' && (
           <div className="h-32 -mt-16 relative" style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(17, 24, 39, 0.5) 50%, rgba(17, 24, 39, 0.95) 100%)'
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(10, 14, 26, 0.5) 50%, rgba(10, 14, 26, 0.95) 100%)'
           }}></div>
         )}
 
         {/* Navigation Tabs */}
         <div className={`sticky top-0 z-10 backdrop-blur-xl ${
-          isDarkMode ? 'bg-[#111827]/80' : 'bg-white/80'
+          isDarkMode ? 'bg-[#0A0E1A]/80' : 'bg-white/80'
         } ${currentTab === 'backtest' ? '-mt-16' : 'mt-24'}`} style={{
-          borderBottom: '1px solid rgba(99, 102, 241, 0.2)',
+          borderBottom: '1px solid rgba(0, 217, 255, 0.2)',
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
         }}>
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -345,7 +351,7 @@ export default function BacktestPage() {
                   onClick={() => setCurrentTab('backtest')}
                   className={`relative py-4 px-6 font-semibold text-sm transition-all duration-200 ${
                     currentTab === 'backtest'
-                      ? 'text-[#6366F1]'
+                      ? 'text-[#00FF88]'
                       : isDarkMode
                       ? 'text-gray-400 hover:text-[#F9FAFB]'
                       : 'text-gray-500 hover:text-[#1E293B]'
@@ -353,7 +359,7 @@ export default function BacktestPage() {
                 >
                   <span className="relative z-10">{t('backtest.tab.strategy')}</span>
                   {currentTab === 'backtest' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] rounded-full"></div>
                   )}
                 </button>
                 {backtestResults && (
@@ -361,7 +367,7 @@ export default function BacktestPage() {
                     onClick={() => setCurrentTab('results')}
                     className={`relative py-4 px-6 font-semibold text-sm transition-all duration-200 ${
                       currentTab === 'results'
-                        ? 'text-[#16A34A]'
+                        ? 'text-[#00FF88]'
                         : isDarkMode
                         ? 'text-gray-400 hover:text-[#F9FAFB]'
                         : 'text-gray-500 hover:text-[#1E293B]'
@@ -369,7 +375,7 @@ export default function BacktestPage() {
                   >
                     <span className="relative z-10">{t('backtest.tab.results')}</span>
                     {currentTab === 'results' && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#16A34A] to-[#22C55E] rounded-full"></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#22C55E] rounded-full"></div>
                     )}
                   </button>
                 )}
@@ -472,7 +478,7 @@ export default function BacktestPage() {
                       {t('backtest.metrics.total_roi')}
                     </div>
                     <div className={`text-3xl font-bold ${
-                      backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                      backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                     }`}>
                       {backtestResults.metrics.totalReturnPercentage >= 0 ? '+' : ''}
                       {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
@@ -517,7 +523,7 @@ export default function BacktestPage() {
                       {t('backtest.metrics.vs_hold')}
                     </div>
                     <div className={`text-3xl font-bold ${
-                      backtestResults.metrics.alpha >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                      backtestResults.metrics.alpha >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                     }`}>
                       {backtestResults.metrics.alpha >= 0 ? '+' : ''}
                       {backtestResults.metrics.alpha.toFixed(2)}%
@@ -553,7 +559,7 @@ export default function BacktestPage() {
                           {t('backtest.comparison.your_strategy')}
                         </span>
                         <span className={`font-bold ${
-                          backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                          backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                         }`}>
                           {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
                         </span>
@@ -563,7 +569,7 @@ export default function BacktestPage() {
                           {t('backtest.comparison.hold')}
                         </span>
                         <span className={`font-bold ${
-                          backtestResults.metrics.holdStrategyReturnPercentage >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                          backtestResults.metrics.holdStrategyReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                         }`}>
                           {backtestResults.metrics.holdStrategyReturnPercentage.toFixed(2)}%
                         </span>
@@ -574,7 +580,7 @@ export default function BacktestPage() {
                             {t('backtest.comparison.difference')}
                           </span>
                           <span className={`font-bold ${
-                            backtestResults.metrics.alpha >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                            backtestResults.metrics.alpha >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                           }`}>
                             {backtestResults.metrics.alpha >= 0 ? '+' : ''}
                             {backtestResults.metrics.alpha.toFixed(2)}%
@@ -613,7 +619,7 @@ export default function BacktestPage() {
                         <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
                           {t('backtest.stats.avg_win')}
                         </span>
-                        <span className="text-[#16A34A]">+${backtestResults.metrics.averageWin.toFixed(2)}</span>
+                        <span className="text-[#00FF88]">+${backtestResults.metrics.averageWin.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
@@ -672,12 +678,12 @@ export default function BacktestPage() {
                                         {t('backtest.trades.view')}
                                       </button>
                                       <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                        pair.pnl >= 0 ? 'bg-[#16A34A]/20 text-[#16A34A]' : 'bg-[#DC2626]/20 text-[#DC2626]'
+                                        pair.pnl >= 0 ? 'bg-[#00FF88]/20 text-[#00FF88]' : 'bg-[#DC2626]/20 text-[#DC2626]'
                                       }`}>
                                         {pair.pnl >= 0 ? t('backtest.trades.gain') : t('backtest.trades.loss')}
                                       </span>
                                       <span className={`font-bold ${
-                                        pair.pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                                        pair.pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                                       }`}>
                                         {pair.pnl >= 0 ? '+' : ''}${pair.pnl.toFixed(2)}
                                         <span className="text-xs ml-1">({pair.pnlPercentage >= 0 ? '+' : ''}{pair.pnlPercentage.toFixed(1)}%)</span>
@@ -691,7 +697,7 @@ export default function BacktestPage() {
                                   {/* Ouverture */}
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                      <span className="px-2 py-1 rounded text-xs font-medium bg-[#16A34A]/20 text-[#16A34A]">
+                                      <span className="px-2 py-1 rounded text-xs font-medium bg-[#00FF88]/20 text-[#00FF88]">
                                         {t('backtest.trades.open')}
                                       </span>
                                       <span className="text-sm text-gray-300">{pair.openTrade.date}</span>
@@ -743,7 +749,7 @@ export default function BacktestPage() {
                   <div className="relative">
                     <button
                       onClick={() => setShowExportMenu(!showExportMenu)}
-                      className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300"
+                      className="bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 px-6 py-3 rounded-xl font-medium transition-all duration-300"
                     >
                       📊 {t('backtest.actions.export')}
                     </button>
@@ -784,7 +790,7 @@ export default function BacktestPage() {
                 </p>
                 <button
                   onClick={() => setCurrentTab('backtest')}
-                  className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300"
+                  className="bg-gray-800/40 hover:bg-gray-800/60 text-gray-300 hover:text-white border-2 border-gray-700/50 hover:border-[#00FF88]/30 px-6 py-3 rounded-xl font-medium transition-all duration-300"
                 >
                   ← {t('backtest.back_to_config')}
                 </button>

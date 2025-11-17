@@ -120,6 +120,7 @@ class BacktestEngine {
   private priceData: HistoricalPrice[] = []
   private indicators: any = {}
   private readonly FEES_PERCENTAGE = 0.001 // 0.1% de frais par trade
+  private lastDCABuyTimestamp: number = 0 // Pour la stratégie DCA
 
   constructor(config: BacktestConfig) {
     this.config = config
@@ -266,10 +267,16 @@ class BacktestEngine {
         this.indicators.ema2 = calculateEMA(this.priceData, 21)
         this.indicators.sma1 = calculateSMA(this.priceData, 50)
         break
+
+      case 'dca':
+        // DCA n'a pas besoin d'indicateurs
+        break
     }
   }
 
   private simulateTrading() {
+    // Vérifier que c'est bien une stratégie recommandée DCA, pas une stratégie custom
+    const isDCA = this.config.strategyType === 'recommended' && this.config.strategy === 'dca'
 
     for (let i = 1; i < this.priceData.length; i++) {
       const currentPrice = this.priceData[i]
@@ -278,7 +285,10 @@ class BacktestEngine {
       // ✅ ORDRE CORRECT: Vérifier AVANT les stops avant de mettre à jour avec le prix de clôture
       // Vérifier les conditions de stop loss / take profit en PREMIER
       // Car les stops s'exécutent sur les mèches (low/high), pas sur le close
-      this.checkStopConditions(currentPrice, i)
+      // SAUF pour DCA qui n'utilise pas de stops
+      if (!isDCA) {
+        this.checkStopConditions(currentPrice, i)
+      }
 
       // Si la position a été fermée par un stop, ne pas continuer
       if (!this.state.position.isOpen) {
@@ -305,7 +315,11 @@ class BacktestEngine {
 
       if (signal === 'BUY' && !this.state.position.isOpen) {
         this.executeBuy(currentPrice, i)
-      } else if (signal === 'SELL' && this.state.position.isOpen) {
+      } else if (signal === 'BUY' && this.state.position.isOpen && isDCA) {
+        // Pour DCA, continuer à acheter même si une position est ouverte
+        this.executeBuy(currentPrice, i)
+      } else if (signal === 'SELL' && this.state.position.isOpen && !isDCA) {
+        // Pour DCA, ne pas vendre sur signal (seulement à la fin)
         this.executeSell(currentPrice, i, 'Signal de vente')
       }
 
@@ -362,6 +376,9 @@ class BacktestEngine {
 
       case 'triple_ema':
         return this.getTripleEMASignal(index)
+
+      case 'dca':
+        return this.getDCASignal(index, currentPrice)
 
       default:
         return 'HOLD'
@@ -1196,9 +1213,60 @@ class BacktestEngine {
     return 'HOLD'
   }
 
+  private getDCASignal(index: number, currentPrice: HistoricalPrice): 'BUY' | 'SELL' | 'HOLD' {
+    // La stratégie DCA n'a jamais de signal de vente (sauf à la fin du backtest)
+    // Elle achète seulement à intervalle régulier
+
+    // Déterminer l'intervalle en millisecondes selon la fréquence
+    const MS_PER_DAY = 24 * 60 * 60 * 1000
+    let intervalMs: number
+
+    switch (this.config.parameters.dcaFrequency) {
+      case 'daily':
+        intervalMs = MS_PER_DAY
+        break
+      case 'weekly':
+        intervalMs = 7 * MS_PER_DAY
+        break
+      case 'biweekly':
+        intervalMs = 14 * MS_PER_DAY
+        break
+      case 'monthly':
+        intervalMs = 30 * MS_PER_DAY
+        break
+      default:
+        intervalMs = 7 * MS_PER_DAY // Par défaut hebdomadaire
+    }
+
+    // Premier achat ou intervalle écoulé
+    if (this.lastDCABuyTimestamp === 0 ||
+        (currentPrice.timestamp - this.lastDCABuyTimestamp) >= intervalMs) {
+      return 'BUY'
+    }
+
+    return 'HOLD'
+  }
+
   private executeBuy(price: HistoricalPrice, index: number) {
-    const positionSize = this.config.positionSize / 100
-    const amountToInvest = this.state.currentCapital * positionSize
+    let amountToInvest: number
+
+    // Pour la stratégie DCA, utiliser le montant fixe
+    // Vérifier que c'est bien une stratégie recommandée DCA
+    const isDCA = this.config.strategyType === 'recommended' && this.config.strategy === 'dca'
+
+    if (isDCA) {
+      amountToInvest = this.config.parameters.dcaAmount
+      // Vérifier qu'on a assez de capital
+      if (amountToInvest > this.state.currentCapital) {
+        return // Pas assez de capital pour l'achat DCA
+      }
+      // Mettre à jour le timestamp du dernier achat DCA
+      this.lastDCABuyTimestamp = price.timestamp
+    } else {
+      // Pour les autres stratégies, utiliser le pourcentage du capital
+      const positionSize = this.config.positionSize / 100
+      amountToInvest = this.state.currentCapital * positionSize
+    }
 
     if (amountToInvest < 10) return // Montant minimum
 
@@ -1361,6 +1429,13 @@ class BacktestEngine {
         case 'ema_rsi_volume': return 'EMA Cross + RSI + Volume Fort'
         case 'williams_r_trend': return 'Williams %R Oversold + Trend'
         case 'triple_ema': return 'Triple EMA Alignement Bullish'
+        case 'dca':
+          const frequency = this.config.parameters.dcaFrequency
+          const frequencyText = frequency === 'daily' ? 'Quotidien' :
+                               frequency === 'weekly' ? 'Hebdomadaire' :
+                               frequency === 'biweekly' ? 'Bi-mensuel' :
+                               'Mensuel'
+          return `Achat DCA ${frequencyText} - $${this.config.parameters.dcaAmount}`
         default: return 'Signal d\'achat'
       }
     } else {
@@ -1375,6 +1450,7 @@ class BacktestEngine {
         case 'ema_rsi_volume': return 'EMA/RSI Signal de Vente'
         case 'williams_r_trend': return 'Williams %R Overbought/Trend Down'
         case 'triple_ema': return 'Triple EMA Changement de Trend'
+        case 'dca': return 'Fin de période DCA'
         default: return 'Signal de vente'
       }
     }

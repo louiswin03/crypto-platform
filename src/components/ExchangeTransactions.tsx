@@ -112,13 +112,13 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
   const getTransactionIcon = (type: string) => {
     switch (type) {
       case 'buy':
-        return <TrendingUp className="w-5 h-5 text-[#16A34A]" />
+        return <TrendingUp className="w-5 h-5 text-[#00FF88]" />
       case 'sell':
         return <TrendingDown className="w-5 h-5 text-[#DC2626]" />
       case 'deposit':
-        return <ArrowDownCircle className="w-5 h-5 text-[#6366F1]" />
+        return <ArrowDownCircle className="w-5 h-5 text-[#00FF88]" />
       case 'withdrawal':
-        return <ArrowUpCircle className="w-5 h-5 text-[#F59E0B]" />
+        return <ArrowUpCircle className="w-5 h-5 text-[#FFA366]" />
       default:
         return <Activity className="w-5 h-5 text-gray-400" />
     }
@@ -127,13 +127,13 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
   const getTransactionColor = (type: string) => {
     switch (type) {
       case 'buy':
-        return 'bg-[#16A34A]/10 border-[#16A34A]/30 text-[#16A34A]'
+        return 'bg-[#00FF88]/10 border-[#00FF88]/30 text-[#00FF88]'
       case 'sell':
         return 'bg-[#DC2626]/10 border-[#DC2626]/30 text-[#DC2626]'
       case 'deposit':
-        return 'bg-[#6366F1]/10 border-[#6366F1]/30 text-[#6366F1]'
+        return 'bg-[#00FF88]/10 border-[#00FF88]/30 text-[#00FF88]'
       case 'withdrawal':
-        return 'bg-[#F59E0B]/10 border-[#F59E0B]/30 text-[#F59E0B]'
+        return 'bg-[#FFA366]/10 border-[#FFA366]/30 text-[#FFA366]'
       default:
         return 'bg-gray-800/30 border-gray-700/30 text-gray-400'
     }
@@ -174,7 +174,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-2xl font-bold text-white flex items-center space-x-3">
-            <Activity className="w-6 h-6 text-[#6366F1]" />
+            <Activity className="w-6 h-6 text-[#00FF88]" />
             <span>Transactions {exchange.charAt(0).toUpperCase() + exchange.slice(1)}</span>
           </h3>
           <p className="text-gray-400 text-sm mt-1">
@@ -198,7 +198,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
             onClick={() => setFilter(f as any)}
             className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
               filter === f
-                ? 'bg-[#6366F1] text-white'
+                ? 'bg-[#00FF88] text-white'
                 : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
             }`}
           >
@@ -212,7 +212,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
       {/* Liste des transactions */}
       {loading ? (
         <div className="text-center py-12">
-          <RefreshCcw className="w-8 h-8 text-[#6366F1] mx-auto mb-4 animate-spin" />
+          <RefreshCcw className="w-8 h-8 text-[#00FF88] mx-auto mb-4 animate-spin" />
           <p className="text-gray-400">Chargement des transactions...</p>
         </div>
       ) : error ? (

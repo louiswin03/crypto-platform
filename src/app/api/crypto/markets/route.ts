@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get('page') || '1'
     const sparkline = searchParams.get('sparkline') || 'false'
     const priceChangePercentage = searchParams.get('price_change_percentage') || '24h'
+    const forceRefresh = searchParams.get('_t') // Timestamp pour forcer le refresh
 
     // Générer une clé de cache unique basée sur les paramètres
     const cacheKey = APICache.generateKey(
@@ -34,7 +35,12 @@ export async function GET(request: NextRequest) {
       priceChangePercentage
     )
 
-    // Utiliser le cache avec une durée de 1 minute pour les prix
+    // Si _t est présent, ignorer le cache (force refresh)
+    if (forceRefresh) {
+      apiCache.delete(cacheKey)
+    }
+
+    // Utiliser le cache avec une durée de 45 secondes pour les prix (réduit pour plus de fraîcheur)
     const data = await apiCache.fetchWithCache(
       cacheKey,
       async () => {
@@ -80,7 +86,7 @@ export async function GET(request: NextRequest) {
           throw error
         }
       },
-      APICache.DURATIONS.SHORT // Cache de 1 minute
+      45000 // Cache de 45 secondes (plus frais que 1 minute)
     )
 
     return NextResponse.json(data, {

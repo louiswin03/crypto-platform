@@ -104,6 +104,9 @@ const translations: Record<Language, Record<string, string>> = {
     'security.password_changed': 'Dernière modification il y a',
     'security.password_days': 'jours',
     'security.modify': 'Modifier',
+    'security.sending': 'Envoi...',
+    'security.password_reset_sent': 'Email de réinitialisation envoyé ! Vérifiez votre boîte de réception.',
+    'security.password_reset_error': 'Erreur lors de l\'envoi de l\'email',
     'security.2fa': 'Authentification à deux facteurs',
     'security.2fa_desc': 'Protection supplémentaire recommandée',
     'security.coming_soon': 'Bientôt disponible',
@@ -472,7 +475,34 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.signup.error.fill_fields': 'Veuillez remplir tous les champs',
     'auth.signup.error.password_mismatch': 'Les mots de passe ne correspondent pas',
     'auth.signup.error.password_length': 'Le mot de passe doit contenir au moins 6 caractères',
+    'auth.signup.error.email_exists': 'Cette adresse email est déjà utilisée. Vous avez déjà un compte.',
     'auth.signup.success': 'Compte créé avec succès ! Vous allez être connecté automatiquement...',
+
+    // Password Reset
+    'auth.reset.title': 'Réinitialiser le mot de passe',
+    'auth.reset.subtitle': 'Entrez votre adresse email pour recevoir un lien de réinitialisation',
+    'auth.reset.email': 'Adresse email',
+    'auth.reset.submit': 'Envoyer le lien',
+    'auth.reset.loading': 'Envoi en cours...',
+    'auth.reset.success': 'Email envoyé ! Vérifiez votre boîte de réception.',
+    'auth.reset.back_to_signin': 'Retour à la connexion',
+    'auth.reset.error.email_required': 'Veuillez entrer votre adresse email',
+    'auth.reset.error.email_not_found': 'Aucun compte associé à cette adresse email',
+    'auth.reset.error.unexpected': 'Une erreur inattendue s\'est produite',
+
+    // Password Reset Confirm
+    'auth.reset_confirm.title': 'Nouveau mot de passe',
+    'auth.reset_confirm.subtitle': 'Créez un nouveau mot de passe pour votre compte',
+    'auth.reset_confirm.new_password': 'Nouveau mot de passe',
+    'auth.reset_confirm.confirm_password': 'Confirmer le mot de passe',
+    'auth.reset_confirm.submit': 'Réinitialiser le mot de passe',
+    'auth.reset_confirm.loading': 'Réinitialisation...',
+    'auth.reset_confirm.success': 'Mot de passe réinitialisé ! Connexion en cours...',
+    'auth.reset_confirm.error.password_required': 'Veuillez entrer un mot de passe',
+    'auth.reset_confirm.error.password_mismatch': 'Les mots de passe ne correspondent pas',
+    'auth.reset_confirm.error.password_length': 'Le mot de passe doit contenir au moins 6 caractères',
+    'auth.reset_confirm.error.invalid_token': 'Lien invalide ou expiré',
+    'auth.reset_confirm.error.unexpected': 'Une erreur inattendue s\'est produite',
 
     // Backtest Configuration
     'backtest.config.title': 'Configuration du Backtest',
@@ -696,6 +726,7 @@ const translations: Record<Language, Record<string, string>> = {
     'cryptos.leader': 'LEADER',
     'cryptos.max': 'MAX:',
     'cryptos.min': 'MIN:',
+    'cryptos.price_from_tradingview': 'Données TradingView',
 
     // Fear & Greed Index
     'fear_greed.title': 'Indice Peur & Avidité',
@@ -870,6 +901,7 @@ const translations: Record<Language, Record<string, string>> = {
     'charts.backtest': 'Backtest',
     'charts.login_required_backtest': 'Connexion requise pour le backtest',
     'charts.login_required_portfolio': 'Connexion requise pour la gestion de portefeuille',
+    'charts.price_from_tradingview': 'Données TradingView',
     'charts.explore_cryptos': 'Explorer les Cryptos',
     'charts.analyze_strategies': 'Analysez vos stratégies avec nos outils avancés',
     'charts.connect_for_tools': 'Connectez-vous pour accéder au backtest de stratégies et à la gestion de portefeuille',
@@ -974,6 +1006,9 @@ const translations: Record<Language, Record<string, string>> = {
     'security.password_changed': 'Last modified',
     'security.password_days': 'days ago',
     'security.modify': 'Modify',
+    'security.sending': 'Sending...',
+    'security.password_reset_sent': 'Reset email sent! Check your inbox.',
+    'security.password_reset_error': 'Error sending email',
     'security.2fa': 'Two-factor authentication',
     'security.2fa_desc': 'Additional protection recommended',
     'security.coming_soon': 'Coming soon',
@@ -1349,7 +1384,34 @@ const translations: Record<Language, Record<string, string>> = {
     'auth.signup.error.fill_fields': 'Please fill in all fields',
     'auth.signup.error.password_mismatch': 'Passwords do not match',
     'auth.signup.error.password_length': 'Password must be at least 6 characters',
+    'auth.signup.error.email_exists': 'This email address is already in use. You already have an account.',
     'auth.signup.success': 'Account created successfully! You will be logged in automatically...',
+
+    // Password Reset
+    'auth.reset.title': 'Reset Password',
+    'auth.reset.subtitle': 'Enter your email address to receive a reset link',
+    'auth.reset.email': 'Email address',
+    'auth.reset.submit': 'Send reset link',
+    'auth.reset.loading': 'Sending...',
+    'auth.reset.success': 'Email sent! Check your inbox.',
+    'auth.reset.back_to_signin': 'Back to sign in',
+    'auth.reset.error.email_required': 'Please enter your email address',
+    'auth.reset.error.email_not_found': 'No account associated with this email address',
+    'auth.reset.error.unexpected': 'An unexpected error occurred',
+
+    // Password Reset Confirm
+    'auth.reset_confirm.title': 'New Password',
+    'auth.reset_confirm.subtitle': 'Create a new password for your account',
+    'auth.reset_confirm.new_password': 'New password',
+    'auth.reset_confirm.confirm_password': 'Confirm password',
+    'auth.reset_confirm.submit': 'Reset password',
+    'auth.reset_confirm.loading': 'Resetting...',
+    'auth.reset_confirm.success': 'Password reset! Signing in...',
+    'auth.reset_confirm.error.password_required': 'Please enter a password',
+    'auth.reset_confirm.error.password_mismatch': 'Passwords do not match',
+    'auth.reset_confirm.error.password_length': 'Password must be at least 6 characters',
+    'auth.reset_confirm.error.invalid_token': 'Invalid or expired link',
+    'auth.reset_confirm.error.unexpected': 'An unexpected error occurred',
 
     // Backtest Configuration
     'backtest.config.title': 'Backtest Configuration',
@@ -1574,6 +1636,7 @@ const translations: Record<Language, Record<string, string>> = {
     'cryptos.max': 'HIGH:',
     'cryptos.min': 'LOW:',
     'cryptos.cryptocurrencies_name': 'Cryptocurrencies',
+    'cryptos.price_from_tradingview': 'TradingView Data',
 
     // Fear & Greed Index
     'fear_greed.title': 'Fear & Greed Index',
@@ -1748,6 +1811,7 @@ const translations: Record<Language, Record<string, string>> = {
     'charts.backtest': 'Backtest',
     'charts.login_required_backtest': 'Login required for backtest',
     'charts.login_required_portfolio': 'Login required for portfolio management',
+    'charts.price_from_tradingview': 'TradingView Data',
     'charts.explore_cryptos': 'Explore Cryptos',
     'charts.analyze_strategies': 'Analyze your strategies with our advanced tools',
     'charts.connect_for_tools': 'Sign in to access strategy backtest and portfolio management',

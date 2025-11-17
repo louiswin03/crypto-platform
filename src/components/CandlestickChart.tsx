@@ -47,7 +47,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="ema1"
           d={emaPath}
           fill="none"
-          stroke="#16A34A"
+          stroke="#00FF88"
           strokeWidth="2"
           opacity="0.8"
         />
@@ -100,7 +100,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="sma1"
           d={smaPath}
           fill="none"
-          stroke="#F59E0B"
+          stroke="#FFA366"
           strokeWidth="2"
           opacity="0.8"
         />
@@ -171,7 +171,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           <path
             key="bollinger-area"
             d={pathData}
-            fill="#6366F1"
+            fill="#00FF88"
             opacity="0.1"
           />
         )
@@ -183,7 +183,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="bollinger-upper"
           d={upperPath.join(' ')}
           fill="none"
-          stroke="#6366F1"
+          stroke="#00FF88"
           strokeWidth="1"
           strokeDasharray="3,3"
           opacity="0.6"
@@ -194,7 +194,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="bollinger-lower"
           d={lowerPath.join(' ')}
           fill="none"
-          stroke="#6366F1"
+          stroke="#00FF88"
           strokeWidth="1"
           strokeDasharray="3,3"
           opacity="0.6"
@@ -205,7 +205,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="bollinger-middle"
           d={middlePath.join(' ')}
           fill="none"
-          stroke="#6366F1"
+          stroke="#00FF88"
           strokeWidth="1"
           opacity="0.8"
         />
@@ -233,7 +233,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="vwap"
           d={vwapPath}
           fill="none"
-          stroke="#F59E0B"
+          stroke="#FFA366"
           strokeWidth="2"
           opacity="0.9"
         />
@@ -364,8 +364,8 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           { key: 'pivot', value: pivot.pivot, color: '#6B7280', label: 'P' },
           { key: 'r1', value: pivot.r1, color: '#DC2626', label: 'R1' },
           { key: 'r2', value: pivot.r2, color: '#DC2626', label: 'R2' },
-          { key: 's1', value: pivot.s1, color: '#16A34A', label: 'S1' },
-          { key: 's2', value: pivot.s2, color: '#16A34A', label: 'S2' }
+          { key: 's1', value: pivot.s1, color: '#00FF88', label: 'S1' },
+          { key: 's2', value: pivot.s2, color: '#00FF88', label: 'S2' }
         ]
 
         levels.forEach(level => {
@@ -956,7 +956,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 return localIndex === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
               }).join(' ')}
               fill="none"
-              stroke="#16A34A"
+              stroke="#00FF88"
               strokeWidth="2"
               strokeDasharray="5 5"
               opacity="0.8"
@@ -994,7 +994,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 return localIndex === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
               }).join(' ')}
               fill="none"
-              stroke="#F59E0B"
+              stroke="#FFA366"
               strokeWidth="1"
               strokeDasharray="3 3"
               opacity="0.7"
@@ -1026,7 +1026,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 return localIndex === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
               }).join(' ')}
               fill="none"
-              stroke="#F59E0B"
+              stroke="#FFA366"
               strokeWidth="1"
               strokeDasharray="3 3"
               opacity="0.7"
@@ -1058,7 +1058,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               y1={highY}
               x2={x}
               y2={Math.min(openY, closeY)}
-              stroke={isGreen ? "#16A34A" : "#DC2626"}
+              stroke={isGreen ? "#00FF88" : "#DC2626"}
               strokeWidth="1"
             />
 
@@ -1068,7 +1068,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               y1={Math.max(openY, closeY)}
               x2={x}
               y2={lowY}
-              stroke={isGreen ? "#16A34A" : "#DC2626"}
+              stroke={isGreen ? "#00FF88" : "#DC2626"}
               strokeWidth="1"
             />
 
@@ -1078,8 +1078,8 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               y={bodyY}
               width={candleWidth}
               height={Math.max(1, bodyHeight)}
-              fill={isGreen ? "#16A34A" : "#DC2626"}
-              stroke={isGreen ? "#16A34A" : "#DC2626"}
+              fill={isGreen ? "#00FF88" : "#DC2626"}
+              stroke={isGreen ? "#00FF88" : "#DC2626"}
               strokeWidth="1"
               opacity="0.9"
             />
@@ -1108,7 +1108,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 y1={entryY}
                 x2={endX}
                 y2={entryY}
-                stroke="#6366F1"
+                stroke="#00FF88"
                 strokeWidth="2"
                 strokeDasharray="8 4"
                 opacity="0.8"
@@ -1132,7 +1132,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 y1={takeProfitY}
                 x2={endX}
                 y2={takeProfitY}
-                stroke="#16A34A"
+                stroke="#00FF88"
                 strokeWidth="2"
                 strokeDasharray="4 4"
                 opacity="0.8"
@@ -1141,13 +1141,13 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               {/* Labels adaptatifs */}
               {isFullscreen && (
                 <>
-                  <text x={endX + 10} y={entryY - 8} fill="#6366F1" fontSize={fontSize.labels} fontWeight="bold">
+                  <text x={endX + 10} y={entryY - 8} fill="#00FF88" fontSize={fontSize.labels} fontWeight="bold">
                     Entry: ${position.entryPrice.toFixed(2)}
                   </text>
                   <text x={endX + 10} y={stopLossY - 8} fill="#DC2626" fontSize={fontSize.labels} fontWeight="bold">
                     Stop Loss: ${position.stopLossPrice.toFixed(2)}
                   </text>
-                  <text x={endX + 10} y={takeProfitY + 20} fill="#16A34A" fontSize={fontSize.labels} fontWeight="bold">
+                  <text x={endX + 10} y={takeProfitY + 20} fill="#00FF88" fontSize={fontSize.labels} fontWeight="bold">
                     Take Profit: ${position.takeProfitPrice.toFixed(2)}
                   </text>
                 </>
@@ -1155,9 +1155,9 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               {!isFullscreen && (
                 <>
                   {/* Petits labels simplifiés en mode normal */}
-                  <circle cx={endX} cy={entryY} r="3" fill="#6366F1" opacity="0.8" />
+                  <circle cx={endX} cy={entryY} r="3" fill="#00FF88" opacity="0.8" />
                   <circle cx={endX} cy={stopLossY} r="3" fill="#DC2626" opacity="0.8" />
-                  <circle cx={endX} cy={takeProfitY} r="3" fill="#16A34A" opacity="0.8" />
+                  <circle cx={endX} cy={takeProfitY} r="3" fill="#00FF88" opacity="0.8" />
                 </>
               )}
             </g>
@@ -1196,7 +1196,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
 
           // Couleur spéciale pour le trade mis en évidence
           if (isHighlighted) {
-            color = '#F59E0B' // Orange vif pour le trade sélectionné
+            color = '#FFA366' // Orange vif pour le trade sélectionné
           }
 
           // Tailles augmentées pour meilleure visibilité

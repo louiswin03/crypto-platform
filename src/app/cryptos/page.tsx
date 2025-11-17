@@ -137,15 +137,15 @@ export default function CompleteCryptosPage() {
         }
 
         .text-shadow {
-          text-shadow: 0 2px 20px rgba(99, 102, 241, 0.3);
+          text-shadow: 0 2px 20px rgba(0, 255, 136, 0.3);
         }
 
         .text-shadow-xl {
-          text-shadow: 0 4px 30px rgba(99, 102, 241, 0.4), 0 2px 10px rgba(0, 0, 0, 0.8);
+          text-shadow: 0 4px 30px rgba(0, 255, 136, 0.4), 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
         .glow-effect {
-          box-shadow: 0 0 50px rgba(99, 102, 241, 0.15);
+          box-shadow: 0 0 50px rgba(0, 255, 136, 0.15);
         }
 
         .animate-float {
@@ -254,7 +254,7 @@ export default function CompleteCryptosPage() {
         }
         
         .pattern-dots {
-          background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px);
+          background-image: radial-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px);
           background-size: 20px 20px;
         }
 
@@ -268,7 +268,7 @@ export default function CompleteCryptosPage() {
       
       <div className={`min-h-screen relative overflow-hidden transition-colors duration-300 ${
         isDarkMode
-          ? 'bg-[#111827] text-[#F9FAFB]'
+          ? 'bg-[#0A0E1A] text-[#F9FAFB]'
           : 'bg-[#F8FAFC] text-[#1E293B]'
       }`}>
         {/* Background Pattern */}
@@ -285,8 +285,9 @@ export default function CompleteCryptosPage() {
               {/* Page Header avec Toggle Mode */}
               <div className="mb-16 relative">
                 {/* Hero background effects */}
-                <div className="absolute -top-20 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#6366F1]/20 via-[#8B5CF6]/10 to-transparent rounded-full blur-[120px] animate-pulse-glow"></div>
-                <div className="absolute -top-10 right-1/4 w-[400px] h-[400px] bg-gradient-to-tl from-[#A855F7]/15 to-transparent rounded-full blur-[100px] animate-float"></div>
+                <div className="absolute -top-20 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#00FF88]/15 via-[#00D9FF]/10 to-transparent rounded-full blur-[120px] animate-pulse-glow"></div>
+                <div className="absolute -top-10 right-1/4 w-[400px] h-[400px] bg-gradient-to-tl from-[#FFA366]/12 via-[#FFB380]/8 to-transparent rounded-full blur-[100px] animate-float"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-[#8B5CF6]/8 via-[#00D9FF]/6 to-transparent rounded-full blur-[100px] opacity-50"></div>
 
                 <div className="flex flex-col gap-10 relative z-10">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
@@ -296,7 +297,7 @@ export default function CompleteCryptosPage() {
                           <>
                             <span className={`font-display ${
                               isDarkMode
-                                ? 'bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift'
+                                ? 'bg-gradient-to-r from-[#F9FAFB] via-[#00FF88] to-[#00D9FF] bg-clip-text text-transparent animate-gradient-shift'
                                 : 'text-[#1E293B]'
                             }`}>
                               {t('nav.cryptos')}
@@ -304,8 +305,8 @@ export default function CompleteCryptosPage() {
                             {totalCoins > 0 && (
                               <div className={`text-3xl md:text-4xl lg:text-5xl font-display font-semibold mt-4 ${
                                 isDarkMode
-                                  ? 'bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent animate-shimmer'
-                                  : 'text-[#6366F1]'
+                                  ? 'bg-gradient-to-r from-[#00FF88] via-[#00D9FF] to-[#00FFD9] bg-clip-text text-transparent animate-shimmer'
+                                  : 'text-[#00FF88]'
                               }`}>
                                 {totalCoins.toLocaleString()}+ {t('cryptos.real_time_markets')}
                               </div>
@@ -314,7 +315,7 @@ export default function CompleteCryptosPage() {
                         ) : (
                           <span className={`font-display ${
                             isDarkMode
-                              ? 'bg-gradient-to-r from-[#F9FAFB] via-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent animate-gradient-shift'
+                              ? 'bg-gradient-to-r from-[#F9FAFB] via-[#00FF88] to-[#00D9FF] bg-clip-text text-transparent animate-gradient-shift'
                               : 'text-[#1E293B]'
                           }`}>
                             {t('cryptos.my_watchlists')}
@@ -333,74 +334,83 @@ export default function CompleteCryptosPage() {
                     
                     {/* Onglets professionnels avec glass morphism */}
                     <div className="flex items-center justify-center lg:justify-end">
-                      <div className={`rounded-2xl p-2 shadow-2xl backdrop-blur-xl ${
+                      <div className={`flex gap-2 rounded-2xl p-2 shadow-2xl backdrop-blur-xl ${
                         isDarkMode
                           ? 'glass-effect-strong border border-gray-700/50'
                           : 'bg-white/95 border border-gray-200/60'
                       }`}>
                         <button
                           onClick={() => setViewMode('market')}
-                          className={`group flex items-center space-x-4 px-8 py-4 rounded-xl font-bold transition-all duration-500 relative overflow-hidden ${
+                          className={`group flex items-center justify-center space-x-2 px-5 py-3 rounded-xl font-medium transition-all duration-300 relative overflow-hidden w-[180px] ${
                             viewMode === 'market'
-                              ? 'bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] text-white shadow-2xl shadow-[#6366F1]/40 scale-105 glow-effect'
+                              ? isDarkMode
+                                ? 'bg-[#00FF88]/10 text-[#00FF88] border-2 border-[#00FF88]/30 shadow-lg shadow-[#00FF88]/10'
+                                : 'bg-[#00FF88]/5 text-[#00875E] border-2 border-[#00FF88]/20 shadow-md'
                               : isDarkMode
-                                ? 'text-gray-300 hover:text-white hover:bg-gray-800/60 hover:scale-102'
-                                : 'text-gray-600 hover:text-[#1E293B] hover:bg-gray-100/60 hover:scale-102'
+                                ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/40 border-2 border-transparent'
+                                : 'text-gray-600 hover:text-[#1E293B] hover:bg-gray-100/60 border-2 border-transparent'
                           }`}
                         >
-                          <TrendingUp className={`w-6 h-6 transition-all duration-300 ${
-                            viewMode === 'market' ? 'animate-pulse' : 'group-hover:scale-110'
+                          <TrendingUp className={`w-4 h-4 transition-all duration-300 flex-shrink-0 ${
+                            viewMode === 'market' ? '' : 'group-hover:scale-110'
                           }`} />
-                          <span className="text-lg">{t('cryptos.market_global')}</span>
-                          <div className={`text-sm px-3 py-1 rounded-full font-bold ${
+                          <span className="text-sm whitespace-nowrap">{t('cryptos.market_global')}</span>
+                          <div className={`text-xs px-2 py-0.5 rounded-full font-medium min-w-[28px] text-center ${
                             viewMode === 'market'
-                              ? 'bg-white/25 text-white animate-shimmer'
-                              : 'bg-gray-700/50 text-gray-400'
+                              ? isDarkMode
+                                ? 'bg-[#00FF88]/15 text-[#00FF88]'
+                                : 'bg-[#00FF88]/10 text-[#00875E]'
+                              : isDarkMode
+                                ? 'bg-gray-700/50 text-gray-500'
+                                : 'bg-gray-200/70 text-gray-600'
                           }`}>
                             {prices.length}
                           </div>
-                          {viewMode === 'market' && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer-sweep"></div>
-                          )}
                         </button>
                         <button
                           onClick={() => setViewMode('watchlist')}
-                          className={`group flex items-center space-x-4 px-8 py-4 rounded-xl font-bold transition-all duration-500 relative overflow-hidden ${
+                          className={`group flex items-center justify-center space-x-2 px-5 py-3 rounded-xl font-medium transition-all duration-300 relative overflow-hidden w-[180px] ${
                             viewMode === 'watchlist'
-                              ? 'bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] text-white shadow-2xl shadow-[#6366F1]/40 scale-105 glow-effect'
+                              ? isDarkMode
+                                ? 'bg-[#FFA366]/10 text-[#FFA366] border-2 border-[#FFA366]/30 shadow-lg shadow-[#FFA366]/10'
+                                : 'bg-[#FFA366]/5 text-[#D97706] border-2 border-[#FFA366]/20 shadow-md'
                               : user
                                 ? isDarkMode
-                                  ? 'text-gray-300 hover:text-white hover:bg-gray-800/60 hover:scale-102'
-                                  : 'text-gray-600 hover:text-[#1E293B] hover:bg-gray-100/60 hover:scale-102'
-                                : 'text-gray-500 cursor-not-allowed opacity-60'
+                                  ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/40 border-2 border-transparent'
+                                  : 'text-gray-600 hover:text-[#1E293B] hover:bg-gray-100/60 border-2 border-transparent'
+                                : 'text-gray-500 cursor-not-allowed opacity-60 border-2 border-transparent'
                           }`}
                           disabled={!user}
                           title={!user ? t('cryptos.connection_required') : t('cryptos.your_custom_lists')}
                         >
-                          <Star className={`w-6 h-6 transition-all duration-300 ${
-                            viewMode === 'watchlist' ? 'animate-pulse' : user ? 'group-hover:scale-110' : ''
+                          <Star className={`w-4 h-4 transition-all duration-300 flex-shrink-0 ${
+                            viewMode === 'watchlist' ? '' : user ? 'group-hover:scale-110' : ''
                           }`} />
-                          <span className="text-lg">{t('cryptos.my_lists')}</span>
+                          <span className="text-sm whitespace-nowrap">{t('cryptos.my_lists')}</span>
                           {user && watchlists.length > 0 ? (
-                            <div className={`text-sm px-3 py-1 rounded-full font-bold ${
+                            <div className={`text-xs px-2 py-0.5 rounded-full font-medium min-w-[28px] text-center ${
                               viewMode === 'watchlist'
-                                ? 'bg-[#F59E0B] text-white animate-bounce-subtle'
-                                : 'bg-[#F59E0B]/80 text-white'
+                                ? isDarkMode
+                                  ? 'bg-[#FFA366]/15 text-[#FFA366]'
+                                  : 'bg-[#FFA366]/10 text-[#D97706]'
+                                : isDarkMode
+                                  ? 'bg-[#FFA366]/20 text-[#FFA366]'
+                                  : 'bg-[#FFA366]/15 text-[#D97706]'
                             }`}>
                               {watchlists.length}
                             </div>
                           ) : !user ? (
-                            <div className="text-sm bg-gray-600/50 px-3 py-1 rounded-full flex items-center space-x-1">
+                            <div className={`text-xs px-2 py-0.5 rounded-full flex items-center space-x-1 min-w-[28px] justify-center ${
+                              isDarkMode ? 'bg-gray-700/50 text-gray-500' : 'bg-gray-200/70 text-gray-600'
+                            }`}>
                               <Lock className="w-3 h-3" />
-                              <span>PRO</span>
                             </div>
                           ) : (
-                            <div className="text-sm bg-gray-700/50 text-gray-400 px-3 py-1 rounded-full">
+                            <div className={`text-xs px-2 py-0.5 rounded-full min-w-[28px] text-center ${
+                              isDarkMode ? 'bg-gray-700/50 text-gray-500' : 'bg-gray-200/70 text-gray-600'
+                            }`}>
                               0
                             </div>
-                          )}
-                          {viewMode === 'watchlist' && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer-sweep"></div>
                           )}
                         </button>
                       </div>
@@ -413,51 +423,51 @@ export default function CompleteCryptosPage() {
                       <div className={`rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect ${
                         isDarkMode ? 'glass-effect-strong' : 'bg-white/95 border border-gray-200/60'
                       }`}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#16A34A]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative z-10">
-                          <div className="text-3xl font-bold text-[#16A34A] mb-2 font-mono text-shadow animate-counter">
+                          <div className="text-3xl font-bold text-[#00FF88] mb-2 font-mono text-shadow animate-counter">
                             {stats ? formatters.marketCap(stats.totalMarketCap) : '---'}
                           </div>
                           <div className={`text-sm font-semibold tracking-wide ${
                             isDarkMode ? 'text-gray-300' : 'text-gray-700'
                           }`}>{t('cryptos.market_cap_global')}</div>
-                          <div className="text-xs text-[#16A34A] mt-2 opacity-70">{t('cryptos.total_markets')}</div>
+                          <div className="text-xs text-[#00FF88] mt-2 opacity-70">{t('cryptos.total_markets')}</div>
                         </div>
                         {!loading && (
-                          <div className="absolute top-3 right-3 w-3 h-3 bg-[#16A34A] rounded-full animate-pulse-glow shadow-lg shadow-[#16A34A]/50"></div>
+                          <div className="absolute top-3 right-3 w-3 h-3 bg-[#00FF88] rounded-full animate-pulse-glow shadow-lg shadow-[#00FF88]/50"></div>
                         )}
                       </div>
 
                       <div className={`rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect ${
                         isDarkMode ? 'glass-effect-strong' : 'bg-white/95 border border-gray-200/60'
                       }`}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#00D9FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative z-10">
-                          <div className="text-3xl font-bold text-[#6366F1] mb-2 font-mono text-shadow animate-counter">
+                          <div className="text-3xl font-bold text-[#00D9FF] mb-2 font-mono text-shadow animate-counter">
                             {stats ? formatters.marketCap(stats.totalVolume) : '---'}
                           </div>
                           <div className={`text-sm font-semibold tracking-wide ${
                             isDarkMode ? 'text-gray-300' : 'text-gray-700'
                           }`}>{t('cryptos.volume_24h')}</div>
-                          <div className="text-xs text-[#6366F1] mt-2 opacity-70">{t('cryptos.global_trading')}</div>
+                          <div className="text-xs text-[#00D9FF] mt-2 opacity-70">{t('cryptos.global_trading')}</div>
                         </div>
                         {!loading && (
-                          <div className="absolute top-3 right-3 w-3 h-3 bg-[#6366F1] rounded-full animate-pulse-glow shadow-lg shadow-[#6366F1]/50"></div>
+                          <div className="absolute top-3 right-3 w-3 h-3 bg-[#00D9FF] rounded-full animate-pulse-glow shadow-lg shadow-[#00D9FF]/50"></div>
                         )}
                       </div>
 
                       <div className={`rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect ${
                         isDarkMode ? 'glass-effect-strong' : 'bg-white/95 border border-gray-200/60'
                       }`}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#F59E0B]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#FFA366]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative z-10">
-                          <div className="text-3xl font-bold text-[#F59E0B] mb-2 font-mono text-shadow">
+                          <div className="text-3xl font-bold text-[#FFA366] mb-2 font-mono text-shadow">
                             {stats ? `${stats.btcDominance.toFixed(1)}%` : '---'}
                           </div>
                           <div className={`text-sm font-semibold tracking-wide ${
                             isDarkMode ? 'text-gray-300' : 'text-gray-700'
                           }`}>{t('cryptos.dominance_btc')}</div>
-                          <div className="text-xs text-[#F59E0B] mt-2 opacity-70">{t('cryptos.market_share')}</div>
+                          <div className="text-xs text-[#FFA366] mt-2 opacity-70">{t('cryptos.market_share')}</div>
                         </div>
                       </div>
 
@@ -502,24 +512,24 @@ export default function CompleteCryptosPage() {
                     user && viewMode === 'watchlist' && (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="glass-effect-strong rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect">
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#F59E0B]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#FFA366]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <div className="relative z-10">
-                            <div className="text-4xl font-bold text-[#F59E0B] mb-3 font-mono text-shadow animate-counter">
+                            <div className="text-4xl font-bold text-[#FFA366] mb-3 font-mono text-shadow animate-counter">
                               {totalWatchedCryptos}
                             </div>
                             <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.followed_cryptos')}</div>
-                            <div className="text-xs text-[#F59E0B] mt-2 opacity-70">{t('cryptos.your_portfolio')}</div>
+                            <div className="text-xs text-[#FFA366] mt-2 opacity-70">{t('cryptos.your_portfolio')}</div>
                           </div>
                         </div>
 
                         <div className="glass-effect-strong rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect">
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <div className="relative z-10">
-                            <div className="text-4xl font-bold text-[#6366F1] mb-3 font-mono text-shadow animate-counter">
+                            <div className="text-4xl font-bold text-[#00FF88] mb-3 font-mono text-shadow animate-counter">
                               {watchlists.length}
                             </div>
                             <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.active_lists')}</div>
-                            <div className="text-xs text-[#6366F1] mt-2 opacity-70">{t('cryptos.organization')}</div>
+                            <div className="text-xs text-[#00FF88] mt-2 opacity-70">{t('cryptos.organization')}</div>
                           </div>
                         </div>
 
@@ -535,13 +545,13 @@ export default function CompleteCryptosPage() {
                         </div>
 
                         <div className="glass-effect-strong rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect">
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#16A34A]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <div className="relative z-10">
-                            <div className="text-4xl font-bold text-[#16A34A] mb-3 font-mono text-shadow animate-counter">
+                            <div className="text-4xl font-bold text-[#00FF88] mb-3 font-mono text-shadow animate-counter">
                               {watchlists.reduce((sum, list) => sum + list.items.length, 0)}
                             </div>
                             <div className="text-gray-300 text-sm font-semibold tracking-wide">{t('cryptos.total_items')}</div>
-                            <div className="text-xs text-[#16A34A] mt-2 opacity-70">{t('cryptos.monitoring')}</div>
+                            <div className="text-xs text-[#00FF88] mt-2 opacity-70">{t('cryptos.monitoring')}</div>
                           </div>
                         </div>
                       </div>
@@ -563,10 +573,10 @@ export default function CompleteCryptosPage() {
                           ? 'glass-effect-strong border border-gray-700/50'
                           : 'bg-white/95 border border-gray-200/60'
                       }`}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#16A34A]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative z-10">
-                          <h3 className="flex items-center space-x-3 font-bold text-[#16A34A] mb-6 text-lg">
-                            <div className="p-2 bg-[#16A34A]/20 rounded-xl">
+                          <h3 className="flex items-center space-x-3 font-bold text-[#00FF88] mb-6 text-lg">
+                            <div className="p-2 bg-[#00FF88]/20 rounded-xl">
                               <Trophy className="w-6 h-6 animate-bounce-subtle" />
                             </div>
                             <span className="text-shadow">{t('cryptos.top_performers')}</span>
@@ -595,7 +605,7 @@ export default function CompleteCryptosPage() {
                                     <div className={`font-mono text-sm ${
                                       isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                                     }`}>{formatters.price(coin.current_price)}</div>
-                                    <div className="font-mono text-[#16A34A] text-xs font-semibold">
+                                    <div className="font-mono text-[#00FF88] text-xs font-semibold">
                                       {formatters.percentage(coin.price_change_percentage_24h || 0)}
                                     </div>
                                   </div>
@@ -697,7 +707,7 @@ export default function CompleteCryptosPage() {
                 ) : (
                   <div className="glass-effect rounded-2xl border border-gray-800/40 p-16 text-center">
                     <div className="max-w-md mx-auto">
-                      <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-3xl flex items-center justify-center mx-auto mb-6">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-3xl flex items-center justify-center mx-auto mb-6">
                         <Star className="w-10 h-10 text-white" />
                       </div>
                       <h2 className="text-2xl font-bold text-[#F9FAFB] mb-4">
@@ -709,7 +719,11 @@ export default function CompleteCryptosPage() {
                       <div className="space-y-4">
                         <Link
                           href="/auth/signin"
-                          className="block w-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
+                          className={`block w-full py-4 rounded-xl font-medium transition-all duration-300 border-2 text-center ${
+                            isDarkMode
+                              ? 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
+                              : 'bg-[#00FF88]/5 hover:bg-[#00FF88]/10 text-[#00875E] border-[#00FF88]/20 hover:border-[#00FF88]/30 shadow-sm hover:shadow-md'
+                          }`}
                         >
                           {t('cryptos.signin_to_start')}
                         </Link>
@@ -731,9 +745,9 @@ export default function CompleteCryptosPage() {
 
               {/* Message pour utilisateurs non connectés - affiché seulement en mode market */}
               {!user && viewMode === 'market' && (
-                <div className="mt-8 glass-effect rounded-2xl p-6 border border-[#6366F1]/40 bg-[#6366F1]/5">
+                <div className="mt-8 glass-effect rounded-2xl p-6 border border-[#00FF88]/40 bg-[#00FF88]/5">
                   <div className="text-center">
-                    <Star className="w-12 h-12 text-[#6366F1] mx-auto mb-4" />
+                    <Star className="w-12 h-12 text-[#00FF88] mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">
                       {t('cryptos.create_custom_lists')}
                     </h3>
@@ -742,7 +756,11 @@ export default function CompleteCryptosPage() {
                     </p>
                     <Link
                       href="/auth/signin"
-                      className="inline-flex items-center px-6 py-3 bg-[#6366F1] text-white rounded-lg hover:bg-[#5B21B6] transition-all font-semibold"
+                      className={`inline-flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-300 border-2 ${
+                        isDarkMode
+                          ? 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40'
+                          : 'bg-[#00FF88]/5 hover:bg-[#00FF88]/10 text-[#00875E] border-[#00FF88]/20 hover:border-[#00FF88]/30'
+                      }`}
                     >
                       {t('cryptos.signin')}
                     </Link>
@@ -808,9 +826,9 @@ function MarketView({
           <div className="relative flex-1 max-w-xl">
             <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
               {isSearching ? (
-                <Loader2 className="w-6 h-6 text-[#6366F1] animate-spin" />
+                <Loader2 className="w-6 h-6 text-[#00FF88] animate-spin" />
               ) : (
-                <Search className="w-6 h-6 text-gray-400 group-hover:text-[#6366F1] transition-colors" />
+                <Search className="w-6 h-6 text-gray-400 group-hover:text-[#00FF88] transition-colors" />
               )}
             </div>
             <input
@@ -818,7 +836,7 @@ function MarketView({
               placeholder={t('cryptos.search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full backdrop-blur-xl rounded-2xl pl-14 pr-6 py-5 focus:outline-none focus:border-[#6366F1]/60 focus:ring-4 focus:ring-[#6366F1]/20 transition-all duration-300 text-lg font-medium shadow-xl hover:shadow-2xl hover:scale-102 group ${
+              className={`w-full backdrop-blur-xl rounded-2xl pl-14 pr-6 py-5 focus:outline-none focus:border-[#00FF88]/60 focus:ring-4 focus:ring-[#00FF88]/20 transition-all duration-300 text-lg font-medium shadow-xl hover:shadow-2xl hover:scale-102 group ${
                 isDarkMode
                   ? 'bg-gray-800/60 border border-gray-600/50 text-[#F9FAFB] placeholder-gray-400'
                   : 'bg-white/80 border border-gray-300/60 text-[#1E293B] placeholder-gray-500'
@@ -826,24 +844,24 @@ function MarketView({
             />
             {isSearching && (
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10">
-                <span className="text-xs text-[#6366F1] font-medium">{t('cryptos.extended_search')}</span>
+                <span className="text-xs text-[#00FF88] font-medium">{t('cryptos.extended_search')}</span>
               </div>
             )}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#6366F1]/5 via-transparent to-[#8B5CF6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#00FF88]/5 via-transparent to-[#8B5CF6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           </div>
 
           <div className="flex gap-4">
             <button
               onClick={refetch}
               disabled={loading}
-              className={`group flex items-center space-x-3 px-6 py-4 backdrop-blur-xl rounded-2xl hover:border-[#6366F1]/50 hover:from-[#6366F1]/20 hover:to-[#8B5CF6]/20 transition-all duration-300 disabled:opacity-50 shadow-xl hover:shadow-2xl hover:scale-105 font-semibold ${
+              className={`group flex items-center space-x-3 px-6 py-4 backdrop-blur-xl rounded-2xl hover:border-[#00FF88]/50 hover:from-[#00FF88]/20 hover:to-[#8B5CF6]/20 transition-all duration-300 disabled:opacity-50 shadow-xl hover:shadow-2xl hover:scale-105 font-semibold ${
                 isDarkMode
                   ? 'bg-gradient-to-r from-gray-800/80 to-gray-700/80 border border-gray-600/50 text-gray-300 hover:text-white'
                   : 'bg-white/90 border border-gray-300/60 text-gray-700 hover:text-[#1E293B]'
               }`}
             >
               {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin text-[#6366F1]" />
+                <Loader2 className="w-5 h-5 animate-spin text-[#00FF88]" />
               ) : (
                 <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
               )}
@@ -855,12 +873,12 @@ function MarketView({
         {/* Ligne 2: Sort Options Premium */}
         <div className="flex flex-wrap gap-3">
           {[
-            { key: 'market_cap_rank' as const, label: t('cryptos.ranking'), icon: Crown, color: 'from-[#F59E0B] to-[#D97706]' },
-            { key: 'current_price' as const, label: t('cryptos.price'), icon: DollarSign, color: 'from-[#16A34A] to-[#15803D]' },
-            { key: 'price_change_percentage_24h' as const, label: t('cryptos.variation'), icon: TrendingUp, color: 'from-[#6366F1] to-[#4F46E5]' },
+            { key: 'market_cap_rank' as const, label: t('cryptos.ranking'), icon: Crown, color: 'from-[#FFA366] to-[#D97706]' },
+            { key: 'current_price' as const, label: t('cryptos.price'), icon: DollarSign, color: 'from-[#00FF88] to-[#15803D]' },
+            { key: 'price_change_percentage_24h' as const, label: t('cryptos.variation'), icon: TrendingUp, color: 'from-[#00FF88] to-[#00FFD9]' },
             { key: 'market_cap' as const, label: t('cryptos.market_cap'), icon: Target, color: 'from-[#8B5CF6] to-[#7C3AED]' },
             { key: 'total_volume' as const, label: t('cryptos.volume'), icon: BarChart3, color: 'from-[#06B6D4] to-[#0891B2]' },
-            { key: 'ath_change_percentage' as const, label: t('cryptos.ath_distance'), icon: Trophy, color: 'from-[#F59E0B] to-[#D97706]' },
+            { key: 'ath_change_percentage' as const, label: t('cryptos.ath_distance'), icon: Trophy, color: 'from-[#FFA366] to-[#D97706]' },
           ].map(({ key, label, icon: Icon, color }) => (
             <button
               key={key}
@@ -896,11 +914,11 @@ function MarketView({
         {!loading && !error && cryptos.length > 0 && (
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2 text-[#16A34A]">
-                <div className="w-3 h-3 bg-[#16A34A] rounded-full animate-pulse-glow shadow-lg shadow-[#16A34A]/50"></div>
+              <div className="flex items-center space-x-2 text-[#00FF88]">
+                <div className="w-3 h-3 bg-[#00FF88] rounded-full animate-pulse-glow shadow-lg shadow-[#00FF88]/50"></div>
                 <span className="font-bold text-shadow">{t('cryptos.live_coingecko')}</span>
               </div>
-              <div className="text-xs bg-[#16A34A]/20 border border-[#16A34A]/30 text-[#16A34A] px-3 py-1 rounded-full font-semibold">
+              <div className="text-xs bg-[#00FF88]/20 border border-[#00FF88]/30 text-[#00FF88] px-3 py-1 rounded-full font-semibold">
                 {t('cryptos.real_time_caps')}
               </div>
             </div>
@@ -946,14 +964,21 @@ function MarketView({
         isDarkMode={isDarkMode}
       />
 
-      {/* Load More - identiques */}
+      {/* Load More - Style subtil */}
       {hasMore && !loading && (
         <div className="text-center mt-12">
-          <button 
+          <button
             onClick={loadMore}
-            className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-8 py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-[#6366F1]/40"
+            className={`group px-8 py-3.5 rounded-xl font-medium transition-all duration-300 border-2 ${
+              isDarkMode
+                ? 'bg-gray-800/40 hover:bg-gray-800/60 border-gray-700/50 hover:border-[#00FF88]/30 text-gray-300 hover:text-[#00FF88]'
+                : 'bg-white/60 hover:bg-white/80 border-gray-200/60 hover:border-[#00FF88]/30 text-gray-700 hover:text-[#00875E] shadow-sm hover:shadow-md'
+            }`}
           >
-            {t('cryptos.load_more')}
+            <span className="flex items-center space-x-2">
+              <span>{t('cryptos.load_more')}</span>
+              <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+            </span>
           </button>
         </div>
       )}
@@ -995,7 +1020,7 @@ function WatchlistView({
           <div className="space-y-4">
             <button
               onClick={onCreateWatchlist}
-              className="w-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white py-4 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl"
+              className="w-full bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 py-4 rounded-xl font-medium transition-all duration-300 shadow-sm hover:shadow-md"
             >
               {t('cryptos.create_first')}
             </button>
@@ -1014,12 +1039,12 @@ function WatchlistView({
       <div className="glass-effect rounded-2xl border border-gray-800/40 p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-[#F9FAFB] flex items-center space-x-2">
-            <Star className="w-6 h-6 text-[#6366F1]" />
+            <Star className="w-6 h-6 text-[#00FF88]" />
             <span>{t('cryptos.my_watchlists')}</span>
           </h2>
           <button
             onClick={onCreateWatchlist}
-            className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-4 py-2 rounded-lg font-semibold hover:scale-105 transition-all duration-300 text-sm"
+            className="bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 px-4 py-2 rounded-lg font-medium transition-all duration-300 text-sm shadow-sm hover:shadow-md"
           >
             {t('cryptos.new_list')}
           </button>
@@ -1031,7 +1056,7 @@ function WatchlistView({
               key={list.id}
               className={`relative p-4 rounded-xl border transition-all group ${
                 selectedList === list.id
-                  ? 'border-[#6366F1] bg-[#6366F1]/10 shadow-lg shadow-[#6366F1]/20'
+                  ? 'border-[#00FF88] bg-[#00FF88]/10 shadow-lg shadow-[#00FF88]/20'
                   : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600/50 hover:bg-gray-800/50'
               }`}
             >
@@ -1066,11 +1091,11 @@ function WatchlistView({
                   <div className="flex items-center space-x-2 flex-1">
                     <div
                       className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: list.color || '#6366F1' }}
+                      style={{ backgroundColor: list.color || '#00FF88' }}
                     ></div>
                     <h3 className="font-semibold text-[#F9FAFB] truncate flex items-center space-x-1">
                       <span>{list.name}</span>
-                      {list.is_pinned && <Crown className="w-3 h-3 text-[#F59E0B] ml-1 flex-shrink-0" />}
+                      {list.is_pinned && <Crown className="w-3 h-3 text-[#FFA366] ml-1 flex-shrink-0" />}
                     </h3>
                   </div>
                 </div>
@@ -1113,7 +1138,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
           ? 'glass-effect border border-gray-800/40'
           : 'bg-white/95 border border-gray-200/60'
       }`}>
-        <Loader2 className="w-12 h-12 animate-spin text-[#6366F1] mx-auto mb-4" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#00FF88] mx-auto mb-4" />
         <div className={`font-semibold mb-2 ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>{t('cryptos.loading_data')}</div>
         <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{t('cryptos.loading_coingecko')}</div>
       </div>
@@ -1130,7 +1155,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
         <AlertCircle className="w-12 h-12 text-[#DC2626] mx-auto mb-4" />
         <div className={`font-semibold mb-2 ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>{t('cryptos.loading_error')}</div>
         <div className={`text-sm mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{error}</div>
-        <button className="bg-[#6366F1] hover:bg-[#5B21B6] text-white px-6 py-2 rounded-lg font-medium transition-all">
+        <button className="bg-[#00FF88] hover:bg-[#8B5CF6] text-white px-6 py-2 rounded-lg font-medium transition-all">
           {t('cryptos.retry')}
         </button>
       </div>
@@ -1167,18 +1192,18 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
           isDarkMode ? 'text-gray-300' : 'text-gray-600'
         }`}>
           <div className="col-span-1 flex items-center space-x-2">
-            <Crown className="w-4 h-4 text-[#F59E0B]" />
+            <Crown className="w-4 h-4 text-[#FFA366]" />
             <span>{t('cryptos.rank')}</span>
           </div>
           <div className="col-span-3 flex items-center space-x-2">
             <span>{t('cryptos.cryptocurrency')}</span>
           </div>
           <div className="col-span-2 text-right flex items-center justify-end space-x-2">
-            <DollarSign className="w-4 h-4 text-[#16A34A]" />
+            <DollarSign className="w-4 h-4 text-[#00FF88]" />
             <span>{t('cryptos.price_and_hl')}</span>
           </div>
           <div className="col-span-1 text-right flex items-center justify-end space-x-2">
-            <TrendingUp className="w-4 h-4 text-[#6366F1]" />
+            <TrendingUp className="w-4 h-4 text-[#00FF88]" />
             <span>24h</span>
           </div>
           <div className="col-span-2 text-right flex items-center justify-end space-x-2">
@@ -1204,19 +1229,19 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               : 'border-gray-200/40 hover:bg-gradient-to-r hover:from-gray-50/50 hover:via-gray-100/30 hover:to-gray-50/50'
           }`}>
             <div className="grid grid-cols-12 gap-3 p-8 items-center relative">
-              <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#6366F1]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#00FF88]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}></div>
               {/* Rang Premium */}
               <div className="col-span-1 relative z-10">
                 <div className={`font-bold text-lg ${
-                  crypto.market_cap_rank <= 10 ? 'text-[#F59E0B] text-shadow' :
-                  crypto.market_cap_rank <= 50 ? 'text-[#16A34A]' :
-                  crypto.market_cap_rank <= 100 ? 'text-[#6366F1]' :
+                  crypto.market_cap_rank <= 10 ? 'text-[#FFA366] text-shadow' :
+                  crypto.market_cap_rank <= 50 ? 'text-[#00FF88]' :
+                  crypto.market_cap_rank <= 100 ? 'text-[#00FF88]' :
                   'text-gray-400'
                 }`}>
                   #{crypto.market_cap_rank || index + 1}
                 </div>
                 {crypto.market_cap_rank <= 10 && (
-                  <div className="text-xs text-[#F59E0B] font-semibold">{t('cryptos.top_10')}</div>
+                  <div className="text-xs text-[#FFA366] font-semibold">{t('cryptos.top_10')}</div>
                 )}
               </div>
               
@@ -1225,13 +1250,13 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                 <div className="relative">
                   {crypto.image && (
                     <>
-                      <img src={crypto.image} alt={crypto.name} className="w-12 h-12 rounded-full border-2 border-gray-600/50 group-hover:border-[#6366F1]/50 transition-colors shadow-lg" />
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#6366F1]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <img src={crypto.image} alt={crypto.name} className="w-12 h-12 rounded-full border-2 border-gray-600/50 group-hover:border-[#00FF88]/50 transition-colors shadow-lg" />
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF88]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className={`font-bold text-lg group-hover:text-[#6366F1] transition-colors truncate text-shadow mb-1 ${
+                  <div className={`font-bold text-lg group-hover:text-[#00FF88] transition-colors truncate text-shadow mb-1 ${
                     isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                   }`}>
                     {crypto.name}
@@ -1241,7 +1266,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                       isDarkMode ? 'text-gray-400' : 'text-gray-600'
                     }`}>{crypto.symbol}</span>
                     {crypto.market_cap_rank <= 10 && (
-                      <div className="px-2 py-0.5 bg-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#F59E0B] text-xs font-bold rounded-full">
+                      <div className="px-2 py-0.5 bg-[#FFA366]/20 border border-[#FFA366]/30 text-[#FFA366] text-xs font-bold rounded-full">
                         {t('cryptos.leader')}
                       </div>
                     )}
@@ -1260,7 +1285,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   isDarkMode ? 'text-gray-400' : 'text-gray-600'
                 }`}>
                   <div className="flex justify-end items-center space-x-2">
-                    <span className="text-[#16A34A]">{t('cryptos.max')}</span>
+                    <span className="text-[#00FF88]">{t('cryptos.max')}</span>
                     <span className="font-mono font-semibold">{formatters.price(crypto.high_24h)}</span>
                   </div>
                   <div className="flex justify-end items-center space-x-2">
@@ -1273,10 +1298,10 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               {/* Change 24h Premium */}
               <div className="col-span-1 text-right relative z-10">
                 <div className={`font-mono font-bold text-lg flex items-center justify-end space-x-2 text-shadow ${
-                  (crypto.price_change_percentage_24h || 0) >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                  (crypto.price_change_percentage_24h || 0) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                 }`}>
                   <div className={`p-1 rounded-lg ${
-                    (crypto.price_change_percentage_24h || 0) >= 0 ? 'bg-[#16A34A]/20' : 'bg-[#DC2626]/20'
+                    (crypto.price_change_percentage_24h || 0) >= 0 ? 'bg-[#00FF88]/20' : 'bg-[#DC2626]/20'
                   }`}>
                     {(crypto.price_change_percentage_24h || 0) >= 0 ? (
                       <TrendingUp className="w-5 h-5 animate-bounce-subtle" />
@@ -1297,7 +1322,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                 </div>
                 {crypto.market_cap_change_percentage_24h != null && (
                   <div className={`text-sm font-mono font-semibold flex items-center justify-end space-x-1 ${
-                    crypto.market_cap_change_percentage_24h >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                    crypto.market_cap_change_percentage_24h >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                   }`}>
                     {crypto.market_cap_change_percentage_24h >= 0 ? '+' : ''}
                     {formatters.percentage(crypto.market_cap_change_percentage_24h)}
@@ -1318,10 +1343,10 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   {/* Graphique - toujours disponible */}
                   <Link
                     href={`/graphiques?crypto=${crypto.id}`}
-                    className="group/btn p-2.5 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#6366F1]/20 hover:to-[#4F46E5]/20 border border-gray-600/50 hover:border-[#6366F1]/60 rounded-lg transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#6366F1]/20"
+                    className="group/btn p-2.5 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#00FF88]/20 hover:to-[#00FFD9]/20 border border-gray-600/50 hover:border-[#00FF88]/60 rounded-lg transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#00FF88]/20"
                     title={`${t('cryptos.analyze_charts')} ${crypto.name}`}
                   >
-                    <BarChart3 className="w-4 h-4 text-gray-400 group-hover/btn:text-[#6366F1] transition-colors" />
+                    <BarChart3 className="w-4 h-4 text-gray-400 group-hover/btn:text-[#00FF88] transition-colors" />
                   </Link>
 
                   {/* SupabaseAddToWatchlistButton - seulement si connecté */}

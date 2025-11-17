@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter, usePathname } from 'next/navigation'
-import { TrendingUp, BarChart3, Wallet, User, LogOut, Loader2, Lock, Settings, Shield, Clock, ChevronDown } from 'lucide-react'
+import { TrendingUp, BarChart3, Wallet, User, LogOut, Loader2, Lock, Settings, Shield, Clock, ChevronDown, Activity } from 'lucide-react'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { useState, useRef, useEffect } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -50,10 +50,10 @@ export default function SmartNavigation() {
   }, [])
 
   return (
-    <header className={`relative z-50 sticky top-0 transition-colors duration-300 ${
+    <header className={`relative z-50 sticky top-0 transition-colors duration-300 backdrop-blur-2xl ${
       isDarkMode
-        ? 'border-b border-gray-800/40 glass-effect'
-        : 'border-b border-gray-200/60 bg-white/90 backdrop-blur-24'
+        ? 'border-b border-[#00FF88]/5 bg-[#0A0E1A]/95'
+        : 'border-b border-gray-200/60 bg-white/90'
     }`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -98,12 +98,12 @@ export default function SmartNavigation() {
             }`}>
               <TrendingUp className={`w-4 h-4 transition-colors duration-300 ${
                 pathname === '/cryptos'
-                  ? 'text-[#6366F1]'
-                  : 'group-hover:text-[#6366F1]'
+                  ? 'text-[#00FF88]'
+                  : 'group-hover:text-[#00FF88]'
               }`} />
               <span className="relative">
                 {t('nav.cryptos')}
-                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
+                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#00FFD9] transition-all duration-300 ${
                   pathname === '/cryptos'
                     ? 'w-full'
                     : 'w-0 group-hover:w-full'
@@ -117,12 +117,12 @@ export default function SmartNavigation() {
             }`}>
               <BarChart3 className={`w-4 h-4 transition-colors duration-300 ${
                 pathname === '/graphiques'
-                  ? 'text-[#6366F1]'
-                  : 'group-hover:text-[#6366F1]'
+                  ? 'text-[#00FF88]'
+                  : 'group-hover:text-[#00FF88]'
               }`} />
               <span className="relative">
                 {t('nav.charts')}
-                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
+                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#00FFD9] transition-all duration-300 ${
                   pathname === '/graphiques'
                     ? 'w-full'
                     : 'w-0 group-hover:w-full'
@@ -137,16 +137,16 @@ export default function SmartNavigation() {
                 ? 'text-[#F9FAFB] font-semibold'
                 : 'text-gray-400 hover:text-[#F9FAFB]'
             }`}>
-              <BarChart3 className={`w-4 h-4 transition-colors duration-300 ${
+              <Activity className={`w-4 h-4 transition-colors duration-300 ${
                 !user ? 'text-gray-600' :
                 pathname === '/backtest'
-                  ? 'text-[#6366F1]'
-                  : 'group-hover:text-[#6366F1]'
+                  ? 'text-[#00FF88]'
+                  : 'group-hover:text-[#00FF88]'
               }`} />
               <span className="relative flex items-center gap-1">
                 {t('nav.backtest')}
                 {!user && <Lock className="w-3 h-3" />}
-                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
+                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#00FFD9] transition-all duration-300 ${
                   user && pathname === '/backtest'
                     ? 'w-full'
                     : user ? 'w-0 group-hover:w-full' : 'w-0'
@@ -163,13 +163,13 @@ export default function SmartNavigation() {
               <Wallet className={`w-4 h-4 transition-colors duration-300 ${
                 !user ? 'text-gray-600' :
                 pathname === '/portefeuille'
-                  ? 'text-[#6366F1]'
-                  : 'group-hover:text-[#6366F1]'
+                  ? 'text-[#00FF88]'
+                  : 'group-hover:text-[#00FF88]'
               }`} />
               <span className="relative flex items-center gap-1">
                 {t('nav.portfolio')}
                 {!user && <Lock className="w-3 h-3" />}
-                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] transition-all duration-300 ${
+                <span className={`absolute -bottom-2 left-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#00FFD9] transition-all duration-300 ${
                   user && pathname === '/portefeuille'
                     ? 'w-full'
                     : user ? 'w-0 group-hover:w-full' : 'w-0'
@@ -194,7 +194,7 @@ export default function SmartNavigation() {
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                     className="flex items-center space-x-3 hover:bg-gray-800/40 rounded-xl p-2 transition-colors"
                   >
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-2xl flex items-center justify-center text-white font-bold text-sm">
                       {user.email?.[0]?.toUpperCase() || 'U'}
                     </div>
                     <div className="hidden sm:block">
@@ -210,11 +210,11 @@ export default function SmartNavigation() {
 
                   {/* Menu déroulant */}
                   {isProfileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-64 glass-effect rounded-2xl border border-gray-800/40 shadow-2xl overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-64 glass-effect rounded-2xl border border-[#00FF88]/20 shadow-2xl overflow-hidden">
                       {/* Header du menu avec infos user */}
-                      <div className="px-4 py-4 border-b border-gray-800/40 bg-gray-900/30">
+                      <div className="px-4 py-4 border-b border-[#00FF88]/20 bg-gray-900/30">
                         <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center text-white font-bold">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-2xl flex items-center justify-center text-white font-bold">
                             {user.email?.[0]?.toUpperCase() || 'U'}
                           </div>
                           <div>
@@ -255,7 +255,7 @@ export default function SmartNavigation() {
                         <Link
                           href="/account?tab=security"
                           onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 transition-colors border-t border-gray-800/40"
+                          className="flex items-center space-x-3 px-4 py-3 text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 transition-colors border-t border-[#00FF88]/20"
                         >
                           <Shield className="w-5 h-5" />
                           <div>
@@ -276,7 +276,7 @@ export default function SmartNavigation() {
                           </div>
                         </Link>
 
-                        <div className="border-t border-gray-800/40 my-2"></div>
+                        <div className="border-t border-[#00FF88]/20 my-2"></div>
 
                         <button
                           onClick={() => {
@@ -307,7 +307,7 @@ export default function SmartNavigation() {
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className="relative bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-4 sm:px-7 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#6366F1]/40 text-sm sm:text-base"
+                  className="relative bg-gradient-to-r from-[#00FF88] to-[#00FFD9] text-white px-4 sm:px-7 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl hover:shadow-[#00FF88]/40 text-sm sm:text-base"
                 >
                   <span className="relative z-10">{t('nav.signup')}</span>
                 </Link>
@@ -318,7 +318,7 @@ export default function SmartNavigation() {
 
         {/* Menu mobile */}
         {isMobileMenuOpen && (
-          <div ref={mobileMenuRef} className="lg:hidden absolute top-full left-0 right-0 glass-effect-strong border-t border-gray-800/40 z-40">
+          <div ref={mobileMenuRef} className="lg:hidden absolute top-full left-0 right-0 glass-effect-strong border-t border-[#00FF88]/20 z-40">
             <div className="max-w-7xl mx-auto px-6 py-6">
               <nav className="space-y-4">
                 {/* Navigation mobile */}
@@ -327,7 +327,7 @@ export default function SmartNavigation() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname === '/cryptos'
-                      ? 'bg-[#6366F1]/10 text-[#6366F1]'
+                      ? 'bg-[#00FF88]/10 text-[#00FF88]'
                       : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
                   }`}
                 >
@@ -340,7 +340,7 @@ export default function SmartNavigation() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
                     pathname === '/graphiques'
-                      ? 'bg-[#6366F1]/10 text-[#6366F1]'
+                      ? 'bg-[#00FF88]/10 text-[#00FF88]'
                       : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
                   }`}
                 >
@@ -354,11 +354,11 @@ export default function SmartNavigation() {
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
                     !user ? 'text-gray-600 cursor-not-allowed' :
                     pathname === '/backtest'
-                      ? 'bg-[#6366F1]/10 text-[#6366F1]'
+                      ? 'bg-[#00FF88]/10 text-[#00FF88]'
                       : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
                   }`}
                 >
-                  <BarChart3 className="w-5 h-5" />
+                  <Activity className="w-5 h-5" />
                   <span className="font-medium flex items-center gap-2">
                     {t('nav.backtest')}
                     {!user && <Lock className="w-4 h-4" />}
@@ -371,7 +371,7 @@ export default function SmartNavigation() {
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
                     !user ? 'text-gray-600 cursor-not-allowed' :
                     pathname === '/portefeuille'
-                      ? 'bg-[#6366F1]/10 text-[#6366F1]'
+                      ? 'bg-[#00FF88]/10 text-[#00FF88]'
                       : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
                   }`}
                 >
@@ -384,7 +384,7 @@ export default function SmartNavigation() {
 
                 {/* Auth mobile */}
                 {!user && (
-                  <div className="border-t border-gray-800/40 pt-4 mt-4">
+                  <div className="border-t border-[#00FF88]/20 pt-4 mt-4">
                     <div className="space-y-3">
                       <Link
                         href="/auth/signin"
@@ -402,7 +402,7 @@ export default function SmartNavigation() {
                           setIsMobileMenuOpen(false)
                           handleAuthClick()
                         }}
-                        className="block w-full text-center px-6 py-3 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                        className="block w-full text-center px-6 py-3 bg-gradient-to-r from-[#00FF88] to-[#00FFD9] text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105"
                       >
                         {t('nav.signup')}
                       </Link>
@@ -417,15 +417,14 @@ export default function SmartNavigation() {
 
       <style jsx global>{`
         .glass-effect {
-          background: rgba(17, 24, 39, 0.85);
+          background: rgba(10, 14, 26, 0.95);
           backdrop-filter: blur(24px);
-          border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .glass-effect-strong {
-          background: rgba(17, 24, 39, 0.95);
+          background: rgba(10, 14, 26, 0.98);
           backdrop-filter: blur(40px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(0, 255, 136, 0.1);
         }
       `}</style>
     </header>

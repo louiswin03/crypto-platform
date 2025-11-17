@@ -31,7 +31,7 @@ export default function HistoricalDataTest() {
       {/* Test de connexion */}
       <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
         <h3 className="text-xl font-bold text-[#F9FAFB] mb-4 flex items-center gap-2">
-          <Database className="w-5 h-5 text-[#6366F1]" />
+          <Database className="w-5 h-5 text-[#00FF88]" />
           Test de Connexion aux Données
         </h3>
 
@@ -41,7 +41,7 @@ export default function HistoricalDataTest() {
             {testResults.btc === null ? (
               <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
             ) : testResults.btc ? (
-              <CheckCircle className="w-5 h-5 text-[#16A34A]" />
+              <CheckCircle className="w-5 h-5 text-[#00FF88]" />
             ) : (
               <XCircle className="w-5 h-5 text-[#DC2626]" />
             )}
@@ -52,7 +52,7 @@ export default function HistoricalDataTest() {
             {testResults.eth === null ? (
               <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
             ) : testResults.eth ? (
-              <CheckCircle className="w-5 h-5 text-[#16A34A]" />
+              <CheckCircle className="w-5 h-5 text-[#00FF88]" />
             ) : (
               <XCircle className="w-5 h-5 text-[#DC2626]" />
             )}
@@ -61,9 +61,9 @@ export default function HistoricalDataTest() {
           <div className="flex items-center justify-between p-4 bg-gray-800/30 rounded-xl">
             <span className="text-gray-300">Status Global</span>
             {testResults.loading ? (
-              <RefreshCcw className="w-5 h-5 text-[#6366F1] animate-spin" />
+              <RefreshCcw className="w-5 h-5 text-[#00FF88] animate-spin" />
             ) : testResults.isSuccess ? (
-              <CheckCircle className="w-5 h-5 text-[#16A34A]" />
+              <CheckCircle className="w-5 h-5 text-[#00FF88]" />
             ) : testResults.hasErrors ? (
               <XCircle className="w-5 h-5 text-[#DC2626]" />
             ) : (
@@ -75,7 +75,7 @@ export default function HistoricalDataTest() {
         <button
           onClick={testResults.runTest}
           disabled={testResults.loading}
-          className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50"
+          className="flex items-center space-x-2 bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50"
         >
           <Play className="w-4 h-4" />
           <span>{testResults.loading ? 'Test en cours...' : 'Tester la Connexion'}</span>
@@ -96,7 +96,7 @@ export default function HistoricalDataTest() {
       {/* Test de récupération de données */}
       <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
         <h3 className="text-xl font-bold text-[#F9FAFB] mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-[#16A34A]" />
+          <TrendingUp className="w-5 h-5 text-[#00FF88]" />
           Test de Récupération de Données
         </h3>
 
@@ -107,7 +107,7 @@ export default function HistoricalDataTest() {
             <select
               value={selectedCrypto}
               onChange={(e) => setSelectedCrypto(e.target.value as SupportedCrypto)}
-              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
             >
               <option value="BTC">Bitcoin (BTC)</option>
               <option value="ETH">Ethereum (ETH)</option>
@@ -120,7 +120,7 @@ export default function HistoricalDataTest() {
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value as BacktestPeriod)}
-              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+              className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
             >
               {periods.map((period) => (
                 <option key={period.value} value={period.value}>
@@ -135,7 +135,7 @@ export default function HistoricalDataTest() {
           <button
             onClick={historicalData.refetch}
             disabled={historicalData.loading}
-            className="flex items-center space-x-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50"
+            className="flex items-center space-x-2 bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50"
           >
             <Calendar className="w-4 h-4" />
             <span>{historicalData.loading ? 'Chargement...' : 'Récupérer les Données'}</span>
@@ -154,7 +154,7 @@ export default function HistoricalDataTest() {
         {/* Résultats */}
         {historicalData.loading && (
           <div className="flex items-center justify-center p-8">
-            <RefreshCcw className="w-8 h-8 text-[#6366F1] animate-spin mr-3" />
+            <RefreshCcw className="w-8 h-8 text-[#00FF88] animate-spin mr-3" />
             <span className="text-gray-300">Récupération des données...</span>
           </div>
         )}
@@ -224,7 +224,7 @@ export default function HistoricalDataTest() {
                 </div>
                 <div className="p-4 bg-gray-800/30 rounded-xl text-center">
                   <div className="text-gray-400 text-sm mb-1">Plus haut</div>
-                  <div className="font-mono font-bold text-[#16A34A]">
+                  <div className="font-mono font-bold text-[#00FF88]">
                     ${formatNumber(Math.max(...historicalData.data.prices.map(p => p.high)))}
                   </div>
                 </div>
@@ -236,7 +236,7 @@ export default function HistoricalDataTest() {
                 </div>
                 <div className="p-4 bg-gray-800/30 rounded-xl text-center">
                   <div className="text-gray-400 text-sm mb-1">Clôture actuelle</div>
-                  <div className="font-mono font-bold text-[#6366F1]">
+                  <div className="font-mono font-bold text-[#00FF88]">
                     ${formatNumber(historicalData.data.prices[historicalData.data.prices.length - 1]?.close || 0)}
                   </div>
                 </div>

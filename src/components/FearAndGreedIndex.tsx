@@ -19,7 +19,6 @@ export default function FearAndGreedIndex() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showChart, setShowChart] = useState(false)
-  const [lastUpdate, setLastUpdate] = useState<number>(Date.now())
 
   const fetchFearGreed = async () => {
       try {
@@ -60,7 +59,6 @@ export default function FearAndGreedIndex() {
 
         setLoading(false)
         setError(null)
-        setLastUpdate(Date.now())
       } catch (err) {
         console.error('Error fetching Fear & Greed Index:', err)
 
@@ -79,9 +77,10 @@ export default function FearAndGreedIndex() {
     }
 
   useEffect(() => {
+    // Force refresh au chargement initial
     fetchFearGreed()
-    // Rafraîchir toutes les 5 minutes
-    const interval = setInterval(fetchFearGreed, 5 * 60 * 1000)
+    // Rafraîchir toutes les 2 minutes pour des données plus fraîches
+    const interval = setInterval(fetchFearGreed, 2 * 60 * 1000)
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -89,7 +88,7 @@ export default function FearAndGreedIndex() {
   if (loading) {
     return (
       <div className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#6366F1]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#00FF88]" />
       </div>
     )
   }
@@ -104,9 +103,9 @@ export default function FearAndGreedIndex() {
   // Déterminer la couleur selon le sentiment
   const getColor = () => {
     if (value <= 25) return '#DC2626' // Extreme Fear - Rouge
-    if (value <= 45) return '#F59E0B' // Fear - Orange
+    if (value <= 45) return '#FFA366' // Fear - Orange
     if (value <= 55) return '#9CA3AF' // Neutral - Gris
-    if (value <= 75) return '#16A34A' // Greed - Vert
+    if (value <= 75) return '#00FF88' // Greed - Vert
     return '#10B981' // Extreme Greed - Vert vif
   }
 
@@ -135,9 +134,9 @@ export default function FearAndGreedIndex() {
   // Fonction pour obtenir la couleur selon la valeur
   const getColorForValue = (val: number) => {
     if (val <= 25) return '#DC2626' // Extreme Fear - Rouge
-    if (val <= 45) return '#F59E0B' // Fear - Orange
+    if (val <= 45) return '#FFA366' // Fear - Orange
     if (val <= 55) return '#9CA3AF' // Neutral - Gris
-    if (val <= 75) return '#16A34A' // Greed - Vert
+    if (val <= 75) return '#00FF88' // Greed - Vert
     return '#10B981' // Extreme Greed - Vert vif
   }
 
@@ -157,14 +156,18 @@ export default function FearAndGreedIndex() {
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="flex items-center space-x-2 font-bold text-[#F9FAFB] text-base">
-              <div className="p-1.5 bg-[#6366F1]/20 rounded-lg">
+              <div className="p-1.5 bg-[#00FF88]/20 rounded-lg">
                 {getIcon()}
               </div>
               <span>{t('fear_greed.title')}</span>
             </h3>
             <div className="flex items-center gap-2">
               <div className="text-xs text-gray-500">
-                {t('fear_greed.updated')} {Math.floor((Date.now() - lastUpdate) / 60000)}{t('fear_greed.minutes')}
+                {data?.timestamp && new Date(parseInt(data.timestamp) * 1000).toLocaleDateString('fr-FR', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
               </div>
               <button
                 onClick={() => {
@@ -174,7 +177,7 @@ export default function FearAndGreedIndex() {
                 className="p-1 hover:bg-gray-700/50 rounded-lg transition-colors"
                 title={t('fear_greed.refresh')}
               >
-                <Activity className="w-4 h-4 text-gray-400 hover:text-[#6366F1]" />
+                <Activity className="w-4 h-4 text-gray-400 hover:text-[#00FF88]" />
               </button>
             </div>
           </div>
@@ -241,7 +244,7 @@ export default function FearAndGreedIndex() {
               <div className="text-[9px] text-gray-500">{t('fear_greed.extreme')}</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-full h-1.5 bg-[#F59E0B] rounded"></div>
+              <div className="w-full h-1.5 bg-[#FFA366] rounded"></div>
               <div className="text-[10px] text-gray-400 mt-1">26-45</div>
               <div className="text-[9px] text-gray-500">{t('fear_greed.fear')}</div>
             </div>
@@ -251,7 +254,7 @@ export default function FearAndGreedIndex() {
               <div className="text-[9px] text-gray-500">{t('fear_greed.neutral')}</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-full h-1.5 bg-[#16A34A] rounded"></div>
+              <div className="w-full h-1.5 bg-[#00FF88] rounded"></div>
               <div className="text-[10px] text-gray-400 mt-1">56-75</div>
               <div className="text-[9px] text-gray-500">{t('fear_greed.greed')}</div>
             </div>
@@ -265,7 +268,7 @@ export default function FearAndGreedIndex() {
           {/* Bouton Voir l'historique */}
           <button
             onClick={() => setShowChart(true)}
-            className="w-full flex items-center justify-center gap-2 bg-[#6366F1]/20 hover:bg-[#6366F1]/30 border border-[#6366F1]/40 text-[#6366F1] px-4 py-2.5 rounded-lg font-semibold transition-colors text-sm"
+            className="w-full flex items-center justify-center gap-2 bg-[#00FF88]/20 hover:bg-[#00FF88]/30 border border-[#00FF88]/40 text-[#00FF88] px-4 py-2.5 rounded-lg font-semibold transition-colors text-sm"
           >
             <ChartLine className="w-4 h-4" />
             {t('fear_greed.view_history')}
@@ -343,14 +346,14 @@ export default function FearAndGreedIndex() {
                   />
                   {/* Zones colorées de référence */}
                   <ReferenceLine y={25} stroke="#DC2626" strokeDasharray="3 3" strokeOpacity={0.5} strokeWidth={1.5} />
-                  <ReferenceLine y={45} stroke="#F59E0B" strokeDasharray="3 3" strokeOpacity={0.5} strokeWidth={1.5} />
+                  <ReferenceLine y={45} stroke="#FFA366" strokeDasharray="3 3" strokeOpacity={0.5} strokeWidth={1.5} />
                   <ReferenceLine y={55} stroke="#9CA3AF" strokeDasharray="3 3" strokeOpacity={0.5} strokeWidth={1.5} />
-                  <ReferenceLine y={75} stroke="#16A34A" strokeDasharray="3 3" strokeOpacity={0.5} strokeWidth={1.5} />
+                  <ReferenceLine y={75} stroke="#00FF88" strokeDasharray="3 3" strokeOpacity={0.5} strokeWidth={1.5} />
 
                   <Line
                     type="monotone"
                     dataKey="value"
-                    stroke="#6366F1"
+                    stroke="#00FF88"
                     strokeWidth={2}
                     dot={(props: any) => {
                       const { cx, cy, payload, index } = props
@@ -368,7 +371,7 @@ export default function FearAndGreedIndex() {
                         />
                       )
                     }}
-                    activeDot={{ r: 8, fill: '#6366F1', stroke: '#fff', strokeWidth: 2 }}
+                    activeDot={{ r: 8, fill: '#00FF88', stroke: '#fff', strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -381,7 +384,7 @@ export default function FearAndGreedIndex() {
                 <span className="text-gray-400">{t('fear_greed.extreme_fear')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-1.5 bg-[#F59E0B] rounded"></div>
+                <div className="w-3 h-1.5 bg-[#FFA366] rounded"></div>
                 <span className="text-gray-400">{t('fear_greed.fear')}</span>
               </div>
               <div className="flex items-center gap-2">
@@ -389,7 +392,7 @@ export default function FearAndGreedIndex() {
                 <span className="text-gray-400">{t('fear_greed.neutral')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-1.5 bg-[#16A34A] rounded"></div>
+                <div className="w-3 h-1.5 bg-[#00FF88] rounded"></div>
                 <span className="text-gray-400">{t('fear_greed.greed')}</span>
               </div>
               <div className="flex items-center gap-2">

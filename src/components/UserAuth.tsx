@@ -109,7 +109,7 @@ export default function UserAuth({ currentUser, onUserChange }: UserAuthProps) {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
                   placeholder="Votre nom d'utilisateur"
                 />
               </div>
@@ -123,7 +123,7 @@ export default function UserAuth({ currentUser, onUserChange }: UserAuthProps) {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
                     placeholder="votre@email.com"
                   />
                 </div>

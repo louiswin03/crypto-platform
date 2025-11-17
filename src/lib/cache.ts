@@ -152,6 +152,21 @@ if (typeof window !== 'undefined') {
   }, 5 * 60 * 1000)
 }
 
+// Côté serveur : nettoyer le cache au démarrage et périodiquement
+if (typeof window === 'undefined') {
+  // Vider le cache au démarrage du serveur
+  apiCache.clear()
+  console.log('[Cache] Cache serveur vidé au démarrage')
+
+  // Nettoyer toutes les 2 minutes côté serveur
+  setInterval(() => {
+    const cleaned = apiCache.cleanup()
+    if (cleaned > 0) {
+      console.log(`[Cache Serveur] Nettoyé ${cleaned} entrées expirées`)
+    }
+  }, 2 * 60 * 1000)
+}
+
 // Export des types et constantes
 export { APICache }
 export type { CacheEntry }

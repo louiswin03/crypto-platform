@@ -235,7 +235,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
       <div className="glass-effect-strong rounded-2xl p-4 border border-gray-800/40">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center space-x-3 flex-1">
-            <Folder className="w-5 h-5 text-[#6366F1] flex-shrink-0" />
+            <Folder className="w-5 h-5 text-[#00FF88] flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-400 mb-0.5">Portfolio actif</p>
               {selectedPortfolio && (
@@ -245,7 +245,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                 >
                   <span className="text-white font-semibold truncate">{selectedPortfolio.name}</span>
                   {selectedPortfolio.is_default && (
-                    <Star className="w-3 h-3 text-[#F59E0B] fill-current flex-shrink-0" />
+                    <Star className="w-3 h-3 text-[#FFA366] fill-current flex-shrink-0" />
                   )}
                   <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 group-hover:text-white ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </div>
@@ -255,7 +255,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
           <div className="flex items-center space-x-2 flex-shrink-0">
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center space-x-1.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white px-3 py-2 rounded-lg font-semibold hover:scale-105 transition-all duration-300 shadow-lg text-sm"
+              className="flex items-center space-x-1.5 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 px-3 py-2 rounded-lg font-medium transition-all duration-300 shadow-sm text-sm"
               title="Nouveau portfolio"
             >
               <Plus className="w-4 h-4" />
@@ -281,7 +281,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                   key={portfolio.id}
                   className={`rounded-lg p-3 hover:bg-gray-700/30 transition-all cursor-pointer ${
                     selectedPortfolioId === portfolio.id
-                      ? 'bg-[#6366F1]/10 border border-[#6366F1]/30'
+                      ? 'bg-[#00FF88]/10 border border-[#00FF88]/30'
                       : ''
                   }`}
                   onClick={() => {
@@ -292,7 +292,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3 flex-1">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        selectedPortfolioId === portfolio.id ? 'bg-[#6366F1]' : 'bg-gray-800'
+                        selectedPortfolioId === portfolio.id ? 'bg-[#00FF88]' : 'bg-gray-800'
                       }`}>
                         {selectedPortfolioId === portfolio.id ? (
                           <FolderOpen className="w-4 h-4 text-white" />
@@ -304,7 +304,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                         <div className="flex items-center space-x-2">
                           <span className="text-white font-medium truncate">{portfolio.name}</span>
                           {portfolio.is_default && (
-                            <Star className="w-3 h-3 text-[#F59E0B] fill-current flex-shrink-0" />
+                            <Star className="w-3 h-3 text-[#FFA366] fill-current flex-shrink-0" />
                           )}
                         </div>
                         {portfolio.description && (
@@ -320,10 +320,10 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                           openEditModal(portfolio)
                           setIsDropdownOpen(false)
                         }}
-                        className="p-1.5 rounded-lg bg-gray-800/50 hover:bg-[#6366F1]/20 transition-all"
+                        className="p-1.5 rounded-lg bg-gray-800/50 hover:bg-[#00FF88]/20 transition-all"
                         title="Modifier"
                       >
-                        <Edit3 className="w-3.5 h-3.5 text-gray-400 hover:text-[#6366F1]" />
+                        <Edit3 className="w-3.5 h-3.5 text-gray-400 hover:text-[#00FF88]" />
                       </button>
                       {portfolios.length > 1 && (
                         <button
@@ -380,7 +380,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Mon Portfolio"
-                  className="w-full px-4 py-2 rounded-xl bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-[#6366F1]"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-[#00FF88]"
                 />
               </div>
 
@@ -393,7 +393,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Description de mon portfolio..."
                   rows={3}
-                  className="w-full px-4 py-2 rounded-xl bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-[#6366F1] resize-none"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 focus:outline-none focus:border-[#00FF88] resize-none"
                 />
               </div>
 
@@ -403,7 +403,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                   id="is_default"
                   checked={formData.is_default}
                   onChange={(e) => setFormData({ ...formData, is_default: e.target.checked })}
-                  className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#6366F1] focus:ring-[#6366F1]"
+                  className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#00FF88] focus:ring-[#00FF88]"
                 />
                 <label htmlFor="is_default" className="text-sm text-gray-300">
                   Définir comme portfolio par défaut
@@ -424,7 +424,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                         ...formData,
                         sources: { ...formData.sources, manual: e.target.checked }
                       })}
-                      className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#6366F1] focus:ring-[#6366F1]"
+                      className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#00FF88] focus:ring-[#00FF88]"
                     />
                     <label htmlFor="source_manual" className="text-sm text-gray-300 flex items-center space-x-2 flex-1 cursor-pointer">
                       <Folder className="w-4 h-4 text-gray-400" />
@@ -441,7 +441,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                         ...formData,
                         sources: { ...formData.sources, binance: e.target.checked }
                       })}
-                      className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#6366F1] focus:ring-[#6366F1]"
+                      className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#00FF88] focus:ring-[#00FF88]"
                     />
                     <label htmlFor="source_binance" className="text-sm text-gray-300 flex items-center space-x-2 flex-1 cursor-pointer">
                       <span className="text-[#F3BA2F]">⬡</span>
@@ -458,7 +458,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
                         ...formData,
                         sources: { ...formData.sources, coinbase: e.target.checked }
                       })}
-                      className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#6366F1] focus:ring-[#6366F1]"
+                      className="w-4 h-4 rounded bg-gray-800 border-gray-700 text-[#00FF88] focus:ring-[#00FF88]"
                     />
                     <label htmlFor="source_coinbase" className="text-sm text-gray-300 flex items-center space-x-2 flex-1 cursor-pointer">
                       <span className="text-[#0052FF]">◆</span>
@@ -509,7 +509,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
               <button
                 onClick={editingPortfolio ? handleUpdate : handleCreate}
                 disabled={!formData.name.trim()}
-                className="flex-1 px-4 py-2 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white font-semibold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="flex-1 px-4 py-2 rounded-xl bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 font-medium transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 <Check className="w-4 h-4" />
                 <span>{editingPortfolio ? 'Modifier' : 'Créer'}</span>

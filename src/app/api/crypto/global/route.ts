@@ -1,16 +1,24 @@
 // src/app/api/crypto/global/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { apiCache, APICache } from '@/lib/cache'
 
 /**
  * API Route pour les statistiques globales du marché crypto (CoinGecko)
- * Cache les résultats pour 5 minutes
+ * Cache les résultats pour 2 minutes
  *
  * GET /api/crypto/global
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams
+    const forceRefresh = searchParams.get('_t') // Timestamp pour forcer le refresh
+
     const cacheKey = APICache.generateKey('coingecko', 'global')
+
+    // Si _t est présent, ignorer le cache (force refresh)
+    if (forceRefresh) {
+      apiCache.delete(cacheKey)
+    }
 
     const data = await apiCache.fetchWithCache(
       cacheKey,
@@ -40,7 +48,7 @@ export async function GET() {
           throw error
         }
       },
-      APICache.DURATIONS.MEDIUM // Cache de 5 minutes
+      120000 // Cache de 2 minutes (plus frais que 5 minutes)
     )
 
     return NextResponse.json(data, {

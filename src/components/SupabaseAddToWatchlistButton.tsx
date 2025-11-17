@@ -133,8 +133,8 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
         onClick={() => setShowDropdown(!showDropdown)}
         className={`group/star p-2.5 rounded-lg transition-all duration-300 transform hover:scale-110 relative overflow-hidden ${
           isInAnyList
-            ? 'text-[#F59E0B] bg-gradient-to-r from-[#F59E0B]/20 to-[#D97706]/20 border border-[#F59E0B]/30 shadow-lg shadow-[#F59E0B]/20'
-            : 'text-gray-400 hover:text-[#F59E0B] bg-gray-800/50 hover:bg-gradient-to-r hover:from-[#F59E0B]/10 hover:to-[#D97706]/10 border border-gray-600/50 hover:border-[#F59E0B]/40'
+            ? 'text-[#FFA366] bg-gradient-to-r from-[#FFA366]/20 to-[#D97706]/20 border border-[#FFA366]/30 shadow-lg shadow-[#FFA366]/20'
+            : 'text-gray-400 hover:text-[#FFA366] bg-gray-800/50 hover:bg-gradient-to-r hover:from-[#FFA366]/10 hover:to-[#D97706]/10 border border-gray-600/50 hover:border-[#FFA366]/40'
         } ${className}`}
         disabled={isProcessing}
         title={isInAnyList ? `Dans ${listsContainingCrypto.length} liste(s)` : 'Ajouter à une liste de suivi'}
@@ -149,7 +149,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
 
         {/* Notification badge */}
         {isInAnyList && listsContainingCrypto.length > 1 && (
-          <div className="absolute top-0 right-0 bg-[#F59E0B] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-lg z-10">
+          <div className="absolute top-0 right-0 bg-[#FFA366] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-lg z-10">
             {listsContainingCrypto.length}
           </div>
         )}
@@ -169,7 +169,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
 
           {/* Modal Content */}
           <div
-            className="absolute w-96 bg-[#111827] border border-gray-600/50 rounded-2xl shadow-2xl animate-slide-in"
+            className="absolute w-96 bg-[#0A0E1A] border border-gray-600/50 rounded-2xl shadow-2xl animate-slide-in"
             style={{
               top: Math.min(buttonPosition.top, window.innerHeight - 500),
               left: Math.max(10, buttonPosition.right - 384), // 384px = w-96
@@ -180,8 +180,8 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
-                    <Star className="w-5 h-5 text-[#F59E0B]" />
+                  <div className="p-2 bg-[#FFA366]/20 rounded-xl">
+                    <Star className="w-5 h-5 text-[#FFA366]" />
                   </div>
                   <div>
                     <div className="text-lg font-bold text-[#F9FAFB]">
@@ -225,7 +225,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                   {crypto.image && (
                     <>
                       <img src={crypto.image} alt={crypto.name} className="w-12 h-12 rounded-full border-2 border-gray-600/50" />
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#6366F1]/20 to-transparent"></div>
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF88]/20 to-transparent"></div>
                     </>
                   )}
                 </div>
@@ -233,7 +233,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                   <div className="flex items-center space-x-2 mb-1">
                     <div className="font-bold text-white text-lg">{crypto.name}</div>
                     {crypto.market_cap_rank && crypto.market_cap_rank <= 10 && (
-                      <Crown className="w-4 h-4 text-[#F59E0B]" />
+                      <Crown className="w-4 h-4 text-[#FFA366]" />
                     )}
                   </div>
                   <div className="flex items-center space-x-3">
@@ -245,7 +245,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                     )}
                     {crypto.price_change_percentage_24h && (
                       <div className={`flex items-center space-x-1 text-xs font-semibold ${
-                        crypto.price_change_percentage_24h >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                        crypto.price_change_percentage_24h >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                       }`}>
                         <TrendingUp className={`w-3 h-3 ${crypto.price_change_percentage_24h < 0 ? 'rotate-180' : ''}`} />
                         <span>{crypto.price_change_percentage_24h.toFixed(2)}%</span>
@@ -269,21 +269,21 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                         isProcessing
                           ? 'opacity-50 cursor-not-allowed'
                           : isInThisList
-                          ? 'bg-gradient-to-r from-[#16A34A]/10 to-[#15803D]/10 border border-[#16A34A]/30 hover:scale-105'
+                          ? 'bg-gradient-to-r from-[#00FF88]/10 to-[#15803D]/10 border border-[#00FF88]/30 hover:scale-105'
                           : 'bg-gray-800/30 border border-gray-600/30 hover:bg-gray-700/40 hover:scale-105 hover:border-gray-500/50'
                       }`}
                     >
                       <div className="flex items-center space-x-4">
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold shadow-lg"
-                          style={{ backgroundColor: list.color || '#6366F1' }}
+                          style={{ backgroundColor: list.color || '#00FF88' }}
                         >
                           {list.icon || '📋'}
                         </div>
                         <div className="text-left">
                           <div className="font-bold text-[#F9FAFB] mb-1 flex items-center space-x-2">
                             <span>{list.name}</span>
-                            {list.is_pinned && <Crown className="w-3 h-3 text-[#F59E0B]" />}
+                            {list.is_pinned && <Crown className="w-3 h-3 text-[#FFA366]" />}
                           </div>
                           <div className="text-gray-400 text-sm">
                             {list.items?.length || 0} crypto{(list.items?.length || 0) !== 1 ? 's' : ''}
@@ -295,14 +295,14 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                         {isProcessing ? (
                           <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                         ) : isInThisList ? (
-                          <div className="flex items-center space-x-2 bg-[#16A34A]/20 px-3 py-1 rounded-full">
-                            <Check className="w-4 h-4 text-[#16A34A]" />
-                            <span className="text-[#16A34A] text-sm font-bold">Ajoutée</span>
+                          <div className="flex items-center space-x-2 bg-[#00FF88]/20 px-3 py-1 rounded-full">
+                            <Check className="w-4 h-4 text-[#00FF88]" />
+                            <span className="text-[#00FF88] text-sm font-bold">Ajoutée</span>
                           </div>
                         ) : (
-                          <div className="flex items-center space-x-2 bg-gray-600/20 group-hover:bg-[#6366F1]/20 px-3 py-1 rounded-full transition-colors">
-                            <Plus className="w-4 h-4 text-gray-400 group-hover:text-[#6366F1]" />
-                            <span className="text-gray-400 group-hover:text-[#6366F1] text-sm font-bold">Ajouter</span>
+                          <div className="flex items-center space-x-2 bg-gray-600/20 group-hover:bg-[#00FF88]/20 px-3 py-1 rounded-full transition-colors">
+                            <Plus className="w-4 h-4 text-gray-400 group-hover:text-[#00FF88]" />
+                            <span className="text-gray-400 group-hover:text-[#00FF88] text-sm font-bold">Ajouter</span>
                           </div>
                         )}
                       </div>

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { Eye, EyeOff, Mail, Lock, User, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
-import Footer from '@/components/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function SignUpPage() {
@@ -48,10 +47,30 @@ export default function SignUpPage() {
 
     try {
       const { data, error } = await signUp(email, password)
-      
+
       if (error) {
-        setMessage({ type: 'error', text: error.message })
-      } else {
+        // Gérer différents types d'erreurs Supabase
+        let errorMessage = t('auth.signin.error.unexpected')
+        const errorMsg = typeof error === 'string' ? error : (error?.message || '')
+
+        // Vérifier si l'email existe déjà
+        if (errorMsg.includes('already') ||
+            errorMsg.includes('exists') ||
+            errorMsg.includes('registered') ||
+            errorMsg.includes('déjà')) {
+          errorMessage = t('auth.signup.error.email_exists')
+        } else if (errorMsg.includes('email') || errorMsg.includes('Email')) {
+          errorMessage = errorMsg
+        } else if (errorMsg) {
+          errorMessage = errorMsg
+        }
+
+        setMessage({ type: 'error', text: errorMessage })
+        setLoading(false)
+        return
+      }
+
+      if (data?.user) {
         setMessage({
           type: 'success',
           text: t('auth.signup.success')
@@ -61,23 +80,24 @@ export default function SignUpPage() {
           handleRedirectAfterLogin()
         }, 2000)
       }
-    } catch (error) {
-      setMessage({ type: 'error', text: t('auth.signin.error.unexpected') })
-      console.error('Auth error:', error)
-    } finally {
+    } catch (error: any) {
+      setMessage({
+        type: 'error',
+        text: error?.message || t('auth.signin.error.unexpected')
+      })
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#111827] text-[#F9FAFB] relative overflow-hidden">
+    <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] relative overflow-hidden">
       {/* Background Pattern */}
       <div className="fixed inset-0 pattern-dots opacity-30"></div>
       
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-[#6366F1]/10 via-[#8B5CF6]/5 to-transparent rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-tl from-[#A855F7]/8 to-transparent rounded-full blur-[100px]"></div>
+        <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-[#00FF88]/10 via-[#00D9FF]/6 to-transparent rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-tl from-[#FFA366]/10 via-[#8B5CF6]/5 to-transparent rounded-full blur-[100px]"></div>
       </div>
       
       <div className="flex items-center justify-center min-h-screen p-4">
@@ -94,9 +114,9 @@ export default function SignUpPage() {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-2xl mb-6 shadow-2xl glow-effect">
+            <div className="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-2xl mb-6 shadow-2xl glow-effect">
               <User className="w-8 h-8 text-white" />
-              <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/50 to-[#A855F7]/50 rounded-2xl blur-xl"></div>
             </div>
             <h1 className="text-4xl font-bold text-[#F9FAFB] mb-4 tracking-tight text-shadow">{t('auth.signup.title')}</h1>
             <p className="text-gray-400 text-lg font-light">{t('auth.signup.subtitle')}</p>
@@ -128,7 +148,7 @@ export default function SignUpPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88] focus:ring-2 focus:ring-[#00FF88]/20 transition-all shadow-lg"
                   placeholder={t('auth.signin.email_placeholder')}
                   disabled={loading}
                 />
@@ -146,7 +166,7 @@ export default function SignUpPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
+                  className="w-full pl-12 pr-12 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88] focus:ring-2 focus:ring-[#00FF88]/20 transition-all shadow-lg"
                   placeholder={t('auth.signin.password_placeholder')}
                   disabled={loading}
                 />
@@ -173,7 +193,7 @@ export default function SignUpPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#6366F1] focus:ring-2 focus:ring-[#6366F1]/20 transition-all shadow-lg"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88] focus:ring-2 focus:ring-[#00FF88]/20 transition-all shadow-lg"
                   placeholder={t('auth.signin.password_placeholder')}
                   disabled={loading}
                 />
@@ -185,16 +205,16 @@ export default function SignUpPage() {
               <input
                 type="checkbox"
                 id="terms"
-                className="mt-1 w-4 h-4 text-[#6366F1] border-gray-600 rounded focus:ring-[#6366F1] bg-gray-700"
+                className="mt-1 w-4 h-4 text-[#00FF88] border-gray-600 rounded focus:ring-[#00FF88] bg-gray-700"
                 required
               />
               <label htmlFor="terms" className="text-sm text-gray-400">
                 {t('auth.signup.terms1')}{' '}
-                <Link href="#" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors">
+                <Link href="#" className="text-[#00FF88] hover:text-[#8B5CF6] transition-colors">
                   {t('auth.signup.terms2')}
                 </Link>{' '}
                 {t('auth.signup.terms3')}{' '}
-                <Link href="#" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors">
+                <Link href="#" className="text-[#00FF88] hover:text-[#8B5CF6] transition-colors">
                   {t('auth.signup.terms4')}
                 </Link>
               </label>
@@ -204,7 +224,7 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] hover:from-[#5B21B6] hover:via-[#7C3AED] hover:to-[#9333EA] text-white font-bold py-4 px-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl hover:shadow-[#6366F1]/40 hover:scale-105"
+              className="w-full bg-gradient-to-r from-[#00FF88] via-[#8B5CF6] to-[#A855F7] hover:from-[#8B5CF6] hover:via-[#7C3AED] hover:to-[#9333EA] text-white font-bold py-4 px-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl hover:shadow-[#00FF88]/40 hover:scale-105"
             >
               {loading ? (
                 <>
@@ -224,7 +244,7 @@ export default function SignUpPage() {
               {' '}
               <Link
                 href="/auth/signin"
-                className="text-[#6366F1] hover:text-[#8B5CF6] font-semibold ml-1 transition-colors"
+                className="text-[#00FF88] hover:text-[#8B5CF6] font-semibold ml-1 transition-colors"
               >
                 {t('auth.signup.signin')}
               </Link>
@@ -238,15 +258,15 @@ export default function SignUpPage() {
               <h4 className="text-[#F9FAFB] font-bold mb-4 tracking-tight">{t('auth.signup.features.title')}</h4>
               <ul className="text-gray-400 space-y-3">
                 <li className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-[#00FF88] flex-shrink-0" />
                   <span className="font-medium">{t('auth.signup.features.sync')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-[#00FF88] flex-shrink-0" />
                   <span className="font-medium">{t('auth.signup.features.backtest')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-[#00FF88] flex-shrink-0" />
                   <span className="font-medium">{t('auth.signup.features.analysis')}</span>
                 </li>
               </ul>
@@ -276,9 +296,6 @@ export default function SignUpPage() {
           background-size: 20px 20px;
         }
       `}</style>
-
-      {/* Footer */}
-      <Footer />
     </div>
   )
 }

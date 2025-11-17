@@ -22,8 +22,8 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative border-t border-gray-800/40 glass-effect-strong">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/50"></div>
+    <footer className="relative border-t border-gray-800/40 bg-[#0A0E1A]/95 backdrop-blur-xl">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0A0E1A]"></div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
         {/* Main Footer Content */}
@@ -49,13 +49,13 @@ export default function Footer() {
 
             {/* Social Links */}
             <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#6366F1]/20 hover:text-[#6366F1] transition-all duration-300">
+              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
                 <Users className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#6366F1]/20 hover:text-[#6366F1] transition-all duration-300">
+              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
                 <Star className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#6366F1]/20 hover:text-[#6366F1] transition-all duration-300">
+              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
                 <Activity className="w-5 h-5" />
               </a>
             </div>
@@ -97,13 +97,13 @@ export default function Footer() {
         <div className="border-t border-gray-800/40 pt-12 mb-12">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="glass-effect rounded-2xl p-6 text-center">
-              <Shield className="w-8 h-8 text-[#16A34A] mx-auto mb-3" />
+              <Shield className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
               <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.rgpd')}</div>
               <div className="text-xs text-gray-400">{t('home.footer.compliant')}</div>
             </div>
 
             <div className="glass-effect rounded-2xl p-6 text-center">
-              <CheckCircle className="w-8 h-8 text-[#6366F1] mx-auto mb-3" />
+              <CheckCircle className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
               <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.iso')}</div>
               <div className="text-xs text-gray-400">{t('home.footer.certified')}</div>
             </div>
@@ -115,9 +115,9 @@ export default function Footer() {
             </div>
 
             <div className="glass-effect rounded-2xl p-6 text-center">
-              <div className="w-2 h-2 bg-[#16A34A] rounded-full mx-auto mb-3 animate-pulse"></div>
+              <div className="w-2 h-2 bg-[#00FF88] rounded-full mx-auto mb-3 animate-pulse"></div>
               <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
-              <div className="text-xs text-[#16A34A] font-semibold">{t('home.footer.operational')}</div>
+              <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
             </div>
           </div>
         </div>
@@ -150,13 +150,13 @@ export default function Footer() {
         }
 
         .glass-effect {
-          background: rgba(17, 24, 39, 0.85);
+          background: rgba(10, 14, 26, 0.85);
           backdrop-filter: blur(24px);
           border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .glass-effect-strong {
-          background: rgba(17, 24, 39, 0.95);
+          background: rgba(10, 14, 26, 0.95);
           backdrop-filter: blur(40px);
           border: 1px solid rgba(255, 255, 255, 0.15);
         }

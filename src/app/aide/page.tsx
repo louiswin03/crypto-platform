@@ -83,7 +83,7 @@ export default function AidePage() {
     {
       category: language === 'fr' ? 'Portefeuille' : 'Portfolio',
       icon: Wallet,
-      color: '#F59E0B',
+      color: '#FFA366',
       questions: [
         {
           q: language === 'fr' ? 'Comment suivre mes gains/pertes ?' : 'How to track my gains/losses?',
@@ -108,7 +108,7 @@ export default function AidePage() {
     {
       category: language === 'fr' ? 'Graphiques' : 'Charts',
       icon: TrendingUp,
-      color: '#16A34A',
+      color: '#00FF88',
       questions: [
         {
           q: language === 'fr' ? 'Comment lire les graphiques ?' : 'How to read the charts?',
@@ -192,7 +192,7 @@ export default function AidePage() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-[#111827] text-[#F9FAFB] relative overflow-hidden">
+      <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] relative overflow-hidden">
         {/* Background Pattern */}
         <div className="fixed inset-0 pattern-dots opacity-30"></div>
 

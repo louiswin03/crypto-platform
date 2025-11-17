@@ -72,7 +72,7 @@ export default function ReplayControls({ replayService }: ReplayControlsProps) {
         >
           {/* Progression */}
           <div
-            className="h-full bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-full transition-all duration-200 shadow-lg"
+            className="h-full bg-gradient-to-r from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-full transition-all duration-200 shadow-lg"
             style={{ width: `${timeInfo.progress * 100}%` }}
           />
 
@@ -181,7 +181,7 @@ export default function ReplayControls({ replayService }: ReplayControlsProps) {
               onClick={() => replayService.setSpeed(speed)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                 replayState.speed === speed
-                  ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white shadow-lg scale-105'
+                  ? 'bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white shadow-lg scale-105'
                   : 'bg-white/[0.05] backdrop-blur-sm border border-white/10 hover:bg-white/[0.1] text-[#E5E7EB]'
               }`}
             >

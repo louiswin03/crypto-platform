@@ -12,8 +12,14 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const limit = searchParams.get('limit') || '1'
+    const forceRefresh = searchParams.get('_t') // Timestamp pour forcer le refresh
 
     const cacheKey = APICache.generateKey('alternative', 'fear-greed', limit)
+
+    // Si _t est présent, ignorer le cache (force refresh)
+    if (forceRefresh) {
+      apiCache.delete(cacheKey)
+    }
 
     const data = await apiCache.fetchWithCache(
       cacheKey,
@@ -45,7 +51,7 @@ export async function GET(request: NextRequest) {
           throw error
         }
       },
-      APICache.DURATIONS.SHORT // Cache de 1 minute seulement
+      60000 // Cache de 1 minute pour Fear & Greed (mis à jour moins souvent)
     )
 
     return NextResponse.json(data, {

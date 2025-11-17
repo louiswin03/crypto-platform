@@ -9,6 +9,7 @@ interface UseAuthReturn {
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ success?: boolean; error?: string }>
   signUp: (email: string, password: string, displayName?: string) => Promise<{ success?: boolean; error?: string }>
+  resetPassword: (email: string) => Promise<{ success?: boolean; error?: string }>
   signOut: () => void
 }
 
@@ -120,6 +121,30 @@ export const useAuth = (): UseAuthReturn => {
     }
   }
 
+  const resetPassword = async (email: string) => {
+    try {
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        return { error: data.error || 'Erreur lors de l\'envoi de l\'email' }
+      }
+
+      return { success: true }
+
+    } catch (error: any) {
+      console.error('Erreur resetPassword:', error)
+      return { error: error.message || 'Erreur de connexion au serveur' }
+    }
+  }
+
   const signOut = () => {
     DatabaseAuthService.logout()
     setUser(null)
@@ -130,6 +155,7 @@ export const useAuth = (): UseAuthReturn => {
     loading,
     signIn,
     signUp,
+    resetPassword,
     signOut
   }
 }

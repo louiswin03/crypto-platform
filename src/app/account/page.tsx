@@ -49,7 +49,7 @@ const createSupabaseAdmin = () => {
 }
 
 export default function AccountPage() {
-  const { user, signOut, loading: authLoading } = useAuth()
+  const { user, signOut, resetPassword, loading: authLoading } = useAuth()
   const { isDarkMode, toggleTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
   const router = useRouter()
@@ -57,6 +57,7 @@ export default function AccountPage() {
   const initialTab = (searchParams.get('tab') as TabType) || 'profile'
 
   const [loading, setLoading] = useState(true)
+  const [sendingPasswordReset, setSendingPasswordReset] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>(initialTab)
   const [userStats, setUserStats] = useState<UserStats | null>(null)
   const [activityLog, setActivityLog] = useState<ActivityItem[]>([])
@@ -156,9 +157,20 @@ export default function AccountPage() {
         .eq('user_id', authData.user.id)
 
 
+      // 🔗 Récupérer les exchanges connectés (depuis exchange_keys)
+      const { data: exchanges, error: exchangesError } = await supabaseAdmin
+        .from('exchange_keys')
+        .select('*')
+        .eq('user_id', authData.user.id)
+        .eq('status', 'active')
+
+      if (exchangesError) {
+        console.error('❌ Erreur lors de la récupération des exchanges:', exchangesError)
+      }
+
       const stats: UserStats = {
         watchlists_count: watchlists?.length || 0,
-        exchanges_count: 0, // TODO: implémenter quand la table exchanges sera prête
+        exchanges_count: exchanges?.length || 0, // Nombre réel d'exchanges connectés
         cryptos_count: watchlistItems?.length || 0, // Nombre de cryptos suivies
         strategies_count: strategies?.length || 0 // Nombre de stratégies backtest sauvegardées
       }
@@ -190,6 +202,26 @@ export default function AccountPage() {
   const handleSignOut = async () => {
     await signOut()
     router.push('/')
+  }
+
+  const handlePasswordReset = async () => {
+    if (!user?.email) return
+
+    try {
+      setSendingPasswordReset(true)
+      const { success, error } = await resetPassword(user.email)
+
+      if (success) {
+        alert(t('security.password_reset_sent'))
+      } else {
+        alert(error || t('security.password_reset_error'))
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'email:', error)
+      alert(t('security.password_reset_error'))
+    } finally {
+      setSendingPasswordReset(false)
+    }
   }
 
   // Note: toggleDarkMode est maintenant toggleTheme du context global
@@ -292,9 +324,9 @@ export default function AccountPage() {
   if (authLoading || loading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-[#111827] text-[#F9FAFB] flex items-center justify-center">
+        <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#00FF88] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-400">{t('account.loading')}</p>
           </div>
         </div>
@@ -358,14 +390,15 @@ export default function AccountPage() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-[#111827] relative overflow-hidden">
+      <div className="min-h-screen bg-[#0A0E1A] relative overflow-hidden">
         {/* Background with gradient */}
-        <div className="fixed inset-0 bg-gradient-to-br from-[#111827] via-[#1E293B] to-[#111827]"></div>
+        <div className="fixed inset-0 bg-gradient-to-br from-[#0A0E1A] via-[#1E293B] to-[#0A0E1A]"></div>
         <div className="fixed inset-0 pattern-grid opacity-20"></div>
 
         {/* Gradient orbs */}
-        <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#6366F1]/10 rounded-full blur-3xl"></div>
-        <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-[#8B5CF6]/10 rounded-full blur-3xl"></div>
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#00D9FF]/10 rounded-full blur-3xl"></div>
+        <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-[#FFA366]/10 rounded-full blur-3xl"></div>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#8B5CF6]/8 rounded-full blur-3xl"></div>
 
         {/* Navigation */}
         <SmartNavigation />
@@ -377,10 +410,10 @@ export default function AccountPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
               <div className="flex items-center space-x-6">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#A855F7] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl shadow-[#6366F1]/25">
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl shadow-[#00FF88]/25">
                     {getUserInitials()}
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#16A34A] border-4 border-[#111827] rounded-full"></div>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#00FF88] border-4 border-[#0A0E1A] rounded-full"></div>
                 </div>
                 <div>
                   <h1 className={cn("text-5xl md:text-6xl font-black tracking-tight font-display mb-2", themeClasses.text.primary(isDarkMode))}>
@@ -400,14 +433,14 @@ export default function AccountPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 rounded-xl transition-all duration-300 font-semibold ${
+                    className={`flex-1 flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl transition-all duration-300 font-medium border-2 min-w-[120px] ${
                       activeTab === tab.id
-                        ? 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white shadow-lg shadow-[#6366F1]/30 scale-105'
-                        : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40'
+                        ? 'bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/30 shadow-sm'
+                        : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 border-transparent'
                     }`}
                   >
-                    <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'animate-pulse' : ''}`} />
-                    <span className="hidden sm:inline">{tab.label}</span>
+                    <tab.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === tab.id ? '' : ''}`} />
+                    <span className="hidden sm:inline text-sm whitespace-nowrap">{tab.label}</span>
                   </button>
                 ))}
               </div>
@@ -429,10 +462,10 @@ export default function AccountPage() {
                     <button
                       onClick={() => isEditing ? handleSaveProfile() : setIsEditing(true)}
                       disabled={loading}
-                      className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                      className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2 ${
                         isEditing
-                          ? 'bg-[#16A34A] text-white hover:bg-[#15803D] shadow-lg shadow-[#16A34A]/25'
-                          : 'bg-[#6366F1] text-white hover:bg-[#5B21B6] shadow-lg shadow-[#6366F1]/25'
+                          ? 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
+                          : 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
                       }`}
                     >
                       {loading ? (
@@ -451,10 +484,10 @@ export default function AccountPage() {
                       {/* User Avatar & Basic Info */}
                       <div className="text-center lg:text-left">
                         <div className="relative inline-block mb-6">
-                          <div className="w-24 h-24 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl">
+                          <div className="w-24 h-24 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl">
                             {getUserInitials()}
                           </div>
-                          <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#6366F1] text-white rounded-full flex items-center justify-center hover:bg-[#5B21B6] transition-colors shadow-lg">
+                          <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 rounded-full flex items-center justify-center hover:bg-[#00FF88]/20 hover:border-[#00FF88]/40 transition-all duration-300 shadow-sm">
                             <Camera className="w-4 h-4" />
                           </button>
                         </div>
@@ -477,12 +510,12 @@ export default function AccountPage() {
                           <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <Mail className="w-5 h-5 text-[#6366F1]" />
+                            <Mail className="w-5 h-5 text-[#00FF88]" />
                             <div className="flex-1">
                               <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>{user?.email}</div>
                               <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.email')}</div>
                             </div>
-                            <div className="px-2 py-1 bg-[#16A34A]/20 text-[#16A34A] text-xs rounded-full font-semibold">
+                            <div className="px-2 py-1 bg-[#00FF88]/20 text-[#00FF88] text-xs rounded-full font-semibold">
                               {t('contact.verified')}
                             </div>
                           </div>
@@ -498,7 +531,7 @@ export default function AccountPage() {
                                   value={editForm.phone}
                                   onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
                                   placeholder={t('contact.phone_placeholder')}
-                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#6366F1] focus:outline-none transition-colors",
+                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#00FF88] focus:outline-none transition-colors",
                                     isDarkMode
                                       ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
                                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -518,7 +551,7 @@ export default function AccountPage() {
                           <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <MapPin className="w-5 h-5 text-[#F59E0B]" />
+                            <MapPin className="w-5 h-5 text-[#FFA366]" />
                             <div className="flex-1">
                               {isEditing ? (
                                 <input
@@ -526,7 +559,7 @@ export default function AccountPage() {
                                   value={editForm.location}
                                   onChange={(e) => setEditForm({...editForm, location: e.target.value})}
                                   placeholder={t('contact.location_placeholder')}
-                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#6366F1] focus:outline-none transition-colors",
+                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#00FF88] focus:outline-none transition-colors",
                                     isDarkMode
                                       ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
                                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -571,13 +604,13 @@ export default function AccountPage() {
                       )}>{t('stats.title')}</h3>
 
                       <div className="grid grid-cols-2 gap-6">
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#6366F1]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#6366F1]/30">
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
                           <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#6366F1]/20 rounded-xl">
-                              <Star className="w-5 h-5 text-[#6366F1]" />
+                            <div className="p-2 bg-[#00FF88]/20 rounded-xl">
+                              <Star className="w-5 h-5 text-[#00FF88]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#6366F1] mb-2 font-display">
+                          <div className="text-4xl font-bold text-[#00FF88] mb-2 font-display">
                             {userStats?.watchlists_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm font-medium">{t('stats.watchlists')}</div>
@@ -585,20 +618,20 @@ export default function AccountPage() {
                             <div className="mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-xs text-[#6366F1] hover:text-[#8B5CF6] transition-colors"
+                                className="text-xs text-[#00FF88] hover:text-[#8B5CF6] transition-colors"
                               >
                                 {t('stats.create_first')}
                               </Link>
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#16A34A]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#16A34A]/30">
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
                           <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#16A34A]/20 rounded-xl">
-                              <Activity className="w-5 h-5 text-[#16A34A]" />
+                            <div className="p-2 bg-[#00FF88]/20 rounded-xl">
+                              <Activity className="w-5 h-5 text-[#00FF88]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#16A34A] mb-2 font-display">
+                          <div className="text-4xl font-bold text-[#00FF88] mb-2 font-display">
                             {userStats?.exchanges_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm font-medium">{t('stats.exchanges')}</div>
@@ -610,13 +643,13 @@ export default function AccountPage() {
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#F59E0B]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#F59E0B]/30">
+                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
                           <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
-                              <TrendingUp className="w-5 h-5 text-[#F59E0B]" />
+                            <div className="p-2 bg-[#FFA366]/20 rounded-xl">
+                              <TrendingUp className="w-5 h-5 text-[#FFA366]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#F59E0B] mb-2 font-display">
+                          <div className="text-4xl font-bold text-[#FFA366] mb-2 font-display">
                             {userStats?.cryptos_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm font-medium">{t('stats.cryptos')}</div>
@@ -624,7 +657,7 @@ export default function AccountPage() {
                             <div className="mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-xs text-[#F59E0B] hover:text-[#FBBF24] transition-colors"
+                                className="text-xs text-[#FFA366] hover:text-[#FBBF24] transition-colors"
                               >
                                 {t('stats.add_cryptos')}
                               </Link>
@@ -656,7 +689,7 @@ export default function AccountPage() {
 
                       <div className="mt-8 glass-effect rounded-2xl p-6">
                         <h4 className="font-semibold text-[#F9FAFB] mb-4 flex items-center">
-                          <TrendingUp className="w-5 h-5 text-[#16A34A] mr-2" />
+                          <TrendingUp className="w-5 h-5 text-[#00FF88] mr-2" />
                           {t('performance.title')}
                         </h4>
                         {performanceData ? (
@@ -664,7 +697,7 @@ export default function AccountPage() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-400">{t('performance.this_month')}</span>
                               <span className={`font-semibold ${
-                                performanceData.monthly_return >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                                performanceData.monthly_return >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                               }`}>
                                 {performanceData.monthly_return >= 0 ? '+' : ''}{(performanceData.monthly_return * 100).toFixed(1)}%
                               </span>
@@ -672,7 +705,7 @@ export default function AccountPage() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-400">{t('performance.last_3_months')}</span>
                               <span className={`font-semibold ${
-                                performanceData.quarterly_return >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                                performanceData.quarterly_return >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                               }`}>
                                 {performanceData.quarterly_return >= 0 ? '+' : ''}{(performanceData.quarterly_return * 100).toFixed(1)}%
                               </span>
@@ -680,7 +713,7 @@ export default function AccountPage() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-400">{t('performance.this_year')}</span>
                               <span className={`font-semibold ${
-                                performanceData.yearly_return >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
+                                performanceData.yearly_return >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                               }`}>
                                 {performanceData.yearly_return >= 0 ? '+' : ''}{(performanceData.yearly_return * 100).toFixed(1)}%
                               </span>
@@ -727,7 +760,7 @@ export default function AccountPage() {
                         <div className="font-semibold text-[#F9FAFB]">{t('settings.email_notifications')}</div>
                         <div className="text-gray-400 text-sm">{t('settings.email_notifications_desc')}</div>
                       </div>
-                      <button className="relative w-12 h-6 bg-[#6366F1] rounded-full transition-colors">
+                      <button className="relative w-12 h-6 bg-[#00FF88] rounded-full transition-colors">
                         <div className="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div>
                       </button>
                     </div>
@@ -742,7 +775,7 @@ export default function AccountPage() {
                       <button
                         onClick={toggleTheme}
                         className={`relative w-12 h-6 rounded-full transition-colors ${
-                          isDarkMode ? 'bg-[#6366F1]' : 'bg-gray-300'
+                          isDarkMode ? 'bg-[#00FF88]' : 'bg-gray-300'
                         }`}
                       >
                         <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
@@ -761,7 +794,7 @@ export default function AccountPage() {
                       <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value as 'fr' | 'en')}
-                        className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#6366F1] focus:outline-none"
+                        className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none"
                       >
                         <option value="fr">Français</option>
                         <option value="en">English</option>
@@ -775,7 +808,7 @@ export default function AccountPage() {
                         <div className="font-semibold text-[#F9FAFB]">{t('settings.currency')}</div>
                         <div className="text-gray-400 text-sm">{t('settings.currency_desc')}</div>
                       </div>
-                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#6366F1] focus:outline-none">
+                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none">
                         <option value="EUR">EUR (€)</option>
                         <option value="USD">USD ($)</option>
                         <option value="BTC">BTC (₿)</option>
@@ -794,16 +827,30 @@ export default function AccountPage() {
                   <div className="glass-effect rounded-2xl p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-[#16A34A]/20 rounded-2xl flex items-center justify-center">
-                          <Lock className="w-6 h-6 text-[#16A34A]" />
+                        <div className="w-12 h-12 bg-[#00FF88]/20 rounded-2xl flex items-center justify-center">
+                          <Lock className="w-6 h-6 text-[#00FF88]" />
                         </div>
                         <div>
                           <div className="font-semibold text-[#F9FAFB]">{t('security.password')}</div>
                           <div className="text-gray-400 text-sm">{t('security.password_changed')} 2 {t('security.password_days')}</div>
                         </div>
                       </div>
-                      <button className="px-6 py-3 bg-[#6366F1] text-white rounded-xl hover:bg-[#5B21B6] transition-colors font-semibold">
-                        {t('security.modify')}
+                      <button
+                        onClick={handlePasswordReset}
+                        disabled={sendingPasswordReset}
+                        className="px-6 py-3 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-xl transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 shadow-sm hover:shadow-md"
+                      >
+                        {sendingPasswordReset ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>{t('security.sending')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-4 h-4" />
+                            <span>{t('security.modify')}</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -811,8 +858,8 @@ export default function AccountPage() {
                   <div className="glass-effect rounded-2xl p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-[#F59E0B]/20 rounded-2xl flex items-center justify-center">
-                          <Shield className="w-6 h-6 text-[#F59E0B]" />
+                        <div className="w-12 h-12 bg-[#FFA366]/20 rounded-2xl flex items-center justify-center">
+                          <Shield className="w-6 h-6 text-[#FFA366]" />
                         </div>
                         <div>
                           <div className="font-semibold text-[#F9FAFB]">{t('security.2fa')}</div>
@@ -830,13 +877,13 @@ export default function AccountPage() {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between p-4 bg-gray-800/30 rounded-xl">
                         <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-[#6366F1]/20 rounded-xl flex items-center justify-center">
-                            <Smartphone className="w-5 h-5 text-[#6366F1]" />
+                          <div className="w-10 h-10 bg-[#00FF88]/20 rounded-xl flex items-center justify-center">
+                            <Smartphone className="w-5 h-5 text-[#00FF88]" />
                           </div>
                           <div>
                             <div className="font-medium text-[#F9FAFB] flex items-center space-x-2">
                               <span>{t('security.current_session')}</span>
-                              <span className="px-2 py-1 bg-[#16A34A]/20 text-[#16A34A] text-xs font-semibold rounded-full">
+                              <span className="px-2 py-1 bg-[#00FF88]/20 text-[#00FF88] text-xs font-semibold rounded-full">
                                 {t('security.active')}
                               </span>
                             </div>
@@ -872,9 +919,9 @@ export default function AccountPage() {
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <div className={`w-3 h-3 rounded-full mt-2 animate-pulse-slow ${
-                          activity.type === 'backtest' ? 'bg-[#6366F1]' :
-                          activity.type === 'security' ? 'bg-[#F59E0B]' :
-                          activity.type === 'auth' ? 'bg-[#16A34A]' :
+                          activity.type === 'backtest' ? 'bg-[#00FF88]' :
+                          activity.type === 'security' ? 'bg-[#FFA366]' :
+                          activity.type === 'auth' ? 'bg-[#00FF88]' :
                           'bg-gray-400'
                         }`}></div>
                         <div className="flex-1">
