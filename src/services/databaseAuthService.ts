@@ -37,27 +37,27 @@ export interface AuthenticatedUser {
 
 export interface LoginResponse {
   user: AuthenticatedUser
-  token: string
+  // Note: Le token est maintenant dans un cookie httpOnly, pas dans la réponse
 }
 
 export class DatabaseAuthService {
 
-  // Récupérer l'utilisateur courant depuis le localStorage (côté client)
-  static getCurrentUserFromStorage(): { user: AuthenticatedUser; token: string } | null {
+  /**
+   * Récupérer l'utilisateur courant depuis le localStorage (côté client)
+   * Note: Le token est maintenant dans un cookie httpOnly, on ne stocke que les données utilisateur
+   */
+  static getCurrentUserFromStorage(): AuthenticatedUser | null {
     if (typeof window === 'undefined') return null
 
     try {
-      const userData = localStorage.getItem('crypto_platform_auth')
+      const userData = localStorage.getItem('crypto_platform_user')
       if (!userData) return null
 
       const parsed = JSON.parse(userData)
       return {
-        user: {
-          ...parsed.user,
-          createdAt: new Date(parsed.user.createdAt),
-          lastLogin: parsed.user.lastLogin ? new Date(parsed.user.lastLogin) : null
-        },
-        token: parsed.token
+        ...parsed,
+        createdAt: new Date(parsed.createdAt),
+        lastLogin: parsed.lastLogin ? new Date(parsed.lastLogin) : null
       }
     } catch (error) {
       console.error('Erreur lors de la récupération de l\'utilisateur:', error)
@@ -65,27 +65,43 @@ export class DatabaseAuthService {
     }
   }
 
-  // Sauvegarder l'utilisateur dans le localStorage (côté client)
-  static saveUserToStorage(user: AuthenticatedUser, token: string): void {
+  /**
+   * Sauvegarder les données utilisateur dans le localStorage (côté client)
+   * Note: Le token est géré automatiquement via cookie httpOnly
+   */
+  static saveUserToStorage(user: AuthenticatedUser): void {
     if (typeof window === 'undefined') return
 
     const userData = {
-      user,
-      token,
+      ...user,
       savedAt: new Date().toISOString()
     }
 
-    localStorage.setItem('crypto_platform_auth', JSON.stringify(userData))
+    localStorage.setItem('crypto_platform_user', JSON.stringify(userData))
 
     // Déclencher un événement pour notifier les composants
-    window.dispatchEvent(new CustomEvent('auth-state-changed', { detail: userData }))
+    window.dispatchEvent(new CustomEvent('auth-state-changed', { detail: { user } }))
   }
 
-  // Déconnecter l'utilisateur (côté client)
-  static logout(): void {
+  /**
+   * Déconnecter l'utilisateur (côté client)
+   * Appelle l'API pour supprimer le cookie httpOnly et nettoie le localStorage
+   */
+  static async logout(): Promise<void> {
     if (typeof window === 'undefined') return
 
-    localStorage.removeItem('crypto_platform_auth')
+    try {
+      // Appeler l'API pour supprimer le cookie httpOnly
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include' // Important pour envoyer les cookies
+      })
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error)
+    }
+
+    // Nettoyer le localStorage
+    localStorage.removeItem('crypto_platform_user')
 
     // Déclencher un événement pour notifier les composants
     window.dispatchEvent(new CustomEvent('auth-state-changed', { detail: null }))
@@ -96,31 +112,42 @@ export class DatabaseAuthService {
     return this.getCurrentUserFromStorage() !== null
   }
 
-  // Hook pour vérifier l'état de connexion (côté client)
+  /**
+   * Hook pour vérifier l'état de connexion (côté client)
+   * Vérifie que le cookie httpOnly est toujours valide
+   */
   static async verifyCurrentUser(): Promise<AuthenticatedUser | null> {
     const stored = this.getCurrentUserFromStorage()
     if (!stored) return null
 
-    // Vérifier la validité du token côté serveur
-    const user = await this.verifyTokenOnServer(stored.token)
+    // Vérifier la validité du cookie côté serveur
+    const user = await this.verifyTokenOnServer()
     if (!user) {
-      // Token invalide, nettoyer le localStorage
-      this.logout()
+      // Cookie invalide ou expiré, nettoyer le localStorage
+      await this.logout()
       return null
+    }
+
+    // Mettre à jour les données utilisateur si elles ont changé
+    if (JSON.stringify(stored) !== JSON.stringify(user)) {
+      this.saveUserToStorage(user)
     }
 
     return user
   }
 
-  // Vérifier le token côté serveur via API
-  private static async verifyTokenOnServer(token: string): Promise<AuthenticatedUser | null> {
+  /**
+   * Vérifier le cookie d'authentification côté serveur via API
+   * Le cookie est envoyé automatiquement par le navigateur
+   */
+  private static async verifyTokenOnServer(): Promise<AuthenticatedUser | null> {
     try {
       const response = await fetch('/api/auth/verify', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include' // Important pour envoyer les cookies
       })
 
       if (!response.ok) {
@@ -136,36 +163,48 @@ export class DatabaseAuthService {
     }
   }
 
-  // Méthodes utilitaires pour la migration
+  /**
+   * Migrer depuis l'ancien système localStorage avec token
+   * Nettoie les anciennes données et ne garde que les données utilisateur
+   */
   static migrateFromLocalStorage(): void {
     if (typeof window === 'undefined') return
 
     try {
-      // Récupérer les anciennes données localStorage
-      const oldCurrentUser = localStorage.getItem('crypto_platform_current_user')
-      const oldUsers = localStorage.getItem('crypto_platform_users')
-
-      if (oldCurrentUser || oldUsers) {
-
-        // Optionnel: afficher une notification à l'utilisateur
-        window.dispatchEvent(new CustomEvent('migration-needed', {
-          detail: { hasOldData: true }
-        }))
+      // Nettoyer l'ancien format avec token
+      const oldAuth = localStorage.getItem('crypto_platform_auth')
+      if (oldAuth) {
+        try {
+          const parsed = JSON.parse(oldAuth)
+          if (parsed.user) {
+            // Sauvegarder seulement les données utilisateur (pas le token)
+            this.saveUserToStorage(parsed.user)
+          }
+        } catch (e) {
+          console.error('Erreur lors de la migration:', e)
+        }
+        localStorage.removeItem('crypto_platform_auth')
       }
 
+      // Nettoyer les autres anciennes clés
+      this.cleanupOldLocalStorage()
+
     } catch (error) {
-      console.error('Erreur lors de la vérification de migration:', error)
+      console.error('Erreur lors de la migration:', error)
     }
   }
 
-  // Nettoyer les anciennes données localStorage après migration réussie
+  /**
+   * Nettoyer les anciennes données localStorage
+   * Garde seulement crypto_platform_user
+   */
   static cleanupOldLocalStorage(): void {
     if (typeof window === 'undefined') return
 
-    const keysToRemove = []
+    const keysToRemove: string[] = []
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
-      if (key && key.startsWith('crypto_platform_') && key !== 'crypto_platform_auth') {
+      if (key && key.startsWith('crypto_platform_') && key !== 'crypto_platform_user') {
         keysToRemove.push(key)
       }
     }

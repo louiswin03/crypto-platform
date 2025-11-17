@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import { decrypt } from '@/lib/encryption'
-import jwt from 'jsonwebtoken'
+import { getUserIdFromRequest } from '@/lib/jwt'
 
 export async function GET(request: NextRequest) {
   try {

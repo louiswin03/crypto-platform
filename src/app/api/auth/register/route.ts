@@ -1,10 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import { createToken } from '@/lib/jwt'
+import { checkRateLimit, getClientIp, RATE_LIMIT_PRESETS } from '@/lib/rateLimit'
+import { createAuthResponse } from '@/lib/cookies'
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - Protection contre brute force et spam
+    const clientIp = getClientIp(request.headers)
+    const rateLimitResult = checkRateLimit(clientIp, RATE_LIMIT_PRESETS.AUTH)
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Trop de tentatives d\'inscription. Veuillez réessayer plus tard.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(Math.ceil(rateLimitResult.retryAfter! / 1000)),
+            'X-RateLimit-Limit': String(RATE_LIMIT_PRESETS.AUTH.maxRequests),
+            'X-RateLimit-Remaining': String(rateLimitResult.remaining),
+            'X-RateLimit-Reset': String(rateLimitResult.resetTime)
+          }
+        }
+      )
+    }
+
     const { email, password, displayName } = await request.json()
 
     if (!email || !password) {
@@ -23,10 +44,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validation mot de passe
-    if (password.length < 6) {
+    // Validation mot de passe renforcée
+    if (password.length < 12) {
       return NextResponse.json(
-        { error: 'Le mot de passe doit contenir au moins 6 caractères' },
+        { error: 'Le mot de passe doit contenir au moins 12 caractères' },
+        { status: 400 }
+      )
+    }
+
+    // Vérifier la complexité du mot de passe
+    const hasUpperCase = /[A-Z]/.test(password)
+    const hasLowerCase = /[a-z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
+      return NextResponse.json(
+        {
+          error: 'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|<>)'
+        },
         { status: 400 }
       )
     }
@@ -49,12 +85,8 @@ export async function POST(request: NextRequest) {
     // Récupérer le profil
     const profile = await SupabaseDatabaseService.getUserProfile(user.id)
 
-    // Générer le token JWT
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET || 'your-super-secret-jwt-key',
-      { expiresIn: '7d' }
-    )
+    // Générer le token JWT (expire dans 4h pour plus de sécurité)
+    const token = createToken({ userId: user.id }, '4h')
 
     const authenticatedUser = {
       id: user.id,
@@ -65,11 +97,14 @@ export async function POST(request: NextRequest) {
       lastLogin: user.last_login
     }
 
-    return NextResponse.json({
-      success: true,
-      user: authenticatedUser,
+    // Retourner la réponse avec le token dans un cookie httpOnly sécurisé
+    return createAuthResponse(
+      {
+        success: true,
+        user: authenticatedUser
+      },
       token
-    })
+    )
 
   } catch (error: any) {
     console.error('Erreur API register:', error)

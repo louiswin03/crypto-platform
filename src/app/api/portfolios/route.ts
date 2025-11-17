@@ -1,28 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
-import jwt from 'jsonwebtoken'
+import { getUserIdFromRequest } from '@/lib/jwt'
 
 // GET - Récupérer tous les portfolios de l'utilisateur
 export async function GET(request: NextRequest) {
   try {
     // Authentification
     const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
     let userId: string
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = extractUserIdFromRequest(authHeader)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }
@@ -88,22 +79,13 @@ export async function POST(request: NextRequest) {
   try {
     // Authentification
     const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
     let userId: string
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+      userId = extractUserIdFromRequest(authHeader)
+    } catch (error) {
       return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
+        { error: 'Non authentifié' },
         { status: 401 }
       )
     }

@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { headers } from 'next/headers'
 import { supabase } from '@/lib/supabase'
-import jwt from 'jsonwebtoken'
+import { getUserIdFromRequest } from '@/lib/jwt'
 
 // Fonction pour vérifier le token JWT et récupérer l'userId (même que dans profile)
 async function getUserFromToken(request: NextRequest): Promise<string | null> {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
-import jwt from 'jsonwebtoken'
+import { getUserIdFromRequest } from '@/lib/jwt'
 
 // PUT - Modifier un portfolio
 export async function PUT(

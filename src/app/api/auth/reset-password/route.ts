@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { sendPasswordResetEmail } from '@/services/emailService'
 import { createClient } from '@supabase/supabase-js'
+import { checkRateLimit, getClientIp, RATE_LIMIT_PRESETS } from '@/lib/rateLimit'
 
 // Configuration Supabase
 const supabase = createClient(
@@ -17,6 +18,25 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting strict - Protection contre spam de reset password
+    const clientIp = getClientIp(request.headers)
+    const rateLimitResult = checkRateLimit(clientIp, RATE_LIMIT_PRESETS.PASSWORD_RESET)
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Trop de demandes de réinitialisation. Veuillez réessayer plus tard.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(Math.ceil(rateLimitResult.retryAfter! / 1000)),
+            'X-RateLimit-Limit': String(RATE_LIMIT_PRESETS.PASSWORD_RESET.maxRequests),
+            'X-RateLimit-Remaining': String(rateLimitResult.remaining),
+            'X-RateLimit-Reset': String(rateLimitResult.resetTime)
+          }
+        }
+      )
+    }
+
     const { email } = await request.json()
 
     if (!email) {
@@ -26,10 +46,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('📧 Tentative de réinitialisation pour:', email)
-
     // Vérifier si l'utilisateur existe
-    console.log('🔍 Recherche de l\'utilisateur...')
     const { data: users, error: userError } = await supabase
       .from('users')
       .select('id, email')
@@ -45,7 +62,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (!users || users.length === 0) {
-      console.log('❌ Utilisateur non trouvé')
       return NextResponse.json(
         { error: 'Aucun compte associé à cette adresse email' },
         { status: 404 }
@@ -53,18 +69,14 @@ export async function POST(request: NextRequest) {
     }
 
     const user = users[0]
-    console.log('✅ Utilisateur trouvé:', user.email)
 
     // Générer un token de réinitialisation sécurisé
     const token = crypto.randomBytes(32).toString('hex')
-    console.log('🔐 Token généré')
 
-    // Le token expire dans 3 heures (pour compenser les problèmes de timezone)
-    const expiresAt = new Date(Date.now() + 3 * 60 * 60 * 1000)
-    console.log('⏰ Token expire à (UTC):', expiresAt.toISOString())
+    // Le token expire dans 1 heure (réduit pour sécurité)
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
 
     // Supprimer les anciens tokens non utilisés pour cet utilisateur
-    console.log('🗑️ Suppression des anciens tokens...')
     const { error: deleteError } = await supabase
       .from('reset_tokens')
       .delete()
@@ -72,12 +84,11 @@ export async function POST(request: NextRequest) {
       .eq('used', false)
 
     if (deleteError) {
-      console.error('⚠️ Erreur lors de la suppression des anciens tokens:', deleteError)
+      console.error('Erreur lors de la suppression des anciens tokens:', deleteError)
       // Continuer quand même
     }
 
     // Stocker le token dans la base de données
-    console.log('💾 Insertion du nouveau token...')
     const { error: insertError } = await supabase
       .from('reset_tokens')
       .insert({
@@ -93,11 +104,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-    console.log('✅ Token stocké en base')
 
     // Envoyer l'email de réinitialisation
-    console.log('Tentative d\'envoi d\'email à:', user.email)
-
     try {
       const emailResult = await sendPasswordResetEmail(
         user.email,
@@ -107,13 +115,6 @@ export async function POST(request: NextRequest) {
 
       if (!emailResult.success) {
         console.error('Erreur lors de l\'envoi de l\'email:', emailResult.error)
-        // Ne pas bloquer si l'email échoue, juste logger
-        console.log('⚠️ Email non envoyé, mais token créé')
-      } else {
-        console.log(`✅ Email de réinitialisation envoyé à: ${email}`)
-        if (emailResult.previewUrl) {
-          console.log(`📧 Voir l'email de test: ${emailResult.previewUrl}`)
-        }
       }
     } catch (emailError: any) {
       console.error('Exception lors de l\'envoi d\'email:', emailError.message)

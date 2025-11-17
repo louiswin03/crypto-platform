@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { encrypt } from '@/lib/encryption'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
-import jwt from 'jsonwebtoken'
+import { getUserIdFromRequest } from '@/lib/jwt'
 import { verifyCsrfToken } from '@/lib/csrf'
 import { sanitizeInput } from '@/lib/sanitize'
 

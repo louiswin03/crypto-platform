@@ -22,12 +22,18 @@ export function middleware(request: NextRequest) {
     'camera=(), microphone=(), geolocation=(), interest-cohort=()'
   )
 
-  // Content Security Policy (CSP)
+  // Générer un nonce pour les scripts inline (CSP)
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+
+  // Content Security Policy (CSP) - Sécurisé
+  // 'unsafe-eval' retiré pour la sécurité
+  // 'unsafe-inline' conservé temporairement pour compatibilité avec TradingView
+  // TODO: Migrer vers des nonces pour tous les scripts inline
   response.headers.set(
     'Content-Security-Policy',
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://s3.tradingview.com https://s.tradingview.com",
+      `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com https://s3.tradingview.com https://s.tradingview.com`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: https: blob:",
@@ -35,9 +41,13 @@ export function middleware(request: NextRequest) {
       "frame-src 'self' https://s.tradingview.com https://www.tradingview.com https://tradingview-widget.com https://www.tradingview-widget.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
-      "form-action 'self'"
+      "form-action 'self'",
+      "upgrade-insecure-requests"
     ].join('; ')
   )
+
+  // Stocker le nonce pour l'utiliser dans les composants
+  response.headers.set('X-Nonce', nonce)
 
   // HSTS (Strict-Transport-Security) - force HTTPS
   if (process.env.NODE_ENV === 'production') {

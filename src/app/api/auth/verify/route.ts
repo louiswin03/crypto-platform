@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SupabaseDatabaseService } from '@/lib/supabaseDatabase'
-import jwt from 'jsonwebtoken'
+import { verifyToken } from '@/lib/jwt'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.substring(7) // Enlever "Bearer "
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
+      const decoded = verifyToken(token) as { userId: string }
       const user = await SupabaseDatabaseService.getUserById(decoded.userId)
 
       if (!user) {

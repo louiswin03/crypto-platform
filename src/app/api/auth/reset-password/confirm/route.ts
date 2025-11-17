@@ -25,9 +25,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (password.length < 6) {
+    // Validation mot de passe renforcée
+    if (password.length < 12) {
       return NextResponse.json(
-        { error: 'Le mot de passe doit contenir au moins 6 caractères' },
+        { error: 'Le mot de passe doit contenir au moins 12 caractères' },
+        { status: 400 }
+      )
+    }
+
+    // Vérifier la complexité du mot de passe
+    const hasUpperCase = /[A-Z]/.test(password)
+    const hasLowerCase = /[a-z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
+      return NextResponse.json(
+        {
+          error: 'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|<>)'
+        },
         { status: 400 }
       )
     }
@@ -56,16 +72,8 @@ export async function POST(request: NextRequest) {
     // Extraire l'email de l'objet users
     const email = (tokenData.users as any).email
 
-    console.log('🔍 Données du token:', {
-      expires_at: tokenData.expires_at,
-      used: tokenData.used,
-      now: new Date().toISOString(),
-      expiresDate: new Date(tokenData.expires_at).toISOString()
-    })
-
     // Vérifier si le token a déjà été utilisé
     if (tokenData.used) {
-      console.log('❌ Token déjà utilisé')
       return NextResponse.json(
         { error: 'Ce lien a déjà été utilisé' },
         { status: 400 }
@@ -76,26 +84,15 @@ export async function POST(request: NextRequest) {
     const expiresAt = new Date(tokenData.expires_at)
     const now = new Date()
 
-    console.log('⏰ Comparaison des dates:', {
-      expiresAt: expiresAt.getTime(),
-      now: now.getTime(),
-      isExpired: expiresAt < now
-    })
-
     if (expiresAt < now) {
-      console.log('❌ Token expiré')
       return NextResponse.json(
         { error: 'Ce lien a expiré. Veuillez demander un nouveau lien de réinitialisation' },
         { status: 400 }
       )
     }
 
-    console.log('✅ Token valide et non expiré')
-
     // Hasher le nouveau mot de passe
     const hashedPassword = await bcrypt.hash(password, 10)
-
-    console.log('🔒 Hash du nouveau mot de passe généré')
 
     // Mettre à jour le mot de passe de l'utilisateur
     const { error: updatePasswordError } = await supabase
@@ -124,8 +121,6 @@ export async function POST(request: NextRequest) {
       console.error('Erreur lors de la mise à jour du token:', updateTokenError)
       // Continuer quand même - le mot de passe a été changé
     }
-
-    console.log(`Mot de passe réinitialisé pour l'utilisateur: ${email}`)
 
     return NextResponse.json({
       success: true,

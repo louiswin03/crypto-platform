@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { supabase, SupabaseDatabaseService } from '@/lib/supabaseDatabase'
 import { decrypt } from '@/lib/encryption'
-import jwt from 'jsonwebtoken'
+import { getUserIdFromRequest } from '@/lib/jwt'
 
 // Fonction pour générer un JWT Coinbase Cloud API
 function generateCoinbaseJWT(apiKeyName: string, privateKey: string, requestMethod: string, requestPath: string): string {
