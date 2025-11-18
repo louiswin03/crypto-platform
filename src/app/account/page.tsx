@@ -97,6 +97,13 @@ function AccountPageContent() {
         return
       }
 
+      // Vérifier que authData.user et authData.user.id existent
+      if (!authData.user || !authData.user.id) {
+        console.error('❌ Données utilisateur invalides:', authData)
+        return
+      }
+
+      console.log('🔑 ID utilisateur:', authData.user.id)
 
       // 📋 Récupérer le profil directement depuis user_profiles
       const supabaseAdmin = createSupabaseAdmin()
@@ -105,6 +112,8 @@ function AccountPageContent() {
         .select('*')
         .eq('id', authData.user.id)
         .single()
+
+      console.log('👤 Profil récupéré:', profile)
 
 
       if (profile) {
@@ -138,25 +147,28 @@ function AccountPageContent() {
       }
 
       // 📊 Récupérer les stats de listes de suivis
-      const { data: watchlists } = await supabaseAdmin
+      const { data: watchlists, error: watchlistsError } = await supabaseAdmin
         .from('watchlists')
         .select('*')
         .eq('user_id', authData.user.id)
 
+      console.log('📋 Watchlists récupérées:', watchlists?.length || 0, watchlistsError ? `(erreur: ${watchlistsError.message})` : '')
 
       // Récupérer les éléments de watchlist pour calculer le nombre total de cryptos suivies
-      const { data: watchlistItems } = await supabaseAdmin
+      const { data: watchlistItems, error: watchlistItemsError } = await supabaseAdmin
         .from('watchlist_items')
         .select('*')
         .eq('user_id', authData.user.id)
 
+      console.log('💰 Cryptos suivies:', watchlistItems?.length || 0, watchlistItemsError ? `(erreur: ${watchlistItemsError.message})` : '')
 
       // 📈 Récupérer les stratégies de backtest
-      const { data: strategies } = await supabaseAdmin
+      const { data: strategies, error: strategiesError } = await supabaseAdmin
         .from('strategies')
         .select('*')
         .eq('user_id', authData.user.id)
 
+      console.log('📈 Stratégies:', strategies?.length || 0, strategiesError ? `(erreur: ${strategiesError.message})` : '')
 
       // 🔗 Récupérer les exchanges connectés (depuis exchange_keys)
       const { data: exchanges, error: exchangesError } = await supabaseAdmin
@@ -165,9 +177,7 @@ function AccountPageContent() {
         .eq('user_id', authData.user.id)
         .eq('status', 'active')
 
-      if (exchangesError) {
-        console.error('❌ Erreur lors de la récupération des exchanges:', exchangesError)
-      }
+      console.log('🔗 Exchanges connectés:', exchanges?.length || 0, exchangesError ? `(erreur: ${exchangesError.message})` : '')
 
       const stats: UserStats = {
         watchlists_count: watchlists?.length || 0,
@@ -176,6 +186,7 @@ function AccountPageContent() {
         strategies_count: strategies?.length || 0 // Nombre de stratégies backtest sauvegardées
       }
 
+      console.log('📊 Stats finales:', stats)
       setUserStats(stats)
       setActivityLog([]) // TODO: implémenter l'activité plus tard
       setPerformanceData(null) // TODO: implémenter les performances plus tard
@@ -250,6 +261,13 @@ function AccountPageContent() {
       updateData.phone = editForm.phone || null
       updateData.location = editForm.location || null
 
+
+      // Vérifier que authData.user et authData.user.id existent
+      if (!authData.user || !authData.user.id) {
+        console.error('Données utilisateur invalides:', authData)
+        alert('Erreur: Impossible de récupérer votre identifiant')
+        return
+      }
 
       // Sauvegarder directement dans Supabase
       const supabaseAdmin = createSupabaseAdmin()
@@ -580,17 +598,17 @@ function AccountPageContent() {
                       </div>
 
                       {isEditing && (
-                        <div className="flex space-x-3 pt-4">
+                        <div className="flex flex-col space-y-3 pt-4">
                           <button
                             onClick={() => {
                               setIsEditing(false)
                               setEditForm({
                                 email: user?.email || '',
-                                phone: user?.profile?.preferences?.phone || '',
-                                location: user?.profile?.preferences?.location || ''
+                                phone: profileDisplay.phone,
+                                location: profileDisplay.location
                               })
                             }}
-                            className="px-6 py-3 bg-gray-800/50 text-gray-300 rounded-xl hover:bg-gray-700/50 transition-colors font-semibold"
+                            className="w-full px-6 py-3 bg-gray-800/50 text-gray-300 rounded-xl hover:bg-gray-700/50 transition-colors font-semibold"
                           >
                             {t('profile.cancel')}
                           </button>
