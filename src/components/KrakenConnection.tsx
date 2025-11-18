@@ -285,7 +285,6 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
                     </div>
                   </div>
                 </div>
-              </div>
 
             <div className="flex gap-3 pt-4">
               <button
