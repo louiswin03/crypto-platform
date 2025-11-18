@@ -44,25 +44,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validation mot de passe renforcée
-    if (password.length < 12) {
+    // Validation mot de passe
+    if (password.length < 6) {
       return NextResponse.json(
-        { error: 'Le mot de passe doit contenir au moins 12 caractères' },
-        { status: 400 }
-      )
-    }
-
-    // Vérifier la complexité du mot de passe
-    const hasUpperCase = /[A-Z]/.test(password)
-    const hasLowerCase = /[a-z]/.test(password)
-    const hasNumber = /[0-9]/.test(password)
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
-
-    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
-      return NextResponse.json(
-        {
-          error: 'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|<>)'
-        },
+        { error: 'Le mot de passe doit contenir au moins 6 caractères' },
         { status: 400 }
       )
     }

@@ -172,97 +172,81 @@ export default function Home() {
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
             <div className="text-center">
               {/* Enhanced Main Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 sm:mb-8 md:mb-10 leading-[1.2] tracking-tight text-shadow font-display pt-16 sm:pt-20 md:pt-24">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 md:mb-8 leading-[1.2] tracking-tight text-shadow font-display pt-12 sm:pt-16 md:pt-20">
                 <span className="block font-extrabold mb-1 sm:mb-2 text-[#F9FAFB]">Votre plateforme</span>
                 <span className="block text-gradient-animate relative">
                   d'analyse crypto premium
-                  <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-r from-[#00FF88]/15 via-[#00D9FF]/15 to-[#00FF88]/15 blur-xl sm:blur-2xl opacity-50 pulse-glow"></div>
+                  <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#00FF88]/15 via-[#00D9FF]/15 to-[#00FF88]/15 blur-lg sm:blur-xl md:blur-2xl opacity-50 pulse-glow"></div>
                 </span>
               </h1>
 
               {/* Logo centered */}
-              <div className="flex justify-center my-8 sm:my-12">
+              <div className="flex justify-center my-6 sm:my-8 md:my-10">
                 <Image
                   src="/logo2.png"
                   alt="Cryptium Logo"
-                  width={400}
-                  height={400}
-                  className="object-contain opacity-90"
+                  width={200}
+                  height={200}
+                  className="object-contain opacity-90 w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64"
                   priority
                 />
               </div>
 
               {/* Enhanced Subtitle */}
-              <div className="max-w-5xl mx-auto mb-12 sm:mb-16 md:mb-20">
-                <p className={cn("text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl mb-4 sm:mb-6 leading-relaxed font-light tracking-wide px-4 sm:px-0", themeClasses.text.secondary(isDarkMode))}>
+              <div className="max-w-5xl mx-auto mb-8 sm:mb-12 md:mb-16">
+                <p className={cn("text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-3 sm:mb-4 md:mb-6 leading-relaxed font-light tracking-wide px-4 sm:px-0", themeClasses.text.secondary(isDarkMode))}>
                   Analysez les marchés, backtestez vos stratégies et suivez votre portfolio crypto.
                 </p>
-                <p className={cn("text-base sm:text-lg md:text-xl font-medium px-4 sm:px-0", themeClasses.text.muted(isDarkMode))}>
+                <p className={cn("text-sm sm:text-base md:text-lg lg:text-xl font-medium px-4 sm:px-0", themeClasses.text.muted(isDarkMode))}>
                   Gratuit et no-code. La plateforme tout-en-un pour optimiser vos investissements cryptomonnaies.
                 </p>
-
-                {/* Trust Indicators */}
-                <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-6 lg:space-x-8 mt-8 sm:mt-12 text-xs sm:text-sm font-semibold text-gray-500">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
-                    <span>{t('home.hero.trust1')}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#00D9FF] rounded-full animate-pulse"></div>
-                    <span>{t('home.hero.trust2')}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#8B5CF6] rounded-full animate-pulse"></div>
-                    <span>{t('home.hero.trust3')}</span>
-                  </div>
-                </div>
               </div>
 
               {/* Enhanced CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4 sm:px-0">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center items-center px-4 sm:px-0 max-w-2xl mx-auto">
                 <Link
                   href="/auth/signup"
                   onClick={handleAuthClick}
-                  className="group relative bg-gradient-to-r from-[#FFA366] via-[#FFB380] to-[#FFA366] text-white px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 rounded-xl sm:rounded-2xl text-base sm:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 lg:hover:scale-110 shadow-2xl hover:shadow-[#FFA366]/50 overflow-hidden shimmer-effect w-full sm:w-auto"
+                  className="group relative bg-gradient-to-r from-[#FFA366] via-[#FFB380] to-[#FFA366] text-white px-6 sm:px-8 md:px-12 lg:px-16 py-3 sm:py-4 md:py-5 rounded-lg sm:rounded-xl md:rounded-2xl text-sm sm:text-base md:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 lg:hover:scale-110 shadow-2xl hover:shadow-[#FFA366]/50 overflow-hidden shimmer-effect w-full sm:w-auto"
                 >
-                  <span className="relative z-10 flex items-center justify-center space-x-3 sm:space-x-4">
+                  <span className="relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 md:space-x-4">
                     <span>{t('home.hero.cta_start')}</span>
-                    <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:translate-x-2 transition-transform duration-300" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-[#FFB380] via-[#FFC399] to-[#FFB380] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-r from-[#FFA366] via-[#FFB380] to-[#FFA366] blur-2xl sm:blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-500"></div>
+                  <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#FFA366] via-[#FFB380] to-[#FFA366] blur-xl sm:blur-2xl md:blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-500"></div>
                 </Link>
 
                 <Link
                   href="#features"
-                  className="group relative border-2 border-[#00FF88]/50 text-[#F9FAFB] px-8 sm:px-12 lg:px-16 py-4 sm:py-5 lg:py-6 rounded-xl sm:rounded-2xl text-base sm:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 glass-effect overflow-hidden shimmer-effect w-full sm:w-auto hover:border-[#00FF88]"
+                  className="group relative border-2 border-[#00FF88]/50 text-[#F9FAFB] px-6 sm:px-8 md:px-12 lg:px-16 py-3 sm:py-4 md:py-5 rounded-lg sm:rounded-xl md:rounded-2xl text-sm sm:text-base md:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 glass-effect overflow-hidden shimmer-effect w-full sm:w-auto hover:border-[#00FF88]"
                 >
-                  <span className="relative z-10 flex items-center justify-center space-x-3 sm:space-x-4">
+                  <span className="relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 md:space-x-4">
                     <span className="hidden sm:block">{t('home.hero.cta_discover')}</span>
                     <span className="block sm:hidden">{t('home.hero.cta_discover_mobile')}</span>
-                    <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-300" />
+                    <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-[#00FF88]/10 to-[#00D9FF]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Link>
               </div>
 
               {/* Stats Preview - Style professionnel */}
-              <div className="mt-12 sm:mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto px-4 sm:px-0">
-                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00FF88]/20">
-                  <div className="text-3xl sm:text-4xl font-bold text-[#00FF88] mb-2 font-mono">Beta</div>
-                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.backtests')}</div>
+              <div className="mt-8 sm:mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-5xl mx-auto px-4 sm:px-0">
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00FF88]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-mono">Beta</div>
+                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.backtests')}</div>
                 </div>
-                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00D9FF]/20">
-                  <div className="text-3xl sm:text-4xl font-bold text-[#00D9FF] mb-2 font-mono">15K+</div>
-                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.cryptos')}</div>
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00D9FF]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00D9FF] mb-1 sm:mb-2 font-mono">15K+</div>
+                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.cryptos')}</div>
                 </div>
-                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#FFA366]/20">
-                  <div className="text-3xl sm:text-4xl font-bold text-[#FFA366] mb-2 font-mono">24/7</div>
-                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.uptime')}</div>
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#FFA366]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#FFA366] mb-1 sm:mb-2 font-mono">24/7</div>
+                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.uptime')}</div>
                 </div>
-                <div className="glass-effect rounded-2xl p-5 sm:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#8B5CF6]/20">
-                  <div className="text-3xl sm:text-4xl font-bold text-[#8B5CF6] mb-2 font-mono">Fast</div>
-                  <div className="text-gray-400 text-sm font-medium">{t('home.stats.latency')}</div>
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#8B5CF6]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B5CF6] mb-1 sm:mb-2 font-mono">Fast</div>
+                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.latency')}</div>
                 </div>
               </div>
             </div>
@@ -270,20 +254,20 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="relative py-32">
+        <section id="features" className="relative py-16 sm:py-20 md:py-24 lg:py-32">
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-32">
-              <div className="inline-flex items-center px-6 py-3 rounded-full glass-effect mb-8">
-                <Star className="w-5 h-5 text-[#00FF88] mr-2" />
-                <span className="text-sm font-semibold text-gray-300 uppercase tracking-wider">{t('home.features.badge')}</span>
+            <div className="text-center mb-12 sm:mb-16 md:mb-20 lg:mb-32">
+              <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full glass-effect mb-6 sm:mb-8">
+                <Star className="w-4 sm:w-5 h-4 sm:h-5 text-[#00FF88] mr-2" />
+                <span className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">{t('home.features.badge')}</span>
               </div>
 
-              <h2 className="text-5xl md:text-6xl xl:text-7xl font-black text-[#F9FAFB] mb-8 tracking-tight font-display">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[#F9FAFB] mb-6 sm:mb-8 tracking-tight font-display px-4 sm:px-0">
                 {t('home.features.title1')}
                 <span className="block text-gradient-animate mt-2">{t('home.features.title2')}</span>
               </h2>
 
-              <p className="text-gray-300 text-xl xl:text-2xl max-w-5xl mx-auto font-light leading-relaxed mb-8">
+              <p className="text-gray-300 text-base sm:text-lg md:text-xl lg:text-2xl max-w-5xl mx-auto font-light leading-relaxed mb-6 sm:mb-8 px-4 sm:px-0">
                 {t('home.features.subtitle')}
               </p>
 
@@ -303,39 +287,39 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 px-4 sm:px-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-4 sm:px-0">
               {/* Cryptomonnaies */}
               <Link href="/cryptos" className="group relative block">
-                <div className="relative glass-effect-strong rounded-2xl sm:rounded-3xl p-6 sm:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#00FF88]/20 border border-[#00FF88]/20 hover:border-[#00FF88]/50 cursor-pointer shimmer-effect overflow-hidden">
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#00FF88]/20 border border-[#00FF88]/20 hover:border-[#00FF88]/50 cursor-pointer shimmer-effect overflow-hidden">
                   {/* Background gradient on hover */}
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/5 via-transparent to-[#00FFD9]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
                   {/* Icon */}
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#00FF88]/40 float-animation">
-                    <div className="absolute inset-0 bg-black/30 rounded-3xl"></div>
-                    <TrendingUp className="w-10 h-10 text-white relative z-10 drop-shadow-lg" />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#00FF88]/40 float-animation">
+                    <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
+                    <TrendingUp className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-4 sm:mb-6 tracking-tight group-hover:text-[#00FF88] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#00FF88] transition-colors duration-500 font-display">
                     {t('home.features.crypto.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-light mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors duration-500">
+                  <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
                     {t('home.features.crypto.desc')}
                   </p>
 
                   {/* Features list */}
-                  <ul className="space-y-2 text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
+                  <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.crypto.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.crypto.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.crypto.feat3')}</span>
                     </li>
                   </ul>
@@ -349,32 +333,32 @@ export default function Home() {
 
               {/* Graphiques */}
               <Link href="/graphiques" className="group relative block">
-                <div className="relative glass-effect-strong rounded-2xl sm:rounded-3xl p-6 sm:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#00D9FF]/20 border border-[#00D9FF]/20 hover:border-[#00D9FF]/50 cursor-pointer shimmer-effect overflow-hidden">
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#00D9FF]/20 border border-[#00D9FF]/20 hover:border-[#00D9FF]/50 cursor-pointer shimmer-effect overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00D9FF]/5 via-transparent to-[#00F0FF]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#00D9FF] to-[#00F0FF] rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#00D9FF]/40 float-animation" style={{animationDelay: '1s'}}>
-                    <div className="absolute inset-0 bg-black/30 rounded-3xl"></div>
-                    <BarChart3 className="w-10 h-10 text-white relative z-10 drop-shadow-lg" />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#00D9FF] to-[#00F0FF] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#00D9FF]/40 float-animation" style={{animationDelay: '1s'}}>
+                    <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
+                    <BarChart3 className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-4 sm:mb-6 tracking-tight group-hover:text-[#00D9FF] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#00D9FF] transition-colors duration-500 font-display">
                     {t('home.features.charts.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-light mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors duration-500">
+                  <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
                     {t('home.features.charts.desc')}
                   </p>
 
-                  <ul className="space-y-2 text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
+                  <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.charts.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.charts.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.charts.feat3')}</span>
                     </li>
                   </ul>
@@ -387,32 +371,32 @@ export default function Home() {
 
               {/* Backtest */}
               <Link href="/backtest" className="group relative block">
-                <div className="relative glass-effect-strong rounded-2xl sm:rounded-3xl p-6 sm:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#FFA366]/20 border border-[#00FF88]/20 hover:border-[#FFA366]/50 cursor-pointer shimmer-effect overflow-hidden">
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#FFA366]/20 border border-[#00FF88]/20 hover:border-[#FFA366]/50 cursor-pointer shimmer-effect overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#FFA366]/5 via-transparent to-[#FFB380]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#FFA366] to-[#FFB380] rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#FFA366]/40 float-animation" style={{animationDelay: '2s'}}>
-                    <div className="absolute inset-0 bg-black/30 rounded-3xl"></div>
-                    <Activity className="w-10 h-10 text-white relative z-10 drop-shadow-lg" />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#FFA366] to-[#FFB380] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#FFA366]/40 float-animation" style={{animationDelay: '2s'}}>
+                    <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
+                    <Activity className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-4 sm:mb-6 tracking-tight group-hover:text-[#FFA366] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#FFA366] transition-colors duration-500 font-display">
                     {t('home.features.backtest.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-light mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors duration-500">
+                  <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
                     {t('home.features.backtest.desc')}
                   </p>
 
-                  <ul className="space-y-2 text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
+                  <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.backtest.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.backtest.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.backtest.feat3')}</span>
                     </li>
                   </ul>
@@ -425,32 +409,32 @@ export default function Home() {
 
               {/* Portefeuille */}
               <Link href="/portefeuille" className="group relative block">
-                <div className="relative glass-effect-strong rounded-2xl sm:rounded-3xl p-6 sm:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#8B5CF6]/20 border border-[#8B5CF6]/20 hover:border-[#8B5CF6]/50 cursor-pointer shimmer-effect overflow-hidden">
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#8B5CF6]/20 border border-[#8B5CF6]/20 hover:border-[#8B5CF6]/50 cursor-pointer shimmer-effect overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/5 via-transparent to-[#A855F7]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#8B5CF6]/40 float-animation" style={{animationDelay: '3s'}}>
-                    <div className="absolute inset-0 bg-black/30 rounded-3xl"></div>
-                    <Wallet className="w-10 h-10 text-white relative z-10 drop-shadow-lg" />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#8B5CF6]/40 float-animation" style={{animationDelay: '3s'}}>
+                    <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
+                    <Wallet className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-4 sm:mb-6 tracking-tight group-hover:text-[#8B5CF6] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#8B5CF6] transition-colors duration-500 font-display">
                     {t('home.features.portfolio.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-light mb-4 sm:mb-6 group-hover:text-gray-300 transition-colors duration-500">
+                  <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
                     {t('home.features.portfolio.desc')}
                   </p>
 
-                  <ul className="space-y-2 text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
+                  <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.portfolio.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.portfolio.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.portfolio.feat3')}</span>
                     </li>
                   </ul>

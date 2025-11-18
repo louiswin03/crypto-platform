@@ -290,7 +290,7 @@ export default function BacktestPage() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.1] tracking-tighter font-display">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[1.1] tracking-tighter font-display px-4 sm:px-0">
                   <span className={`block mb-2 ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
                     {t('backtest.hero.title1')}
                   </span>
@@ -304,7 +304,7 @@ export default function BacktestPage() {
                 </h1>
 
                 {/* Subtitle */}
-                <p className={`text-lg sm:text-xl md:text-2xl mb-8 max-w-4xl mx-auto font-light leading-relaxed ${
+                <p className={`text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 max-w-4xl mx-auto font-light leading-relaxed px-4 sm:px-0 ${
                   isDarkMode ? 'text-gray-300' : 'text-gray-600'
                 }`}>
                   {t('backtest.hero.subtitle')}
@@ -470,20 +470,20 @@ export default function BacktestPage() {
                   const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0
 
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className={`rounded-2xl p-6 border text-center ${
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-0">
+                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 border text-center ${
                     isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                   }`}>
-                    <div className={`text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {t('backtest.metrics.total_roi')}
                     </div>
-                    <div className={`text-3xl font-bold ${
+                    <div className={`text-2xl sm:text-3xl font-bold ${
                       backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                     }`}>
                       {backtestResults.metrics.totalReturnPercentage >= 0 ? '+' : ''}
                       {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
                     </div>
-                    <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       ${backtestResults.metrics.totalReturn.toFixed(2)}
                     </div>
                   </div>

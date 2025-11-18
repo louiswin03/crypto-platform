@@ -290,9 +290,9 @@ export default function CompleteCryptosPage() {
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-[#8B5CF6]/8 via-[#00D9FF]/6 to-transparent rounded-full blur-[100px] opacity-50"></div>
 
                 <div className="flex flex-col gap-10 relative z-10">
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-                    <div className="text-center lg:text-left">
-                      <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-[1.1] py-4">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 sm:gap-8">
+                    <div className="text-center lg:text-left px-4 sm:px-0">
+                      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 tracking-tight leading-[1.1] py-2 sm:py-4">
                         {viewMode === 'market' ? (
                           <>
                             <span className={`font-display ${
@@ -322,7 +322,7 @@ export default function CompleteCryptosPage() {
                           </span>
                         )}
                       </h1>
-                      <p className={`text-xl md:text-2xl font-light max-w-3xl leading-relaxed font-display ${
+                      <p className={`text-base sm:text-lg md:text-xl lg:text-2xl font-light max-w-3xl leading-relaxed font-display ${
                         isDarkMode ? 'text-gray-300' : 'text-gray-600'
                       }`}>
                         {viewMode === 'market'
@@ -419,19 +419,19 @@ export default function CompleteCryptosPage() {
                   
                   {/* Stats Grid Premium avec animations */}
                   {viewMode === 'market' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                      <div className={`rounded-2xl p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect ${
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6 px-4 sm:px-0">
+                      <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center relative overflow-hidden group hover:scale-105 transition-all duration-300 glow-effect ${
                         isDarkMode ? 'glass-effect-strong' : 'bg-white/95 border border-gray-200/60'
                       }`}>
                         <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative z-10">
-                          <div className="text-3xl font-bold text-[#00FF88] mb-2 font-mono text-shadow animate-counter">
+                          <div className="text-xl sm:text-2xl md:text-3xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-mono text-shadow animate-counter">
                             {stats ? formatters.marketCap(stats.totalMarketCap) : '---'}
                           </div>
-                          <div className={`text-sm font-semibold tracking-wide ${
+                          <div className={`text-xs sm:text-sm font-semibold tracking-wide ${
                             isDarkMode ? 'text-gray-300' : 'text-gray-700'
                           }`}>{t('cryptos.market_cap_global')}</div>
-                          <div className="text-xs text-[#00FF88] mt-2 opacity-70">{t('cryptos.total_markets')}</div>
+                          <div className="text-xs text-[#00FF88] mt-1 sm:mt-2 opacity-70 hidden sm:block">{t('cryptos.total_markets')}</div>
                         </div>
                         {!loading && (
                           <div className="absolute top-3 right-3 w-3 h-3 bg-[#00FF88] rounded-full animate-pulse-glow shadow-lg shadow-[#00FF88]/50"></div>
