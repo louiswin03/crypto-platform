@@ -94,12 +94,14 @@ function AccountPageContent() {
       const authData = DatabaseAuthService.getCurrentUserFromStorage()
       if (!authData) {
         console.error('Token d\'authentification manquant')
+        setLoading(false)
         return
       }
 
       // Vérifier que authData et authData.id existent
       if (!authData || !authData.id) {
         console.error('❌ Données utilisateur invalides:', authData)
+        setLoading(false)
         return
       }
 
