@@ -27,7 +27,7 @@ export default function Footer() {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
         {/* Main Footer Content */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-4 mb-6">
@@ -80,15 +80,6 @@ export default function Footer() {
               <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.api_docs')}</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tutorials')}</Link></li>
               <li><Link href="/support" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tech_support')}</Link></li>
-            </ul>
-          </div>
-
-          {/* Legal & Company */}
-          <div>
-            <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">{t('home.footer.company')}</h4>
-            <ul className="space-y-4">
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.about')}</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.team')}</Link></li>
             </ul>
           </div>
         </div>

@@ -229,26 +229,6 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-r from-[#00FF88]/10 to-[#00D9FF]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Link>
               </div>
-
-              {/* Stats Preview - Style professionnel */}
-              <div className="mt-8 sm:mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-5xl mx-auto px-4 sm:px-0">
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00FF88]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-mono">Beta</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.backtests')}</div>
-                </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00D9FF]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00D9FF] mb-1 sm:mb-2 font-mono">15K+</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.cryptos')}</div>
-                </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#FFA366]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#FFA366] mb-1 sm:mb-2 font-mono">24/7</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.uptime')}</div>
-                </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#8B5CF6]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B5CF6] mb-1 sm:mb-2 font-mono">Fast</div>
-                  <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.latency')}</div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
