@@ -30,6 +30,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
       const { token } = JSON.parse(authData)
 
       const response = await fetch('/api/coinbase/check', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -52,6 +53,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
   const loadBalance = async (token: string) => {
     try {
       const response = await fetch('/api/coinbase/balances', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -82,6 +84,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
 
       const response = await fetch('/api/coinbase/connect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -120,6 +123,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
 
       await fetch('/api/coinbase/disconnect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

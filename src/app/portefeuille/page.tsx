@@ -101,6 +101,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
       }
 
       const response = await fetch(`/api/holdings?portfolio_id=${portfolioId}`, {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${authData.token}`,
           'Content-Type': 'application/json',
@@ -186,6 +187,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
             if (authData) {
               await fetch(`/api/holdings/${holding.id}`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                   'Authorization': `Bearer ${authData.token}`,
                   'Content-Type': 'application/json',
@@ -349,6 +351,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
 
       const response = await fetch('/api/holdings', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${authData.token}`,
           'Content-Type': 'application/json',
@@ -415,6 +418,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
 
       const response = await fetch(`/api/holdings/${id}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${authData.token}`,
           'Content-Type': 'application/json',
@@ -456,6 +460,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
 
       const response = await fetch(`/api/holdings/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${authData.token}`,
           'Content-Type': 'application/json',

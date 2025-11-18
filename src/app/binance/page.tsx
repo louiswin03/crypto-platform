@@ -29,6 +29,7 @@ export default function BinanceConnectionPage() {
       const { token } = JSON.parse(authData)
 
       const response = await fetch('/api/binance/check', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -65,6 +66,7 @@ export default function BinanceConnectionPage() {
       console.log('🔵 Sending request to /api/binance/connect')
       const response = await fetch('/api/binance/connect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -102,6 +104,7 @@ export default function BinanceConnectionPage() {
 
       await fetch('/api/binance/disconnect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

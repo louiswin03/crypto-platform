@@ -30,6 +30,7 @@ export default function BinanceConnectPage() {
 
       const response = await fetch('/api/binance/connect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

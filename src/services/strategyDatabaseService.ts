@@ -27,17 +27,13 @@ export interface SavedStrategy {
 }
 
 // Fonction utilitaire pour faire des requêtes authentifiées
+// Utilise les cookies httpOnly pour l'authentification
 async function authenticatedFetch(url: string, options: RequestInit = {}): Promise<Response> {
-  const authData = DatabaseAuthService.getCurrentUserFromStorage()
-  if (!authData) {
-    throw new Error('Non authentifié')
-  }
-
   return fetch(url, {
     ...options,
+    credentials: 'include', // Important: envoie les cookies httpOnly
     headers: {
       ...options.headers,
-      'Authorization': `Bearer ${authData.token}`,
       'Content-Type': 'application/json',
     },
   })

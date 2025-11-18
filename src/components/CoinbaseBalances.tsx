@@ -39,6 +39,7 @@ export default function CoinbaseBalances() {
       const { token } = JSON.parse(authData)
 
       const response = await fetch('/api/coinbase/balances', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

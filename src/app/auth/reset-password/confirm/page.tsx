@@ -60,6 +60,7 @@ function ResetPasswordConfirmContent() {
     try {
       const response = await fetch('/api/auth/reset-password/confirm', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

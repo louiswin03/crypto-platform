@@ -40,6 +40,7 @@ export default function BinanceBalances() {
       const { token } = JSON.parse(authData)
 
       const response = await fetch('/api/binance/balances', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

@@ -30,6 +30,7 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
       }
 
       const response = await fetch('/api/kraken/check', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -53,6 +54,7 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
   const loadBalance = async (token: string) => {
     try {
       const response = await fetch('/api/kraken/balances', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -81,6 +83,7 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
 
       const response = await fetch('/api/kraken/connect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -122,6 +125,7 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
       const token = localStorage.getItem('crypto_platform_auth')
       const response = await fetch('/api/kraken/disconnect', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

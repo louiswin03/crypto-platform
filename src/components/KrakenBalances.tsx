@@ -27,6 +27,7 @@ export default function KrakenBalances() {
       }
 
       const response = await fetch('/api/kraken/balances', {
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

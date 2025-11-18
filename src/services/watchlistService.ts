@@ -53,24 +53,14 @@ export interface WatchlistItem {
   added_at: string
 }
 
-// Fonction utilitaire pour récupérer le token d'authentification
-function getAuthToken(): string | null {
-  const authData = DatabaseAuthService.getCurrentUserFromStorage()
-  return authData?.token || null
-}
-
 // Fonction utilitaire pour faire des requêtes authentifiées
+// Utilise les cookies httpOnly pour l'authentification
 async function authenticatedFetch(url: string, options: RequestInit = {}): Promise<Response> {
-  const token = getAuthToken()
-  if (!token) {
-    throw new Error('Non authentifié')
-  }
-
   return fetch(url, {
     ...options,
+    credentials: 'include', // Important: envoie les cookies httpOnly
     headers: {
       ...options.headers,
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
   })
