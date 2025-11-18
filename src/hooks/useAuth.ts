@@ -64,6 +64,7 @@ export const useAuth = (): UseAuthReturn => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important pour recevoir et envoyer les cookies
         body: JSON.stringify({ email, password }),
       })
 
@@ -74,7 +75,7 @@ export const useAuth = (): UseAuthReturn => {
       }
 
       // Sauvegarder dans le localStorage
-      DatabaseAuthService.saveUserToStorage(data.user, data.token)
+      DatabaseAuthService.saveUserToStorage(data.user)
       setUser(data.user)
 
       return { success: true }
@@ -95,6 +96,7 @@ export const useAuth = (): UseAuthReturn => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important pour recevoir et envoyer les cookies
         body: JSON.stringify({ email, password, displayName }),
       })
 
@@ -105,7 +107,7 @@ export const useAuth = (): UseAuthReturn => {
       }
 
       // Sauvegarder dans le localStorage
-      DatabaseAuthService.saveUserToStorage(data.user, data.token)
+      DatabaseAuthService.saveUserToStorage(data.user)
       setUser(data.user)
 
       // Nettoyer les anciennes données après inscription réussie
