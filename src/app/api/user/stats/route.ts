@@ -3,28 +3,13 @@ import { headers } from 'next/headers'
 import { supabase } from '@/lib/supabase'
 import { getUserIdFromRequest } from '@/lib/jwt'
 
-// Fonction pour vérifier le token JWT et récupérer l'userId (même que dans profile)
-async function getUserFromToken(request: NextRequest): Promise<string | null> {
-  try {
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null
-    }
-
-    const token = authHeader.substring(7)
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'votre-super-secret-jwt-key-changez-en-production') as { userId: string }
-    return decoded.userId
-  } catch (error) {
-    console.error('Erreur vérification token:', error)
-    return null
-  }
-}
-
 export async function GET(request: NextRequest) {
   try {
-    const userId = await getUserFromToken(request)
-    if (!userId) {
-      return NextResponse.json({ error: 'Token invalide' }, { status: 401 })
+    let userId: string
+    try {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
 

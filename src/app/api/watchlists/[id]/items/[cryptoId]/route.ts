@@ -13,32 +13,17 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   }
 })
 
-// Fonction pour vérifier le token JWT et récupérer l'userId
-async function getUserFromToken(request: NextRequest): Promise<string | null> {
-  try {
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null
-    }
-
-    const token = authHeader.substring(7)
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-    return decoded.userId
-  } catch (error) {
-    console.error('Erreur vérification token:', error)
-    return null
-  }
-}
-
 // PUT - Mettre à jour les notes d'un item
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string; cryptoId: string } }
 ) {
   try {
-    const userId = await getUserFromToken(request)
-    if (!userId) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+    let userId: string
+    try {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -75,9 +60,11 @@ export async function DELETE(
   { params }: { params: { id: string; cryptoId: string } }
 ) {
   try {
-    const userId = await getUserFromToken(request)
-    if (!userId) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+    let userId: string
+    try {
+      userId = getUserIdFromRequest(request)
+    } catch (error) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
     const { error } = await supabaseAdmin
