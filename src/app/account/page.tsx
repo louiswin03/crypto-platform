@@ -97,20 +97,20 @@ function AccountPageContent() {
         return
       }
 
-      // Vérifier que authData.user et authData.user.id existent
-      if (!authData.user || !authData.user.id) {
+      // Vérifier que authData et authData.id existent
+      if (!authData || !authData.id) {
         console.error('❌ Données utilisateur invalides:', authData)
         return
       }
 
-      console.log('🔑 ID utilisateur:', authData.user.id)
+      console.log('🔑 ID utilisateur:', authData.id)
 
       // 📋 Récupérer le profil directement depuis user_profiles
       const supabaseAdmin = createSupabaseAdmin()
       const { data: profile, error: profileError } = await supabaseAdmin
         .from('user_profiles')
         .select('*')
-        .eq('id', authData.user.id)
+        .eq('id', authData.id)
         .single()
 
       console.log('👤 Profil récupéré:', profile)
@@ -135,7 +135,7 @@ function AccountPageContent() {
         const { data: newProfile, error: createError } = await supabaseAdmin
           .from('user_profiles')
           .insert({
-            id: authData.user.id,
+            id: authData.id,
             plan: 'free',
             preferences: {}
           })
@@ -150,7 +150,7 @@ function AccountPageContent() {
       const { data: watchlists, error: watchlistsError } = await supabaseAdmin
         .from('watchlists')
         .select('*')
-        .eq('user_id', authData.user.id)
+        .eq('user_id', authData.id)
 
       console.log('📋 Watchlists récupérées:', watchlists?.length || 0, watchlistsError ? `(erreur: ${watchlistsError.message})` : '')
 
@@ -158,7 +158,7 @@ function AccountPageContent() {
       const { data: watchlistItems, error: watchlistItemsError } = await supabaseAdmin
         .from('watchlist_items')
         .select('*')
-        .eq('user_id', authData.user.id)
+        .eq('user_id', authData.id)
 
       console.log('💰 Cryptos suivies:', watchlistItems?.length || 0, watchlistItemsError ? `(erreur: ${watchlistItemsError.message})` : '')
 
@@ -166,7 +166,7 @@ function AccountPageContent() {
       const { data: strategies, error: strategiesError } = await supabaseAdmin
         .from('strategies')
         .select('*')
-        .eq('user_id', authData.user.id)
+        .eq('user_id', authData.id)
 
       console.log('📈 Stratégies:', strategies?.length || 0, strategiesError ? `(erreur: ${strategiesError.message})` : '')
 
@@ -174,7 +174,7 @@ function AccountPageContent() {
       const { data: exchanges, error: exchangesError } = await supabaseAdmin
         .from('exchange_keys')
         .select('*')
-        .eq('user_id', authData.user.id)
+        .eq('user_id', authData.id)
         .eq('status', 'active')
 
       console.log('🔗 Exchanges connectés:', exchanges?.length || 0, exchangesError ? `(erreur: ${exchangesError.message})` : '')
@@ -262,8 +262,8 @@ function AccountPageContent() {
       updateData.location = editForm.location || null
 
 
-      // Vérifier que authData.user et authData.user.id existent
-      if (!authData.user || !authData.user.id) {
+      // Vérifier que authData et authData.id existent
+      if (!authData || !authData.id) {
         console.error('Données utilisateur invalides:', authData)
         alert('Erreur: Impossible de récupérer votre identifiant')
         return
@@ -274,7 +274,7 @@ function AccountPageContent() {
       const { data, error } = await supabaseAdmin
         .from('user_profiles')
         .upsert({
-          id: authData.user.id,
+          id: authData.id,
           ...updateData
         })
         .select()
