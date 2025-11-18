@@ -642,7 +642,7 @@ export default function Home() {
 
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
             {/* Main Footer Content */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
               {/* Brand Section */}
               <div className="lg:col-span-1">
                 <div className="flex items-center space-x-4 mb-6">
@@ -661,19 +661,6 @@ export default function Home() {
                 <p className="text-gray-400 leading-relaxed text-sm mb-6">
                   {t('home.footer.brand_desc')}
                 </p>
-
-                {/* Social Links */}
-                <div className="flex space-x-4">
-                  <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
-                    <Users className="w-5 h-5" />
-                  </a>
-                  <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00D9FF]/20 hover:text-[#00D9FF] transition-all duration-300">
-                    <Star className="w-5 h-5" />
-                  </a>
-                  <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#FFA366]/20 hover:text-[#FFA366] transition-all duration-300">
-                    <Activity className="w-5 h-5" />
-                  </a>
-                </div>
               </div>
 
               {/* Platform */}
@@ -695,15 +682,6 @@ export default function Home() {
                   <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.api_docs')}</Link></li>
                   <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tutorials')}</Link></li>
                   <li><Link href="/support" onClick={handleLegalLinkClick} className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.tech_support')}</Link></li>
-                </ul>
-              </div>
-
-              {/* Legal & Company */}
-              <div>
-                <h4 className="text-[#F9FAFB] font-semibold mb-6 text-lg">{t('home.footer.company')}</h4>
-                <ul className="space-y-4">
-                  <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.about')}</Link></li>
-                  <li><Link href="#" className="text-gray-400 hover:text-[#F9FAFB] transition-colors duration-300">{t('home.footer.team')}</Link></li>
                 </ul>
               </div>
             </div>
