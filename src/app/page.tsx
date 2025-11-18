@@ -645,19 +645,19 @@ export default function Home() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
               {/* Brand Section */}
               <div className="lg:col-span-1">
-                <div className="flex items-center space-x-4 mb-6">
+                <Link href="/" className="flex items-center space-x-4 mb-6 group cursor-pointer">
                   <Image
                     src="/logo2.png"
                     alt="Cryptium Logo"
                     width={94}
                     height={94}
-                    className="object-contain opacity-75"
+                    className="object-contain opacity-75 group-hover:opacity-100 transition-opacity"
                   />
                   <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display">Cryptium</span>
+                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display group-hover:text-[#00FF88] transition-colors">Cryptium</span>
                     <div className="text-xs text-gray-400 font-medium">Votre plateforme d'analyse crypto premium</div>
                   </div>
-                </div>
+                </Link>
                 <p className="text-gray-400 leading-relaxed text-sm mb-6">
                   {t('home.footer.brand_desc')}
                 </p>
