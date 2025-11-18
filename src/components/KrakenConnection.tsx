@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Key, CheckCircle, RefreshCcw, Trash2 } from 'lucide-react'
 
 interface KrakenConnectionProps {
   onConnectionChange?: (connected: boolean) => void
@@ -156,32 +157,44 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        {isConnected ? (
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-green-500 font-medium">Connecté</span>
+      {/* Bouton de connexion ou status */}
+      {!isConnected ? (
+        <button
+          onClick={() => setShowModal(true)}
+          className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-[#5741D9] to-[#4731C9] text-white rounded-xl hover:scale-105 transition-all text-sm font-bold shadow-lg hover:shadow-xl"
+        >
+          <Key className="w-4 h-4" />
+          <span>Connecter</span>
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <div className="bg-purple-900/20 border border-purple-600/50 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="w-4 h-4 text-purple-400" />
+              <span className="text-sm font-semibold text-purple-400">Connecté</span>
+            </div>
+            <p className="text-xs text-gray-300">
+              Lecture seule
+            </p>
           </div>
-        ) : (
-          <span className="text-sm text-gray-500">Non connecté</span>
-        )}
-
-        {isConnected ? (
-          <button
-            onClick={handleDisconnect}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            Déconnecter
-          </button>
-        ) : (
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-[#5741D9] hover:bg-[#4731C9] text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            Connecter
-          </button>
-        )}
-      </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => checkConnection()}
+              className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#F9FAFB] hover:border-gray-600/50 hover:scale-105 transition-all text-sm font-semibold"
+            >
+              <RefreshCcw className="w-4 h-4" />
+              <span>Sync</span>
+            </button>
+            <button
+              onClick={handleDisconnect}
+              className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-gray-800/50 border border-gray-700/50 rounded-xl text-gray-400 hover:text-[#DC2626] hover:border-[#DC2626]/50 hover:scale-105 transition-all text-sm font-semibold"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Déco</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {showModal && (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 p-4 animate-fadeIn overflow-y-auto">
