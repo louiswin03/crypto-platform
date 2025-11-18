@@ -1723,7 +1723,6 @@ export default function PortefeuillePage() {
                   <Zap className="w-5 h-5 text-[#00FF88]" />
                   {t('portfolio.exchange_portfolio')}
                 </h2>
-                <p className="text-gray-400 text-sm mt-1">{t('portfolio.synced_wallet')}</p>
               </div>
             </div>
 

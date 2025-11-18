@@ -657,13 +657,6 @@ function AccountPageContent() {
                             {userStats?.exchanges_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm font-medium">{t('stats.exchanges')}</div>
-                          {userStats?.exchanges_count === 0 && (
-                            <div className="mt-2">
-                              <span className="text-xs text-gray-500">
-                                {t('stats.coming_soon')}
-                              </span>
-                            </div>
-                          )}
                         </div>
                         <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
                           <div className="flex items-center justify-between mb-3">

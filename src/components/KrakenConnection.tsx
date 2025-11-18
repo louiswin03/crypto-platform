@@ -184,37 +184,34 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-[#1A1B23] border border-gray-800 rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col animate-scaleIn">
-            <div className="p-6 border-b border-gray-800 flex-shrink-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white p-2">
-                    <img src="/kraken.png" alt="Kraken" className="w-full h-full object-contain" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-[#F9FAFB]">Connecter Kraken</h2>
-                    <p className="text-sm text-gray-400">API en lecture seule</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setShowModal(false)
-                    setError('')
-                    setApiKey('')
-                    setApiSecret('')
-                  }}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl max-w-2xl w-full my-8 shadow-2xl animate-scaleIn">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-[#5741D9]/10 to-[#4731C9]/10 border-b border-gray-700/50 p-6 flex items-center justify-between rounded-t-2xl">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white p-2">
+              <img src="/kraken.png" alt="Kraken" className="w-full h-full object-contain" />
             </div>
+            <div>
+              <h2 className="text-2xl font-bold text-[#F9FAFB]">Connecter Kraken</h2>
+              <p className="text-sm text-gray-400">Mode lecture seule sécurisé</p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setShowModal(false)
+              setError('')
+              setApiKey('')
+              setApiSecret('')
+            }}
+            className="w-10 h-10 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center"
+          >
+            <span className="text-2xl text-gray-400">×</span>
+          </button>
+        </div>
 
-            <form onSubmit={handleConnect} className="flex flex-col flex-1 min-h-0">
-              <div className="p-6 space-y-6 overflow-y-auto flex-1">
+        <div className="p-6 space-y-6">
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
                 <div className="flex gap-3">
                   <div className="text-blue-400 flex-shrink-0">
@@ -290,39 +287,30 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
                 </div>
               </div>
 
-              <div className="p-6 border-t border-gray-800 flex-shrink-0">
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false)
-                      setError('')
-                      setApiKey('')
-                      setApiSecret('')
-                    }}
-                    className="flex-1 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !apiKey.trim() || !apiSecret.trim()}
-                    className="flex-1 px-4 py-3 bg-[#5741D9] hover:bg-[#4731C9] disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Connexion...</span>
-                      </>
-                    ) : (
-                      'Connecter'
-                    )}
-                  </button>
-                </div>
-              </div>
-            </form>
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={() => {
+                  setShowModal(false)
+                  setError('')
+                  setApiKey('')
+                  setApiSecret('')
+                }}
+                className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-lg transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleConnect}
+                disabled={isSubmitting || !apiKey.trim() || !apiSecret.trim()}
+                className="flex-1 py-3 bg-[#5741D9] hover:bg-[#4731C9] text-white font-bold rounded-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                {isSubmitting ? 'Connexion...' : 'Connecter'}
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
       )}
     </>
   )
