@@ -46,19 +46,6 @@ export default function Footer() {
             <p className="text-gray-400 leading-relaxed text-sm mb-6">
               {t('home.footer.brand_desc')}
             </p>
-
-            {/* Social Links */}
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
-                <Users className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
-                <Star className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800/50 rounded-lg flex items-center justify-center hover:bg-[#00FF88]/20 hover:text-[#00FF88] transition-all duration-300">
-                <Activity className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           {/* Platform */}
