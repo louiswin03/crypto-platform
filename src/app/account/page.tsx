@@ -426,22 +426,22 @@ function AccountPageContent() {
         <SmartNavigation />
 
         {/* Main Content */}
-        <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-12 pb-20">
+        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-12 sm:pb-20">
           {/* Page Header with enhanced styling */}
-          <div className="mb-12 animate-slide-up">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-              <div className="flex items-center space-x-6">
+          <div className="mb-8 sm:mb-12 animate-slide-up">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-6 md:mb-0">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl shadow-[#00FF88]/25">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-2xl sm:rounded-3xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl shadow-2xl shadow-[#00FF88]/25">
                     {getUserInitials()}
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-[#00FF88] border-4 border-[#0A0E1A] rounded-full"></div>
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-[#00FF88] border-3 sm:border-4 border-[#0A0E1A] rounded-full"></div>
                 </div>
-                <div>
-                  <h1 className={cn("text-5xl md:text-6xl font-black tracking-tight font-display mb-2", themeClasses.text.primary(isDarkMode))}>
+                <div className="text-center sm:text-left">
+                  <h1 className={cn("text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight font-display mb-1 sm:mb-2", themeClasses.text.primary(isDarkMode))}>
                     {user?.email?.split('@')[0] || t('account.title')}
                   </h1>
-                  <p className={cn("text-lg", themeClasses.text.secondary(isDarkMode))}>
+                  <p className={cn("text-base sm:text-lg", themeClasses.text.secondary(isDarkMode))}>
                     {t('account.subtitle')}
                   </p>
                 </div>
@@ -449,20 +449,20 @@ function AccountPageContent() {
             </div>
 
             {/* Tab Navigation with improved design */}
-            <div className="glass-effect-strong rounded-2xl p-1.5 shadow-xl">
-              <div className="flex space-x-1">
+            <div className="glass-effect-strong rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-xl overflow-x-auto">
+              <div className="flex space-x-1 min-w-max sm:min-w-0">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl transition-all duration-300 font-medium border-2 min-w-[120px] ${
+                    className={`flex-1 flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-6 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all duration-300 font-medium border-2 min-w-[100px] sm:min-w-[120px] ${
                       activeTab === tab.id
                         ? 'bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/30 shadow-sm'
                         : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 border-transparent'
                     }`}
                   >
-                    <tab.icon className={`w-4 h-4 flex-shrink-0 ${activeTab === tab.id ? '' : ''}`} />
-                    <span className="hidden sm:inline text-sm whitespace-nowrap">{tab.label}</span>
+                    <tab.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${activeTab === tab.id ? '' : ''}`} />
+                    <span className="text-xs sm:text-sm whitespace-nowrap">{tab.label}</span>
                   </button>
                 ))}
               </div>
@@ -472,88 +472,88 @@ function AccountPageContent() {
           {/* Tab Content */}
           <div className="animate-slide-up">
             {activeTab === 'profile' && (
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {/* Profile Info */}
-                <div className={`rounded-3xl p-8 transition-colors duration-300 ${
+                <div className={`rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 transition-colors duration-300 ${
                   isDarkMode
                     ? 'glass-effect-strong'
                     : 'bg-white/95 backdrop-blur-40 border border-gray-200 shadow-xl'
                 }`}>
-                  <div className="flex items-center justify-between mb-8">
-                    <h2 className={cn("text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>{t('profile.title')}</h2>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+                    <h2 className={cn("text-xl sm:text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>{t('profile.title')}</h2>
                     <button
                       onClick={() => isEditing ? handleSaveProfile() : setIsEditing(true)}
                       disabled={loading}
-                      className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 border-2 ${
+                      className={`w-full sm:w-auto flex items-center justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-medium transition-all duration-300 border-2 text-sm sm:text-base ${
                         isEditing
                           ? 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
                           : 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
                       }`}
                     >
                       {loading ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       ) : isEditing ? (
-                        <Check className="w-5 h-5" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Edit3 className="w-5 h-5" />
+                        <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                       <span>{isEditing ? t('profile.save') : t('profile.edit')}</span>
                     </button>
                   </div>
 
-                  <div className="grid lg:grid-cols-2 gap-12">
-                    <div className="space-y-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12">
+                    <div className="space-y-6 sm:space-y-8">
                       {/* User Avatar & Basic Info */}
                       <div className="text-center lg:text-left">
-                        <div className="relative inline-block mb-6">
-                          <div className="w-24 h-24 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-3xl flex items-center justify-center text-white font-bold text-3xl shadow-2xl">
+                        <div className="relative inline-block mb-4 sm:mb-6">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-2xl sm:rounded-3xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl shadow-2xl">
                             {getUserInitials()}
                           </div>
-                          <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 rounded-full flex items-center justify-center hover:bg-[#00FF88]/20 hover:border-[#00FF88]/40 transition-all duration-300 shadow-sm">
-                            <Camera className="w-4 h-4" />
+                          <button className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-7 h-7 sm:w-8 sm:h-8 bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 rounded-full flex items-center justify-center hover:bg-[#00FF88]/20 hover:border-[#00FF88]/40 transition-all duration-300 shadow-sm">
+                            <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </button>
                         </div>
-                        <div className="space-y-2">
-                          <div className={cn("text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>
+                        <div className="space-y-1 sm:space-y-2">
+                          <div className={cn("text-xl sm:text-2xl font-bold font-display", themeClasses.text.primary(isDarkMode))}>
                             {user?.email?.split('@')[0] || 'Utilisateur'}
                           </div>
-                          <div className={cn("", themeClasses.text.secondary(isDarkMode))}>{t('profile.member_since')} {getMemberSince()}</div>
+                          <div className={cn("text-sm sm:text-base", themeClasses.text.secondary(isDarkMode))}>{t('profile.member_since')} {getMemberSince()}</div>
                         </div>
                       </div>
 
                       {/* Contact Information */}
-                      <div className="space-y-6">
-                        <h3 className={cn("text-lg font-semibold pb-2",
+                      <div className="space-y-4 sm:space-y-6">
+                        <h3 className={cn("text-base sm:text-lg font-semibold pb-2",
                           themeClasses.text.primary(isDarkMode),
                           isDarkMode ? "border-b border-gray-800/40" : "border-b border-gray-200"
                         )}>{t('contact.title')}</h3>
 
-                        <div className="space-y-4">
-                          <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className={cn("flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <Mail className="w-5 h-5 text-[#00FF88]" />
-                            <div className="flex-1">
-                              <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>{user?.email}</div>
-                              <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.email')}</div>
+                            <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#00FF88] flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className={cn("font-medium text-sm sm:text-base truncate", themeClasses.text.primary(isDarkMode))}>{user?.email}</div>
+                              <div className={cn("text-xs sm:text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.email')}</div>
                             </div>
-                            <div className="px-2 py-1 bg-[#00FF88]/20 text-[#00FF88] text-xs rounded-full font-semibold">
+                            <div className="px-2 py-0.5 sm:py-1 bg-[#00FF88]/20 text-[#00FF88] text-[10px] sm:text-xs rounded-full font-semibold whitespace-nowrap flex-shrink-0">
                               {t('contact.verified')}
                             </div>
                           </div>
 
-                          <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
+                          <div className={cn("flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <Phone className="w-5 h-5 text-[#8B5CF6]" />
-                            <div className="flex-1">
+                            <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-[#8B5CF6] flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
                               {isEditing ? (
                                 <input
                                   type="tel"
                                   value={editForm.phone}
                                   onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
                                   placeholder={t('contact.phone_placeholder')}
-                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#00FF88] focus:outline-none transition-colors",
+                                  className={cn("w-full border rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:border-[#00FF88] focus:outline-none transition-colors",
                                     isDarkMode
                                       ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
                                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -561,27 +561,27 @@ function AccountPageContent() {
                                 />
                               ) : (
                                 <>
-                                  <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>
+                                  <div className={cn("font-medium text-sm sm:text-base", themeClasses.text.primary(isDarkMode))}>
                                     {profileDisplay.phone || t('contact.not_provided')}
                                   </div>
-                                  <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.phone')}</div>
+                                  <div className={cn("text-xs sm:text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.phone')}</div>
                                 </>
                               )}
                             </div>
                           </div>
 
-                          <div className={cn("flex items-center space-x-4 p-4 rounded-2xl",
+                          <div className={cn("flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <MapPin className="w-5 h-5 text-[#FFA366]" />
-                            <div className="flex-1">
+                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFA366] flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
                               {isEditing ? (
                                 <input
                                   type="text"
                                   value={editForm.location}
                                   onChange={(e) => setEditForm({...editForm, location: e.target.value})}
                                   placeholder={t('contact.location_placeholder')}
-                                  className={cn("w-full border rounded-xl px-4 py-3 focus:border-[#00FF88] focus:outline-none transition-colors",
+                                  className={cn("w-full border rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:border-[#00FF88] focus:outline-none transition-colors",
                                     isDarkMode
                                       ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
                                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -589,10 +589,10 @@ function AccountPageContent() {
                                 />
                               ) : (
                                 <>
-                                  <div className={cn("font-medium", themeClasses.text.primary(isDarkMode))}>
+                                  <div className={cn("font-medium text-sm sm:text-base", themeClasses.text.primary(isDarkMode))}>
                                     {profileDisplay.location || t('contact.not_provided')}
                                   </div>
-                                  <div className={cn("text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.location')}</div>
+                                  <div className={cn("text-xs sm:text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.location')}</div>
                                 </>
                               )}
                             </div>
@@ -601,7 +601,7 @@ function AccountPageContent() {
                       </div>
 
                       {isEditing && (
-                        <div className="flex flex-col space-y-3 pt-4">
+                        <div className="flex flex-col space-y-3 pt-2 sm:pt-4">
                           <button
                             onClick={() => {
                               setIsEditing(false)
@@ -611,7 +611,7 @@ function AccountPageContent() {
                                 location: profileDisplay.location
                               })
                             }}
-                            className="w-full px-6 py-3 bg-gray-800/50 text-gray-300 rounded-xl hover:bg-gray-700/50 transition-colors font-semibold"
+                            className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-800/50 text-gray-300 rounded-lg sm:rounded-xl hover:bg-gray-700/50 transition-colors font-semibold text-sm sm:text-base"
                           >
                             {t('profile.cancel')}
                           </button>
@@ -620,80 +620,80 @@ function AccountPageContent() {
                     </div>
 
                     <div>
-                      <h3 className={cn("text-lg font-semibold mb-6 pb-2",
+                      <h3 className={cn("text-base sm:text-lg font-semibold mb-4 sm:mb-6 pb-2",
                         themeClasses.text.primary(isDarkMode),
                         isDarkMode ? "border-b border-gray-800/40" : "border-b border-gray-200"
                       )}>{t('stats.title')}</h3>
 
-                      <div className="grid grid-cols-2 gap-6">
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#00FF88]/20 rounded-xl">
-                              <Star className="w-5 h-5 text-[#00FF88]" />
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
+                          <div className="flex items-center justify-between mb-2 sm:mb-3">
+                            <div className="p-1.5 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
+                              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#00FF88] mb-2 font-display">
+                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-display">
                             {userStats?.watchlists_count || 0}
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">{t('stats.watchlists')}</div>
+                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.watchlists')}</div>
                           {userStats?.watchlists_count === 0 && (
-                            <div className="mt-2">
+                            <div className="mt-1.5 sm:mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-xs text-[#00FF88] hover:text-[#8B5CF6] transition-colors"
+                                className="text-[10px] sm:text-xs text-[#00FF88] hover:text-[#8B5CF6] transition-colors"
                               >
                                 {t('stats.create_first')}
                               </Link>
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#00FF88]/20 rounded-xl">
-                              <Activity className="w-5 h-5 text-[#00FF88]" />
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
+                          <div className="flex items-center justify-between mb-2 sm:mb-3">
+                            <div className="p-1.5 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
+                              <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#00FF88] mb-2 font-display">
+                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-display">
                             {userStats?.exchanges_count || 0}
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">{t('stats.exchanges')}</div>
+                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.exchanges')}</div>
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#FFA366]/20 rounded-xl">
-                              <TrendingUp className="w-5 h-5 text-[#FFA366]" />
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
+                          <div className="flex items-center justify-between mb-2 sm:mb-3">
+                            <div className="p-1.5 sm:p-2 bg-[#FFA366]/20 rounded-lg sm:rounded-xl">
+                              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#FFA366]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#FFA366] mb-2 font-display">
+                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#FFA366] mb-1 sm:mb-2 font-display">
                             {userStats?.cryptos_count || 0}
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">{t('stats.cryptos')}</div>
+                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.cryptos')}</div>
                           {userStats?.cryptos_count === 0 && (
-                            <div className="mt-2">
+                            <div className="mt-1.5 sm:mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-xs text-[#FFA366] hover:text-[#FBBF24] transition-colors"
+                                className="text-[10px] sm:text-xs text-[#FFA366] hover:text-[#FBBF24] transition-colors"
                               >
                                 {t('stats.add_cryptos')}
                               </Link>
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-2xl p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#8B5CF6]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#8B5CF6]/30">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="p-2 bg-[#8B5CF6]/20 rounded-xl">
-                              <Target className="w-5 h-5 text-[#8B5CF6]" />
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#8B5CF6]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#8B5CF6]/30">
+                          <div className="flex items-center justify-between mb-2 sm:mb-3">
+                            <div className="p-1.5 sm:p-2 bg-[#8B5CF6]/20 rounded-lg sm:rounded-xl">
+                              <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#8B5CF6]" />
                             </div>
                           </div>
-                          <div className="text-4xl font-bold text-[#8B5CF6] mb-2 font-display">
+                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#8B5CF6] mb-1 sm:mb-2 font-display">
                             {userStats?.strategies_count || 0}
                           </div>
-                          <div className="text-gray-400 text-sm font-medium">{t('stats.strategies')}</div>
+                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.strategies')}</div>
                           {userStats?.strategies_count === 0 && (
-                            <div className="mt-2">
+                            <div className="mt-1.5 sm:mt-2">
                               <Link
                                 href="/backtest"
-                                className="text-xs text-[#8B5CF6] hover:text-[#A855F7] transition-colors"
+                                className="text-[10px] sm:text-xs text-[#8B5CF6] hover:text-[#A855F7] transition-colors"
                               >
                                 {t('stats.create_first')}
                               </Link>
@@ -702,9 +702,9 @@ function AccountPageContent() {
                         </div>
                       </div>
 
-                      <div className="mt-8 glass-effect rounded-2xl p-6">
-                        <h4 className="font-semibold text-[#F9FAFB] mb-4 flex items-center">
-                          <TrendingUp className="w-5 h-5 text-[#00FF88] mr-2" />
+                      <div className="mt-6 sm:mt-8 glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                        <h4 className="font-semibold text-[#F9FAFB] mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
+                          <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#00FF88] mr-2" />
                           {t('performance.title')}
                         </h4>
                         {performanceData ? (
@@ -765,31 +765,31 @@ function AccountPageContent() {
             )}
 
             {activeTab === 'settings' && (
-              <div className="glass-effect-strong rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">{t('settings.title')}</h2>
+              <div className="glass-effect-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-6 sm:mb-8 font-display">{t('settings.title')}</h2>
 
-                <div className="space-y-6">
-                  <div className="glass-effect rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="font-semibold text-[#F9FAFB]">{t('settings.email_notifications')}</div>
-                        <div className="text-gray-400 text-sm">{t('settings.email_notifications_desc')}</div>
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('settings.email_notifications')}</div>
+                        <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('settings.email_notifications_desc')}</div>
                       </div>
-                      <button className="relative w-12 h-6 bg-[#00FF88] rounded-full transition-colors">
+                      <button className="relative w-12 h-6 bg-[#00FF88] rounded-full transition-colors flex-shrink-0 self-start sm:self-center">
                         <div className="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div>
                       </button>
                     </div>
                   </div>
 
-                  <div className="glass-effect rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="font-semibold text-[#F9FAFB]">{t('settings.dark_mode')}</div>
-                        <div className="text-gray-400 text-sm">{t('settings.dark_mode_desc')}</div>
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('settings.dark_mode')}</div>
+                        <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('settings.dark_mode_desc')}</div>
                       </div>
                       <button
                         onClick={toggleTheme}
-                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                        className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 self-start sm:self-center ${
                           isDarkMode ? 'bg-[#00FF88]' : 'bg-gray-300'
                         }`}
                       >
@@ -800,16 +800,16 @@ function AccountPageContent() {
                     </div>
                   </div>
 
-                  <div className="glass-effect rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="font-semibold text-[#F9FAFB]">{t('settings.language')}</div>
-                        <div className="text-gray-400 text-sm">{t('settings.language_desc')}</div>
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('settings.language')}</div>
+                        <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('settings.language_desc')}</div>
                       </div>
                       <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value as 'fr' | 'en')}
-                        className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none"
+                        className="bg-gray-800/50 border border-gray-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none text-sm sm:text-base flex-shrink-0"
                       >
                         <option value="fr">Français</option>
                         <option value="en">English</option>
@@ -817,13 +817,13 @@ function AccountPageContent() {
                     </div>
                   </div>
 
-                  <div className="glass-effect rounded-2xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="font-semibold text-[#F9FAFB]">{t('settings.currency')}</div>
-                        <div className="text-gray-400 text-sm">{t('settings.currency_desc')}</div>
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('settings.currency')}</div>
+                        <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('settings.currency_desc')}</div>
                       </div>
-                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none">
+                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none text-sm sm:text-base flex-shrink-0">
                         <option value="EUR">EUR (€)</option>
                         <option value="USD">USD ($)</option>
                         <option value="BTC">BTC (₿)</option>
@@ -835,25 +835,25 @@ function AccountPageContent() {
             )}
 
             {activeTab === 'security' && (
-              <div className="glass-effect-strong rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">{t('security.title')}</h2>
+              <div className="glass-effect-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-6 sm:mb-8 font-display">{t('security.title')}</h2>
 
-                <div className="space-y-6">
-                  <div className="glass-effect rounded-2xl p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-[#00FF88]/20 rounded-2xl flex items-center justify-center">
-                          <Lock className="w-6 h-6 text-[#00FF88]" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center space-x-3 sm:space-x-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#00FF88]/20 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                          <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-[#00FF88]" />
                         </div>
                         <div>
-                          <div className="font-semibold text-[#F9FAFB]">{t('security.password')}</div>
-                          <div className="text-gray-400 text-sm">{t('security.password_changed')} 2 {t('security.password_days')}</div>
+                          <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('security.password')}</div>
+                          <div className="text-gray-400 text-xs sm:text-sm">{t('security.password_changed')} 2 {t('security.password_days')}</div>
                         </div>
                       </div>
                       <button
                         onClick={handlePasswordReset}
                         disabled={sendingPasswordReset}
-                        className="px-6 py-3 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-xl transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 shadow-sm hover:shadow-md"
+                        className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-lg sm:rounded-xl transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm hover:shadow-md text-sm sm:text-base"
                       >
                         {sendingPasswordReset ? (
                           <>
@@ -870,46 +870,46 @@ function AccountPageContent() {
                     </div>
                   </div>
 
-                  <div className="glass-effect rounded-2xl p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-[#FFA366]/20 rounded-2xl flex items-center justify-center">
-                          <Shield className="w-6 h-6 text-[#FFA366]" />
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center space-x-3 sm:space-x-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FFA366]/20 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFA366]" />
                         </div>
                         <div>
-                          <div className="font-semibold text-[#F9FAFB]">{t('security.2fa')}</div>
-                          <div className="text-gray-400 text-sm">{t('security.2fa_desc')}</div>
+                          <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('security.2fa')}</div>
+                          <div className="text-gray-400 text-xs sm:text-sm">{t('security.2fa_desc')}</div>
                         </div>
                       </div>
-                      <button className="px-6 py-3 bg-gray-800/50 text-gray-400 rounded-xl cursor-not-allowed font-semibold">
+                      <button className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-800/50 text-gray-400 rounded-lg sm:rounded-xl cursor-not-allowed font-semibold text-sm sm:text-base">
                         {t('security.coming_soon')}
                       </button>
                     </div>
                   </div>
 
-                  <div className="glass-effect rounded-2xl p-6">
-                    <h3 className="font-semibold text-[#F9FAFB] mb-4">{t('security.active_sessions')}</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-gray-800/30 rounded-xl">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-[#00FF88]/20 rounded-xl flex items-center justify-center">
-                            <Smartphone className="w-5 h-5 text-[#00FF88]" />
+                  <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <h3 className="font-semibold text-[#F9FAFB] mb-3 sm:mb-4 text-sm sm:text-base">{t('security.active_sessions')}</h3>
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/30 rounded-lg sm:rounded-xl">
+                        <div className="flex items-center space-x-3 sm:space-x-4">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#00FF88]/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                            <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-[#00FF88]" />
                           </div>
                           <div>
-                            <div className="font-medium text-[#F9FAFB] flex items-center space-x-2">
+                            <div className="font-medium text-[#F9FAFB] flex flex-wrap items-center gap-2 text-sm sm:text-base">
                               <span>{t('security.current_session')}</span>
-                              <span className="px-2 py-1 bg-[#00FF88]/20 text-[#00FF88] text-xs font-semibold rounded-full">
+                              <span className="px-2 py-0.5 sm:py-1 bg-[#00FF88]/20 text-[#00FF88] text-[10px] sm:text-xs font-semibold rounded-full">
                                 {t('security.active')}
                               </span>
                             </div>
-                            <div className="text-gray-400 text-sm">
+                            <div className="text-gray-400 text-xs sm:text-sm mt-1">
                               {getUserLocation()} • {new Date().toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')}
                             </div>
                           </div>
                         </div>
                         <button
                           onClick={handleSignOut}
-                          className="text-[#DC2626] hover:text-[#EF4444] text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors"
+                          className="w-full sm:w-auto text-[#DC2626] hover:text-[#EF4444] text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors"
                         >
                           {t('security.disconnect')}
                         </button>
@@ -922,10 +922,10 @@ function AccountPageContent() {
             )}
 
             {activeTab === 'activity' && (
-              <div className="glass-effect-strong rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-[#F9FAFB] mb-8 font-display">{t('activity.title')}</h2>
+              <div className="glass-effect-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#F9FAFB] mb-6 sm:mb-8 font-display">{t('activity.title')}</h2>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {activityLog.length > 0 ? (
                     activityLog.map((activity, index) => (
                       <div
