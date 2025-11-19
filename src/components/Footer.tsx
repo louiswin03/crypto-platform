@@ -82,19 +82,21 @@ export default function Footer() {
               </div>
 
               <div className="glass-effect rounded-2xl p-6 text-center">
-                <CheckCircle className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
+                <span className="text-2xl mb-3 block">🔒</span>
                 <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.iso')}</div>
                 <div className="text-xs text-gray-400">{t('home.footer.certified')}</div>
               </div>
 
               <div className="glass-effect rounded-2xl p-6 text-center">
-                <Lock className="w-8 h-8 text-[#8B5CF6] mx-auto mb-3" />
-                <div className="text-lg font-bold text-[#F9FAFB] mb-2">Sécurité</div>
-                <div className="text-xs text-gray-400">AES-256</div>
+                <span className="text-2xl mb-3 block">🇫🇷</span>
+                <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.french')}</div>
+                <div className="text-xs text-gray-400">{t('home.footer.french_sub')}</div>
               </div>
 
               <div className="glass-effect rounded-2xl p-6 text-center">
-                <div className="w-2 h-2 bg-[#00FF88] rounded-full mx-auto mb-3 animate-pulse"></div>
+                <div className="h-8 flex items-center justify-center mb-3">
+                  <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
+                </div>
                 <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
                 <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
               </div>

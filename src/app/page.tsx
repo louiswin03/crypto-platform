@@ -696,7 +696,7 @@ export default function Home() {
                 </div>
 
                 <div className="glass-effect rounded-2xl p-6 text-center">
-                  <CheckCircle className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
+                  <span className="text-2xl mb-3 block">🔒</span>
                   <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.iso')}</div>
                   <div className="text-xs text-gray-400">{t('home.footer.certified')}</div>
                 </div>
@@ -704,11 +704,13 @@ export default function Home() {
                 <div className="glass-effect rounded-2xl p-6 text-center">
                   <span className="text-2xl mb-3 block">🇫🇷</span>
                   <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.french')}</div>
-                  <div className="text-xs text-gray-400">100%</div>
+                  <div className="text-xs text-gray-400">{t('home.footer.french_sub')}</div>
                 </div>
 
                 <div className="glass-effect rounded-2xl p-6 text-center">
-                  <div className="w-2 h-2 bg-[#00FF88] rounded-full mx-auto mb-3 animate-pulse"></div>
+                  <div className="h-8 flex items-center justify-center mb-3">
+                    <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
+                  </div>
                   <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
                   <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
                 </div>
