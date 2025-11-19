@@ -1731,7 +1731,7 @@ export default function PortefeuillePage() {
                 <div key={exchange.name} className="glass-effect rounded-xl p-5 border border-gray-700/50 hover:border-[#00FF88]/50 transition-colors">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-white flex items-center justify-center p-2">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-white flex items-center justify-center p-2">
                         <img src={exchange.logo} alt={exchange.name} className="w-full h-full object-contain" />
                       </div>
                       <div>

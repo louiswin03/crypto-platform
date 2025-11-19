@@ -1188,34 +1188,43 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
           ? 'border-gray-700/50 bg-gradient-to-r from-gray-900/80 via-gray-800/80 to-gray-900/80'
           : 'border-gray-200/60 bg-gradient-to-r from-gray-50/90 via-white/90 to-gray-50/90'
       }`}>
-        <div className={`grid grid-cols-12 gap-3 p-8 font-bold text-sm uppercase tracking-[0.1em] ${
+        <div className={`grid grid-cols-12 gap-3 p-4 md:p-6 lg:p-8 font-bold text-xs md:text-sm uppercase tracking-[0.1em] ${
           isDarkMode ? 'text-gray-300' : 'text-gray-600'
         }`}>
-          <div className="col-span-1 flex items-center space-x-2">
-            <Crown className="w-4 h-4 text-[#FFA366]" />
-            <span>{t('cryptos.rank')}</span>
+          {/* Rang - Toujours visible */}
+          <div className="col-span-1 flex items-center space-x-1 md:space-x-2">
+            <Crown className="w-3 h-3 md:w-4 md:h-4 text-[#FFA366]" />
+            <span className="hidden sm:inline">{t('cryptos.rank')}</span>
           </div>
-          <div className="col-span-3 flex items-center space-x-2">
+          {/* Nom - Toujours visible, prend plus de place sur mobile */}
+          <div className="col-span-5 sm:col-span-4 md:col-span-3 flex items-center space-x-2">
             <span>{t('cryptos.cryptocurrency')}</span>
           </div>
-          <div className="col-span-2 text-right flex items-center justify-end space-x-2">
-            <DollarSign className="w-4 h-4 text-[#00FF88]" />
-            <span>{t('cryptos.price_and_hl')}</span>
+          {/* Prix - Toujours visible */}
+          <div className="col-span-3 sm:col-span-2 md:col-span-2 text-right flex items-center justify-end space-x-1 md:space-x-2">
+            <DollarSign className="w-3 h-3 md:w-4 md:h-4 text-[#00FF88]" />
+            <span className="hidden sm:inline">{t('cryptos.price_and_hl')}</span>
+            <span className="sm:hidden">Prix</span>
           </div>
-          <div className="col-span-1 text-right flex items-center justify-end space-x-2">
-            <TrendingUp className="w-4 h-4 text-[#00FF88]" />
+          {/* Variation 24h - Toujours visible */}
+          <div className="col-span-2 sm:col-span-2 md:col-span-1 text-right flex items-center justify-end space-x-1 md:space-x-2">
+            <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-[#00FF88]" />
             <span>24h</span>
           </div>
-          <div className="col-span-2 text-right flex items-center justify-end space-x-2">
+          {/* Market Cap - Caché sur mobile, visible sur tablet+ */}
+          <div className="hidden md:flex md:col-span-2 text-right items-center justify-end space-x-2">
             <Target className="w-4 h-4 text-[#8B5CF6]" />
             <span>{t('cryptos.market_cap')}</span>
           </div>
-          <div className="col-span-1 text-right flex items-center justify-end space-x-2">
+          {/* Volume - Caché sur mobile et tablet, visible sur desktop */}
+          <div className="hidden lg:flex lg:col-span-1 text-right items-center justify-end space-x-2">
             <BarChart3 className="w-4 h-4 text-[#06B6D4]" />
             <span>Vol</span>
           </div>
-          <div className="col-span-2 text-center">
-            <span>{t('cryptos.actions')}</span>
+          {/* Actions - Ajusté pour mobile */}
+          <div className="col-span-1 sm:col-span-2 lg:col-span-2 text-center flex items-center justify-center">
+            <span className="hidden sm:inline">{t('cryptos.actions')}</span>
+            <MoreHorizontal className="w-4 h-4 sm:hidden" />
           </div>
         </div>
       </div>
@@ -1228,11 +1237,11 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               ? 'border-gray-800/30 hover:bg-gradient-to-r hover:from-gray-800/30 hover:via-gray-700/20 hover:to-gray-800/30'
               : 'border-gray-200/40 hover:bg-gradient-to-r hover:from-gray-50/50 hover:via-gray-100/30 hover:to-gray-50/50'
           }`}>
-            <div className="grid grid-cols-12 gap-3 p-8 items-center relative">
+            <div className="grid grid-cols-12 gap-2 md:gap-3 p-4 md:p-6 lg:p-8 items-center relative">
               <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#00FF88]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}></div>
               {/* Rang Premium */}
               <div className="col-span-1 relative z-10">
-                <div className={`font-bold text-lg ${
+                <div className={`font-bold text-sm md:text-base lg:text-lg ${
                   crypto.market_cap_rank <= 10 ? 'text-[#FFA366] text-shadow' :
                   crypto.market_cap_rank <= 50 ? 'text-[#00FF88]' :
                   crypto.market_cap_rank <= 100 ? 'text-[#00FF88]' :
@@ -1241,32 +1250,32 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   #{crypto.market_cap_rank || index + 1}
                 </div>
                 {crypto.market_cap_rank <= 10 && (
-                  <div className="text-xs text-[#FFA366] font-semibold">{t('cryptos.top_10')}</div>
+                  <div className="hidden md:block text-xs text-[#FFA366] font-semibold">{t('cryptos.top_10')}</div>
                 )}
               </div>
               
               {/* Nom avec Logo Premium */}
-              <div className="col-span-3 flex items-center space-x-4 relative z-10">
+              <div className="col-span-5 sm:col-span-4 md:col-span-3 flex items-center space-x-2 md:space-x-4 relative z-10">
                 <div className="relative">
                   {crypto.image && (
                     <>
-                      <img src={crypto.image} alt={crypto.name} className="w-12 h-12 rounded-full border-2 border-gray-600/50 group-hover:border-[#00FF88]/50 transition-colors shadow-lg" />
+                      <img src={crypto.image} alt={crypto.name} className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full border-2 border-gray-600/50 group-hover:border-[#00FF88]/50 transition-colors shadow-lg" />
                       <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF88]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className={`font-bold text-lg group-hover:text-[#00FF88] transition-colors truncate text-shadow mb-1 ${
+                  <div className={`font-bold text-sm md:text-base lg:text-lg group-hover:text-[#00FF88] transition-colors truncate text-shadow mb-1 ${
                     isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                   }`}>
                     {crypto.name}
                   </div>
                   <div className="flex items-center space-x-3">
-                    <span className={`font-mono uppercase font-semibold ${
+                    <span className={`font-mono uppercase font-semibold text-xs md:text-sm ${
                       isDarkMode ? 'text-gray-400' : 'text-gray-600'
                     }`}>{crypto.symbol}</span>
                     {crypto.market_cap_rank <= 10 && (
-                      <div className="px-2 py-0.5 bg-[#FFA366]/20 border border-[#FFA366]/30 text-[#FFA366] text-xs font-bold rounded-full">
+                      <div className="hidden sm:block px-2 py-0.5 bg-[#FFA366]/20 border border-[#FFA366]/30 text-[#FFA366] text-xs font-bold rounded-full">
                         {t('cryptos.leader')}
                       </div>
                     )}
@@ -1275,13 +1284,14 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               </div>
               
               {/* Prix avec High/Low Premium */}
-              <div className="col-span-2 text-right relative z-10">
-                <div className={`font-mono font-bold text-xl mb-2 text-shadow ${
+              <div className="col-span-3 sm:col-span-2 md:col-span-2 text-right relative z-10">
+                <div className={`font-mono font-bold text-sm md:text-lg lg:text-xl mb-1 md:mb-2 text-shadow ${
                   isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                 }`}>
                   {formatters.price(crypto.current_price)}
                 </div>
-                <div className={`text-xs space-y-1 ${
+                {/* High/Low - Caché sur mobile */}
+                <div className={`hidden sm:block text-xs space-y-1 ${
                   isDarkMode ? 'text-gray-400' : 'text-gray-600'
                 }`}>
                   <div className="flex justify-end items-center space-x-2">
@@ -1294,27 +1304,27 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   </div>
                 </div>
               </div>
-              
+
               {/* Change 24h Premium */}
-              <div className="col-span-1 text-right relative z-10">
-                <div className={`font-mono font-bold text-lg flex items-center justify-end space-x-2 text-shadow ${
+              <div className="col-span-2 sm:col-span-2 md:col-span-1 text-right relative z-10">
+                <div className={`font-mono font-bold text-sm md:text-base lg:text-lg flex items-center justify-end space-x-1 md:space-x-2 text-shadow ${
                   (crypto.price_change_percentage_24h || 0) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                 }`}>
-                  <div className={`p-1 rounded-lg ${
+                  <div className={`p-0.5 md:p-1 rounded-lg ${
                     (crypto.price_change_percentage_24h || 0) >= 0 ? 'bg-[#00FF88]/20' : 'bg-[#DC2626]/20'
                   }`}>
                     {(crypto.price_change_percentage_24h || 0) >= 0 ? (
-                      <TrendingUp className="w-5 h-5 animate-bounce-subtle" />
+                      <TrendingUp className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 animate-bounce-subtle" />
                     ) : (
-                      <TrendingDown className="w-5 h-5 animate-bounce-subtle" />
+                      <TrendingDown className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 animate-bounce-subtle" />
                     )}
                   </div>
-                  <span className="font-black">{formatters.percentage(crypto.price_change_percentage_24h || 0)}</span>
+                  <span className="font-black text-xs md:text-base">{formatters.percentage(crypto.price_change_percentage_24h || 0)}</span>
                 </div>
               </div>
               
-              {/* Market Cap Premium */}
-              <div className="col-span-2 text-right relative z-10">
+              {/* Market Cap Premium - Caché sur mobile, visible sur tablet+ */}
+              <div className="hidden md:block md:col-span-2 text-right relative z-10">
                 <div className={`font-mono font-bold text-lg mb-1 text-shadow ${
                   isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                 }`}>
@@ -1329,24 +1339,24 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   </div>
                 )}
               </div>
-              
-              {/* Volume Premium */}
-              <div className={`col-span-1 text-right font-mono font-bold text-lg text-shadow relative z-10 ${
+
+              {/* Volume Premium - Caché sur mobile et tablet, visible sur desktop */}
+              <div className={`hidden lg:block lg:col-span-1 text-right font-mono font-bold text-lg text-shadow relative z-10 ${
                 isDarkMode ? 'text-gray-300' : 'text-gray-700'
               }`}>
                 <div>{formatters.marketCap(crypto.total_volume)}</div>
               </div>
 
               {/* Actions Premium */}
-              <div className="col-span-2 flex justify-center relative z-10">
-                <div className="flex items-center space-x-2">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-2 flex justify-center relative z-10">
+                <div className="flex items-center space-x-1 sm:space-x-2">
                   {/* Graphique - toujours disponible */}
                   <Link
                     href={`/graphiques?crypto=${crypto.id}`}
-                    className="group/btn p-2.5 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#00FF88]/20 hover:to-[#00FFD9]/20 border border-gray-600/50 hover:border-[#00FF88]/60 rounded-lg transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#00FF88]/20"
+                    className="group/btn p-1.5 sm:p-2.5 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#00FF88]/20 hover:to-[#00FFD9]/20 border border-gray-600/50 hover:border-[#00FF88]/60 rounded-lg transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#00FF88]/20"
                     title={`${t('cryptos.analyze_charts')} ${crypto.name}`}
                   >
-                    <BarChart3 className="w-4 h-4 text-gray-400 group-hover/btn:text-[#00FF88] transition-colors" />
+                    <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 group-hover/btn:text-[#00FF88] transition-colors" />
                   </Link>
 
                   {/* SupabaseAddToWatchlistButton - seulement si connecté */}
@@ -1356,11 +1366,11 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                     </div>
                   ) : (
                     <div
-                      className="group/locked p-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg opacity-60 cursor-not-allowed relative"
+                      className="group/locked p-1.5 sm:p-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg opacity-60 cursor-not-allowed relative"
                       title={t('cryptos.connection_required_watchlist')}
                     >
-                      <Star className="w-4 h-4 text-gray-600" />
-                      <Lock className="w-3 h-3 text-gray-600 absolute -top-1 -right-1" />
+                      <Star className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
+                      <Lock className="w-2 h-2 sm:w-3 sm:h-3 text-gray-600 absolute -top-1 -right-1" />
                     </div>
                   )}
 
@@ -1368,18 +1378,18 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   {user ? (
                     <Link
                       href={`/backtest?crypto=${crypto.id}`}
-                      className="group/btn p-2.5 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#8B5CF6]/20 hover:to-[#7C3AED]/20 border border-gray-600/50 hover:border-[#8B5CF6]/60 rounded-lg transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#8B5CF6]/20"
+                      className="group/btn p-1.5 sm:p-2.5 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-[#8B5CF6]/20 hover:to-[#7C3AED]/20 border border-gray-600/50 hover:border-[#8B5CF6]/60 rounded-lg transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-[#8B5CF6]/20"
                       title={t('cryptos.launch_backtest')}
                     >
-                      <Activity className="w-4 h-4 text-gray-400 group-hover/btn:text-[#8B5CF6] transition-colors" />
+                      <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 group-hover/btn:text-[#8B5CF6] transition-colors" />
                     </Link>
                   ) : (
                     <div
-                      className="group/locked p-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg opacity-60 cursor-not-allowed relative"
+                      className="group/locked p-1.5 sm:p-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg opacity-60 cursor-not-allowed relative"
                       title={t('cryptos.connection_required_backtest')}
                     >
-                      <Activity className="w-4 h-4 text-gray-600" />
-                      <Lock className="w-3 h-3 text-gray-600 absolute -top-1 -right-1" />
+                      <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
+                      <Lock className="w-2 h-2 sm:w-3 sm:h-3 text-gray-600 absolute -top-1 -right-1" />
                     </div>
                   )}
                 </div>
