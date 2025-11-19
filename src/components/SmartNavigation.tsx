@@ -58,17 +58,17 @@ export default function SmartNavigation() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center group cursor-pointer">
             <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
               <Image
                 src="/logo2.png"
                 alt="Cryptium Logo"
                 width={60}
                 height={60}
-                className="object-contain opacity-80 hover:opacity-100 transition-opacity w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[70px] lg:h-[70px]"
+                className="object-contain opacity-75 group-hover:opacity-100 transition-opacity w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-[70px] lg:h-[70px]"
               />
               <div className="hidden sm:block">
-                <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] tracking-tight">Cryptium</span>
+                <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] tracking-tight group-hover:text-[#00FF88] transition-colors">Cryptium</span>
                 <div className="text-xs text-gray-400 font-medium hidden md:block">Analyse, backtest et portfolio crypto</div>
               </div>
             </div>

@@ -410,6 +410,15 @@ function AccountPageContent() {
         .animate-pulse-slow {
           animation: pulse 2s infinite;
         }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
 
       <div className="min-h-screen bg-[#0A0E1A] relative overflow-hidden">
@@ -426,7 +435,7 @@ function AccountPageContent() {
         <SmartNavigation />
 
         {/* Main Content */}
-        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-12 sm:pb-20">
+        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 sm:pb-20">
           {/* Page Header with enhanced styling */}
           <div className="mb-8 sm:mb-12 animate-slide-up">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8">
@@ -449,20 +458,20 @@ function AccountPageContent() {
             </div>
 
             {/* Tab Navigation with improved design */}
-            <div className="glass-effect-strong rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-xl overflow-x-auto">
-              <div className="flex space-x-1 min-w-max sm:min-w-0">
+            <div className="glass-effect-strong rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-xl overflow-x-auto scrollbar-hide">
+              <div className="flex space-x-1 sm:space-x-2 min-w-max sm:min-w-0">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center space-x-1.5 sm:space-x-2 px-3 sm:px-6 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all duration-300 font-medium border-2 min-w-[100px] sm:min-w-[120px] ${
+                    className={`flex-1 flex items-center justify-center space-x-1.5 sm:space-x-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg sm:rounded-xl transition-all duration-300 font-medium border-2 min-w-[110px] sm:min-w-[130px] ${
                       activeTab === tab.id
                         ? 'bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/30 shadow-sm'
                         : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 border-transparent'
                     }`}
                   >
-                    <tab.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${activeTab === tab.id ? '' : ''}`} />
-                    <span className="text-xs sm:text-sm whitespace-nowrap">{tab.label}</span>
+                    <tab.icon className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 ${activeTab === tab.id ? '' : ''}`} />
+                    <span className="text-sm sm:text-base whitespace-nowrap">{tab.label}</span>
                   </button>
                 ))}
               </div>
@@ -625,75 +634,75 @@ function AccountPageContent() {
                         isDarkMode ? "border-b border-gray-800/40" : "border-b border-gray-200"
                       )}>{t('stats.title')}</h3>
 
-                      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
-                          <div className="flex items-center justify-between mb-2 sm:mb-3">
-                            <div className="p-1.5 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
-                              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
+                      <div className="grid grid-cols-2 gap-4 sm:gap-4 lg:gap-6">
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
+                          <div className="flex items-center justify-between mb-3 sm:mb-3">
+                            <div className="p-2 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
+                              <Star className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
                             </div>
                           </div>
-                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-2 sm:mb-2 font-display">
                             {userStats?.watchlists_count || 0}
                           </div>
-                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.watchlists')}</div>
+                          <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.watchlists')}</div>
                           {userStats?.watchlists_count === 0 && (
-                            <div className="mt-1.5 sm:mt-2">
+                            <div className="mt-2 sm:mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-[10px] sm:text-xs text-[#00FF88] hover:text-[#8B5CF6] transition-colors"
+                                className="text-xs sm:text-xs text-[#00FF88] hover:text-[#8B5CF6] transition-colors"
                               >
                                 {t('stats.create_first')}
                               </Link>
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
-                          <div className="flex items-center justify-between mb-2 sm:mb-3">
-                            <div className="p-1.5 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
-                              <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
+                          <div className="flex items-center justify-between mb-3 sm:mb-3">
+                            <div className="p-2 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
+                              <Activity className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
                             </div>
                           </div>
-                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-2 sm:mb-2 font-display">
                             {userStats?.exchanges_count || 0}
                           </div>
-                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.exchanges')}</div>
+                          <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.exchanges')}</div>
                         </div>
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
-                          <div className="flex items-center justify-between mb-2 sm:mb-3">
-                            <div className="p-1.5 sm:p-2 bg-[#FFA366]/20 rounded-lg sm:rounded-xl">
-                              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#FFA366]" />
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
+                          <div className="flex items-center justify-between mb-3 sm:mb-3">
+                            <div className="p-2 sm:p-2 bg-[#FFA366]/20 rounded-lg sm:rounded-xl">
+                              <TrendingUp className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#FFA366]" />
                             </div>
                           </div>
-                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#FFA366] mb-1 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#FFA366] mb-2 sm:mb-2 font-display">
                             {userStats?.cryptos_count || 0}
                           </div>
-                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.cryptos')}</div>
+                          <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.cryptos')}</div>
                           {userStats?.cryptos_count === 0 && (
-                            <div className="mt-1.5 sm:mt-2">
+                            <div className="mt-2 sm:mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-[10px] sm:text-xs text-[#FFA366] hover:text-[#FBBF24] transition-colors"
+                                className="text-xs sm:text-xs text-[#FFA366] hover:text-[#FBBF24] transition-colors"
                               >
                                 {t('stats.add_cryptos')}
                               </Link>
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#8B5CF6]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#8B5CF6]/30">
-                          <div className="flex items-center justify-between mb-2 sm:mb-3">
-                            <div className="p-1.5 sm:p-2 bg-[#8B5CF6]/20 rounded-lg sm:rounded-xl">
-                              <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#8B5CF6]" />
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#8B5CF6]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#8B5CF6]/30">
+                          <div className="flex items-center justify-between mb-3 sm:mb-3">
+                            <div className="p-2 sm:p-2 bg-[#8B5CF6]/20 rounded-lg sm:rounded-xl">
+                              <Target className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#8B5CF6]" />
                             </div>
                           </div>
-                          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#8B5CF6] mb-1 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#8B5CF6] mb-2 sm:mb-2 font-display">
                             {userStats?.strategies_count || 0}
                           </div>
-                          <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('stats.strategies')}</div>
+                          <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.strategies')}</div>
                           {userStats?.strategies_count === 0 && (
-                            <div className="mt-1.5 sm:mt-2">
+                            <div className="mt-2 sm:mt-2">
                               <Link
                                 href="/backtest"
-                                className="text-[10px] sm:text-xs text-[#8B5CF6] hover:text-[#A855F7] transition-colors"
+                                className="text-xs sm:text-xs text-[#8B5CF6] hover:text-[#A855F7] transition-colors"
                               >
                                 {t('stats.create_first')}
                               </Link>

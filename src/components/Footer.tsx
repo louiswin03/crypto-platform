@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { TrendingUp, Users, Star, Activity, BarChart3, Wallet, PieChart, Shield, CheckCircle } from 'lucide-react'
+import { TrendingUp, Users, Star, Activity, BarChart3, Wallet, PieChart, Shield, CheckCircle, Lock } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Footer() {
@@ -71,34 +71,36 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Compliance & Stats */}
-        <div className="border-t border-gray-800/40 pt-12 mb-12">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="glass-effect rounded-2xl p-6 text-center">
-              <Shield className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.rgpd')}</div>
-              <div className="text-xs text-gray-400">{t('home.footer.compliant')}</div>
-            </div>
+        {/* Compliance & Stats - Only on Home Page */}
+        {pathname === '/' && (
+          <div className="border-t border-gray-800/40 pt-12 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="glass-effect rounded-2xl p-6 text-center">
+                <Shield className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
+                <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.rgpd')}</div>
+                <div className="text-xs text-gray-400">{t('home.footer.compliant')}</div>
+              </div>
 
-            <div className="glass-effect rounded-2xl p-6 text-center">
-              <CheckCircle className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.iso')}</div>
-              <div className="text-xs text-gray-400">{t('home.footer.certified')}</div>
-            </div>
+              <div className="glass-effect rounded-2xl p-6 text-center">
+                <CheckCircle className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
+                <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.iso')}</div>
+                <div className="text-xs text-gray-400">{t('home.footer.certified')}</div>
+              </div>
 
-            <div className="glass-effect rounded-2xl p-6 text-center">
-              <span className="text-2xl mb-3 block">🇫🇷</span>
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.french')}</div>
-              <div className="text-xs text-gray-400">100%</div>
-            </div>
+              <div className="glass-effect rounded-2xl p-6 text-center">
+                <Lock className="w-8 h-8 text-[#8B5CF6] mx-auto mb-3" />
+                <div className="text-lg font-bold text-[#F9FAFB] mb-2">Sécurité</div>
+                <div className="text-xs text-gray-400">AES-256</div>
+              </div>
 
-            <div className="glass-effect rounded-2xl p-6 text-center">
-              <div className="w-2 h-2 bg-[#00FF88] rounded-full mx-auto mb-3 animate-pulse"></div>
-              <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
-              <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
+              <div className="glass-effect rounded-2xl p-6 text-center">
+                <div className="w-2 h-2 bg-[#00FF88] rounded-full mx-auto mb-3 animate-pulse"></div>
+                <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
+                <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Bottom Footer */}
         <div className="border-t border-gray-800/40 pt-8">

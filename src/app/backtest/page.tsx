@@ -290,7 +290,7 @@ export default function BacktestPage() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[1.1] tracking-tighter font-display px-4 sm:px-0">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[1.15] tracking-tighter font-display px-4 sm:px-0">
                   <span className={`block mb-2 ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
                     {t('backtest.hero.title1')}
                   </span>
@@ -304,7 +304,7 @@ export default function BacktestPage() {
                 </h1>
 
                 {/* Subtitle */}
-                <p className={`text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 max-w-4xl mx-auto font-light leading-relaxed px-4 sm:px-0 ${
+                <p className={`text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0 ${
                   isDarkMode ? 'text-gray-300' : 'text-gray-600'
                 }`}>
                   {t('backtest.hero.subtitle')}
@@ -470,65 +470,65 @@ export default function BacktestPage() {
                   const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0
 
                   return (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-                  <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 border text-center ${
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-6">
+                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
                     isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                   }`}>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm mb-1 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {t('backtest.metrics.total_roi')}
                     </div>
-                    <div className={`text-xl sm:text-2xl lg:text-3xl font-bold ${
+                    <div className={`text-2xl sm:text-2xl lg:text-3xl font-bold ${
                       backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                     }`}>
                       {backtestResults.metrics.totalReturnPercentage >= 0 ? '+' : ''}
                       {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
                     </div>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       ${backtestResults.metrics.totalReturn.toFixed(2)}
                     </div>
                   </div>
 
-                  <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 border text-center ${
+                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
                     isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                   }`}>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm mb-1 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {t('backtest.metrics.win_rate')}
                     </div>
-                    <div className={`text-xl sm:text-2xl lg:text-3xl font-bold ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
+                    <div className={`text-2xl sm:text-2xl lg:text-3xl font-bold ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
                       {winRate.toFixed(1)}%
                     </div>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {winningTrades}/{totalTrades} {t('backtest.metrics.trades')}
                     </div>
                   </div>
 
-                  <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 border text-center ${
+                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
                     isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                   }`}>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm mb-1 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {t('backtest.metrics.max_drawdown')}
                     </div>
-                    <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#DC2626]">
+                    <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-[#DC2626]">
                       -{backtestResults.metrics.maxDrawdownPercentage.toFixed(2)}%
                     </div>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       -${backtestResults.metrics.maxDrawdown.toFixed(2)}
                     </div>
                   </div>
 
-                  <div className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 border text-center ${
+                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
                     isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                   }`}>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm mb-1 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {t('backtest.metrics.vs_hold')}
                     </div>
-                    <div className={`text-xl sm:text-2xl lg:text-3xl font-bold ${
+                    <div className={`text-2xl sm:text-2xl lg:text-3xl font-bold ${
                       backtestResults.metrics.alpha >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                     }`}>
                       {backtestResults.metrics.alpha >= 0 ? '+' : ''}
                       {backtestResults.metrics.alpha.toFixed(2)}%
                     </div>
-                    <div className={`text-[10px] sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                       {t('backtest.metrics.alpha')}
                     </div>
                   </div>
@@ -640,49 +640,49 @@ export default function BacktestPage() {
                 </div>
 
                 {/* Liste de tous les trades */}
-                <div className={`rounded-2xl p-6 border ${
+                <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 border ${
                   isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                 }`}>
                   {(() => {
                     const tradePairs = groupTradesIntoPairs(backtestResults.state.trades)
                     return (
                       <>
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className={`text-xl font-bold ${
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
+                          <h3 className={`text-lg sm:text-xl font-bold ${
                             isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                           }`}>
                             {t('backtest.trades.title')}
                           </h3>
-                          <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                          <div className={`text-xs sm:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             {tradePairs.length} {t('backtest.trades.complete')}
                           </div>
                         </div>
-                        <div className="overflow-x-auto max-h-96 overflow-y-auto border border-gray-800/50 rounded">
-                          <div className="space-y-4 p-4">
+                        <div className="overflow-x-auto max-h-96 overflow-y-auto border border-gray-800/50 rounded-lg sm:rounded-xl">
+                          <div className="space-y-3 sm:space-y-4 p-3 sm:p-4">
                             {tradePairs.map((pair) => (
                               <div key={pair.id} className="bg-gray-800/30 rounded-lg border border-gray-700/50 overflow-hidden">
                                 {/* En-tête du trade */}
-                                <div className="bg-gray-700/50 px-4 py-2 border-b border-gray-600/50">
-                                  <div className="flex items-center justify-between">
-                                    <h4 className="text-sm font-bold text-[#F9FAFB]">{t('backtest.trades.trade')} #{pair.number}</h4>
-                                    <div className="flex items-center gap-3">
+                                <div className="bg-gray-700/50 px-3 sm:px-4 py-2 sm:py-2.5 border-b border-gray-600/50">
+                                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <h4 className="text-sm sm:text-base font-bold text-[#F9FAFB]">{t('backtest.trades.trade')} #{pair.number}</h4>
+                                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
                                       <button
                                         onClick={() => setSelectedTrade(pair)}
-                                        className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg font-medium transition-colors flex items-center gap-1"
+                                        className="px-2.5 sm:px-3 py-1.5 sm:py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg font-medium transition-colors flex items-center gap-1"
                                         title={t('backtest.trades.view')}
                                       >
                                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg>
-                                        {t('backtest.trades.view')}
+                                        <span className="hidden sm:inline">{t('backtest.trades.view')}</span>
                                       </button>
                                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                                         pair.pnl >= 0 ? 'bg-[#00FF88]/20 text-[#00FF88]' : 'bg-[#DC2626]/20 text-[#DC2626]'
                                       }`}>
                                         {pair.pnl >= 0 ? t('backtest.trades.gain') : t('backtest.trades.loss')}
                                       </span>
-                                      <span className={`font-bold ${
+                                      <span className={`font-bold text-sm sm:text-base ${
                                         pair.pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                                       }`}>
                                         {pair.pnl >= 0 ? '+' : ''}${pair.pnl.toFixed(2)}
@@ -693,36 +693,36 @@ export default function BacktestPage() {
                                 </div>
 
                                 {/* Détails du trade */}
-                                <div className="p-4 space-y-3">
+                                <div className="p-3 sm:p-4 space-y-3">
                                   {/* Ouverture */}
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
+                                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <div className="flex items-center gap-2 sm:gap-3">
                                       <span className="px-2 py-1 rounded text-xs font-medium bg-[#00FF88]/20 text-[#00FF88]">
                                         {t('backtest.trades.open')}
                                       </span>
-                                      <span className="text-sm text-gray-300">{pair.openTrade.date}</span>
+                                      <span className="text-xs sm:text-sm text-gray-300">{pair.openTrade.date}</span>
                                     </div>
-                                    <div className="text-right">
-                                      <div className="text-sm font-mono text-[#F9FAFB]">${pair.openTrade.price.toFixed(2)}</div>
+                                    <div className="text-left sm:text-right">
+                                      <div className="text-sm sm:text-base font-mono text-[#F9FAFB]">${pair.openTrade.price.toFixed(2)}</div>
                                       <div className="text-xs text-gray-400">{pair.openTrade.quantity.toFixed(6)} BTC</div>
                                     </div>
                                   </div>
-                                  <div className="text-xs text-gray-500 ml-16">{pair.openTrade.reason}</div>
+                                  <div className="text-xs text-gray-500 ml-0 sm:ml-16 pl-2 border-l-2 border-gray-700/50 sm:border-0 sm:pl-0">{pair.openTrade.reason}</div>
 
                                   {/* Fermeture */}
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
+                                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                    <div className="flex items-center gap-2 sm:gap-3">
                                       <span className="px-2 py-1 rounded text-xs font-medium bg-[#DC2626]/20 text-[#DC2626]">
                                         {t('backtest.trades.close')}
                                       </span>
-                                      <span className="text-sm text-gray-300">{pair.closeTrade.date}</span>
+                                      <span className="text-xs sm:text-sm text-gray-300">{pair.closeTrade.date}</span>
                                     </div>
-                                    <div className="text-right">
-                                      <div className="text-sm font-mono text-[#F9FAFB]">${pair.closeTrade.price.toFixed(2)}</div>
+                                    <div className="text-left sm:text-right">
+                                      <div className="text-sm sm:text-base font-mono text-[#F9FAFB]">${pair.closeTrade.price.toFixed(2)}</div>
                                       <div className="text-xs text-gray-400">{pair.closeTrade.quantity.toFixed(6)} BTC</div>
                                     </div>
                                   </div>
-                                  <div className="text-xs text-gray-500 ml-16">{pair.closeTrade.reason}</div>
+                                  <div className="text-xs text-gray-500 ml-0 sm:ml-16 pl-2 border-l-2 border-gray-700/50 sm:border-0 sm:pl-0">{pair.closeTrade.reason}</div>
                                 </div>
                               </div>
                             ))}
