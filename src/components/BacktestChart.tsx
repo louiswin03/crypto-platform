@@ -12,9 +12,8 @@ import {
   ResponsiveContainer,
   ReferenceDot
 } from 'recharts'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Play, Pause, Square, SkipForward, SkipBack, ChevronLeft, ChevronRight, Zap, BarChart3 } from 'lucide-react'
 import CandlestickChart from './CandlestickChart'
-import ReplayControls from './ReplayControls'
 import type { BacktestResult } from '@/services/backtestEngine'
 import { ReplayService, ReplayState } from '@/services/replayService'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -31,8 +30,8 @@ const formatDate = (timestamp: number) => {
   })
 }
 
-// Composant pour les graphiques d'oscillateurs
-const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
+// Composant pour les graphiques d'oscillateurs - Optimisé avec memo
+const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
   const { config, indicators } = backtestData
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -92,6 +91,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="RSI"
+                  isAnimationActive={false}
                 />
                 {/* Lignes de référence */}
                 <ReferenceDot y={70} stroke="#DC2626" strokeDasharray="5 5" />
@@ -144,6 +144,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="MACD"
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -152,6 +153,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="Signal"
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -160,6 +162,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={2}
                   dot={false}
                   name="Histogram"
+                  isAnimationActive={false}
                 />
                 <ReferenceDot y={0} stroke="#9CA3AF" strokeDasharray="2 2" />
               </LineChart>
@@ -212,6 +215,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="%K"
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -220,6 +224,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="%D"
+                  isAnimationActive={false}
                 />
                 <ReferenceDot y={80} stroke="#DC2626" strokeDasharray="5 5" />
                 <ReferenceDot y={20} stroke="#00FF88" strokeDasharray="5 5" />
@@ -272,6 +277,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="Williams %R"
+                  isAnimationActive={false}
                 />
                 <ReferenceDot y={-20} stroke="#DC2626" strokeDasharray="5 5" />
                 <ReferenceDot y={-80} stroke="#00FF88" strokeDasharray="5 5" />
@@ -324,6 +330,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                   strokeWidth={3}
                   dot={false}
                   name="OBV"
+                  isAnimationActive={false}
                 />
                 {indicators.obv.some((item: any) => item.signal !== null) && (
                   <Line
@@ -334,6 +341,7 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
                     dot={false}
                     name="Signal OBV"
                     strokeDasharray="3 3"
+                    isAnimationActive={false}
                   />
                 )}
               </LineChart>
@@ -344,7 +352,13 @@ const OscillatorCharts = ({ backtestData, chartData, t }: any) => {
       )}
     </div>
   )
-}
+}, (prevProps, nextProps) => {
+  // Ne re-rendre que si les données ont vraiment changé
+  return (
+    prevProps.chartData.length === nextProps.chartData.length &&
+    prevProps.backtestData.indicators === nextProps.backtestData.indicators
+  )
+})
 
 interface BacktestChartProps {
   backtestData: BacktestResult
@@ -354,7 +368,7 @@ interface BacktestChartProps {
 
 export default function BacktestChart({ backtestData, selectedTrade, onTradeZoomComplete }: BacktestChartProps) {
   const { t } = useLanguage()
-  const [replayMode, setReplayMode] = useState(false)
+  const [replayMode, setReplayMode] = useState(true) // Activé par défaut
   const [replayService, setReplayService] = useState<ReplayService | null>(null)
   const [replayState, setReplayState] = useState<ReplayState | null>(null)
   const [zoomedTrade, setZoomedTrade] = useState<any>(null)
@@ -365,11 +379,21 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
     if (selectedTrade) {
       setZoomedTrade(selectedTrade)
       setShowOnlySelectedTrade(true) // Activer par défaut le mode "uniquement ce trade"
-      // Scroll vers le graphique
-      const chartElement = document.getElementById('main-chart')
-      if (chartElement) {
-        chartElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
+      // Scroll vers le graphique - Attendre un peu que le DOM soit mis à jour
+      setTimeout(() => {
+        const chartElement = document.getElementById('main-chart')
+        if (chartElement) {
+          // Calculer la position pour centrer parfaitement le graphique
+          const elementRect = chartElement.getBoundingClientRect()
+          const absoluteElementTop = elementRect.top + window.pageYOffset
+          const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2)
+
+          window.scrollTo({
+            top: middle,
+            behavior: 'smooth'
+          })
+        }
+      }, 100)
       // Plus de reset automatique - l'utilisateur contrôle manuellement
     }
   }, [selectedTrade])
@@ -380,7 +404,12 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
       const service = ReplayService.createInstance(backtestData)
       setReplayService(service)
 
+      // S'abonner aux changements d'état
       const unsubscribe = service.subscribe(setReplayState)
+
+      // Obtenir l'état initial immédiatement après l'abonnement
+      setReplayState(service.getState())
+
       return () => {
         unsubscribe()
         service.destroy()
@@ -523,6 +552,22 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           trades: filteredTrades
         },
         indicators: filteredIndicators
+      }
+    }
+
+    // Si le mode replay est activé mais pas encore initialisé, montrer juste le début
+    if (replayMode && !replayState) {
+      const initialWindowSize = 60 // Même taille que le replay service
+      const initialPrices = backtestData.priceData.slice(0, initialWindowSize)
+
+      return {
+        ...backtestData,
+        priceData: initialPrices,
+        state: {
+          ...backtestData.state,
+          trades: [] // Pas de trades visibles au tout début
+        },
+        indicators: {}
       }
     }
 
@@ -807,46 +852,6 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         </div>
       </div>
 
-      {/* Section Mode Replay - Plus compacte */}
-      <div className="space-y-3">
-        {/* En-tête compact */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h3 className="text-lg font-bold text-[#F9FAFB]">{t('backtest.chart.replay_mode')}</h3>
-            {replayMode && (
-              <div className="px-2 py-1 bg-red-600/20 border border-red-600/50 rounded-full text-xs text-red-400 flex items-center gap-1">
-                <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-                {t('backtest.chart.active')}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setReplayMode(!replayMode)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                replayMode
-                  ? 'bg-red-600/20 border border-red-600/50 text-red-400 hover:bg-red-600/30'
-                  : 'bg-blue-600/20 border border-blue-600/50 text-blue-400 hover:bg-blue-600/30'
-              }`}
-            >
-              {replayMode ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {replayMode ? t('backtest.chart.quit') : t('backtest.chart.activate')}
-            </button>
-            <div className="text-xs text-gray-400">
-              {replayMode && replayState
-                ? `${replayState.visibleData.prices.length} / ${backtestData.priceData.length} pts`
-                : t('backtest.chart.relive_trades')
-              }
-            </div>
-          </div>
-        </div>
-
-        {/* Contrôles de replay */}
-        {replayMode && (
-          <ReplayControls replayService={replayService} />
-        )}
-      </div>
-
       {/* Graphique principal */}
       <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
         <div className="border-b border-white/10 px-8 py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
@@ -903,11 +908,11 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
         <div className="p-8">
 
-          <div id="main-chart" className="w-full h-[500px]">
+          <div id="main-chart" className="w-full h-[700px]">
             <CandlestickChart
               data={chartData}
               width={800}
-              height={500}
+              height={700}
               trades={currentBacktestData.state.trades}
               indicators={currentBacktestData.indicators}
               config={currentBacktestData.config}
@@ -916,166 +921,130 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
             />
           </div>
         </div>
+      </div>
 
-        {/* Légende améliorée avec symboles visuels */}
-        <div className="border-t border-gray-700/30 px-6 py-4 bg-gray-800/20">
-          <div className="flex flex-wrap items-center gap-8 text-sm">
-            {/* Bougies */}
-            <div className="flex items-center gap-4">
-              <span className="text-gray-400 font-semibold">{t('backtest.chart.candles_label')}:</span>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-[#00FF88] rounded"></div>
-                <span className="text-gray-200">{t('backtest.chart.bullish')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-[#DC2626] rounded"></div>
-                <span className="text-gray-200">{t('backtest.chart.bearish')}</span>
-              </div>
-            </div>
-
-            {/* Trades */}
-            <div className="flex items-center gap-4">
-              <span className="text-gray-400 font-semibold">{t('backtest.chart.trading_signals')}:</span>
-              <div className="flex items-center gap-2 bg-[#3B82F6]/10 px-3 py-1.5 rounded-lg border border-[#3B82F6]/30">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                  {/* Cercle externe blanc */}
-                  <circle cx="10" cy="10" r="8" fill="white"/>
-                  {/* Cercle principal bleu */}
-                  <circle cx="10" cy="10" r="7" fill="#3B82F6"/>
-                  {/* Cercle interne blanc */}
-                  <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
-                  {/* Flèche UP blanche */}
-                  <path d="M 10 6 L 13 12 L 11.5 12 L 11.5 14 L 8.5 14 L 8.5 12 L 7 12 Z" fill="white"/>
-                </svg>
-                <span className="text-[#3B82F6] font-bold">{t('backtest.chart.buy')}</span>
-              </div>
-              <div className="flex items-center gap-2 bg-gradient-to-r from-[#10B981]/10 to-[#EF4444]/10 px-3 py-1.5 rounded-lg border border-gray-500/30">
-                <svg width="20" height="20" viewBox="0 0 20 20">
-                  {/* Cercle externe blanc */}
-                  <circle cx="10" cy="10" r="8" fill="white"/>
-                  {/* Dégradé vert/rouge */}
-                  <defs>
-                    <linearGradient id="sellGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" style={{stopColor: '#10B981', stopOpacity: 1}} />
-                      <stop offset="100%" style={{stopColor: '#EF4444', stopOpacity: 1}} />
-                    </linearGradient>
-                  </defs>
-                  <circle cx="10" cy="10" r="7" fill="url(#sellGradient)"/>
-                  {/* Cercle interne blanc */}
-                  <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
-                  {/* Flèche DOWN blanche */}
-                  <path d="M 10 14 L 13 8 L 11.5 8 L 11.5 6 L 8.5 6 L 8.5 8 L 7 8 Z" fill="white"/>
-                </svg>
-                <span className="text-gray-300 font-bold">{t('backtest.chart.sell')} <span className="text-xs text-gray-400">(Vert si +, Rouge si -)</span></span>
-              </div>
-              {stopLossTrades.length > 0 && (
-                <div className="flex items-center gap-2 bg-[#DC2626]/10 px-3 py-1.5 rounded-lg border border-[#DC2626]/30">
-                  <svg width="20" height="20" viewBox="0 0 20 20">
-                    {/* Cercle externe blanc */}
-                    <circle cx="10" cy="10" r="8" fill="white"/>
-                    {/* Cercle principal rouge */}
-                    <circle cx="10" cy="10" r="7" fill="#DC2626"/>
-                    {/* Cercle interne blanc */}
-                    <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
-                    {/* Croix blanche */}
-                    <line x1="6" y1="6" x2="14" y2="14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                    <line x1="14" y1="6" x2="6" y2="14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                  <span className="text-[#DC2626] font-bold">Stop Loss</span>
-                </div>
-              )}
-              {takeProfitTrades.length > 0 && (
-                <div className="flex items-center gap-2 bg-[#10B981]/10 px-3 py-1.5 rounded-lg border border-[#10B981]/30">
-                  <svg width="20" height="20" viewBox="0 0 20 20">
-                    {/* Cercle externe blanc */}
-                    <circle cx="10" cy="10" r="8" fill="white"/>
-                    {/* Cercle principal vert */}
-                    <circle cx="10" cy="10" r="7" fill="#10B981"/>
-                    {/* Cercle interne blanc */}
-                    <circle cx="10" cy="10" r="5" fill="white" opacity="0.4"/>
-                    {/* Étoile blanche */}
-                    <path d="M 10 5 L 11 8 L 14 10 L 11 12 L 10 15 L 9 12 L 6 10 L 9 8 Z" fill="white"/>
-                  </svg>
-                  <span className="text-[#10B981] font-bold">Take Profit</span>
-                </div>
-              )}
-            </div>
-
-            {/* Indicateurs */}
-            {(backtestData.indicators.ema1 || backtestData.indicators.ema2 || backtestData.indicators.sma1 || backtestData.indicators.sma2 || backtestData.indicators.bollinger || backtestData.indicators.vwap || backtestData.indicators.supertrend || backtestData.indicators.ichimoku || backtestData.indicators.pivotPoints) && (
-              <div className="flex items-center gap-4">
-                <span className="text-gray-400 font-medium">{t('backtest.chart.indicators')}:</span>
-                <div className="flex items-center gap-3">
-                  {backtestData.indicators.ema1 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#00FF88]"></div>
-                      <span className="text-gray-300 text-xs">EMA1</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.ema2 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#DC2626]"></div>
-                      <span className="text-gray-300 text-xs">EMA2</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.sma1 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#FFA366]"></div>
-                      <span className="text-gray-300 text-xs">SMA1</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.sma2 && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#8B5CF6]"></div>
-                      <span className="text-gray-300 text-xs">SMA2</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.bollinger && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#00FF88] border-dashed border-t"></div>
-                      <span className="text-gray-300 text-xs">BB</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.vwap && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#FFA366]"></div>
-                      <span className="text-gray-300 text-xs">VWAP</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.supertrend && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#10B981]"></div>
-                      <span className="text-gray-300 text-xs">SuperTrend</span>
-                    </div>
-                  )}
-                  {/* Debug: afficher le statut des indicateurs */}
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="text-xs text-gray-500">
-                      Debug: SuperTrend={backtestData.indicators.supertrend ? 'OK' : 'Missing'}
-                    </div>
-                  )}
-                  {backtestData.indicators.ichimoku && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#8B5CF6]"></div>
-                      <span className="text-gray-300 text-xs">Ichimoku</span>
-                    </div>
-                  )}
-                  {backtestData.indicators.pivotPoints && (
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-0.5 bg-[#EC4899] border-dashed border-t"></div>
-                      <span className="text-gray-300 text-xs">Pivots</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+      {/* Panneau de contrôles du Replay - TOUJOURS VISIBLE */}
+      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl mt-6">
+        <div className="border-b border-white/10 px-8 py-4 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
+          <h3 className="text-xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
+            Contrôles du Replay
+          </h3>
         </div>
+
+        {replayService && replayState ? (
+          <div className="px-8 py-4 space-y-4">
+            {/* Barre de progression/scrubbing */}
+            <div className="w-full">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-400 min-w-[80px]">
+                  {Math.round(replayService.getProgress() * 100)}%
+                </span>
+                <input
+                  type="range"
+                  min="0"
+                  max={backtestData.priceData.length - 1}
+                  value={replayState.currentIndex}
+                  onChange={(e) => {
+                    const newIndex = parseInt(e.target.value)
+                    replayService.goToIndex(newIndex)
+                  }}
+                  className="flex-1 h-2 bg-gray-700/50 rounded-lg appearance-none cursor-pointer slider-thumb"
+                  style={{
+                    background: `linear-gradient(to right, #00FF88 0%, #00FF88 ${replayService.getProgress() * 100}%, #374151 ${replayService.getProgress() * 100}%, #374151 100%)`
+                  }}
+                />
+                <span className="text-xs text-gray-400 min-w-[120px] text-right">
+                  {replayState.currentIndex + 1} / {backtestData.priceData.length}
+                </span>
+              </div>
+              {/* Affichage de la date actuelle */}
+              <div className="text-xs text-gray-500 mt-2 text-center">
+                {replayService.getCurrentPrice() ? new Date(replayService.getCurrentPrice()!.timestamp).toLocaleString('fr-FR') : '-'}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+            {/* Boutons de navigation */}
+            <div className="flex items-center gap-1">
+              <button onClick={() => replayService.goToPreviousTrade()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade précédent">
+                <SkipBack className="w-3 h-3" />
+              </button>
+              <button onClick={() => replayService.stepBackward()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Reculer">
+                <ChevronLeft className="w-3 h-3" />
+              </button>
+              <button onClick={() => replayState.isPlaying ? replayService.pause() : replayService.play()} className={`p-1.5 rounded transition-colors ${replayState.isPlaying ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}`}>
+                {replayState.isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+              </button>
+              <button onClick={() => replayService.stop()} className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded transition-colors" title="Stop">
+                <Square className="w-3 h-3" />
+              </button>
+              <button onClick={() => replayService.stepForward()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Avancer">
+                <ChevronRight className="w-3 h-3" />
+              </button>
+              <button onClick={() => replayService.goToNextTrade()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade suivant">
+                <SkipForward className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* Vitesse */}
+            <div className="flex items-center gap-1">
+              <Zap className="w-3 h-3 text-yellow-400" />
+              <span className="text-gray-400">Vitesse:</span>
+              {[0.25, 0.5, 1, 2, 5, 10].map(speed => (
+                <button key={speed} onClick={() => replayService.setSpeed(speed)} className={`px-2 py-0.5 rounded text-[10px] transition-all ${replayState.speed === speed ? 'bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
+                  {speed}x
+                </button>
+              ))}
+            </div>
+
+            {/* Suivi */}
+            <div className="flex items-center gap-1">
+              <Eye className="w-3 h-3 text-blue-400" />
+              <span className="text-gray-400">Suivi:</span>
+              <button onClick={() => replayService.toggleFollowPrice()} className={`px-2 py-0.5 rounded text-[10px] transition-colors ${replayState.followPrice ? 'bg-blue-600 text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
+                {replayState.followPrice ? 'ON' : 'OFF'}
+              </button>
+            </div>
+
+            {/* Bougies */}
+            <div className="flex items-center gap-1">
+              <BarChart3 className="w-3 h-3 text-green-400" />
+              <span className="text-gray-400">Bougies:</span>
+              <button onClick={() => replayService.setWindowSize(replayState.windowSize - 5)} className="px-1 py-0.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded text-[10px] w-4 h-4 flex items-center justify-center" disabled={replayState.windowSize <= 10}>-</button>
+              <span className="text-[10px] font-medium text-[#F9FAFB] min-w-[1.5rem] text-center">{replayState.windowSize}</span>
+              <button onClick={() => replayService.setWindowSize(replayState.windowSize + 5)} className="px-1 py-0.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded text-[10px] w-4 h-4 flex items-center justify-center" disabled={replayState.windowSize >= 150}>+</button>
+            </div>
+
+            {/* Stats */}
+            <div className="flex items-center gap-3 text-[10px]">
+              <div className="flex items-center gap-1">
+                <span className="text-gray-400">Trades</span>
+                <span className="font-medium text-[#F9FAFB]">{replayState.visibleData.trades.length}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-gray-400">Prix</span>
+                <span className="font-medium text-[#F9FAFB]">{replayService.getCurrentPrice()?.close.toFixed(0) || '-'}$</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-gray-400">Progrès</span>
+                <span className="font-medium text-[#F9FAFB]">{Math.round(replayService.getProgress() * 100)}%</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        ) : (
+          <div className="px-8 py-4">
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span>Initialisation du mode replay...</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sous-graphiques pour oscillateurs - Afficher seulement s'il y en a */}
-      {(backtestData.indicators.rsi || backtestData.indicators.macd || backtestData.indicators.stochastic || backtestData.indicators.williamsR || backtestData.indicators.obv) && (
-        <div className="space-y-6">
+      {(currentBacktestData.indicators?.rsi || currentBacktestData.indicators?.macd || currentBacktestData.indicators?.stochastic || currentBacktestData.indicators?.williamsR || currentBacktestData.indicators?.obv) && (
+        <div className="space-y-6 mt-6">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">{t('backtest.chart.technical_oscillators')}</h3>
             <div className="text-sm text-[#9CA3AF] font-medium">

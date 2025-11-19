@@ -19,6 +19,8 @@ interface ImprovedCryptoSearchProps {
   cryptoOptions: CryptoOption[]
   selectedCrypto: string
   onCryptoSelect: (symbol: string) => void
+  searchCoins?: (query: string) => Promise<any[]>
+  isSearching?: boolean
 }
 
 type SortOption = 'rank' | 'price' | 'change24h' | 'name'
@@ -27,7 +29,9 @@ type FilterOption = 'all' | 'gainers' | 'losers' | 'favorites'
 export default function ImprovedCryptoSearch({
   cryptoOptions,
   selectedCrypto,
-  onCryptoSelect
+  onCryptoSelect,
+  searchCoins,
+  isSearching: externalIsSearching
 }: ImprovedCryptoSearchProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [showAll, setShowAll] = useState(false)
@@ -35,6 +39,8 @@ export default function ImprovedCryptoSearch({
   const [filterBy, setFilterBy] = useState<FilterOption>('all')
   const [showFilters, setShowFilters] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [externalResults, setExternalResults] = useState<CryptoOption[]>([])
+  const [isLoadingExternal, setIsLoadingExternal] = useState(false)
 
   // Charger les recherches récentes depuis le localStorage
   useEffect(() => {
@@ -43,6 +49,48 @@ export default function ImprovedCryptoSearch({
       setRecentSearches(JSON.parse(savedRecentSearches))
     }
   }, [])
+
+  // Recherche externe via API quand le searchTerm change
+  useEffect(() => {
+    if (searchTerm && searchTerm.length >= 2 && searchCoins) {
+      // Vérifier d'abord si on a des résultats locaux
+      const localResults = cryptoOptions.filter(crypto =>
+        crypto.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        crypto.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+
+      // Si pas de résultats locaux, chercher via l'API
+      if (localResults.length === 0) {
+        setIsLoadingExternal(true)
+        searchCoins(searchTerm).then((results) => {
+          if (results && results.length > 0) {
+            // Convertir les résultats API au format CryptoOption
+            const formattedResults: CryptoOption[] = results.map((coin: any) => ({
+              id: coin.id,
+              name: coin.name,
+              symbol: coin.symbol,
+              tradingview_symbol: coin.tradingview_symbol || `CRYPTO:${coin.symbol.toUpperCase()}USD`,
+              rank: coin.market_cap_rank || 999,
+              price: coin.current_price,
+              change24h: coin.price_change_percentage_24h,
+              image: coin.image
+            }))
+            setExternalResults(formattedResults)
+          } else {
+            setExternalResults([])
+          }
+          setIsLoadingExternal(false)
+        }).catch(() => {
+          setExternalResults([])
+          setIsLoadingExternal(false)
+        })
+      } else {
+        setExternalResults([])
+      }
+    } else {
+      setExternalResults([])
+    }
+  }, [searchTerm, searchCoins, cryptoOptions])
 
   // Ajouter à l'historique de recherche
   const addToRecentSearches = (term: string) => {
@@ -57,7 +105,17 @@ export default function ImprovedCryptoSearch({
   
   // Résultats de recherche filtrés et triés
   const filteredOptions = useMemo(() => {
-    let filtered = cryptoOptions
+    // Fusionner les résultats locaux et externes
+    let allOptions = [...cryptoOptions]
+
+    // Ajouter les résultats externes s'il y en a (éviter les doublons)
+    if (externalResults.length > 0) {
+      const externalIds = new Set(externalResults.map(r => r.id))
+      const localFiltered = allOptions.filter(c => !externalIds.has(c.id))
+      allOptions = [...externalResults, ...localFiltered]
+    }
+
+    let filtered = allOptions
 
     // Filtrage par recherche
     if (searchTerm) {
@@ -103,7 +161,7 @@ export default function ImprovedCryptoSearch({
     }
 
     return filtered
-  }, [searchTerm, cryptoOptions, showAll, sortBy, filterBy])
+  }, [searchTerm, cryptoOptions, externalResults, showAll, sortBy, filterBy])
 
   const formatPrice = (price: number | null) => {
     if (!price) return 'N/A'
@@ -266,7 +324,15 @@ export default function ImprovedCryptoSearch({
           )}
         </div>
 
-        {filteredOptions.length === 0 ? (
+        {isLoadingExternal ? (
+          <div className="text-center py-12 animate-fade-in">
+            <div className="w-12 h-12 border-4 border-[#00FF88]/20 border-t-[#00FF88] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-gray-400 font-medium mb-2">Recherche en cours...</div>
+            <div className="text-gray-500 text-sm">
+              Recherche dans toutes les cryptomonnaies disponibles
+            </div>
+          </div>
+        ) : filteredOptions.length === 0 ? (
           <div className="text-center py-12 animate-fade-in">
             <Search className="w-12 h-12 text-gray-500 mx-auto mb-4 animate-bounce" />
             <div className="text-gray-400 font-medium mb-2">Aucune crypto trouvée</div>

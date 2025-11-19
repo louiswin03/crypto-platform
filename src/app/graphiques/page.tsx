@@ -146,8 +146,8 @@ function GraphiquesPageContent() {
   const [refreshKey, setRefreshKey] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
 
-  // AJOUT : Hook pour récupérer les données CoinGecko (réduit pour optimiser)
-  const { prices, loading, error, refetch } = useExtendedCoinGeckoPrices(50)
+  // AJOUT : Hook pour récupérer les données CoinGecko (augmenté à 250 cryptos)
+  const { prices, loading, error, refetch, searchCoins } = useExtendedCoinGeckoPrices(250)
 
   // AJOUT : Hook pour récupérer les listes de suivi via le contexte (synchronisé)
   const { watchlists, loading: watchlistLoading } = useWatchlistContext()
@@ -234,14 +234,23 @@ function GraphiquesPageContent() {
   useEffect(() => {
     const cryptoParam = searchParams.get('crypto')
     if (cryptoParam && prices.length > 0) {
-      // Trouver la crypto dans les données
+      // Trouver la crypto dans les données chargées
       const foundCrypto = prices.find(coin => coin.id === cryptoParam)
       if (foundCrypto && foundCrypto.tradingview_symbol) {
         handleCryptoSelection(foundCrypto.tradingview_symbol, foundCrypto.id)
       } else {
+        // Si la crypto n'est pas trouvée dans les prix chargés, chercher via l'API
+        searchCoins(cryptoParam).then((results) => {
+          if (results && results.length > 0) {
+            const crypto = results[0]
+            if (crypto.tradingview_symbol) {
+              handleCryptoSelection(crypto.tradingview_symbol, crypto.id)
+            }
+          }
+        })
       }
     }
-  }, [searchParams, prices])
+  }, [searchParams, prices, searchCoins])
 
   const currentCrypto = getCryptoInfo(selectedPair)
   const symbolWithoutExchange = selectedPair.includes(':') ? selectedPair.split(':')[1] : selectedPair
@@ -564,6 +573,7 @@ function GraphiquesPageContent() {
                         cryptoOptions={cryptoOptions}
                         selectedCrypto={selectedPair}
                         onCryptoSelect={(symbol) => handleCryptoSelection(symbol)}
+                        searchCoins={searchCoins}
                       />
                     )}
                   </div>

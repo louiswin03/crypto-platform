@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Activity } from 'lucide-react'
+import { Activity, TrendingUp, TrendingDown, Target, BarChart3, Download, FileText, Percent } from 'lucide-react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
@@ -231,6 +231,48 @@ export default function BacktestPage() {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
+
+    /* Styles pour la barre de scrubbing */
+    input[type="range"].slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"].slider-thumb::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #00FF88;
+      cursor: pointer;
+      border: 3px solid #1F2937;
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"].slider-thumb::-webkit-slider-thumb:hover {
+      width: 22px;
+      height: 22px;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.8);
+    }
+
+    input[type="range"].slider-thumb::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #00FF88;
+      cursor: pointer;
+      border: 3px solid #1F2937;
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"].slider-thumb::-moz-range-thumb:hover {
+      width: 22px;
+      height: 22px;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.8);
+    }
   `
 
   const handleStartBacktest = async (config: BacktestConfig) => {
@@ -266,62 +308,48 @@ export default function BacktestPage() {
         {/* Navigation */}
         <SmartNavigation />
 
-        {/* Hero Section - Toujours visible sur l'onglet backtest */}
+        {/* Hero Section - Simplifié et épuré */}
         {currentTab === 'backtest' && (
-          <section className="relative pt-20 sm:pt-24 md:pt-32 pb-12 sm:pb-16 overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0">
-              <div className="absolute top-1/4 left-1/4 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-to-br from-[#00D9FF]/10 via-[#8B5CF6]/8 to-transparent rounded-full blur-[80px] sm:blur-[100px] float-animation"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-gradient-to-tl from-[#00FF88]/8 via-[#8B5CF6]/4 to-transparent rounded-full blur-[60px] sm:blur-[80px] float-animation" style={{animationDelay: '2s'}}></div>
-            </div>
-
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-12 sm:mb-16">
-                {/* Badge */}
-                <div className={`inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full mb-6 sm:mb-8 ${
-                  isDarkMode ? 'glass-effect' : 'bg-white/90 border border-gray-200'
-                }`}>
-                  <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-[#8B5CF6] mr-2" />
-                  <span className={`text-xs sm:text-sm font-semibold uppercase tracking-wider ${
-                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                  }`}>
+          <section className="relative pt-28 sm:pt-32 pb-16 sm:pb-20">
+            <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center">
+                {/* Badge épuré */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 mb-8">
+                  <Activity className="w-4 h-4 text-[#8B5CF6]" />
+                  <span className="text-sm font-medium text-[#8B5CF6]">
                     {t('backtest.badge')}
                   </span>
                 </div>
 
-                {/* Title */}
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-[1.15] tracking-tighter font-display px-4 sm:px-0">
-                  <span className={`block mb-2 ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
+                {/* Title simplifié */}
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                  <span className={`block ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
                     {t('backtest.hero.title1')}
                   </span>
-                  <span className={`block ${
-                    isDarkMode
-                      ? 'text-gradient-animate'
-                      : 'bg-gradient-to-r from-[#00FF88] via-[#00D9FF] to-[#8B5CF6] bg-clip-text text-transparent'
-                  }`}>
+                  <span className="block bg-gradient-to-r from-[#00FF88] via-[#00D9FF] to-[#8B5CF6] bg-clip-text text-transparent">
                     {t('backtest.hero.title2')}
                   </span>
                 </h1>
 
                 {/* Subtitle */}
-                <p className={`text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0 ${
-                  isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                <p className={`text-lg mb-10 max-w-2xl mx-auto ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
                 }`}>
                   {t('backtest.hero.subtitle')}
                 </p>
 
-                {/* Quick Stats */}
-                <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-8 text-xs sm:text-sm font-medium text-gray-500">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
+                {/* Quick Stats - Plus épuré */}
+                <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-[#00FF88] rounded-full"></div>
                     <span>{t('backtest.hero.stat1')}</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#00D9FF] rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-[#00D9FF] rounded-full"></div>
                     <span>{t('backtest.hero.stat2')}</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#FFA366] rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-[#FFA366] rounded-full"></div>
                     <span>{t('backtest.hero.stat3')}</span>
                   </div>
                 </div>
@@ -330,63 +358,55 @@ export default function BacktestPage() {
           </section>
         )}
 
-        {/* Smooth gradient transition between hero and navigation */}
-        {currentTab === 'backtest' && (
-          <div className="h-32 -mt-16 relative" style={{
-            background: 'linear-gradient(to bottom, transparent 0%, rgba(10, 14, 26, 0.5) 50%, rgba(10, 14, 26, 0.95) 100%)'
-          }}></div>
-        )}
-
-        {/* Navigation Tabs */}
-        <div className={`sticky top-0 z-10 backdrop-blur-xl ${
-          isDarkMode ? 'bg-[#0A0E1A]/80' : 'bg-white/80'
-        } ${currentTab === 'backtest' ? '-mt-12 sm:-mt-16' : 'mt-20 sm:mt-24'}`} style={{
-          borderBottom: '1px solid rgba(0, 217, 255, 0.2)',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-        }}>
+        {/* Navigation Tabs - Épurée et moderne */}
+        <div className={`sticky top-20 z-10 backdrop-blur-xl border-b ${
+          isDarkMode
+            ? 'bg-[#0A0E1A]/95 border-gray-800/50'
+            : 'bg-white/95 border-gray-200'
+        }`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-              <div className="flex overflow-x-auto w-full sm:w-auto">
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2">
                 <button
                   onClick={() => setCurrentTab('backtest')}
-                  className={`relative py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm transition-all duration-200 whitespace-nowrap ${
+                  className={`relative px-6 py-4 font-medium text-sm transition-all duration-200 ${
                     currentTab === 'backtest'
                       ? 'text-[#00FF88]'
                       : isDarkMode
-                      ? 'text-gray-400 hover:text-[#F9FAFB]'
-                      : 'text-gray-500 hover:text-[#1E293B]'
+                      ? 'text-gray-400 hover:text-gray-300'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <span className="relative z-10">{t('backtest.tab.strategy')}</span>
+                  <span>{t('backtest.tab.strategy')}</span>
                   {currentTab === 'backtest' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] rounded-full"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#00FF88]"></div>
                   )}
                 </button>
                 {backtestResults && (
                   <button
                     onClick={() => setCurrentTab('results')}
-                    className={`relative py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm transition-all duration-200 whitespace-nowrap ${
+                    className={`relative px-6 py-4 font-medium text-sm transition-all duration-200 ${
                       currentTab === 'results'
                         ? 'text-[#00FF88]'
                         : isDarkMode
-                        ? 'text-gray-400 hover:text-[#F9FAFB]'
-                        : 'text-gray-500 hover:text-[#1E293B]'
+                        ? 'text-gray-400 hover:text-gray-300'
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
-                    <span className="relative z-10">{t('backtest.tab.results')}</span>
+                    <span>{t('backtest.tab.results')}</span>
                     {currentTab === 'results' && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00FF88] to-[#22C55E] rounded-full"></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#00FF88]"></div>
                     )}
                   </button>
                 )}
               </div>
 
-              {/* Utilisateur connecté */}
+              {/* Utilisateur connecté - Plus discret */}
               {currentUser && (
-                <div className={`py-2 text-xs sm:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} hidden md:block`}>
-                  {t('backtest.connected_as')} <span className={`font-medium ${
-                    isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
-                  }`}>
+                <div className={`text-sm hidden md:block ${
+                  isDarkMode ? 'text-gray-500' : 'text-gray-500'
+                }`}>
+                  <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
                     {currentUser.displayName || currentUser.email}
                   </span>
                 </div>
@@ -397,12 +417,18 @@ export default function BacktestPage() {
 
         {/* Main Content */}
         {currentTab === 'backtest' ? (
-          <main className="relative py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            {/* Disclaimer Légal */}
-            <div className="max-w-4xl mx-auto mb-6 sm:mb-8">
-              <div className="bg-yellow-900/20 border border-yellow-600/50 rounded-lg sm:rounded-xl p-3 sm:p-4">
-                <p className="text-yellow-200 text-xs sm:text-sm leading-relaxed">
-                  <span className="font-bold">⚠️ {t('warning.short')} :</span> {t('warning.past_performance')} <strong>{t('warning.significant_risks')}</strong>. {t('warning.risk_capital')} <strong>{t('warning.not_advice')}</strong>.
+          <main className="relative py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+            {/* Disclaimer Légal - Plus épuré */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className={`rounded-xl p-4 border ${
+                isDarkMode
+                  ? 'bg-yellow-500/5 border-yellow-500/20'
+                  : 'bg-yellow-50 border-yellow-200'
+              }`}>
+                <p className={`text-sm leading-relaxed ${
+                  isDarkMode ? 'text-yellow-200/90' : 'text-yellow-900'
+                }`}>
+                  <span className="font-semibold">⚠️ {t('warning.short')} :</span> {t('warning.past_performance')} <strong>{t('warning.significant_risks')}</strong>. {t('warning.risk_capital')} <strong>{t('warning.not_advice')}</strong>.
                 </p>
               </div>
             </div>
@@ -437,32 +463,32 @@ export default function BacktestPage() {
             )}
           </main>
         ) : currentTab === 'results' ? (
-          <main className="relative py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <main className="relative py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             {backtestResults ? (
-              <div className="space-y-6 sm:space-y-8">
-                {/* Header avec résultats clés */}
-                <div className="text-center">
-                  <h2 className={`text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 ${
+              <div className="space-y-10">
+                {/* Header avec résultats clés - Épuré */}
+                <div className="text-center mb-8">
+                  <h2 className={`text-3xl font-bold mb-4 ${
                     isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                   }`}>
                     {t('backtest.results.title')}
                   </h2>
-                  <div className={`flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm ${
+                  <div className={`flex flex-wrap items-center justify-center gap-3 text-sm ${
                     isDarkMode ? 'text-gray-400' : 'text-gray-600'
                   }`}>
-                    <span>{backtestResults.config.crypto}</span>
-                    <span className="hidden sm:inline">•</span>
-                    <span className="text-center">
+                    <span className="font-medium">{backtestResults.config.crypto}</span>
+                    <span>•</span>
+                    <span>
                       {backtestResults.config.strategyType === 'custom' && backtestResults.config.customStrategy
                         ? backtestResults.config.customStrategy.name || t('backtest.results.custom_strategy')
                         : backtestResults.config.strategy.replace(/_/g, ' ').toUpperCase()}
                     </span>
-                    <span className="hidden sm:inline">•</span>
+                    <span>•</span>
                     <span>{backtestResults.duration} {t('backtest.results.days')}</span>
                   </div>
                 </div>
 
-                {/* Métriques principales */}
+                {/* Métriques principales - Design professionnel avec icônes */}
                 {(() => {
                   const tradePairs = groupTradesIntoPairs(backtestResults.state.trades)
                   const totalTrades = tradePairs.length
@@ -470,68 +496,124 @@ export default function BacktestPage() {
                   const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0
 
                   return (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-6">
-                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
-                    isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
-                  }`}>
-                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {t('backtest.metrics.total_roi')}
-                    </div>
-                    <div className={`text-2xl sm:text-2xl lg:text-3xl font-bold ${
-                      backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
-                    }`}>
-                      {backtestResults.metrics.totalReturnPercentage >= 0 ? '+' : ''}
-                      {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
-                    </div>
-                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      ${backtestResults.metrics.totalReturn.toFixed(2)}
-                    </div>
-                  </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {/* ROI Total */}
+                      <div className={`group rounded-2xl p-6 border transition-all duration-300 hover:shadow-lg ${
+                        isDarkMode
+                          ? 'glass-effect border-gray-700/50 hover:border-[#00FF88]/30'
+                          : 'bg-white border-gray-200 hover:border-[#00FF88]/50'
+                      }`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`p-2.5 rounded-xl ${
+                            backtestResults.metrics.totalReturnPercentage >= 0
+                              ? 'bg-[#00FF88]/10'
+                              : 'bg-[#DC2626]/10'
+                          }`}>
+                            {backtestResults.metrics.totalReturnPercentage >= 0 ? (
+                              <TrendingUp className="w-5 h-5 text-[#00FF88]" />
+                            ) : (
+                              <TrendingDown className="w-5 h-5 text-[#DC2626]" />
+                            )}
+                          </div>
+                        </div>
+                        <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
+                          {t('backtest.metrics.total_roi')}
+                        </div>
+                        <div className={`text-3xl font-bold mb-1 ${
+                          backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                        }`}>
+                          {backtestResults.metrics.totalReturnPercentage >= 0 ? '+' : ''}
+                          {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
+                        </div>
+                        <div className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                          ${backtestResults.metrics.totalReturn.toFixed(2)}
+                        </div>
+                      </div>
 
-                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
-                    isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
-                  }`}>
-                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {t('backtest.metrics.win_rate')}
-                    </div>
-                    <div className={`text-2xl sm:text-2xl lg:text-3xl font-bold ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
-                      {winRate.toFixed(1)}%
-                    </div>
-                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {winningTrades}/{totalTrades} {t('backtest.metrics.trades')}
-                    </div>
-                  </div>
+                      {/* Win Rate */}
+                      <div className={`group rounded-2xl p-6 border transition-all duration-300 hover:shadow-lg ${
+                        isDarkMode
+                          ? 'glass-effect border-gray-700/50 hover:border-[#8B5CF6]/30'
+                          : 'bg-white border-gray-200 hover:border-[#8B5CF6]/50'
+                      }`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="p-2.5 rounded-xl bg-[#8B5CF6]/10">
+                            <Target className="w-5 h-5 text-[#8B5CF6]" />
+                          </div>
+                        </div>
+                        <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
+                          {t('backtest.metrics.win_rate')}
+                        </div>
+                        <div className={`text-3xl font-bold mb-1 ${
+                          isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
+                        }`}>
+                          {winRate.toFixed(1)}%
+                        </div>
+                        <div className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                          {winningTrades}/{totalTrades} {t('backtest.metrics.trades')}
+                        </div>
+                      </div>
 
-                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
-                    isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
-                  }`}>
-                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {t('backtest.metrics.max_drawdown')}
-                    </div>
-                    <div className="text-2xl sm:text-2xl lg:text-3xl font-bold text-[#DC2626]">
-                      -{backtestResults.metrics.maxDrawdownPercentage.toFixed(2)}%
-                    </div>
-                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      -${backtestResults.metrics.maxDrawdown.toFixed(2)}
-                    </div>
-                  </div>
+                      {/* Max Drawdown */}
+                      <div className={`group rounded-2xl p-6 border transition-all duration-300 hover:shadow-lg ${
+                        isDarkMode
+                          ? 'glass-effect border-gray-700/50 hover:border-[#DC2626]/30'
+                          : 'bg-white border-gray-200 hover:border-[#DC2626]/50'
+                      }`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="p-2.5 rounded-xl bg-[#DC2626]/10">
+                            <TrendingDown className="w-5 h-5 text-[#DC2626]" />
+                          </div>
+                        </div>
+                        <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
+                          {t('backtest.metrics.max_drawdown')}
+                        </div>
+                        <div className="text-3xl font-bold mb-1 text-[#DC2626]">
+                          -{backtestResults.metrics.maxDrawdownPercentage.toFixed(2)}%
+                        </div>
+                        <div className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                          -${backtestResults.metrics.maxDrawdown.toFixed(2)}
+                        </div>
+                      </div>
 
-                  <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 border text-center ${
-                    isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
-                  }`}>
-                    <div className={`text-xs sm:text-xs lg:text-sm mb-2 sm:mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {t('backtest.metrics.vs_hold')}
-                    </div>
-                    <div className={`text-2xl sm:text-2xl lg:text-3xl font-bold ${
-                      backtestResults.metrics.alpha >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
-                    }`}>
-                      {backtestResults.metrics.alpha >= 0 ? '+' : ''}
-                      {backtestResults.metrics.alpha.toFixed(2)}%
-                    </div>
-                    <div className={`text-xs sm:text-xs lg:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {t('backtest.metrics.alpha')}
-                    </div>
-                  </div>
+                      {/* Alpha vs Hold */}
+                      <div className={`group rounded-2xl p-6 border transition-all duration-300 hover:shadow-lg ${
+                        isDarkMode
+                          ? 'glass-effect border-gray-700/50 hover:border-[#00D9FF]/30'
+                          : 'bg-white border-gray-200 hover:border-[#00D9FF]/50'
+                      }`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`p-2.5 rounded-xl ${
+                            backtestResults.metrics.alpha >= 0
+                              ? 'bg-[#00D9FF]/10'
+                              : 'bg-gray-500/10'
+                          }`}>
+                            <Percent className={`w-5 h-5 ${
+                              backtestResults.metrics.alpha >= 0 ? 'text-[#00D9FF]' : 'text-gray-500'
+                            }`} />
+                          </div>
+                        </div>
+                        <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
+                          {t('backtest.metrics.vs_hold')}
+                        </div>
+                        <div className={`text-3xl font-bold mb-1 ${
+                          backtestResults.metrics.alpha >= 0 ? 'text-[#00D9FF]' : 'text-gray-500'
+                        }`}>
+                          {backtestResults.metrics.alpha >= 0 ? '+' : ''}
+                          {backtestResults.metrics.alpha.toFixed(2)}%
+                        </div>
+                        <div className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                          {t('backtest.metrics.alpha')}
+                        </div>
+                      </div>
                     </div>
                   )
                 })()}

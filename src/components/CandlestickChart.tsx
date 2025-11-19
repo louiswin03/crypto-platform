@@ -425,7 +425,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   const [zoomLocked, setZoomLocked] = useState(false)
   const [isPanning, setIsPanning] = useState(false)
   const [lastMouseX, setLastMouseX] = useState(0)
-  const [isFullscreen, setIsFullscreen] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -541,16 +540,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     setViewEnd(1)
   }, [])
 
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen()
-      setIsFullscreen(true)
-    } else {
-      document.exitFullscreen()
-      setIsFullscreen(false)
-    }
-  }, [])
-
   // Gestion des touches du clavier (seulement quand le graphique est focus)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -656,14 +645,13 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
         }
       },
       resetZoom,
-      toggleFullscreen,
       toggleZoomLock: () => setZoomLocked(prev => !prev)
     }
 
     return () => {
       delete window.chartControls
     }
-  }, [viewStart, viewEnd, resetZoom, toggleFullscreen])
+  }, [viewStart, viewEnd, resetZoom])
 
   // Vérification des données - APRÈS tous les hooks
   if (!data || data.length === 0) {
@@ -679,42 +667,66 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     return tradeIndex >= startIndex && tradeIndex <= endIndex
   })
 
-  // Calculer les valeurs min/max pour le scaling (seulement sur les données visibles)
-  const validPrices = visibleData.flatMap(d => [d.open, d.high, d.low, d.close]).filter(p => !isNaN(p) && isFinite(p))
+  // Calculer les valeurs min/max pour le scaling
+  let chartMinPrice: number, chartMaxPrice: number, chartPriceRange: number
 
-  if (validPrices.length === 0) {
-    console.error('Aucun prix valide trouvé dans les données')
-    return <div className="text-red-500 p-4">Erreur: Aucune donnée de prix valide</div>
+  if (disableZoom && visibleData.length > 0) {
+    // MODE REPLAY : Plage STABLE qui s'adapte seulement si nécessaire
+    // Prendre TOUTES les données visibles
+    const allVisiblePrices = visibleData.flatMap(d => [d.high, d.low]).filter(p => !isNaN(p) && isFinite(p))
+
+    if (allVisiblePrices.length === 0) {
+      return <div className="text-red-500 p-4">Erreur: Aucune donnée de prix valide</div>
+    }
+
+    const dataMin = Math.min(...allVisiblePrices)
+    const dataMax = Math.max(...allVisiblePrices)
+    const center = (dataMin + dataMax) / 2
+    const dataRange = dataMax - dataMin
+
+    // Plage TRÈS LARGE : prendre la plage des données et DOUBLER (100% de marge)
+    // Cela garantit que ABSOLUMENT TOUT reste visible
+    const padding = dataRange * 1.0  // 100% de marge de chaque côté
+
+    chartMinPrice = dataMin - padding
+    chartMaxPrice = dataMax + padding
+    chartPriceRange = chartMaxPrice - chartMinPrice
+  } else {
+    // MODE NORMAL : Calculer sur toutes les données visibles
+    const validPrices = visibleData.flatMap(d => [d.open, d.high, d.low, d.close]).filter(p => !isNaN(p) && isFinite(p))
+
+    if (validPrices.length === 0) {
+      console.error('Aucun prix valide trouvé dans les données')
+      return <div className="text-red-500 p-4">Erreur: Aucune donnée de prix valide</div>
+    }
+
+    const minPrice = Math.min(...validPrices)
+    const maxPrice = Math.max(...validPrices)
+    const priceRange = maxPrice - minPrice
+    const padding = priceRange * 0.2
+    chartMinPrice = minPrice - padding
+    chartMaxPrice = maxPrice + padding
+    chartPriceRange = chartMaxPrice - chartMinPrice
   }
 
-  const minPrice = Math.min(...validPrices)
-  const maxPrice = Math.max(...validPrices)
-  const priceRange = maxPrice - minPrice
-  const padding = priceRange * 0.1 // 10% de padding
-  const chartMinPrice = minPrice - padding
-  const chartMaxPrice = maxPrice + padding
-  const chartPriceRange = chartMaxPrice - chartMinPrice
+  // Dimensions du graphique
+  const actualWidth = containerSize.width
+  const actualHeight = containerSize.height
 
-  // Dimensions dynamiques selon le mode
-  const actualWidth = isFullscreen ? window.innerWidth - 40 : containerSize.width
-  const actualHeight = isFullscreen ? window.innerHeight - 40 : containerSize.height
-
-  // Dimensions du graphique adaptées selon la taille
-  const marginScale = isFullscreen ? 1.5 : 1
   const margin = {
-    top: 20 * marginScale,
-    right: 80 * marginScale,
-    bottom: 50 * marginScale,
-    left: 80 * marginScale
+    top: 20,
+    right: 80,
+    bottom: 50,
+    left: 80
   }
   const chartWidth = actualWidth - margin.left - margin.right
   const chartHeight = actualHeight - margin.top - margin.bottom
 
-  // Tailles adaptatives
+  // Tailles de police
   const fontSize = {
-    axis: isFullscreen ? 14 : 10,
-    labels: isFullscreen ? 16 : 12,
-    tradeLabels: isFullscreen ? 12 : 10
+    axis: 10,
+    labels: 12,
+    tradeLabels: 10
   }
 
   // Fonction pour convertir le prix en coordonnée Y
@@ -819,7 +831,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [viewStart, viewEnd, toggleFullscreen])
+  }, [viewStart, viewEnd])
 
   // Calculer les niveaux SL/TP pour chaque position ouverte
   const positionLevels = useMemo(() => {
@@ -963,13 +975,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
         🔍 All
       </button>
       <button
-        onclick="window.chartControls?.toggleFullscreen()"
-        class="px-2 py-0.5 bg-gray-700/80 hover:bg-gray-600/90 text-white rounded text-xs transition-all duration-200 border border-gray-600/50"
-        title="${isFullscreen ? "Quitter le plein écran" : "Mode plein écran"}"
-      >
-        ${isFullscreen ? '🗗' : '🗖'}
-      </button>
-      <button
         onclick="window.chartControls?.toggleZoomLock()"
         class="px-2 py-0.5 ${zoomLocked ? 'bg-red-600/80' : 'bg-gray-700/80'} hover:bg-gray-600/90 text-white rounded text-xs transition-all duration-200 border border-gray-600/50"
         title="${zoomLocked ? "Débloquer le zoom" : "Bloquer le zoom"}"
@@ -1014,7 +1019,6 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
         setViewEnd(newEnd)
       },
       resetZoom,
-      toggleFullscreen,
       toggleZoomLock: () => {
         setZoomLocked(prev => !prev)
       }
@@ -1027,19 +1031,13 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
       }
       delete window.chartControls
     }
-  }, [viewStart, viewEnd, isFullscreen])
+  }, [viewStart, viewEnd])
 
   return (
     <div
       ref={containerRef}
-      className={`relative ${isFullscreen ? 'fixed inset-0 z-50 bg-gray-900 p-5' : ''}`}
+      className="relative"
     >
-
-      {/* Instructions discrètes */}
-      <div className="absolute bottom-2 left-2 z-10 text-xs text-gray-500 bg-gray-900/60 backdrop-blur-sm px-3 py-1 rounded-lg border border-gray-700/30 opacity-60 hover:opacity-100 transition-opacity duration-200 max-w-sm">
-        🖱️ Glisser: déplacer • 🎯 Molette: zoom • ⌨️ <kbd className="px-1 bg-gray-700/50 rounded text-xs">+/-</kbd>/<kbd className="px-1 bg-gray-700/50 rounded text-xs">←→</kbd>/<kbd className="px-1 bg-gray-700/50 rounded text-xs">R</kbd>/<kbd className="px-1 bg-gray-700/50 rounded text-xs">F</kbd>
-      </div>
-
       <svg
         ref={svgRef}
         width="100%"
@@ -1205,7 +1203,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
           </g>
         ))}
 
-        {/* Lignes SL/TP pour positions ouvertes */}
+        {/* Lignes SL/TP pour positions ouvertes - DESIGN AMÉLIORÉ */}
         {positionLevels.map((position, index) => {
           const startIndexVisible = Math.max(position.startIndex, startIndex)
           const endIndexVisible = Math.min(position.endIndex, endIndex)
@@ -1221,64 +1219,183 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
 
           return (
             <g key={`position-${index}`}>
-              {/* Ligne d'entrée */}
+              {/* Zone colorée pour Take Profit (zone verte semi-transparente) */}
+              <rect
+                x={startX}
+                y={Math.min(entryY, takeProfitY)}
+                width={endX - startX}
+                height={Math.abs(takeProfitY - entryY)}
+                fill="#10B981"
+                opacity="0.08"
+              />
+
+              {/* Zone colorée pour Stop Loss (zone rouge semi-transparente) */}
+              <rect
+                x={startX}
+                y={Math.min(entryY, stopLossY)}
+                width={endX - startX}
+                height={Math.abs(stopLossY - entryY)}
+                fill="#EF4444"
+                opacity="0.08"
+              />
+
+              {/* Ligne d'entrée - Plus épaisse et contrastée */}
               <line
                 x1={startX}
                 y1={entryY}
                 x2={endX}
                 y2={entryY}
-                stroke="#00FF88"
-                strokeWidth="2"
+                stroke="#3B82F6"
+                strokeWidth="3"
                 strokeDasharray="8 4"
-                opacity="0.8"
+                opacity="0.9"
               />
 
-              {/* Ligne Stop Loss */}
+              {/* Ligne Stop Loss - Plus visible */}
               <line
                 x1={startX}
                 y1={stopLossY}
                 x2={endX}
                 y2={stopLossY}
-                stroke="#DC2626"
-                strokeWidth="2"
-                strokeDasharray="4 4"
-                opacity="0.8"
+                stroke="#EF4444"
+                strokeWidth="3"
+                strokeDasharray="6 3"
+                opacity="0.9"
               />
 
-              {/* Ligne Take Profit */}
+              {/* Ligne Take Profit - Plus visible */}
               <line
                 x1={startX}
                 y1={takeProfitY}
                 x2={endX}
                 y2={takeProfitY}
-                stroke="#00FF88"
-                strokeWidth="2"
-                strokeDasharray="4 4"
-                opacity="0.8"
+                stroke="#10B981"
+                strokeWidth="3"
+                strokeDasharray="6 3"
+                opacity="0.9"
               />
 
-              {/* Labels adaptatifs */}
-              {isFullscreen && (
-                <>
-                  <text x={endX + 10} y={entryY - 8} fill="#00FF88" fontSize={fontSize.labels} fontWeight="bold">
-                    Entry: ${position.entryPrice.toFixed(2)}
-                  </text>
-                  <text x={endX + 10} y={stopLossY - 8} fill="#DC2626" fontSize={fontSize.labels} fontWeight="bold">
-                    Stop Loss: ${position.stopLossPrice.toFixed(2)}
-                  </text>
-                  <text x={endX + 10} y={takeProfitY + 20} fill="#00FF88" fontSize={fontSize.labels} fontWeight="bold">
-                    Take Profit: ${position.takeProfitPrice.toFixed(2)}
-                  </text>
-                </>
-              )}
-              {!isFullscreen && (
-                <>
-                  {/* Petits labels simplifiés en mode normal */}
-                  <circle cx={endX} cy={entryY} r="3" fill="#00FF88" opacity="0.8" />
-                  <circle cx={endX} cy={stopLossY} r="3" fill="#DC2626" opacity="0.8" />
-                  <circle cx={endX} cy={takeProfitY} r="3" fill="#00FF88" opacity="0.8" />
-                </>
-              )}
+              {/* Labels avec badges */}
+              <g>
+                {/* Badge Entry */}
+                <rect
+                  x={startX - 5}
+                  y={entryY - 12}
+                  width="55"
+                  height="16"
+                  fill="#3B82F6"
+                  rx="3"
+                  opacity="0.95"
+                />
+                <text
+                  x={startX}
+                  y={entryY - 2}
+                  fill="white"
+                  fontSize="9"
+                  fontWeight="bold"
+                >
+                  Entry
+                </text>
+
+                {/* Badge Stop Loss */}
+                <rect
+                  x={startX - 5}
+                  y={stopLossY - 12}
+                  width="40"
+                  height="16"
+                  fill="#EF4444"
+                  rx="3"
+                  opacity="0.95"
+                />
+                <text
+                  x={startX}
+                  y={stopLossY - 2}
+                  fill="white"
+                  fontSize="9"
+                  fontWeight="bold"
+                >
+                  SL
+                </text>
+
+                {/* Badge Take Profit */}
+                <rect
+                  x={startX - 5}
+                  y={takeProfitY - 12}
+                  width="40"
+                  height="16"
+                  fill="#10B981"
+                  rx="3"
+                  opacity="0.95"
+                />
+                <text
+                  x={startX}
+                  y={takeProfitY - 2}
+                  fill="white"
+                  fontSize="9"
+                  fontWeight="bold"
+                >
+                  TP
+                </text>
+
+                {/* Prix en bout de ligne - supprimé pour simplifier */}
+                {false && (
+                  <>
+                    <rect
+                      x={endX + 5}
+                      y={entryY - 12}
+                      width="80"
+                      height="18"
+                      fill="rgba(59, 130, 246, 0.9)"
+                      rx="4"
+                    />
+                    <text
+                      x={endX + 12}
+                      y={entryY + 1}
+                      fill="white"
+                      fontSize={fontSize.labels}
+                      fontWeight="bold"
+                    >
+                      ${position.entryPrice.toFixed(2)}
+                    </text>
+
+                    <rect
+                      x={endX + 5}
+                      y={stopLossY - 12}
+                      width="80"
+                      height="18"
+                      fill="rgba(239, 68, 68, 0.9)"
+                      rx="4"
+                    />
+                    <text
+                      x={endX + 12}
+                      y={stopLossY + 1}
+                      fill="white"
+                      fontSize={fontSize.labels}
+                      fontWeight="bold"
+                    >
+                      ${position.stopLossPrice.toFixed(2)}
+                    </text>
+
+                    <rect
+                      x={endX + 5}
+                      y={takeProfitY - 12}
+                      width="80"
+                      height="18"
+                      fill="rgba(16, 185, 129, 0.9)"
+                      rx="4"
+                    />
+                    <text
+                      x={endX + 12}
+                      y={takeProfitY + 1}
+                      fill="white"
+                      fontSize={fontSize.labels}
+                      fontWeight="bold"
+                    >
+                      ${position.takeProfitPrice.toFixed(2)}
+                    </text>
+                  </>
+                )}
+              </g>
             </g>
           )
         })}
@@ -1319,9 +1436,9 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
           }
 
           // Tailles augmentées pour meilleure visibilité
-          const outerRadius = isHighlighted ? (isFullscreen ? 22 : 14) : (isFullscreen ? 18 : 12)
-          const innerRadius = isHighlighted ? (isFullscreen ? 16 : 10) : (isFullscreen ? 12 : 8)
-          const glowRadius = isHighlighted ? (isFullscreen ? 30 : 20) : (isFullscreen ? 25 : 16)
+          const outerRadius = isHighlighted ? 14 : 12
+          const innerRadius = isHighlighted ? 10 : 8
+          const glowRadius = isHighlighted ? 20 : 16
 
           return (
             <g key={`trade-${index}`}>
@@ -1439,51 +1556,17 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 />
               )}
 
-              {/* Label avec les détails - Adaptatif */}
-              {isFullscreen && (
-                <>
-                  <rect
-                    x={point.x + 20}
-                    y={point.y - 20}
-                    width="140"
-                    height="40"
-                    fill="rgba(0,0,0,0.85)"
-                    stroke={color}
-                    strokeWidth="2"
-                    rx="6"
-                  />
-                  <text
-                    x={point.x + 30}
-                    y={point.y - 5}
-                    fill="white"
-                    fontSize={fontSize.tradeLabels}
-                    fontWeight="bold"
-                  >
-                    {point.trade.type}: ${point.trade.price.toFixed(2)}
-                  </text>
-                  <text
-                    x={point.x + 30}
-                    y={point.y + 10}
-                    fill={color}
-                    fontSize={fontSize.tradeLabels - 1}
-                  >
-                    {point.trade.reason.substring(0, 20)}
-                  </text>
-                </>
-              )}
-              {!isFullscreen && (
-                /* Petit label simplifié */
-                <text
-                  x={point.x + 15}
-                  y={point.y - 5}
-                  fill={color}
-                  fontSize="9"
-                  fontWeight="bold"
-                  style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
-                >
-                  ${point.trade.price.toFixed(0)}
-                </text>
-              )}
+              {/* Label simplifié */}
+              <text
+                x={point.x + 15}
+                y={point.y - 5}
+                fill={color}
+                fontSize="9"
+                fontWeight="bold"
+                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
+              >
+                ${point.trade.price.toFixed(0)}
+              </text>
             </g>
           )
         })}
@@ -1497,17 +1580,17 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             x2={margin.left}
             y2={actualHeight - margin.bottom}
             stroke="#9CA3AF"
-            strokeWidth={isFullscreen ? 2 : 1}
+            strokeWidth={1}
           />
 
-          {/* Labels de prix - Plus nombreux en plein écran */}
-          {(isFullscreen ? [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1] : [0, 0.25, 0.5, 0.75, 1]).map(ratio => {
+          {/* Labels de prix */}
+          {[0, 0.25, 0.5, 0.75, 1].map(ratio => {
             const price = chartMinPrice + (chartPriceRange * ratio)
             const y = priceToY(price)
             return (
               <g key={ratio}>
                 <line
-                  x1={margin.left - (isFullscreen ? 8 : 5)}
+                  x1={margin.left - 5}
                   y1={y}
                   x2={margin.left}
                   y2={y}
@@ -1515,7 +1598,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                   strokeWidth="1"
                 />
                 <text
-                  x={margin.left - (isFullscreen ? 12 : 8)}
+                  x={margin.left - 8}
                   y={y + fontSize.axis / 3}
                   textAnchor="end"
                   fill="#9CA3AF"
@@ -1536,11 +1619,11 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             x2={actualWidth - margin.right}
             y2={actualHeight - margin.bottom}
             stroke="#9CA3AF"
-            strokeWidth={isFullscreen ? 2 : 1}
+            strokeWidth={1}
           />
 
-          {/* Labels de dates - Plus nombreux en plein écran */}
-          {(isFullscreen ? [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1] : [0, 0.33, 0.66, 1]).map(ratio => {
+          {/* Labels de dates */}
+          {[0, 0.33, 0.66, 1].map(ratio => {
             const index = Math.floor(ratio * (visibleData.length - 1))
             const candle = visibleData[index]
             if (!candle) return null
@@ -1553,18 +1636,18 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                   x1={x}
                   y1={actualHeight - margin.bottom}
                   x2={x}
-                  y2={actualHeight - margin.bottom + (isFullscreen ? 8 : 5)}
+                  y2={actualHeight - margin.bottom + 5}
                   stroke="#9CA3AF"
                   strokeWidth="1"
                 />
                 <text
                   x={x}
-                  y={actualHeight - margin.bottom + (isFullscreen ? 22 : 16)}
+                  y={actualHeight - margin.bottom + 16}
                   textAnchor="middle"
                   fill="#9CA3AF"
                   fontSize={fontSize.axis}
                 >
-                  {isFullscreen ? candle.displayDate : candle.displayDate.split(' ')[0]}
+                  {candle.displayDate.split(' ')[0]}
                 </text>
               </g>
             )

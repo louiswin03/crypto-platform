@@ -39,8 +39,8 @@ export class ReplayService {
       currentTimestamp: 0,
       isPlaying: false,
       speed: 1,
-      windowSize: 40, // Afficher 40 bougies par défaut pour voir la structure globale
-      followPrice: true, // Suivre le prix par défaut
+      windowSize: 100, // Fenêtre de 100 bougies pour une meilleure vue d'ensemble
+      followPrice: true, // Mode fenêtre glissante pour garder la taille fixe
       events: [],
       visibleData: {
         prices: [],
@@ -114,13 +114,13 @@ export class ReplayService {
     let endIndex: number
 
     if (this.state.followPrice && priceData.length > this.state.windowSize) {
-      // Mode fenêtre glissante : TOUJOURS centrer la bougie actuelle
-      const halfWindow = Math.floor(this.state.windowSize / 2)
+      // Mode fenêtre glissante : Positionné à 70% pour voir les nouvelles barres arriver à droite
+      // La bougie actuelle est à 70% de la fenêtre, laissant 30% d'espace à droite
+      const positionRatio = 0.7 // Position de la barre actuelle dans la fenêtre
+      const leftMargin = Math.floor(this.state.windowSize * positionRatio)
 
-      // Stratégie simple : bougie actuelle au centre exact
-      startIndex = Math.max(0, targetIndex - halfWindow)
-
-      // Calculer endIndex pour avoir exactement windowSize bougies
+      // La bougie actuelle sera à 70% de la fenêtre
+      startIndex = Math.max(0, targetIndex - leftMargin)
       endIndex = startIndex + this.state.windowSize - 1
 
       // Si on dépasse la fin, recalculer depuis la fin
@@ -129,21 +129,14 @@ export class ReplayService {
         startIndex = Math.max(0, endIndex - this.state.windowSize + 1)
       }
 
-      // Vérification finale : s'assurer que targetIndex est dans la fenêtre
-      if (targetIndex < startIndex || targetIndex > endIndex) {
-        // Force le centrage si targetIndex sort de la fenêtre
-        startIndex = Math.max(0, targetIndex - halfWindow)
+      // S'assurer que targetIndex est dans la fenêtre
+      if (targetIndex < startIndex) {
+        startIndex = Math.max(0, targetIndex)
         endIndex = Math.min(priceData.length - 1, startIndex + this.state.windowSize - 1)
-
-        // Si toujours pas bon, ajuster startIndex
-        if (targetIndex > endIndex) {
-          endIndex = targetIndex
-          startIndex = Math.max(0, endIndex - this.state.windowSize + 1)
-        }
+      } else if (targetIndex > endIndex) {
+        endIndex = targetIndex
+        startIndex = Math.max(0, endIndex - this.state.windowSize + 1)
       }
-
-      // Debug pour vérifier le centrage
-      const isTargetCentered = targetIndex >= startIndex && targetIndex <= endIndex
     } else {
       // Mode traditionnel : du début jusqu'à l'index courant
       startIndex = 0
@@ -156,11 +149,13 @@ export class ReplayService {
     // Trades dans la fenêtre visible
     const currentTimestamp = priceData[targetIndex]?.timestamp || 0
     const windowStartTimestamp = priceData[startIndex]?.timestamp || 0
-    const windowEndTimestamp = priceData[endIndex]?.timestamp || currentTimestamp
+    const windowEndTimestamp = priceData[endIndex]?.timestamp || 0
 
+    // Afficher tous les trades dans la fenêtre visible ET jusqu'au timestamp actuel
+    // Cela permet d'afficher les trades à venir dans la fenêtre sans spoiler le futur
     const visibleTrades = backtestState.trades.filter(trade =>
       trade.timestamp >= windowStartTimestamp &&
-      trade.timestamp <= currentTimestamp
+      trade.timestamp <= Math.max(currentTimestamp, windowEndTimestamp)
     )
 
     // Indicateurs dans la fenêtre (ajustés pour correspondre aux index)
