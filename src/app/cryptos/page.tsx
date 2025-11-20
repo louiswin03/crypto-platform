@@ -1188,7 +1188,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
           ? 'border-gray-700/50 bg-gradient-to-r from-gray-900/80 via-gray-800/80 to-gray-900/80'
           : 'border-gray-200/60 bg-gradient-to-r from-gray-50/90 via-white/90 to-gray-50/90'
       }`}>
-        <div className={`grid grid-cols-12 gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.1em] ${
+        <div className={`grid grid-cols-12 gap-1 sm:gap-3 p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.1em] ${
           isDarkMode ? 'text-gray-300' : 'text-gray-600'
         }`}>
           {/* Rang - Toujours visible */}
@@ -1197,7 +1197,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
             <span className="hidden sm:inline">{t('cryptos.rank')}</span>
           </div>
           {/* Nom - Réduit sur mobile pour laisser de la place */}
-          <div className="col-span-4 sm:col-span-4 md:col-span-3 flex items-center space-x-2">
+          <div className="col-span-3 sm:col-span-4 md:col-span-3 flex items-center space-x-2">
             <span className="truncate">{t('cryptos.cryptocurrency')}</span>
           </div>
           {/* Prix - Toujours visible */}
@@ -1221,8 +1221,8 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
             <BarChart3 className="w-4 h-4 text-[#06B6D4]" />
             <span>Vol</span>
           </div>
-          {/* Actions - Ajusté pour mobile */}
-          <div className="col-span-2 sm:col-span-2 lg:col-span-2 text-center flex items-center justify-center">
+          {/* Actions - Plus large sur mobile */}
+          <div className="col-span-3 sm:col-span-2 lg:col-span-2 text-center flex items-center justify-end sm:justify-center">
             <span className="hidden sm:inline">{t('cryptos.actions')}</span>
             <MoreHorizontal className="w-4 h-4 sm:hidden" />
           </div>
@@ -1237,11 +1237,11 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               ? 'border-gray-800/30 hover:bg-gradient-to-r hover:from-gray-800/30 hover:via-gray-700/20 hover:to-gray-800/30'
               : 'border-gray-200/40 hover:bg-gradient-to-r hover:from-gray-50/50 hover:via-gray-100/30 hover:to-gray-50/50'
           }`}>
-            <div className="grid grid-cols-12 gap-2 md:gap-3 p-4 md:p-6 lg:p-8 items-center relative">
+            <div className="grid grid-cols-12 gap-1 sm:gap-3 p-3 sm:p-4 md:p-6 lg:p-8 items-center relative">
               <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-[#00FF88]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}></div>
               {/* Rang Premium */}
-              <div className="col-span-1 relative z-10">
-                <div className={`font-bold text-sm md:text-base lg:text-lg ${
+              <div className="col-span-1 relative z-10 text-center sm:text-left">
+                <div className={`font-bold text-xs sm:text-sm md:text-base lg:text-lg ${
                   crypto.market_cap_rank <= 10 ? 'text-[#FFA366] text-shadow' :
                   crypto.market_cap_rank <= 50 ? 'text-[#00FF88]' :
                   crypto.market_cap_rank <= 100 ? 'text-[#00FF88]' :
@@ -1253,9 +1253,9 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                   <div className="hidden md:block text-xs text-[#FFA366] font-semibold">{t('cryptos.top_10')}</div>
                 )}
               </div>
-              
+
               {/* Nom avec Logo Premium */}
-              <div className="col-span-5 sm:col-span-4 md:col-span-3 flex items-center space-x-2 md:space-x-4 relative z-10">
+              <div className="col-span-3 sm:col-span-4 md:col-span-3 flex items-center space-x-1 sm:space-x-2 md:space-x-4 relative z-10">
                 <div className="relative">
                   {crypto.image && (
                     <>
@@ -1285,7 +1285,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               
               {/* Prix avec High/Low Premium */}
               <div className="col-span-3 sm:col-span-2 md:col-span-2 text-right relative z-10">
-                <div className={`font-mono font-bold text-sm md:text-lg lg:text-xl mb-1 md:mb-2 text-shadow ${
+                <div className={`font-mono font-bold text-[11px] sm:text-sm md:text-lg lg:text-xl mb-1 md:mb-2 text-shadow truncate ${
                   isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                 }`}>
                   {formatters.price(crypto.current_price)}
@@ -1307,10 +1307,10 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
 
               {/* Change 24h Premium */}
               <div className="col-span-2 sm:col-span-2 md:col-span-1 text-right relative z-10">
-                <div className={`font-mono font-bold text-sm md:text-base lg:text-lg flex items-center justify-end space-x-1 md:space-x-2 text-shadow ${
+                <div className={`font-mono font-bold text-[10px] sm:text-sm md:text-base lg:text-lg flex items-center justify-end space-x-0.5 sm:space-x-1 md:space-x-2 text-shadow ${
                   (crypto.price_change_percentage_24h || 0) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                 }`}>
-                  <div className={`p-0.5 md:p-1 rounded-lg ${
+                  <div className={`hidden sm:block p-0.5 md:p-1 rounded-lg ${
                     (crypto.price_change_percentage_24h || 0) >= 0 ? 'bg-[#00FF88]/20' : 'bg-[#DC2626]/20'
                   }`}>
                     {(crypto.price_change_percentage_24h || 0) >= 0 ? (
@@ -1319,7 +1319,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
                       <TrendingDown className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 animate-bounce-subtle" />
                     )}
                   </div>
-                  <span className="font-black text-xs md:text-base">{formatters.percentage(crypto.price_change_percentage_24h || 0)}</span>
+                  <span className="font-black">{formatters.percentage(crypto.price_change_percentage_24h || 0)}</span>
                 </div>
               </div>
               
@@ -1348,7 +1348,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               </div>
 
               {/* Actions Premium */}
-              <div className="col-span-1 sm:col-span-2 lg:col-span-2 flex justify-center relative z-10">
+              <div className="col-span-3 sm:col-span-2 lg:col-span-2 flex justify-end sm:justify-center relative z-10">
                 <div className="flex items-center space-x-1 sm:space-x-2">
                   {/* Graphique - toujours disponible */}
                   <Link

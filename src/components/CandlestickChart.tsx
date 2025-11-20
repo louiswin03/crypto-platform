@@ -724,11 +724,12 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
   const chartWidth = actualWidth - margin.left - margin.right
   const chartHeight = actualHeight - margin.top - margin.bottom
 
-  // Tailles de police
+  // Tailles de police - augmentées pour meilleure lisibilité
+  const isNarrow = containerSize.width < 500
   const fontSize = {
-    axis: 10,
-    labels: 12,
-    tradeLabels: 10
+    axis: isNarrow ? 20 : 12,
+    labels: isNarrow ? 20 : 14,
+    tradeLabels: isNarrow ? 50 : 12
   }
 
   // Fonction pour convertir le prix en coordonnée Y
@@ -1277,9 +1278,9 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 opacity="0.9"
               />
 
-              {/* Labels - Badges texte en desktop, pastilles en mobile */}
+              {/* Labels - Badges texte en desktop, grands en mobile */}
               <g>
-                {actualWidth > 600 ? (
+                {containerSize.width > 600 ? (
                   // MODE DESKTOP : Badges avec texte
                   <>
                     {/* Badge Entry */}
@@ -1343,11 +1344,70 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                     </text>
                   </>
                 ) : (
-                  // MODE MOBILE : Petites pastilles
+                  // MODE MOBILE : Grands badges bien lisibles
                   <>
-                    <circle cx={startX} cy={entryY} r="3" fill="#3B82F6" stroke="white" strokeWidth="1" />
-                    <circle cx={startX} cy={stopLossY} r="3" fill="#EF4444" stroke="white" strokeWidth="1" />
-                    <circle cx={startX} cy={takeProfitY} r="3" fill="#10B981" stroke="white" strokeWidth="1" />
+                    {/* Badge Entry Mobile - GRAND */}
+                    <rect
+                      x={startX - 15}
+                      y={entryY - 18}
+                      width="70"
+                      height="28"
+                      fill="#3B82F6"
+                      rx="4"
+                      opacity="0.95"
+                    />
+                    <text
+                      x={startX + 19}
+                      y={entryY + 4}
+                      fill="white"
+                      fontSize="24"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                    >
+                      Entry
+                    </text>
+
+                    {/* Badge SL Mobile - GRAND */}
+                    <rect
+                      x={startX - 8}
+                      y={stopLossY - 18}
+                      width="40"
+                      height="28"
+                      fill="#EF4444"
+                      rx="4"
+                      opacity="0.95"
+                    />
+                    <text
+                      x={startX + 12}
+                      y={stopLossY + 4}
+                      fill="white"
+                      fontSize="24"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                    >
+                      SL
+                    </text>
+
+                    {/* Badge TP Mobile - GRAND */}
+                    <rect
+                      x={startX - 8}
+                      y={takeProfitY - 18}
+                      width="40"
+                      height="28"
+                      fill="#10B981"
+                      rx="4"
+                      opacity="0.95"
+                    />
+                    <text
+                      x={startX + 12}
+                      y={takeProfitY + 4}
+                      fill="white"
+                      fontSize="24"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                    >
+                      TP
+                    </text>
                   </>
                 )}
 

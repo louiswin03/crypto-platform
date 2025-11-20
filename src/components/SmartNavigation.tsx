@@ -21,6 +21,7 @@ export default function SmartNavigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const mobileToggleRef = useRef<HTMLButtonElement>(null)
 
   const handleSignOut = async () => {
     await signOut()
@@ -38,7 +39,9 @@ export default function SmartNavigation() {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
         setIsProfileMenuOpen(false)
       }
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+      // Ne pas fermer si on clique sur le bouton toggle (il gère son propre état)
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node) &&
+          mobileToggleRef.current && !mobileToggleRef.current.contains(event.target as Node)) {
         setIsMobileMenuOpen(false)
       }
     }
@@ -76,6 +79,7 @@ export default function SmartNavigation() {
 
           {/* Menu burger mobile */}
           <button
+            ref={mobileToggleRef}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-800/40 transition-colors"
           >

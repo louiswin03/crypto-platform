@@ -56,32 +56,33 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
       {/* RSI */}
       {indicators.rsi && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-          <div className="border-b border-gray-600/40 px-6 py-4 bg-gray-800/30">
+          <div className="border-b border-gray-600/40 px-4 sm:px-6 py-4 bg-gray-800/30">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-[#F9FAFB]">
+              <h3 className="text-lg sm:text-xl font-bold text-[#F9FAFB]">
                 RSI (14)
               </h3>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-[#8B5CF6] rounded-full"></div>
-                <span className="text-gray-400">Relative Strength Index</span>
+                <span className="text-gray-400 hidden sm:inline">Relative Strength Index</span>
               </div>
             </div>
           </div>
-          <div className="p-6">
-            <div className="h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
+          <div className="p-4 sm:p-6">
+            <div className="h-56 sm:h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 40, left: 30, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
                 <XAxis
                   dataKey="displayDate"
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   domain={[0, 100]}
+                  width={35}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
@@ -110,31 +111,32 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
       {/* MACD */}
       {indicators.macd && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-          <div className="border-b border-gray-600/40 px-6 py-4 bg-gray-800/30">
+          <div className="border-b border-gray-600/40 px-4 sm:px-6 py-4 bg-gray-800/30">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-[#F9FAFB]">
+              <h3 className="text-lg sm:text-xl font-bold text-[#F9FAFB]">
                 MACD (12,26,9)
               </h3>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-[#00FF88] rounded-full"></div>
-                <span className="text-gray-400">Convergence Divergence</span>
+                <span className="text-gray-400 hidden sm:inline">Convergence Divergence</span>
               </div>
             </div>
           </div>
-          <div className="p-6">
-            <div className="h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
+          <div className="p-4 sm:p-6">
+            <div className="h-56 sm:h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 40, left: 30, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
                 <XAxis
                   dataKey="displayDate"
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
+                  width={35}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
@@ -180,32 +182,33 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
       {/* Stochastic */}
       {indicators.stochastic && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-          <div className="border-b border-gray-600/40 px-6 py-4 bg-gray-800/30">
+          <div className="border-b border-gray-600/40 px-4 sm:px-6 py-4 bg-gray-800/30">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-[#F9FAFB]">
+              <h3 className="text-lg sm:text-xl font-bold text-[#F9FAFB]">
                 Stochastic (14,3)
               </h3>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-[#8B5CF6] rounded-full"></div>
-                <span className="text-gray-400">%K et %D</span>
+                <span className="text-gray-400 hidden sm:inline">%K et %D</span>
               </div>
             </div>
           </div>
-          <div className="p-6">
-            <div className="h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
+          <div className="p-4 sm:p-6">
+            <div className="h-56 sm:h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 40, left: 30, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
                 <XAxis
                   dataKey="displayDate"
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   domain={[0, 100]}
+                  width={35}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
@@ -242,9 +245,9 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
       {/* Williams %R */}
       {indicators.williamsR && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-          <div className="border-b border-gray-600/40 px-6 py-4 bg-gray-800/30">
+          <div className="border-b border-gray-600/40 px-4 sm:px-6 py-4 bg-gray-800/30">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-[#F9FAFB]">
+              <h3 className="text-lg sm:text-xl font-bold text-[#F9FAFB]">
                 Williams %R (14)
               </h3>
               <div className="flex items-center gap-2 text-sm">
@@ -253,21 +256,22 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
               </div>
             </div>
           </div>
-          <div className="p-6">
-            <div className="h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
+          <div className="p-4 sm:p-6">
+            <div className="h-56 sm:h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 40, left: 30, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
                 <XAxis
                   dataKey="displayDate"
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   domain={[-100, 0]}
+                  width={35}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
@@ -296,10 +300,10 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
       {/* OBV */}
       {indicators.obv && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-          <div className="border-b border-gray-600/40 px-6 py-4 bg-gray-800/30">
+          <div className="border-b border-gray-600/40 px-4 sm:px-6 py-4 bg-gray-800/30">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-[#F9FAFB]">
-                OBV (On-Balance Volume)
+              <h3 className="text-lg sm:text-xl font-bold text-[#F9FAFB]">
+                OBV
               </h3>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-[#06B6D4] rounded-full"></div>
@@ -307,20 +311,21 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
               </div>
             </div>
           </div>
-          <div className="p-6">
-            <div className="h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
+          <div className="p-4 sm:p-6">
+            <div className="h-56 sm:h-48 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 40, left: 30, bottom: 20 }}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
                 <XAxis
                   dataKey="displayDate"
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   stroke="#D1D5DB"
-                  fontSize={12}
+                  fontSize={10}
+                  width={35}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
@@ -873,81 +878,8 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         </div>
       </div>
 
-      {/* Graphique principal */}
-      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-        <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
-                {t('backtest.chart.price_indicators')}
-              </h3>
-              {/* Bannière de zoom intégrée */}
-              {zoomedTrade && (
-                <div className="flex items-center gap-2 bg-blue-900/50 border border-blue-600/50 rounded-lg px-3 py-1">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span className="text-blue-200 text-sm font-medium">
-                    {t('backtest.chart.zoomed_view')} - Trade #{zoomedTrade.number}
-                  </span>
-                  <span className="text-blue-400 text-xs bg-blue-800/50 px-2 py-0.5 rounded">
-                    {currentBacktestData.priceData.length} bougies
-                  </span>
-                  {/* Toggle pour afficher/masquer les autres trades */}
-                  <button
-                    onClick={() => setShowOnlySelectedTrade(!showOnlySelectedTrade)}
-                    className={`px-2 py-0.5 text-xs rounded transition-colors ${
-                      showOnlySelectedTrade
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white'
-                        : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-                    }`}
-                    title={showOnlySelectedTrade ? 'Afficher tous les trades' : 'Masquer les autres trades'}
-                  >
-                    {showOnlySelectedTrade ? '1 trade' : 'Tous'}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setZoomedTrade(null)
-                      setShowOnlySelectedTrade(false)
-                      setHistoryHighlightTimestamp(null)
-                      onTradeZoomComplete?.()
-                    }}
-                    className="px-2 py-0.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Contrôles de navigation intégrés */}
-              <div id="chart-controls" className="flex items-center gap-1 flex-wrap"></div>
-              <div className="hidden sm:flex items-center gap-2 text-xs sm:text-sm text-gray-400">
-                <span>Mode Interactif</span>
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-4 sm:p-6 lg:p-8">
-
-          <div id="main-chart" className="w-full h-[250px] sm:h-[300px] lg:h-[500px]">
-            <CandlestickChart
-              data={chartData}
-              width={800}
-              height={1000}
-              trades={currentBacktestData.state.trades}
-              indicators={currentBacktestData.indicators}
-              config={currentBacktestData.config}
-              highlightedTrade={zoomedTrade}
-              highlightedTradeTimestamp={historyHighlightTimestamp || replayState?.highlightedTradeTimestamp}
-              disableZoom={replayMode && replayState?.followPrice}
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Panneau de contrôles du Replay - TOUJOURS VISIBLE */}
-      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl mt-6">
+      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
         <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
           <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
             Contrôles du Replay
@@ -1049,6 +981,75 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         )}
       </div>
 
+      {/* Graphique principal */}
+      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
+                {t('backtest.chart.price_indicators')}
+              </h3>
+              {/* Bannière de zoom intégrée */}
+              {zoomedTrade && (
+                <div className="flex items-center gap-2 bg-blue-900/50 border border-blue-600/50 rounded-lg px-3 py-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span className="text-blue-200 text-sm font-medium">
+                    {t('backtest.chart.zoomed_view')} - Trade #{zoomedTrade.number}
+                  </span>
+                  <span className="text-blue-400 text-xs bg-blue-800/50 px-2 py-0.5 rounded">
+                    {currentBacktestData.priceData.length} bougies
+                  </span>
+                  {/* Toggle pour afficher/masquer les autres trades */}
+                  <button
+                    onClick={() => setShowOnlySelectedTrade(!showOnlySelectedTrade)}
+                    className={`px-2 py-0.5 text-xs rounded transition-colors ${
+                      showOnlySelectedTrade
+                        ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                        : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                    }`}
+                    title={showOnlySelectedTrade ? 'Afficher tous les trades' : 'Masquer les autres trades'}
+                  >
+                    {showOnlySelectedTrade ? '1 trade' : 'Tous'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setZoomedTrade(null)
+                      setShowOnlySelectedTrade(false)
+                      setHistoryHighlightTimestamp(null)
+                      onTradeZoomComplete?.()
+                    }}
+                    className="px-2 py-0.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="hidden sm:flex items-center gap-2 text-xs sm:text-sm text-gray-400">
+              <span>Mode Interactif</span>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 sm:p-6 lg:p-8">
+
+          <div id="main-chart" className="w-full h-[180px] sm:h-[350px] lg:h-[500px]">
+            <CandlestickChart
+              data={chartData}
+              width={800}
+              height={1000}
+              trades={currentBacktestData.state.trades}
+              indicators={currentBacktestData.indicators}
+              config={currentBacktestData.config}
+              highlightedTrade={zoomedTrade}
+              highlightedTradeTimestamp={historyHighlightTimestamp || replayState?.highlightedTradeTimestamp}
+              disableZoom={replayMode && replayState?.followPrice}
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Sous-graphiques pour oscillateurs - Afficher seulement s'il y en a */}
       {(currentBacktestData.indicators?.rsi || currentBacktestData.indicators?.macd || currentBacktestData.indicators?.stochastic || currentBacktestData.indicators?.williamsR || currentBacktestData.indicators?.obv) && (
         <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
@@ -1113,17 +1114,17 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
       {/* Equity Curve - Pleine largeur */}
       <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-        <div className="border-b border-white/10 px-8 py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
+        <div className="border-b border-white/10 px-4 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
+            <h3 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
               {t('backtest.chart.equity_curve')}
             </h3>
-            <div className="text-sm text-gray-400">
+            <div className="text-xs sm:text-sm text-gray-400 hidden sm:block">
               {t('backtest.chart.capital_evolution')}
             </div>
           </div>
         </div>
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
           <div className="h-80 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart

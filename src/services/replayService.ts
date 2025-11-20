@@ -40,7 +40,7 @@ export class ReplayService {
       currentTimestamp: 0,
       isPlaying: false,
       speed: 1,
-      windowSize: 100, // Fenêtre de 100 bougies par défaut
+      windowSize: 50, // Fenêtre de 50 bougies par défaut (réduit pour mobile)
       followPrice: true, // Mode fenêtre glissante pour garder la taille fixe
       events: [],
       highlightedTradeTimestamp: null,
