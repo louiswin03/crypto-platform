@@ -912,22 +912,22 @@ function MarketView({
 
         {/* Status Premium */}
         {!loading && !error && cryptos.length > 0 && (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-2">
               <div className="flex items-center space-x-2 text-[#00FF88]">
-                <div className="w-3 h-3 bg-[#00FF88] rounded-full animate-pulse-glow shadow-lg shadow-[#00FF88]/50"></div>
-                <span className="font-bold text-shadow">{t('cryptos.live_coingecko')}</span>
+                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#00FF88] rounded-full animate-pulse-glow shadow-lg shadow-[#00FF88]/50"></div>
+                <span className="font-bold text-shadow text-xs sm:text-sm">{t('cryptos.live_coingecko')}</span>
               </div>
-              <div className="text-xs bg-[#00FF88]/20 border border-[#00FF88]/30 text-[#00FF88] px-3 py-1 rounded-full font-semibold">
+              <div className="hidden sm:block text-xs bg-[#00FF88]/20 border border-[#00FF88]/30 text-[#00FF88] px-2 sm:px-3 py-1 rounded-full font-semibold">
                 {t('cryptos.real_time_caps')}
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="text-gray-300 font-semibold">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className={`text-xs sm:text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 {cryptos.length} {t('cryptos.displayed')}
               </div>
-              <div className="text-xs bg-gray-700/50 text-gray-400 px-3 py-1 rounded-full">
-                {t('cryptos.updated')} {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+              <div className={`text-xs px-2 sm:px-3 py-1 rounded-full ${isDarkMode ? 'bg-gray-700/50 text-gray-400' : 'bg-gray-200/70 text-gray-600'}`}>
+                {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
           </div>
@@ -1188,27 +1188,27 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
           ? 'border-gray-700/50 bg-gradient-to-r from-gray-900/80 via-gray-800/80 to-gray-900/80'
           : 'border-gray-200/60 bg-gradient-to-r from-gray-50/90 via-white/90 to-gray-50/90'
       }`}>
-        <div className={`grid grid-cols-12 gap-3 p-4 md:p-6 lg:p-8 font-bold text-xs md:text-sm uppercase tracking-[0.1em] ${
+        <div className={`grid grid-cols-12 gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.1em] ${
           isDarkMode ? 'text-gray-300' : 'text-gray-600'
         }`}>
           {/* Rang - Toujours visible */}
-          <div className="col-span-1 flex items-center space-x-1 md:space-x-2">
+          <div className="col-span-1 flex items-center justify-center sm:justify-start space-x-1 md:space-x-2">
             <Crown className="w-3 h-3 md:w-4 md:h-4 text-[#FFA366]" />
             <span className="hidden sm:inline">{t('cryptos.rank')}</span>
           </div>
-          {/* Nom - Toujours visible, prend plus de place sur mobile */}
-          <div className="col-span-5 sm:col-span-4 md:col-span-3 flex items-center space-x-2">
-            <span>{t('cryptos.cryptocurrency')}</span>
+          {/* Nom - Réduit sur mobile pour laisser de la place */}
+          <div className="col-span-4 sm:col-span-4 md:col-span-3 flex items-center space-x-2">
+            <span className="truncate">{t('cryptos.cryptocurrency')}</span>
           </div>
           {/* Prix - Toujours visible */}
           <div className="col-span-3 sm:col-span-2 md:col-span-2 text-right flex items-center justify-end space-x-1 md:space-x-2">
-            <DollarSign className="w-3 h-3 md:w-4 md:h-4 text-[#00FF88]" />
+            <DollarSign className="w-3 h-3 md:w-4 md:h-4 text-[#00FF88] hidden sm:block" />
             <span className="hidden sm:inline">{t('cryptos.price_and_hl')}</span>
             <span className="sm:hidden">Prix</span>
           </div>
           {/* Variation 24h - Toujours visible */}
           <div className="col-span-2 sm:col-span-2 md:col-span-1 text-right flex items-center justify-end space-x-1 md:space-x-2">
-            <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-[#00FF88]" />
+            <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-[#00FF88] hidden sm:block" />
             <span>24h</span>
           </div>
           {/* Market Cap - Caché sur mobile, visible sur tablet+ */}
@@ -1222,7 +1222,7 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
             <span>Vol</span>
           </div>
           {/* Actions - Ajusté pour mobile */}
-          <div className="col-span-1 sm:col-span-2 lg:col-span-2 text-center flex items-center justify-center">
+          <div className="col-span-2 sm:col-span-2 lg:col-span-2 text-center flex items-center justify-center">
             <span className="hidden sm:inline">{t('cryptos.actions')}</span>
             <MoreHorizontal className="w-4 h-4 sm:hidden" />
           </div>

@@ -18,6 +18,7 @@ export interface ReplayState {
   windowSize: number // Nombre de bougies à afficher
   followPrice: boolean // Suivre le prix avec une fenêtre glissante
   events: ReplayEvent[]
+  highlightedTradeTimestamp: number | null // Timestamp du trade mis en évidence
   visibleData: {
     prices: HistoricalPrice[]
     trades: any[]
@@ -39,9 +40,10 @@ export class ReplayService {
       currentTimestamp: 0,
       isPlaying: false,
       speed: 1,
-      windowSize: 100, // Fenêtre de 100 bougies pour une meilleure vue d'ensemble
+      windowSize: 100, // Fenêtre de 100 bougies par défaut
       followPrice: true, // Mode fenêtre glissante pour garder la taille fixe
       events: [],
+      highlightedTradeTimestamp: null,
       visibleData: {
         prices: [],
         trades: [],
@@ -158,13 +160,12 @@ export class ReplayService {
       trade.timestamp <= Math.max(currentTimestamp, windowEndTimestamp)
     )
 
-    // Indicateurs dans la fenêtre (ajustés pour correspondre aux index)
+    // Indicateurs dans la fenêtre (même longueur que les prix pour synchronisation parfaite)
     const visibleIndicators: any = {}
     Object.keys(indicators).forEach(key => {
       if (indicators[key] && Array.isArray(indicators[key])) {
-        // Prendre les indicateurs correspondant à la fenêtre, mais limiter au progress actuel
-        const indicatorEndIndex = Math.min(targetIndex, endIndex)
-        visibleIndicators[key] = indicators[key].slice(startIndex, indicatorEndIndex + 1)
+        // Prendre tous les indicateurs dans la fenêtre visible
+        visibleIndicators[key] = indicators[key].slice(startIndex, endIndex + 1)
       }
     })
 
@@ -229,6 +230,21 @@ export class ReplayService {
     }
   }
 
+  // Naviguer vers un trade spécifique et le centrer
+  goToTradeAtTimestamp(timestamp: number): void {
+    const priceData = this.backtestResult.priceData
+    const tradeIndex = priceData.findIndex(p => p.timestamp === timestamp)
+
+    if (tradeIndex !== -1) {
+      // Définir le highlight
+      this.state.highlightedTradeTimestamp = timestamp
+      // Centrer le trade dans la fenêtre
+      this.goToIndexCentered(tradeIndex)
+      // Notifier les listeners
+      this.notifyListeners()
+    }
+  }
+
   stepForward(): void {
     if (this.state.currentIndex < this.backtestResult.priceData.length - 1) {
       this.updateVisibleData(this.state.currentIndex + 1)
@@ -275,28 +291,116 @@ export class ReplayService {
     this.updateVisibleData(this.state.currentIndex)
   }
 
-  // Navigation par trade
+  // Navigation par trade - centré au milieu de l'écran
+  // On ne navigue que vers les SELL car ce sont les seuls affichés sur le graphique
   goToNextTrade(): void {
-    const currentTimestamp = this.state.currentTimestamp
-    const nextTrade = this.backtestResult.state.trades.find(trade =>
-      trade.timestamp > currentTimestamp
-    )
+    // Utiliser le timestamp du trade actuellement mis en évidence, sinon le timestamp courant
+    const referenceTimestamp = this.state.highlightedTradeTimestamp ?? this.state.currentTimestamp
+
+    // Filtrer seulement les SELL trades (les seuls visibles sur le graphique)
+    const sellTrades = this.backtestResult.state.trades.filter(trade => trade.type === 'SELL')
+
+    // Trouver le prochain SELL trade après le timestamp de référence
+    const nextTrade = sellTrades.find(trade => trade.timestamp > referenceTimestamp)
 
     if (nextTrade) {
-      this.goToTimestamp(nextTrade.timestamp)
+      const priceData = this.backtestResult.priceData
+      const tradeIndex = priceData.findIndex(p => p.timestamp === nextTrade.timestamp)
+      if (tradeIndex !== -1) {
+        // Définir le highlight AVANT de naviguer
+        this.state.highlightedTradeTimestamp = nextTrade.timestamp
+        this.goToIndexCentered(tradeIndex)
+        // Forcer la notification pour s'assurer que le highlight est affiché
+        this.notifyListeners()
+      }
     }
   }
 
   goToPreviousTrade(): void {
-    const currentTimestamp = this.state.currentTimestamp
-    const previousTrades = this.backtestResult.state.trades.filter(trade =>
-      trade.timestamp < currentTimestamp
-    )
+    // Utiliser le timestamp du trade actuellement mis en évidence, sinon le timestamp courant
+    const referenceTimestamp = this.state.highlightedTradeTimestamp ?? this.state.currentTimestamp
+
+    // Filtrer seulement les SELL trades (les seuls visibles sur le graphique)
+    const sellTrades = this.backtestResult.state.trades.filter(trade => trade.type === 'SELL')
+
+    // Trouver tous les SELL trades avant le timestamp de référence
+    const previousTrades = sellTrades.filter(trade => trade.timestamp < referenceTimestamp)
 
     if (previousTrades.length > 0) {
       const previousTrade = previousTrades[previousTrades.length - 1]
-      this.goToTimestamp(previousTrade.timestamp)
+      const priceData = this.backtestResult.priceData
+      const tradeIndex = priceData.findIndex(p => p.timestamp === previousTrade.timestamp)
+      if (tradeIndex !== -1) {
+        // Définir le highlight AVANT de naviguer
+        this.state.highlightedTradeTimestamp = previousTrade.timestamp
+        this.goToIndexCentered(tradeIndex)
+        // Forcer la notification pour s'assurer que le highlight est affiché
+        this.notifyListeners()
+      }
     }
+  }
+
+  // Aller à un index en le centrant parfaitement dans la fenêtre
+  private goToIndexCentered(index: number): void {
+    const targetIndex = Math.max(0, Math.min(index, this.backtestResult.priceData.length - 1))
+    const priceData = this.backtestResult.priceData
+
+    // Centrer exactement le trade au milieu de la fenêtre
+    // Pour 100 bougies, on veut 49 avant et 50 après (index 49 = centre)
+    const beforeCenter = Math.floor((this.state.windowSize - 1) / 2)
+    const afterCenter = this.state.windowSize - 1 - beforeCenter
+
+    let startIndex = targetIndex - beforeCenter
+    let endIndex = targetIndex + afterCenter
+
+    // Ajuster si on dépasse le début
+    if (startIndex < 0) {
+      endIndex = endIndex - startIndex // Compenser
+      startIndex = 0
+    }
+
+    // Ajuster si on dépasse la fin
+    if (endIndex >= priceData.length) {
+      startIndex = startIndex - (endIndex - priceData.length + 1)
+      endIndex = priceData.length - 1
+    }
+
+    // S'assurer que startIndex n'est pas négatif après ajustement
+    startIndex = Math.max(0, startIndex)
+
+    // Mettre à jour les données visibles
+    const visiblePrices = priceData.slice(startIndex, endIndex + 1)
+
+    const currentTimestamp = priceData[targetIndex]?.timestamp || 0
+    const windowStartTimestamp = priceData[startIndex]?.timestamp || 0
+    const windowEndTimestamp = priceData[endIndex]?.timestamp || 0
+
+    // Afficher TOUS les trades dans la fenêtre visible (pas juste jusqu'au current)
+    const visibleTrades = this.backtestResult.state.trades.filter(trade =>
+      trade.timestamp >= windowStartTimestamp &&
+      trade.timestamp <= windowEndTimestamp
+    )
+
+    const visibleIndicators: any = {}
+    const indicators = this.backtestResult.indicators
+    Object.keys(indicators).forEach(key => {
+      if (indicators[key] && Array.isArray(indicators[key])) {
+        visibleIndicators[key] = indicators[key].slice(startIndex, endIndex + 1)
+      }
+    })
+
+    this.state.visibleData = {
+      prices: visiblePrices,
+      trades: visibleTrades,
+      indicators: visibleIndicators,
+      startIndex,
+      endIndex
+    }
+
+    this.state.currentIndex = targetIndex
+    this.state.currentTimestamp = currentTimestamp
+
+    this.notifyListeners()
   }
 
   // Gestion des listeners

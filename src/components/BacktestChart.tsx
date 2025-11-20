@@ -373,12 +373,32 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
   const [replayState, setReplayState] = useState<ReplayState | null>(null)
   const [zoomedTrade, setZoomedTrade] = useState<any>(null)
   const [showOnlySelectedTrade, setShowOnlySelectedTrade] = useState(false)
+  const [historyHighlightTimestamp, setHistoryHighlightTimestamp] = useState<number | null>(null)
 
   // Gérer le trade sélectionné pour le zoom
   useEffect(() => {
     if (selectedTrade) {
-      setZoomedTrade(selectedTrade)
-      setShowOnlySelectedTrade(true) // Activer par défaut le mode "uniquement ce trade"
+      // Si on est en mode replay, naviguer vers le trade via le replayService
+      if (replayMode && replayService) {
+        // Trouver le timestamp du trade SELL (celui visible sur le graphique)
+        const tradeTimestamp = selectedTrade.closeTrade.timestamp
+
+        // Naviguer vers le trade et le centrer
+        replayService.goToTradeAtTimestamp(tradeTimestamp)
+
+        // Mettre en évidence le trade dans le graphique (backup pour le state local)
+        setHistoryHighlightTimestamp(tradeTimestamp)
+        // Ne pas utiliser zoomedTrade en mode replay
+        setZoomedTrade(null)
+        setShowOnlySelectedTrade(false)
+      } else {
+        // Mode normal (sans replay) : utiliser le zoom
+        setZoomedTrade(selectedTrade)
+        setShowOnlySelectedTrade(true) // Activer par défaut le mode "uniquement ce trade"
+        // Mettre en évidence le trade SELL (celui qui a le marqueur visible sur le graphique)
+        setHistoryHighlightTimestamp(selectedTrade.closeTrade.timestamp)
+      }
+
       // Scroll vers le graphique - Attendre un peu que le DOM soit mis à jour
       setTimeout(() => {
         const chartElement = document.getElementById('main-chart')
@@ -396,7 +416,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
       }, 100)
       // Plus de reset automatique - l'utilisateur contrôle manuellement
     }
-  }, [selectedTrade])
+  }, [selectedTrade, replayMode, replayService, backtestData.priceData])
 
   // Initialiser le service de replay
   useEffect(() => {
@@ -514,18 +534,19 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         }
       }
 
-      // Filtrer les trades correspondant à la nouvelle fenêtre
-      const windowStart = filteredPrices[0]?.timestamp
-      const windowEnd = filteredPrices[filteredPrices.length - 1]?.timestamp
+      // Déterminer quels trades afficher
+      let filteredTrades: any[]
 
-      let filteredTrades = backtestData.state.trades.filter(trade =>
-        trade.timestamp >= windowStart && trade.timestamp <= windowEnd
-      )
-
-      // Si "uniquement ce trade" est activé, ne garder que le trade sélectionné
       if (showOnlySelectedTrade && zoomedTrade) {
-        filteredTrades = filteredTrades.filter(trade =>
-          trade.id === zoomedTrade.openTrade.id || trade.id === zoomedTrade.closeTrade.id
+        // MODE "1 trade" : Utiliser DIRECTEMENT les trades de la paire sélectionnée
+        filteredTrades = [zoomedTrade.openTrade, zoomedTrade.closeTrade]
+      } else {
+        // MODE "Tous" : Afficher tous les trades dans la fenêtre
+        const windowStartTs = filteredPrices[0]?.timestamp
+        const windowEndTs = filteredPrices[filteredPrices.length - 1]?.timestamp
+
+        filteredTrades = backtestData.state.trades.filter(trade =>
+          trade.timestamp >= windowStartTs && trade.timestamp <= windowEndTs
         )
       }
 
@@ -853,11 +874,11 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
       </div>
 
       {/* Graphique principal */}
-      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-        <div className="border-b border-white/10 px-8 py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
+      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
                 {t('backtest.chart.price_indicators')}
               </h3>
               {/* Bannière de zoom intégrée */}
@@ -886,6 +907,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                     onClick={() => {
                       setZoomedTrade(null)
                       setShowOnlySelectedTrade(false)
+                      setHistoryHighlightTimestamp(null)
                       onTradeZoomComplete?.()
                     }}
                     className="px-2 py-0.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
@@ -895,10 +917,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Contrôles de navigation intégrés */}
-              <div id="chart-controls" className="flex items-center gap-1"></div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div id="chart-controls" className="flex items-center gap-1 flex-wrap"></div>
+              <div className="hidden sm:flex items-center gap-2 text-xs sm:text-sm text-gray-400">
                 <span>Mode Interactif</span>
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
               </div>
@@ -906,17 +928,18 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           </div>
         </div>
 
-        <div className="p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
 
-          <div id="main-chart" className="w-full h-[700px]">
+          <div id="main-chart" className="w-full h-[250px] sm:h-[300px] lg:h-[500px]">
             <CandlestickChart
               data={chartData}
               width={800}
-              height={700}
+              height={1000}
               trades={currentBacktestData.state.trades}
               indicators={currentBacktestData.indicators}
               config={currentBacktestData.config}
               highlightedTrade={zoomedTrade}
+              highlightedTradeTimestamp={historyHighlightTimestamp || replayState?.highlightedTradeTimestamp}
               disableZoom={replayMode && replayState?.followPrice}
             />
           </div>
@@ -925,14 +948,14 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
       {/* Panneau de contrôles du Replay - TOUJOURS VISIBLE */}
       <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl mt-6">
-        <div className="border-b border-white/10 px-8 py-4 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
-          <h3 className="text-xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
+        <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
+          <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
             Contrôles du Replay
           </h3>
         </div>
 
         {replayService && replayState ? (
-          <div className="px-8 py-4 space-y-4">
+          <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3 sm:space-y-4">
             {/* Barre de progression/scrubbing */}
             <div className="w-full">
               <div className="flex items-center gap-3">
@@ -963,10 +986,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
             {/* Boutons de navigation */}
             <div className="flex items-center gap-1">
-              <button onClick={() => replayService.goToPreviousTrade()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade précédent">
+              <button onClick={() => { setHistoryHighlightTimestamp(null); replayService.goToPreviousTrade(); }} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade précédent">
                 <SkipBack className="w-3 h-3" />
               </button>
               <button onClick={() => replayService.stepBackward()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Reculer">
@@ -981,7 +1004,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               <button onClick={() => replayService.stepForward()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Avancer">
                 <ChevronRight className="w-3 h-3" />
               </button>
-              <button onClick={() => replayService.goToNextTrade()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade suivant">
+              <button onClick={() => { setHistoryHighlightTimestamp(null); replayService.goToNextTrade(); }} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade suivant">
                 <SkipForward className="w-3 h-3" />
               </button>
             </div>
@@ -1014,22 +1037,6 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               <span className="text-[10px] font-medium text-[#F9FAFB] min-w-[1.5rem] text-center">{replayState.windowSize}</span>
               <button onClick={() => replayService.setWindowSize(replayState.windowSize + 5)} className="px-1 py-0.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded text-[10px] w-4 h-4 flex items-center justify-center" disabled={replayState.windowSize >= 150}>+</button>
             </div>
-
-            {/* Stats */}
-            <div className="flex items-center gap-3 text-[10px]">
-              <div className="flex items-center gap-1">
-                <span className="text-gray-400">Trades</span>
-                <span className="font-medium text-[#F9FAFB]">{replayState.visibleData.trades.length}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-gray-400">Prix</span>
-                <span className="font-medium text-[#F9FAFB]">{replayService.getCurrentPrice()?.close.toFixed(0) || '-'}$</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-gray-400">Progrès</span>
-                <span className="font-medium text-[#F9FAFB]">{Math.round(replayService.getProgress() * 100)}%</span>
-              </div>
-            </div>
           </div>
           </div>
         ) : (
@@ -1044,10 +1051,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
       {/* Sous-graphiques pour oscillateurs - Afficher seulement s'il y en a */}
       {(currentBacktestData.indicators?.rsi || currentBacktestData.indicators?.macd || currentBacktestData.indicators?.stochastic || currentBacktestData.indicators?.williamsR || currentBacktestData.indicators?.obv) && (
-        <div className="space-y-6 mt-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">{t('backtest.chart.technical_oscillators')}</h3>
-            <div className="text-sm text-[#9CA3AF] font-medium">
+        <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <h3 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">{t('backtest.chart.technical_oscillators')}</h3>
+            <div className="text-xs sm:text-sm text-[#9CA3AF] font-medium">
               Indicateurs de momentum et cycles
             </div>
           </div>
@@ -1063,12 +1070,12 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
       {/* Résumé des performances - Pleine largeur */}
       {backtestData.state.summary && (
-        <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-          <div className="border-b border-gray-700/30 px-6 py-3">
-            <h3 className="text-lg font-semibold text-[#F9FAFB]">{t('backtest.chart.performance_summary')}</h3>
+        <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl mt-4 sm:mt-6">
+          <div className="border-b border-gray-700/30 px-4 sm:px-6 py-3">
+            <h3 className="text-base sm:text-lg font-semibold text-[#F9FAFB]">{t('backtest.chart.performance_summary')}</h3>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="p-4 sm:p-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-[#F9FAFB] mb-1">
                   {backtestData.state.summary.totalTrades || 0}

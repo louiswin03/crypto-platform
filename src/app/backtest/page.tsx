@@ -20,21 +20,41 @@ function groupTradesIntoPairs(trades: any[]) {
   const pairs = []
   const sortedTrades = [...trades].sort((a, b) => a.timestamp - b.timestamp)
 
-  for (let i = 0; i < sortedTrades.length - 1; i += 2) {
-    const openTrade = sortedTrades[i]
-    const closeTrade = sortedTrades[i + 1]
+  // Parcourir les trades et associer chaque BUY avec le SELL suivant
+  let pairNumber = 1
+  let i = 0
 
-    if (openTrade && closeTrade &&
-        openTrade.type === 'BUY' && closeTrade.type === 'SELL') {
-      pairs.push({
-        id: `trade-${Math.floor(i / 2) + 1}`,
-        number: Math.floor(i / 2) + 1,
-        openTrade,
-        closeTrade,
-        pnl: closeTrade.pnl || 0,
-        pnlPercentage: closeTrade.pnlPercentage || 0,
-        duration: closeTrade.timestamp - openTrade.timestamp
-      })
+  while (i < sortedTrades.length) {
+    const trade = sortedTrades[i]
+
+    if (trade.type === 'BUY') {
+      // Chercher le prochain SELL après ce BUY
+      let j = i + 1
+      while (j < sortedTrades.length && sortedTrades[j].type !== 'SELL') {
+        j++
+      }
+
+      if (j < sortedTrades.length) {
+        const openTrade = trade
+        const closeTrade = sortedTrades[j]
+
+        pairs.push({
+          id: `trade-${pairNumber}`,
+          number: pairNumber,
+          openTrade,
+          closeTrade,
+          pnl: closeTrade.pnl || 0,
+          pnlPercentage: closeTrade.pnlPercentage || 0,
+          duration: closeTrade.timestamp - openTrade.timestamp
+        })
+
+        pairNumber++
+        i = j + 1 // Continuer après le SELL
+      } else {
+        i++ // Pas de SELL trouvé, passer au suivant
+      }
+    } else {
+      i++ // Si c'est un SELL orphelin, passer au suivant
     }
   }
 

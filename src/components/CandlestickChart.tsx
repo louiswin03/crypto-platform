@@ -32,7 +32,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.ema1) {
     const emaPath = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const emaValue = indicators.ema1[globalIndex]?.value
+      const emaValue = indicators.ema1[localIndex]?.value
       if (emaValue) {
         const x = indexToX(globalIndex)
         const y = priceToY(emaValue)
@@ -58,7 +58,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.ema2) {
     const ema2Path = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const emaValue = indicators.ema2[globalIndex]?.value
+      const emaValue = indicators.ema2[localIndex]?.value
       if (emaValue) {
         const x = indexToX(globalIndex)
         const y = priceToY(emaValue)
@@ -85,7 +85,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.sma1) {
     const smaPath = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const smaValue = indicators.sma1[globalIndex]?.value
+      const smaValue = indicators.sma1[localIndex]?.value
       if (smaValue) {
         const x = indexToX(globalIndex)
         const y = priceToY(smaValue)
@@ -111,7 +111,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.sma2) {
     const sma2Path = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const smaValue = indicators.sma2[globalIndex]?.value
+      const smaValue = indicators.sma2[localIndex]?.value
       if (smaValue) {
         const x = indexToX(globalIndex)
         const y = priceToY(smaValue)
@@ -143,7 +143,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
 
     data.forEach((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const bollinger = indicators.bollinger[globalIndex]
+      const bollinger = indicators.bollinger[localIndex]
       if (bollinger?.upper && bollinger?.lower && bollinger?.middle) {
         const x = indexToX(globalIndex)
         const upperY = priceToY(bollinger.upper)
@@ -217,7 +217,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.vwap) {
     const vwapPath = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const vwapData = indicators.vwap[globalIndex]
+      const vwapData = indicators.vwap[localIndex]
       if (vwapData && vwapData.vwap !== null && vwapData.vwap !== undefined) {
         const vwapValue = vwapData.vwap
         const x = indexToX(globalIndex)
@@ -245,7 +245,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.supertrend) {
     const supertrendPath = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const stValue = indicators.supertrend[globalIndex]
+      const stValue = indicators.supertrend[localIndex]
       if (stValue && stValue.supertrend !== null && stValue.supertrend !== undefined) {
         const x = indexToX(globalIndex)
         const y = priceToY(stValue.supertrend)
@@ -273,7 +273,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
     // Tenkan-sen (Conversion Line)
     const tenkanPath = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const ichimoku = indicators.ichimoku[globalIndex]
+      const ichimoku = indicators.ichimoku[localIndex]
       if (ichimoku && ichimoku.tenkanSen !== null && ichimoku.tenkanSen !== undefined) {
         const x = indexToX(globalIndex)
         const y = priceToY(ichimoku.tenkanSen)
@@ -285,7 +285,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
     // Kijun-sen (Base Line)
     const kijunPath = data.map((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const ichimoku = indicators.ichimoku[globalIndex]
+      const ichimoku = indicators.ichimoku[localIndex]
       if (ichimoku && ichimoku.kijunSen !== null && ichimoku.kijunSen !== undefined) {
         const x = indexToX(globalIndex)
         const y = priceToY(ichimoku.kijunSen)
@@ -298,7 +298,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
     const cloudPoints: any[] = []
     data.forEach((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const ichimoku = indicators.ichimoku[globalIndex]
+      const ichimoku = indicators.ichimoku[localIndex]
       if (ichimoku &&
           ichimoku.senkouSpanA !== null && ichimoku.senkouSpanA !== undefined &&
           ichimoku.senkouSpanB !== null && ichimoku.senkouSpanB !== undefined) {
@@ -357,7 +357,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
   if (indicators.pivotPoints) {
     data.forEach((candle: any, localIndex: number) => {
       const globalIndex = startIndex + localIndex
-      const pivot = indicators.pivotPoints[globalIndex]
+      const pivot = indicators.pivotPoints[localIndex]
       if (pivot) {
         const x = indexToX(globalIndex)
         const levels = [
@@ -413,10 +413,11 @@ interface CandlestickProps {
   indicators?: any
   config?: any
   highlightedTrade?: any
+  highlightedTradeTimestamp?: number | null
   disableZoom?: boolean
 }
 
-export default function CandlestickChart({ data, width, height, trades = [], indicators, config, highlightedTrade, disableZoom = false }: CandlestickProps) {
+export default function CandlestickChart({ data, width, height, trades = [], indicators, config, highlightedTrade, highlightedTradeTimestamp, disableZoom = false }: CandlestickProps) {
   // Utiliser la taille du conteneur au lieu des props width/height
   const [containerSize, setContainerSize] = useState({ width: width || 800, height: height || 500 })
   // États pour le zoom et le déplacement
@@ -684,9 +685,8 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     const center = (dataMin + dataMax) / 2
     const dataRange = dataMax - dataMin
 
-    // Plage TRÈS LARGE : prendre la plage des données et DOUBLER (100% de marge)
-    // Cela garantit que ABSOLUMENT TOUT reste visible
-    const padding = dataRange * 1.0  // 100% de marge de chaque côté
+    // Plage avec marge pour des bougies moins étirées
+    const padding = dataRange * 0.1
 
     chartMinPrice = dataMin - padding
     chartMaxPrice = dataMax + padding
@@ -709,15 +709,17 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     chartPriceRange = chartMaxPrice - chartMinPrice
   }
 
-  // Dimensions du graphique
-  const actualWidth = containerSize.width
-  const actualHeight = containerSize.height
+  // Dimensions du graphique - utiliser des dimensions fixes pour le viewBox
+  // Le SVG se redimensionnera automatiquement pour s'adapter au conteneur
+  const actualWidth = 1400
+  const actualHeight = 650
 
+  // Marges ajustées - grande marge en bas pour les dates
   const margin = {
-    top: 20,
-    right: 80,
-    bottom: 50,
-    left: 80
+    top: 10,
+    right: 50,
+    bottom: 40,
+    left: 50
   }
   const chartWidth = actualWidth - margin.left - margin.right
   const chartHeight = actualHeight - margin.top - margin.bottom
@@ -1066,7 +1068,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             <path
               d={visibleData.map((d, localIndex) => {
                 const globalIndex = startIndex + localIndex
-                const emaValue = indicators.ema1[globalIndex]?.value
+                const emaValue = indicators.ema1[localIndex]?.value
                 if (!emaValue) return ''
                 const x = indexToX(globalIndex)
                 const y = priceToY(emaValue)
@@ -1082,7 +1084,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             <path
               d={visibleData.map((d, localIndex) => {
                 const globalIndex = startIndex + localIndex
-                const emaValue = indicators.ema2[globalIndex]?.value
+                const emaValue = indicators.ema2[localIndex]?.value
                 if (!emaValue) return ''
                 const x = indexToX(globalIndex)
                 const y = priceToY(emaValue)
@@ -1104,7 +1106,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             <path
               d={visibleData.map((d, localIndex) => {
                 const globalIndex = startIndex + localIndex
-                const value = indicators.bollinger[globalIndex]?.upper
+                const value = indicators.bollinger[localIndex]?.upper
                 if (!value) return ''
                 const x = indexToX(globalIndex)
                 const y = priceToY(value)
@@ -1120,7 +1122,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             <path
               d={visibleData.map((d, localIndex) => {
                 const globalIndex = startIndex + localIndex
-                const value = indicators.bollinger[globalIndex]?.middle
+                const value = indicators.bollinger[localIndex]?.middle
                 if (!value) return ''
                 const x = indexToX(globalIndex)
                 const y = priceToY(value)
@@ -1136,7 +1138,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
             <path
               d={visibleData.map((d, localIndex) => {
                 const globalIndex = startIndex + localIndex
-                const value = indicators.bollinger[globalIndex]?.lower
+                const value = indicators.bollinger[localIndex]?.lower
                 if (!value) return ''
                 const x = indexToX(globalIndex)
                 const y = priceToY(value)
@@ -1275,67 +1277,79 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 opacity="0.9"
               />
 
-              {/* Labels avec badges */}
+              {/* Labels - Badges texte en desktop, pastilles en mobile */}
               <g>
-                {/* Badge Entry */}
-                <rect
-                  x={startX - 5}
-                  y={entryY - 12}
-                  width="55"
-                  height="16"
-                  fill="#3B82F6"
-                  rx="3"
-                  opacity="0.95"
-                />
-                <text
-                  x={startX}
-                  y={entryY - 2}
-                  fill="white"
-                  fontSize="9"
-                  fontWeight="bold"
-                >
-                  Entry
-                </text>
+                {actualWidth > 600 ? (
+                  // MODE DESKTOP : Badges avec texte
+                  <>
+                    {/* Badge Entry */}
+                    <rect
+                      x={startX - 5}
+                      y={entryY - 12}
+                      width="45"
+                      height="16"
+                      fill="#3B82F6"
+                      rx="2"
+                      opacity="0.9"
+                    />
+                    <text
+                      x={startX}
+                      y={entryY}
+                      fill="white"
+                      fontSize="11"
+                      fontWeight="bold"
+                    >
+                      Entry
+                    </text>
 
-                {/* Badge Stop Loss */}
-                <rect
-                  x={startX - 5}
-                  y={stopLossY - 12}
-                  width="40"
-                  height="16"
-                  fill="#EF4444"
-                  rx="3"
-                  opacity="0.95"
-                />
-                <text
-                  x={startX}
-                  y={stopLossY - 2}
-                  fill="white"
-                  fontSize="9"
-                  fontWeight="bold"
-                >
-                  SL
-                </text>
+                    {/* Badge Stop Loss */}
+                    <rect
+                      x={startX - 5}
+                      y={stopLossY - 12}
+                      width="30"
+                      height="16"
+                      fill="#EF4444"
+                      rx="2"
+                      opacity="0.9"
+                    />
+                    <text
+                      x={startX}
+                      y={stopLossY}
+                      fill="white"
+                      fontSize="11"
+                      fontWeight="bold"
+                    >
+                      SL
+                    </text>
 
-                {/* Badge Take Profit */}
-                <rect
-                  x={startX - 5}
-                  y={takeProfitY - 12}
-                  width="40"
-                  height="16"
-                  fill="#10B981"
-                  rx="3"
-                  opacity="0.95"
-                />
-                <text
-                  x={startX}
-                  y={takeProfitY - 2}
-                  fill="white"
-                  fontSize="9"
-                  fontWeight="bold"
-                >
-                  TP
-                </text>
+                    {/* Badge Take Profit */}
+                    <rect
+                      x={startX - 5}
+                      y={takeProfitY - 12}
+                      width="30"
+                      height="16"
+                      fill="#10B981"
+                      rx="2"
+                      opacity="0.9"
+                    />
+                    <text
+                      x={startX}
+                      y={takeProfitY}
+                      fill="white"
+                      fontSize="11"
+                      fontWeight="bold"
+                    >
+                      TP
+                    </text>
+                  </>
+                ) : (
+                  // MODE MOBILE : Petites pastilles
+                  <>
+                    <circle cx={startX} cy={entryY} r="3" fill="#3B82F6" stroke="white" strokeWidth="1" />
+                    <circle cx={startX} cy={stopLossY} r="3" fill="#EF4444" stroke="white" strokeWidth="1" />
+                    <circle cx={startX} cy={takeProfitY} r="3" fill="#10B981" stroke="white" strokeWidth="1" />
+                  </>
+                )}
 
                 {/* Prix en bout de ligne - supprimé pour simplifier */}
                 {false && (
@@ -1400,173 +1414,62 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
           )
         })}
 
-        {/* Points de trade - VERSION AMÉLIORÉE */}
+        {/* Points de trade - VERSION SIMPLE */}
         {tradePoints.map((point, index) => {
           if (!point) return null
 
-          const isStopLoss = point.trade.reason?.includes('Stop Loss')
-          const isTakeProfit = point.trade.reason?.includes('Take Profit')
           const isBuy = point.trade.type === 'BUY'
 
-          // Vérifier si c'est le trade mis en évidence
-          const isHighlighted = highlightedTrade && (
-            point.trade.timestamp === highlightedTrade.openTrade.timestamp ||
-            point.trade.timestamp === highlightedTrade.closeTrade.timestamp
-          )
+          // Ne pas afficher les points d'achat (bleu) - seulement les ventes
+          if (isBuy) return null
 
-          // Couleurs ultra vives et contrastées
-          let color = '#3B82F6'  // Bleu vif pour achat par défaut
+          const isStopLoss = point.trade.reason?.includes('Stop Loss')
+          const isTakeProfit = point.trade.reason?.includes('Take Profit')
+          const isHighlighted = highlightedTradeTimestamp === point.trade.timestamp
 
-          if (isBuy) {
-            color = '#3B82F6'  // Bleu pour point d'entrée
-          } else if (isStopLoss) {
-            color = '#DC2626'  // Rouge foncé pour Stop Loss
+          // Couleur selon le résultat
+          let color = '#10B981'  // Vert par défaut
+          if (isStopLoss) {
+            color = '#EF4444'  // Rouge pour Stop Loss
           } else if (isTakeProfit) {
             color = '#10B981'  // Vert pour Take Profit
           } else {
-            // Vente normale (conditions de sortie) - selon la performance
-            // Vérifier si le trade est rentable
             const tradeProfit = point.trade.profit || 0
-            color = tradeProfit >= 0 ? '#10B981' : '#EF4444'  // Vert si positif, rouge si négatif
+            color = tradeProfit >= 0 ? '#10B981' : '#EF4444'
           }
-
-          // Couleur spéciale pour le trade mis en évidence
-          if (isHighlighted) {
-            color = '#FFA366' // Orange vif pour le trade sélectionné
-          }
-
-          // Tailles augmentées pour meilleure visibilité
-          const outerRadius = isHighlighted ? 14 : 12
-          const innerRadius = isHighlighted ? 10 : 8
-          const glowRadius = isHighlighted ? 20 : 16
 
           return (
             <g key={`trade-${index}`}>
-              {/* Halo pulsant externe - TOUJOURS visible */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r={glowRadius}
-                fill={color}
-                opacity="0.15"
-              >
-                <animate
-                  attributeName="r"
-                  values={`${outerRadius + 2};${glowRadius};${outerRadius + 2}`}
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-                <animate
-                  attributeName="opacity"
-                  values="0.3;0.1;0.3"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              </circle>
-
-              {/* Cercle externe blanc pour contraste maximal */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r={outerRadius + 2}
-                fill="white"
-                opacity="1"
-              />
-
-              {/* Cercle principal TRÈS visible */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r={outerRadius}
-                fill={color}
-                opacity="1"
-              />
-
-              {/* Cercle blanc interne pour effet 3D */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r={innerRadius}
-                fill="white"
-                opacity="0.4"
-              />
-
-              {/* Icône SVG au centre selon le type - SIMPLIFIÉ */}
-              {isBuy ? (
-                // Flèche UP blanche pour BUY
-                <path
-                  d={`M ${point.x} ${point.y - innerRadius/2}
-                      L ${point.x + innerRadius/2.5} ${point.y + innerRadius/2.5}
-                      L ${point.x + innerRadius/4} ${point.y + innerRadius/2.5}
-                      L ${point.x + innerRadius/4} ${point.y + innerRadius/1.5}
-                      L ${point.x - innerRadius/4} ${point.y + innerRadius/1.5}
-                      L ${point.x - innerRadius/4} ${point.y + innerRadius/2.5}
-                      L ${point.x - innerRadius/2.5} ${point.y + innerRadius/2.5} Z`}
-                  fill="white"
-                  opacity="1"
-                />
-              ) : isStopLoss ? (
-                // Croix blanche pour Stop Loss
-                <g>
-                  <line
-                    x1={point.x - innerRadius/2}
-                    y1={point.y - innerRadius/2}
-                    x2={point.x + innerRadius/2}
-                    y2={point.y + innerRadius/2}
-                    stroke="white"
-                    strokeWidth={Math.max(2, innerRadius/4)}
-                    strokeLinecap="round"
+              {/* Cercle de mise en évidence pour le trade ciblé */}
+              {isHighlighted && (
+                <>
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r={20}
+                    fill="none"
+                    stroke="#FBBF24"
+                    strokeWidth="3"
+                    opacity="0.8"
                   />
-                  <line
-                    x1={point.x + innerRadius/2}
-                    y1={point.y - innerRadius/2}
-                    x2={point.x - innerRadius/2}
-                    y2={point.y + innerRadius/2}
-                    stroke="white"
-                    strokeWidth={Math.max(2, innerRadius/4)}
-                    strokeLinecap="round"
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r={14}
+                    fill="#FBBF24"
+                    opacity="0.3"
                   />
-                </g>
-              ) : isTakeProfit ? (
-                // Étoile blanche pour Take Profit
-                <path
-                  d={`M ${point.x} ${point.y - innerRadius/1.5}
-                      L ${point.x + innerRadius/5} ${point.y - innerRadius/5}
-                      L ${point.x + innerRadius/1.5} ${point.y}
-                      L ${point.x + innerRadius/5} ${point.y + innerRadius/5}
-                      L ${point.x} ${point.y + innerRadius/1.5}
-                      L ${point.x - innerRadius/5} ${point.y + innerRadius/5}
-                      L ${point.x - innerRadius/1.5} ${point.y}
-                      L ${point.x - innerRadius/5} ${point.y - innerRadius/5} Z`}
-                  fill="white"
-                  opacity="1"
-                />
-              ) : (
-                // Flèche DOWN blanche pour SELL
-                <path
-                  d={`M ${point.x} ${point.y + innerRadius/2}
-                      L ${point.x + innerRadius/2.5} ${point.y - innerRadius/2.5}
-                      L ${point.x + innerRadius/4} ${point.y - innerRadius/2.5}
-                      L ${point.x + innerRadius/4} ${point.y - innerRadius/1.5}
-                      L ${point.x - innerRadius/4} ${point.y - innerRadius/1.5}
-                      L ${point.x - innerRadius/4} ${point.y - innerRadius/2.5}
-                      L ${point.x - innerRadius/2.5} ${point.y - innerRadius/2.5} Z`}
-                  fill="white"
-                  opacity="1"
-                />
+                </>
               )}
-
-              {/* Label simplifié */}
-              <text
-                x={point.x + 15}
-                y={point.y - 5}
+              {/* Simple cercle */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={isHighlighted ? 8 : 6}
                 fill={color}
-                fontSize="9"
-                fontWeight="bold"
-                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
-              >
-                ${point.trade.price.toFixed(0)}
-              </text>
+                stroke={isHighlighted ? "#FBBF24" : "white"}
+                strokeWidth={isHighlighted ? 3 : 2}
+              />
             </g>
           )
         })}
