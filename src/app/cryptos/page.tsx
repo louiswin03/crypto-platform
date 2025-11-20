@@ -1348,8 +1348,8 @@ function CryptoTable({ cryptos, loading, error, searchTerm, formatters, user, t,
               </div>
 
               {/* Actions Premium */}
-              <div className="col-span-3 sm:col-span-2 lg:col-span-2 flex justify-end sm:justify-center relative z-10">
-                <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="col-span-12 sm:col-span-2 lg:col-span-2 flex justify-between sm:justify-center relative z-10 mt-3 sm:mt-0">
+                <div className="flex items-center w-full justify-between sm:w-auto sm:justify-center space-x-2 sm:space-x-2">
                   {/* Graphique - toujours disponible */}
                   <Link
                     href={`/graphiques?crypto=${crypto.id}`}

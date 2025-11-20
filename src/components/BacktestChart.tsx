@@ -379,6 +379,23 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
   const [zoomedTrade, setZoomedTrade] = useState<any>(null)
   const [showOnlySelectedTrade, setShowOnlySelectedTrade] = useState(false)
   const [historyHighlightTimestamp, setHistoryHighlightTimestamp] = useState<number | null>(null)
+  const [isVerticalLayout, setIsVerticalLayout] = useState(false)
+
+  useEffect(() => {
+    const updateLayout = () => {
+      if (typeof window === 'undefined') return
+      setIsVerticalLayout(window.innerHeight > window.innerWidth)
+    }
+
+    updateLayout()
+    window.addEventListener('resize', updateLayout)
+    window.addEventListener('orientationchange', updateLayout)
+
+    return () => {
+      window.removeEventListener('resize', updateLayout)
+      window.removeEventListener('orientationchange', updateLayout)
+    }
+  }, [])
 
   // Gérer le trade sélectionné pour le zoom
   useEffect(() => {
@@ -735,6 +752,13 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
     point.trade?.reason?.includes('Take Profit')
   )
 
+  const replayButtonPadding = isVerticalLayout ? 'p-3.5' : 'p-2.5'
+  const replayIconSize = isVerticalLayout ? 'w-5 h-5' : 'w-4 h-5'
+  const replaySpeedSizeClasses = isVerticalLayout ? 'px-4 py-1.5 text-sm font-semibold' : 'px-4 py-0.5 text-[14px]'
+  const replayToggleSizeClasses = isVerticalLayout ? 'px-4 py-1.5 text-sm font-semibold' : 'px-4 py-0.5 text-[10px]'
+  const replayWindowButtonSize = isVerticalLayout ? 'px-3 py-1.5 text-sm w-8 h-8' : 'px-6 py-1 text-[14px] w-4 h-4'
+  const replayWindowCountSize = isVerticalLayout ? 'text-sm' : 'text-[10px]'
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
@@ -921,32 +945,32 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
             <div className="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
             {/* Boutons de navigation */}
             <div className="flex items-center gap-1">
-              <button onClick={() => { setHistoryHighlightTimestamp(null); replayService.goToPreviousTrade(); }} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade précédent">
-                <SkipBack className="w-3 h-3" />
+              <button onClick={() => { setHistoryHighlightTimestamp(null); replayService.goToPreviousTrade(); }} className={`${replayButtonPadding} bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors`} title="Trade précédent">
+                <SkipBack className={replayIconSize} />
               </button>
-              <button onClick={() => replayService.stepBackward()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Reculer">
-                <ChevronLeft className="w-3 h-3" />
+              <button onClick={() => replayService.stepBackward()} className={`${replayButtonPadding} bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors`} title="Reculer">
+                <ChevronLeft className={replayIconSize} />
               </button>
-              <button onClick={() => replayState.isPlaying ? replayService.pause() : replayService.play()} className={`p-1.5 rounded transition-colors ${replayState.isPlaying ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}`}>
-                {replayState.isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+              <button onClick={() => replayState.isPlaying ? replayService.pause() : replayService.play()} className={`${replayButtonPadding} rounded transition-colors ${replayState.isPlaying ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}`}>
+                {replayState.isPlaying ? <Pause className={replayIconSize} /> : <Play className={replayIconSize} />}
               </button>
-              <button onClick={() => replayService.stop()} className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded transition-colors" title="Stop">
-                <Square className="w-3 h-3" />
+              <button onClick={() => replayService.stop()} className={`${replayButtonPadding} bg-red-600 hover:bg-red-700 text-white rounded transition-colors`} title="Stop">
+                <Square className={replayIconSize} />
               </button>
-              <button onClick={() => replayService.stepForward()} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Avancer">
-                <ChevronRight className="w-3 h-3" />
+              <button onClick={() => replayService.stepForward()} className={`${replayButtonPadding} bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors`} title="Avancer">
+                <ChevronRight className={replayIconSize} />
               </button>
-              <button onClick={() => { setHistoryHighlightTimestamp(null); replayService.goToNextTrade(); }} className="p-1.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors" title="Trade suivant">
-                <SkipForward className="w-3 h-3" />
+              <button onClick={() => { setHistoryHighlightTimestamp(null); replayService.goToNextTrade(); }} className={`${replayButtonPadding} bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded transition-colors`} title="Trade suivant">
+                <SkipForward className={replayIconSize} />
               </button>
             </div>
 
             {/* Vitesse */}
             <div className="flex items-center gap-1">
-              <Zap className="w-3 h-3 text-yellow-400" />
+              <Zap className={`${replayIconSize} text-yellow-400`} />
               <span className="text-gray-400">Vitesse:</span>
               {[0.25, 0.5, 1, 2, 5, 10].map(speed => (
-                <button key={speed} onClick={() => replayService.setSpeed(speed)} className={`px-2 py-0.5 rounded text-[10px] transition-all ${replayState.speed === speed ? 'bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
+                <button key={speed} onClick={() => replayService.setSpeed(speed)} className={`${replaySpeedSizeClasses} rounded transition-all ${replayState.speed === speed ? 'bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
                   {speed}x
                 </button>
               ))}
@@ -954,20 +978,20 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
 
             {/* Suivi */}
             <div className="flex items-center gap-1">
-              <Eye className="w-3 h-3 text-blue-400" />
+              <Eye className={`${replayIconSize} text-blue-400`} />
               <span className="text-gray-400">Suivi:</span>
-              <button onClick={() => replayService.toggleFollowPrice()} className={`px-2 py-0.5 rounded text-[10px] transition-colors ${replayState.followPrice ? 'bg-blue-600 text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
+              <button onClick={() => replayService.toggleFollowPrice()} className={`${replayToggleSizeClasses} rounded transition-colors ${replayState.followPrice ? 'bg-blue-600 text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
                 {replayState.followPrice ? 'ON' : 'OFF'}
               </button>
             </div>
 
             {/* Bougies */}
             <div className="flex items-center gap-1">
-              <BarChart3 className="w-3 h-3 text-green-400" />
+              <BarChart3 className={`${replayIconSize} text-green-400`} />
               <span className="text-gray-400">Bougies:</span>
-              <button onClick={() => replayService.setWindowSize(replayState.windowSize - 5)} className="px-1 py-0.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded text-[10px] w-4 h-4 flex items-center justify-center" disabled={replayState.windowSize <= 10}>-</button>
-              <span className="text-[10px] font-medium text-[#F9FAFB] min-w-[1.5rem] text-center">{replayState.windowSize}</span>
-              <button onClick={() => replayService.setWindowSize(replayState.windowSize + 5)} className="px-1 py-0.5 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded text-[10px] w-4 h-4 flex items-center justify-center" disabled={replayState.windowSize >= 150}>+</button>
+              <button onClick={() => replayService.setWindowSize(replayState.windowSize - 5)} className={`${replayWindowButtonSize} bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded flex items-center justify-center`} disabled={replayState.windowSize <= 10}>-</button>
+              <span className={`${replayWindowCountSize} font-medium text-[#F9FAFB] min-w-[1.5rem] text-center`}>{replayState.windowSize}</span>
+              <button onClick={() => replayService.setWindowSize(replayState.windowSize + 5)} className={`${replayWindowButtonSize} bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded flex items-center justify-center`} disabled={replayState.windowSize >= 150}>+</button>
             </div>
           </div>
           </div>
