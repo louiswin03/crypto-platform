@@ -112,8 +112,8 @@ export default function ConditionsUtilisationPage() {
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'En accédant et en utilisant Crypto Trading Platform (ci-après "la Plateforme"), vous acceptez d\'être lié par les présentes Conditions Générales d\'Utilisation (CGU). Si vous n\'acceptez pas ces conditions, veuillez ne pas utiliser la Plateforme.'
-                      : 'By accessing and using Crypto Trading Platform (hereinafter "the Platform"), you agree to be bound by these Terms of Service. If you do not accept these terms, please do not use the Platform.'}
+                      ? 'En accédant et en utilisant Cryptium (ci-après "la Plateforme"), vous acceptez d\'être lié par les présentes Conditions Générales d\'Utilisation (CGU). Si vous n\'acceptez pas ces conditions, veuillez ne pas utiliser la Plateforme.'
+                      : 'By accessing and using Cryptium (hereinafter "the Platform"), you agree to be bound by these Terms of Service. If you do not accept these terms, please do not use the Platform.'}
                   </p>
                   <p className="leading-relaxed">
                     {language === 'fr'
@@ -145,8 +145,8 @@ export default function ConditionsUtilisationPage() {
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Crypto Trading Platform est une plateforme d\'analyse et de backtesting de stratégies de trading de cryptomonnaies. Nous fournissons :'
-                      : 'Crypto Trading Platform is a platform for analyzing and backtesting cryptocurrency trading strategies. We provide:'}
+                      ? 'Cryptium est une plateforme d\'analyse et de backtesting de stratégies de trading de cryptomonnaies. Nous fournissons :'
+                      : 'Cryptium is a platform for analyzing and backtesting cryptocurrency trading strategies. We provide:'}
                   </p>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>{language === 'fr' ? 'Des outils de backtesting de stratégies de trading' : 'Backtesting tools for trading strategies'}</li>
@@ -351,8 +351,8 @@ export default function ConditionsUtilisationPage() {
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Tout le contenu de la Plateforme, incluant mais sans s\'y limiter : le code source, les designs, les graphiques, les logos, les textes, les bases de données, et les fonctionnalités, est la propriété exclusive de Crypto Trading Platform ou de ses concédants de licence.'
-                      : 'All Platform content, including but not limited to: source code, designs, graphics, logos, texts, databases, and features, is the exclusive property of Crypto Trading Platform or its licensors.'}
+                      ? 'Tout le contenu de la Plateforme, incluant mais sans s\'y limiter : le code source, les designs, les graphiques, les logos, les textes, les bases de données, et les fonctionnalités, est la propriété exclusive de Cryptium ou de ses concédants de licence.'
+                      : 'All Platform content, including but not limited to: source code, designs, graphics, logos, texts, databases, and features, is the exclusive property of Cryptium or its licensors.'}
                   </p>
                   <p className="leading-relaxed">
                     {language === 'fr'
@@ -451,8 +451,8 @@ export default function ConditionsUtilisationPage() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Email</p>
-                      <a href="mailto:legal@cryptoplatform.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
-                        legal@cryptoplatform.com
+                      <a href="mailto:cryptium.contact@gmail.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
+                        cryptium.contact@gmail.com
                       </a>
                     </div>
                   </div>

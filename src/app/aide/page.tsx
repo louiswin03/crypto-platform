@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, HelpCircle, BookOpen, Video, Code, TrendingUp, Wallet, Activity, Search, MessageCircle } from 'lucide-react'
+import { ArrowLeft, HelpCircle, BookOpen, TrendingUp, Wallet, Activity, Search, MessageCircle, Settings, Shield } from 'lucide-react'
 import SmartNavigation from '@/components/SmartNavigation'
 import Footer from '@/components/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -50,8 +50,14 @@ export default function AidePage() {
         {
           q: language === 'fr' ? 'Est-ce que mes données sont sécurisées ?' : 'Is my data secure?',
           a: language === 'fr'
-            ? 'Oui, vos données sont chiffrées et stockées de manière sécurisée. Nous sommes conformes RGPD et ISO 27001.'
-            : 'Yes, your data is encrypted and stored securely. We are GDPR and ISO 27001 compliant.'
+            ? 'Oui, vos données sont chiffrées avec SSL/TLS et vos mots de passe sont hashés avec bcrypt. Vos données de portfolio sont stockées localement dans votre navigateur.'
+            : 'Yes, your data is encrypted with SSL/TLS and your passwords are hashed with bcrypt. Your portfolio data is stored locally in your browser.'
+        },
+        {
+          q: language === 'fr' ? 'Comment changer la langue de l\'interface ?' : 'How to change the interface language?',
+          a: language === 'fr'
+            ? 'Cliquez sur l\'icône de langue dans la barre de navigation en haut. Vous pouvez basculer entre français et anglais.'
+            : 'Click on the language icon in the top navigation bar. You can switch between French and English.'
         }
       ]
     },
@@ -121,38 +127,64 @@ export default function AidePage() {
           a: language === 'fr'
             ? 'Oui, vous pouvez changer les intervalles de temps, ajouter des indicateurs, et zoomer sur des périodes spécifiques.'
             : 'Yes, you can change time intervals, add indicators, and zoom in on specific periods.'
+        },
+        {
+          q: language === 'fr' ? 'D\'où viennent les données de prix ?' : 'Where does the price data come from?',
+          a: language === 'fr'
+            ? 'Les données proviennent de CoinGecko et des exchanges majeurs (Binance, Coinbase, Kraken) pour garantir précision et fiabilité.'
+            : 'Data comes from CoinGecko and major exchanges (Binance, Coinbase, Kraken) to ensure accuracy and reliability.'
         }
       ]
-    }
-  ]
-
-  const resources = [
+    },
     {
-      title: language === 'fr' ? 'Tutoriels Vidéo' : 'Video Tutorials',
-      description: language === 'fr'
-        ? 'Apprenez à utiliser la plateforme avec nos tutoriels vidéo étape par étape'
-        : 'Learn how to use the platform with our step-by-step video tutorials',
-      icon: Video,
+      category: language === 'fr' ? 'Compte & Paramètres' : 'Account & Settings',
+      icon: Settings,
       color: '#DC2626',
-      link: '#'
+      questions: [
+        {
+          q: language === 'fr' ? 'Comment réinitialiser mon mot de passe ?' : 'How to reset my password?',
+          a: language === 'fr'
+            ? 'Sur la page de connexion, cliquez sur "Mot de passe oublié", entrez votre email et suivez les instructions reçues par email.'
+            : 'On the login page, click "Forgot password", enter your email and follow the instructions received by email.'
+        },
+        {
+          q: language === 'fr' ? 'Comment supprimer mon compte ?' : 'How to delete my account?',
+          a: language === 'fr'
+            ? 'Contactez-nous via la page Contact pour demander la suppression de votre compte. Vos données seront effacées sous 30 jours.'
+            : 'Contact us via the Contact page to request deletion of your account. Your data will be deleted within 30 days.'
+        },
+        {
+          q: language === 'fr' ? 'Puis-je exporter mes données ?' : 'Can I export my data?',
+          a: language === 'fr'
+            ? 'Oui, vous pouvez exporter vos transactions de portfolio et vos stratégies de backtesting au format CSV.'
+            : 'Yes, you can export your portfolio transactions and backtesting strategies in CSV format.'
+        }
+      ]
     },
     {
-      title: language === 'fr' ? 'Documentation API' : 'API Documentation',
-      description: language === 'fr'
-        ? 'Intégrez nos données dans vos propres applications avec notre API'
-        : 'Integrate our data into your own applications with our API',
-      icon: Code,
-      color: '#6366F1',
-      link: '#'
-    },
-    {
-      title: language === 'fr' ? 'Communauté' : 'Community',
-      description: language === 'fr'
-        ? 'Rejoignez notre communauté pour échanger avec d\'autres traders'
-        : 'Join our community to connect with other traders',
-      icon: MessageCircle,
-      color: '#8B5CF6',
-      link: '#'
+      category: language === 'fr' ? 'Sécurité' : 'Security',
+      icon: Shield,
+      color: '#22C55E',
+      questions: [
+        {
+          q: language === 'fr' ? 'Avez-vous accès à mes cryptomonnaies ?' : 'Do you have access to my cryptocurrencies?',
+          a: language === 'fr'
+            ? 'Non, Cryptium est uniquement un outil d\'analyse. Nous n\'avons jamais accès à vos fonds, clés privées ou comptes d\'exchange.'
+            : 'No, Cryptium is only an analysis tool. We never have access to your funds, private keys or exchange accounts.'
+        },
+        {
+          q: language === 'fr' ? 'Où sont stockées mes données de portfolio ?' : 'Where is my portfolio data stored?',
+          a: language === 'fr'
+            ? 'Vos données de portfolio sont stockées localement dans votre navigateur (localStorage). Seules vos préférences et watchlists sont synchronisées sur nos serveurs.'
+            : 'Your portfolio data is stored locally in your browser (localStorage). Only your preferences and watchlists are synced to our servers.'
+        },
+        {
+          q: language === 'fr' ? 'Utilisez-vous des cookies ?' : 'Do you use cookies?',
+          a: language === 'fr'
+            ? 'Nous utilisons uniquement des cookies essentiels pour l\'authentification et vos préférences. Aucun cookie publicitaire ou de tracking.'
+            : 'We only use essential cookies for authentication and your preferences. No advertising or tracking cookies.'
+        }
+      ]
     }
   ]
 
@@ -238,29 +270,6 @@ export default function AidePage() {
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Resources */}
-            <div className="grid md:grid-cols-3 gap-6 mb-16">
-              {resources.map((resource, index) => (
-                <Link
-                  key={index}
-                  href={resource.link}
-                  className="glass-effect-strong rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600 transition-all hover:scale-105 cursor-pointer group"
-                >
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="p-3 rounded-xl" style={{ backgroundColor: `${resource.color}20` }}>
-                      <resource.icon className="w-6 h-6" style={{ color: resource.color }} />
-                    </div>
-                    <h3 className="text-xl font-bold text-[#F9FAFB] group-hover:text-[#6366F1] transition-colors">
-                      {resource.title}
-                    </h3>
-                  </div>
-                  <p className="text-gray-400 text-sm">
-                    {resource.description}
-                  </p>
-                </Link>
-              ))}
             </div>
 
             {/* FAQ */}

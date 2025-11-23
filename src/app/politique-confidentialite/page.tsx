@@ -112,8 +112,8 @@ export default function PolitiqueConfidentialitePage() {
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Chez Crypto Trading Platform, la protection de vos données personnelles est notre priorité absolue. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations personnelles dans le respect du Règlement Général sur la Protection des Données (RGPD) et de la loi Informatique et Libertés.'
-                      : 'At Crypto Trading Platform, protecting your personal data is our top priority. This privacy policy explains how we collect, use, store and protect your personal information in compliance with the General Data Protection Regulation (GDPR) and the French Data Protection Act.'}
+                      ? 'Chez Cryptium, la protection de vos données personnelles est importante. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations personnelles.'
+                      : 'At Cryptium, protecting your personal data is important. This privacy policy explains how we collect, use, store and protect your personal information.'}
                   </p>
                   <div className="p-4 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl">
                     <p className="text-[#00FF88] text-sm leading-relaxed">
@@ -245,8 +245,7 @@ export default function PolitiqueConfidentialitePage() {
                       <li>{language === 'fr' ? 'Mots de passe hachés avec bcrypt (algorithme de hachage sécurisé)' : 'Passwords hashed with bcrypt (secure hashing algorithm)'}</li>
                       <li>{language === 'fr' ? 'Authentification par tokens JWT sécurisés' : 'Authentication via secure JWT tokens'}</li>
                       <li>{language === 'fr' ? 'Protection contre les attaques CSRF et XSS' : 'Protection against CSRF and XSS attacks'}</li>
-                      <li>{language === 'fr' ? 'Surveillance 24/7 des accès non autorisés' : '24/7 monitoring of unauthorized access'}</li>
-                      <li>{language === 'fr' ? 'Sauvegardes régulières et chiffrées' : 'Regular encrypted backups'}</li>
+                      <li>{language === 'fr' ? 'Sauvegardes régulières' : 'Regular backups'}</li>
                     </ul>
                   </div>
 
@@ -270,14 +269,14 @@ export default function PolitiqueConfidentialitePage() {
                     <UserCheck className="w-6 h-6 text-[#6366F1]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
-                    {language === 'fr' ? 'Vos droits (RGPD)' : 'Your Rights (GDPR)'}
+                    {language === 'fr' ? 'Vos droits' : 'Your Rights'}
                   </h2>
                 </div>
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Conformément au RGPD, vous disposez des droits suivants :'
-                      : 'In accordance with GDPR, you have the following rights:'}
+                      ? 'Vous disposez des droits suivants concernant vos données personnelles :'
+                      : 'You have the following rights regarding your personal data:'}
                   </p>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
@@ -368,8 +367,8 @@ export default function PolitiqueConfidentialitePage() {
                   <div className="p-4 bg-[#6366F1]/10 border border-[#6366F1]/30 rounded-xl mt-4">
                     <p className="text-[#6366F1] text-sm leading-relaxed">
                       <strong>{language === 'fr' ? 'Comment exercer vos droits :' : 'How to exercise your rights:'}</strong> {language === 'fr'
-                        ? 'Contactez-nous à contact@cryptoplatform.com. Nous répondons sous 30 jours maximum.'
-                        : 'Contact us at contact@cryptoplatform.com. We respond within 30 days maximum.'}
+                        ? 'Contactez-nous à cryptium.contact@gmail.com. Nous répondons sous 30 jours maximum.'
+                        : 'Contact us at cryptium.contact@gmail.com. We respond within 30 days maximum.'}
                     </p>
                   </div>
                 </div>
@@ -446,28 +445,15 @@ export default function PolitiqueConfidentialitePage() {
                       ? 'Pour toute question concernant cette politique de confidentialité ou l\'exercice de vos droits :'
                       : 'For any questions regarding this privacy policy or exercising your rights:'}
                   </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-[#6366F1]/20 rounded-lg flex items-center justify-center">
-                        <span className="text-lg">📧</span>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-400">{language === 'fr' ? 'Email' : 'Email'}</p>
-                        <a href="mailto:contact@cryptoplatform.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
-                          contact@cryptoplatform.com
-                        </a>
-                      </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-[#6366F1]/20 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">📧</span>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-[#6366F1]/20 rounded-lg flex items-center justify-center">
-                        <span className="text-lg">🛡️</span>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-400">{language === 'fr' ? 'Délégué à la Protection des Données (DPO)' : 'Data Protection Officer (DPO)'}</p>
-                        <a href="mailto:dpo@cryptoplatform.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
-                          dpo@cryptoplatform.com
-                        </a>
-                      </div>
+                    <div>
+                      <p className="text-sm text-gray-400">{language === 'fr' ? 'Email' : 'Email'}</p>
+                      <a href="mailto:cryptium.contact@gmail.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors font-medium">
+                        cryptium.contact@gmail.com
+                      </a>
                     </div>
                   </div>
                   <div className="p-4 bg-[#FFA366]/10 border border-[#FFA366]/30 rounded-xl mt-6">

@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://muolutawyjkfoyywpjhm.supabase.co https://api.binance.com https://api.kraken.com https://api.coinbase.com https://api.coingecko.com https://api.alternative.me https://api.tradingview.com https://*.tradingview.com",
+      "connect-src 'self' https://muolutawyjkfoyywpjhm.supabase.co https://api.binance.com https://api.kraken.com https://api.coinbase.com https://api.coingecko.com https://api.alternative.me https://api.tradingview.com https://*.tradingview.com https://api.emailjs.com",
       "frame-src 'self' https://s.tradingview.com https://www.tradingview.com https://tradingview-widget.com https://www.tradingview-widget.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",

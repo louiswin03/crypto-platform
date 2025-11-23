@@ -117,7 +117,7 @@ export default function MentionsLegalesPage() {
                     <p className="font-semibold text-[#F9FAFB] mb-1">
                       {language === 'fr' ? 'Nom de la société :' : 'Company name:'}
                     </p>
-                    <p>Crypto Trading Platform</p>
+                    <p>Cryptium</p>
                   </div>
                   <div>
                     <p className="font-semibold text-[#F9FAFB] mb-1">
@@ -133,7 +133,7 @@ export default function MentionsLegalesPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Mail className="w-4 h-4 text-[#6366F1]" />
-                    <p>contact@cryptoplatform.com</p>
+                    <p>cryptium.contact@gmail.com</p>
                   </div>
                 </div>
               </section>
@@ -183,13 +183,13 @@ export default function MentionsLegalesPage() {
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'L\'ensemble du contenu présent sur ce site (textes, images, graphismes, logos, icônes, sons, logiciels) est la propriété exclusive de Crypto Trading Platform, à l\'exception des marques, logos ou contenus appartenant à d\'autres sociétés partenaires ou auteurs.'
-                      : 'All content on this site (texts, images, graphics, logos, icons, sounds, software) is the exclusive property of Crypto Trading Platform, except for trademarks, logos or content belonging to other partner companies or authors.'}
+                      ? 'L\'ensemble du contenu présent sur ce site (textes, images, graphismes, logos, icônes, sons, logiciels) est la propriété exclusive de Cryptium, à l\'exception des marques, logos ou contenus appartenant à d\'autres sociétés partenaires ou auteurs.'
+                      : 'All content on this site (texts, images, graphics, logos, icons, sounds, software) is the exclusive property of Cryptium, except for trademarks, logos or content belonging to other partner companies or authors.'}
                   </p>
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Toute reproduction, distribution, modification, adaptation, retransmission ou publication de ces différents éléments est strictement interdite sans l\'accord exprès par écrit de Crypto Trading Platform.'
-                      : 'Any reproduction, distribution, modification, adaptation, retransmission or publication of these elements is strictly prohibited without the express written consent of Crypto Trading Platform.'}
+                      ? 'Toute reproduction, distribution, modification, adaptation, retransmission ou publication de ces différents éléments est strictement interdite sans l\'accord exprès par écrit de Cryptium.'
+                      : 'Any reproduction, distribution, modification, adaptation, retransmission or publication of these elements is strictly prohibited without the express written consent of Cryptium.'}
                   </p>
                 </div>
               </section>
@@ -201,14 +201,14 @@ export default function MentionsLegalesPage() {
                     <Lock className="w-6 h-6 text-[#00FF88]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
-                    {language === 'fr' ? 'Protection des données personnelles (RGPD)' : 'Personal Data Protection (GDPR)'}
+                    {language === 'fr' ? 'Protection des données personnelles' : 'Personal Data Protection'}
                   </h2>
                 </div>
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Conformément à la loi "Informatique et Libertés" du 6 janvier 1978 modifiée et au Règlement Général sur la Protection des Données (RGPD), vous disposez d\'un droit d\'accès, de rectification, de suppression et d\'opposition aux données personnelles vous concernant.'
-                      : 'In accordance with the French Data Protection Act of January 6, 1978 and the General Data Protection Regulation (GDPR), you have the right to access, rectify, delete and object to personal data concerning you.'}
+                      ? 'Vous disposez d\'un droit d\'accès, de rectification, de suppression et d\'opposition aux données personnelles vous concernant.'
+                      : 'You have the right to access, rectify, delete and object to personal data concerning you.'}
                   </p>
                   <p className="leading-relaxed font-semibold text-[#F9FAFB]">
                     {language === 'fr' ? 'Données collectées :' : 'Data collected:'}
@@ -221,8 +221,8 @@ export default function MentionsLegalesPage() {
                   </ul>
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Pour exercer ces droits, vous pouvez nous contacter à l\'adresse : contact@cryptoplatform.com'
-                      : 'To exercise these rights, you can contact us at: contact@cryptoplatform.com'}
+                      ? 'Pour exercer ces droits, vous pouvez nous contacter à l\'adresse : cryptium.contact@gmail.com'
+                      : 'To exercise these rights, you can contact us at: cryptium.contact@gmail.com'}
                   </p>
                   <div className="p-4 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl">
                     <p className="text-[#00FF88] text-sm leading-relaxed">
@@ -276,8 +276,8 @@ export default function MentionsLegalesPage() {
                 <div className="space-y-4 text-gray-300">
                   <p className="leading-relaxed">
                     {language === 'fr'
-                      ? 'Les informations fournies sur cette plateforme sont à titre indicatif uniquement. Crypto Trading Platform ne saurait être tenu responsable :'
-                      : 'The information provided on this platform is for informational purposes only. Crypto Trading Platform cannot be held responsible for:'}
+                      ? 'Les informations fournies sur cette plateforme sont à titre indicatif uniquement. Cryptium ne saurait être tenu responsable :'
+                      : 'The information provided on this platform is for informational purposes only. Cryptium cannot be held responsible for:'}
                   </p>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>{language === 'fr' ? 'Des pertes financières liées aux décisions d\'investissement' : 'Financial losses related to investment decisions'}</li>
@@ -314,8 +314,8 @@ export default function MentionsLegalesPage() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <Mail className="w-5 h-5 text-[#6366F1]" />
-                      <a href="mailto:contact@cryptoplatform.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors">
-                        contact@cryptoplatform.com
+                      <a href="mailto:cryptium.contact@gmail.com" className="text-[#6366F1] hover:text-[#8B5CF6] transition-colors">
+                        cryptium.contact@gmail.com
                       </a>
                     </div>
                   </div>

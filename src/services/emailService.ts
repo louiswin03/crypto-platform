@@ -48,7 +48,7 @@ export async function sendPasswordResetEmail(
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/reset-password/confirm?token=${token}`
 
     const mailOptions = {
-      from: process.env.EMAIL_USER || '"Crypto Platform" <noreply@cryptoplatform.com>',
+      from: process.env.EMAIL_USER || '"Cryptium" <cryptium.contact@gmail.com>',
       to: email,
       subject: 'Réinitialisation de votre mot de passe',
       html: `
@@ -114,7 +114,7 @@ export async function sendPasswordResetEmail(
             </div>
             <div class="content">
               <p>Bonjour${userName ? ` ${userName}` : ''},</p>
-              <p>Vous avez demandé à réinitialiser votre mot de passe pour votre compte Crypto Platform.</p>
+              <p>Vous avez demandé à réinitialiser votre mot de passe pour votre compte Cryptium.</p>
               <p>Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe :</p>
               <div style="text-align: center;">
                 <a href="${resetUrl}" class="button">Réinitialiser mon mot de passe</a>
@@ -133,7 +133,7 @@ export async function sendPasswordResetEmail(
               </div>
             </div>
             <div class="footer">
-              <p>Cet email a été envoyé par Crypto Platform</p>
+              <p>Cet email a été envoyé par Cryptium</p>
               <p>Si vous avez des questions, contactez notre support</p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export async function sendPasswordResetEmail(
       text: `
         Bonjour${userName ? ` ${userName}` : ''},
 
-        Vous avez demandé à réinitialiser votre mot de passe pour votre compte Crypto Platform.
+        Vous avez demandé à réinitialiser votre mot de passe pour votre compte Cryptium.
 
         Cliquez sur le lien ci-dessous pour créer un nouveau mot de passe :
         ${resetUrl}
@@ -154,7 +154,7 @@ export async function sendPasswordResetEmail(
         - Ne partagez jamais ce lien avec personne
 
         Cordialement,
-        L'équipe Crypto Platform
+        L'équipe Cryptium
       `,
     }
 

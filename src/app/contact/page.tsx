@@ -192,8 +192,8 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-[#F9FAFB] mb-1">Email</h3>
-                        <a href="mailto:contact@cryptoplatform.com" className="text-gray-400 hover:text-[#6366F1] transition-colors">
-                          contact@cryptoplatform.com
+                        <a href="mailto:cryptium.contact@gmail.com" className="text-gray-400 hover:text-[#6366F1] transition-colors">
+                          cryptium.contact@gmail.com
                         </a>
                       </div>
                     </div>
