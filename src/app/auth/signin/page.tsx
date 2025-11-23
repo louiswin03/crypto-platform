@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
@@ -9,16 +9,26 @@ import { Eye, EyeOff, Mail, Lock, Loader2, AlertCircle, CheckCircle, ArrowLeft }
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function SignInPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null)
 
   const { signIn } = useAuth()
   const router = useRouter()
   const { handleRedirectAfterLogin } = useRedirectAfterLogin()
+
+  // Charger l'email sauvegardé au chargement
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail')
+    if (savedEmail) {
+      setEmail(savedEmail)
+      setRememberMe(true)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -63,6 +73,13 @@ export default function SignInPage() {
       }
 
       if (success) {
+        // Sauvegarder ou supprimer l'email selon le choix
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email)
+        } else {
+          localStorage.removeItem('rememberedEmail')
+        }
+
         setMessage({ type: 'success', text: t('auth.signin.success') })
         // Utiliser la redirection intelligente
         setTimeout(() => {
@@ -176,8 +193,20 @@ export default function SignInPage() {
               </div>
             </div>
 
-            {/* Forgot password */}
-            <div className="flex justify-end">
+            {/* Remember me & Forgot password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 text-[#00FF88] border-gray-600 rounded focus:ring-[#00FF88] bg-gray-700"
+                  disabled={loading}
+                />
+                <span className="text-sm text-gray-400">
+                  {language === 'fr' ? 'Se souvenir de moi' : 'Remember me'}
+                </span>
+              </label>
               <Link
                 href="/auth/reset-password"
                 className="text-sm text-[#00FF88] hover:text-[#8B5CF6] transition-colors font-medium"

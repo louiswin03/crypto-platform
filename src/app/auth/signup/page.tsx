@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-import { useRedirectAfterLogin } from '@/hooks/useRedirectAfterLogin'
 import { Eye, EyeOff, Mail, Lock, User, Loader2, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -19,7 +18,6 @@ export default function SignUpPage() {
 
   const { signUp } = useAuth()
   const router = useRouter()
-  const { handleRedirectAfterLogin } = useRedirectAfterLogin()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,22 +44,21 @@ export default function SignUpPage() {
     }
 
     try {
-      const { data, error } = await signUp(email, password)
+      const result = await signUp(email, password)
 
-      if (error) {
-        // Gérer différents types d'erreurs Supabase
+      if (result.error) {
+        // Gérer différents types d'erreurs
         let errorMessage = t('auth.signin.error.unexpected')
-        const errorMsg = typeof error === 'string' ? error : (error?.message || '')
+        const errorMsg = result.error
 
         // Vérifier si l'email existe déjà
         if (errorMsg.includes('already') ||
             errorMsg.includes('exists') ||
             errorMsg.includes('registered') ||
-            errorMsg.includes('déjà')) {
+            errorMsg.includes('déjà') ||
+            errorMsg.includes('existe')) {
           errorMessage = t('auth.signup.error.email_exists')
-        } else if (errorMsg.includes('email') || errorMsg.includes('Email')) {
-          errorMessage = errorMsg
-        } else if (errorMsg) {
+        } else {
           errorMessage = errorMsg
         }
 
@@ -70,16 +67,21 @@ export default function SignUpPage() {
         return
       }
 
-      if (data?.user) {
+      if (result.success) {
         setMessage({
           type: 'success',
           text: t('auth.signup.success')
         })
-        // Attendre un peu puis utiliser la redirection intelligente
+        setLoading(false)
+        // Redirection directe vers l'accueil après 1.5s
         setTimeout(() => {
-          handleRedirectAfterLogin()
-        }, 2000)
+          window.location.href = '/'
+        }, 1500)
+        return
       }
+
+      // Cas inattendu
+      setLoading(false)
     } catch (error: any) {
       setMessage({
         type: 'error',
