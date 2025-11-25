@@ -83,7 +83,6 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error('Erreur modification portfolio:', error)
       return NextResponse.json(
         { error: 'Erreur lors de la modification du portfolio' },
         { status: 500 }
@@ -99,8 +98,6 @@ export async function PUT(
 
     return NextResponse.json({ portfolio })
   } catch (error: unknown) {
-    console.error('Erreur API modification portfolio:', error)
-
     const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
       { error: errorMessage },
@@ -180,7 +177,6 @@ export async function DELETE(
       .eq('user_id', user.id)
 
     if (deleteError) {
-      console.error('Erreur suppression portfolio:', deleteError)
       return NextResponse.json(
         { error: 'Erreur lors de la suppression du portfolio' },
         { status: 500 }
@@ -205,8 +201,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Portfolio supprimé avec succès' })
   } catch (error: unknown) {
-    console.error('Erreur API suppression portfolio:', error)
-
     const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
       { error: errorMessage },

@@ -64,7 +64,6 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error('Erreur mise à jour stratégie:', error)
       return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500 })
     }
 
@@ -74,7 +73,6 @@ export async function PUT(
 
     return NextResponse.json({ strategy: data })
   } catch (error) {
-    console.error('Erreur API strategy PUT:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -99,13 +97,11 @@ export async function DELETE(
       .eq('user_id', userId) // Sécurité
 
     if (error) {
-      console.error('Erreur suppression stratégie:', error)
       return NextResponse.json({ error: 'Erreur lors de la suppression' }, { status: 500 })
     }
 
     return NextResponse.json({ message: 'Stratégie supprimée avec succès' })
   } catch (error) {
-    console.error('Erreur API strategy DELETE:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

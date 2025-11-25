@@ -25,25 +25,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validation mot de passe renforcée
-    if (password.length < 12) {
+    // Validation mot de passe
+    if (password.length < 6) {
       return NextResponse.json(
-        { error: 'Le mot de passe doit contenir au moins 12 caractères' },
-        { status: 400 }
-      )
-    }
-
-    // Vérifier la complexité du mot de passe
-    const hasUpperCase = /[A-Z]/.test(password)
-    const hasLowerCase = /[a-z]/.test(password)
-    const hasNumber = /[0-9]/.test(password)
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
-
-    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
-      return NextResponse.json(
-        {
-          error: 'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&*(),.?":{}|<>)'
-        },
+        { error: 'Le mot de passe doit contenir au moins 6 caractères' },
         { status: 400 }
       )
     }
@@ -62,7 +47,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (tokenError || !tokenData) {
-      console.error('Token non trouvé:', tokenError)
+
       return NextResponse.json(
         { error: 'Token invalide ou expiré' },
         { status: 404 }
@@ -91,8 +76,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hasher le nouveau mot de passe
-    const hashedPassword = await bcrypt.hash(password, 10)
+    // Hasher le nouveau mot de passe (12 rounds pour cohérence avec register)
+    const hashedPassword = await bcrypt.hash(password, 12)
 
     // Mettre à jour le mot de passe de l'utilisateur
     const { error: updatePasswordError } = await supabase
@@ -104,7 +89,7 @@ export async function POST(request: NextRequest) {
       .eq('id', tokenData.user_id)
 
     if (updatePasswordError) {
-      console.error('Erreur lors de la mise à jour du mot de passe:', updatePasswordError)
+
       return NextResponse.json(
         { error: 'Erreur lors de la mise à jour du mot de passe' },
         { status: 500 }
@@ -118,7 +103,7 @@ export async function POST(request: NextRequest) {
       .eq('id', tokenData.id)
 
     if (updateTokenError) {
-      console.error('Erreur lors de la mise à jour du token:', updateTokenError)
+
       // Continuer quand même - le mot de passe a été changé
     }
 
@@ -129,7 +114,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la confirmation de réinitialisation du mot de passe:', error)
+
     return NextResponse.json(
       { error: 'Erreur serveur lors de la réinitialisation du mot de passe' },
       { status: 500 }

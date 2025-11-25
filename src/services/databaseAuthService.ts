@@ -50,7 +50,7 @@ export class DatabaseAuthService {
     if (typeof window === 'undefined') return null
 
     try {
-      const userData = localStorage.getItem('crypto_platform_user')
+      const userData = sessionStorage.getItem('crypto_platform_user')
       if (!userData) return null
 
       const parsed = JSON.parse(userData)
@@ -60,7 +60,7 @@ export class DatabaseAuthService {
         lastLogin: parsed.lastLogin ? new Date(parsed.lastLogin) : null
       }
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'utilisateur:', error)
+
       return null
     }
   }
@@ -72,12 +72,15 @@ export class DatabaseAuthService {
   static saveUserToStorage(user: AuthenticatedUser): void {
     if (typeof window === 'undefined') return
 
+    // Ne stocker que le minimum nécessaire (pas d'email pour la sécurité)
     const userData = {
-      ...user,
+      id: user.id,
+      displayName: user.displayName,
       savedAt: new Date().toISOString()
     }
 
-    localStorage.setItem('crypto_platform_user', JSON.stringify(userData))
+    // Utiliser sessionStorage au lieu de localStorage (plus sécurisé)
+    sessionStorage.setItem('crypto_platform_user', JSON.stringify(userData))
 
     // Déclencher un événement pour notifier les composants
     window.dispatchEvent(new CustomEvent('auth-state-changed', { detail: { user } }))
@@ -97,11 +100,11 @@ export class DatabaseAuthService {
         credentials: 'include' // Important pour envoyer les cookies
       })
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error)
+
     }
 
     // Nettoyer le localStorage
-    localStorage.removeItem('crypto_platform_user')
+    sessionStorage.removeItem('crypto_platform_user')
 
     // Déclencher un événement pour notifier les composants
     window.dispatchEvent(new CustomEvent('auth-state-changed', { detail: null }))
@@ -158,7 +161,7 @@ export class DatabaseAuthService {
       return data.user
 
     } catch (error) {
-      console.error('Erreur lors de la vérification du token:', error)
+
       return null
     }
   }
@@ -181,7 +184,7 @@ export class DatabaseAuthService {
             this.saveUserToStorage(parsed.user)
           }
         } catch (e) {
-          console.error('Erreur lors de la migration:', e)
+
         }
         localStorage.removeItem('crypto_platform_auth')
       }
@@ -190,7 +193,7 @@ export class DatabaseAuthService {
       this.cleanupOldLocalStorage()
 
     } catch (error) {
-      console.error('Erreur lors de la migration:', error)
+
     }
   }
 

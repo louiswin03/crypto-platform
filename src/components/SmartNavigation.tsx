@@ -72,7 +72,7 @@ export default function SmartNavigation() {
               />
               <div className="hidden sm:block">
                 <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] tracking-tight group-hover:text-[#00FF88] transition-colors">Cryptium</span>
-                <div className="text-xs text-gray-400 font-medium hidden md:block">Analyse, backtest et portfolio crypto</div>
+                <div className="text-xs text-gray-400 font-medium hidden md:block">{t('brand.tagline_short')}</div>
               </div>
             </div>
           </Link>

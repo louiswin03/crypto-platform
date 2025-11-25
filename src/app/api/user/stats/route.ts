@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     }
 
-
     // Récupérer l'utilisateur depuis la table users pour avoir l'email
     const { data: userData, error: userError } = await supabase
       .from('users')
@@ -20,14 +19,12 @@ export async function GET(request: NextRequest) {
       .eq('id', userId)
       .single()
 
-
     // Récupérer le profil utilisateur depuis user_profiles (table existante)
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('*')
       .eq('id', userId)  // user_profiles utilise 'id' directement
       .single()
-
 
     // Si pas de profil, créer un profil vide
     if (profileError && profileError.code === 'PGRST116') {
@@ -148,7 +145,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(stats)
 
   } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error)
+
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }

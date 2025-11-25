@@ -33,7 +33,6 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: true })
 
     if (error) {
-      console.error('Erreur récupération watchlists avec items:', error)
       return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
     }
 
@@ -44,7 +43,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ watchlists: watchlistsWithItems })
   } catch (error) {
-    console.error('Erreur API watchlists with items GET:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

@@ -60,7 +60,6 @@ export class StrategyDatabaseService {
         config: strategy.config
       }))
     } catch (error) {
-      console.error('Erreur lors de la récupération des stratégies:', error)
       return []
     }
   }
@@ -87,7 +86,6 @@ export class StrategyDatabaseService {
       const data = await response.json()
       return data.strategy.id
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error)
       throw new Error('Impossible de sauvegarder la stratégie')
     }
   }
@@ -111,7 +109,6 @@ export class StrategyDatabaseService {
 
       return true
     } catch (error) {
-      console.error('Erreur lors de la mise à jour:', error)
       return false
     }
   }
@@ -128,7 +125,6 @@ export class StrategyDatabaseService {
 
       return true
     } catch (error) {
-      console.error('Erreur lors de la suppression:', error)
       return false
     }
   }
@@ -138,7 +134,6 @@ export class StrategyDatabaseService {
       const strategies = await this.getAllSavedStrategies()
       return strategies.find(s => s.id === id) || null
     } catch (error) {
-      console.error('Erreur lors de la récupération de la stratégie:', error)
       return null
     }
   }
@@ -167,13 +162,11 @@ export class StrategyDatabaseService {
           })
           importedCount++
         } catch (error) {
-          console.error(`Erreur import stratégie ${strategy.name}:`, error)
         }
       }
 
       return importedCount
     } catch (error) {
-      console.error('Erreur lors de l\'import:', error)
       throw new Error('Format de fichier invalide')
     }
   }
@@ -195,7 +188,6 @@ export class StrategyDatabaseService {
         await this.deleteStrategy(strategy.id)
       }
     } catch (error) {
-      console.error('Erreur lors de la suppression des stratégies:', error)
     }
   }
 }

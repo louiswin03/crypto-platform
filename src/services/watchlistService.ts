@@ -81,7 +81,7 @@ export const watchlistService = {
       const data = await response.json()
       return data.watchlists || []
     } catch (error) {
-      console.error('Erreur lors de la récupération des watchlists:', error)
+
       throw new Error(`Erreur lors de la récupération des listes: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -102,7 +102,7 @@ export const watchlistService = {
       const data = await response.json()
       return data.watchlist
     } catch (error) {
-      console.error('Erreur lors de la création de la watchlist:', error)
+
       throw new Error(`Erreur lors de la création de la liste: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -123,7 +123,7 @@ export const watchlistService = {
       const data = await response.json()
       return data.watchlist
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la watchlist:', error)
+
       throw new Error(`Erreur lors de la mise à jour de la liste: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -140,7 +140,7 @@ export const watchlistService = {
         throw new Error(errorData.error || `Erreur HTTP: ${response.status}`)
       }
     } catch (error) {
-      console.error('Erreur lors de la suppression de la watchlist:', error)
+
       throw new Error(`Erreur lors de la suppression de la liste: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -159,7 +159,7 @@ export const watchlistService = {
       const data = await response.json()
       return data.items || []
     } catch (error) {
-      console.error('Erreur lors de la récupération des items:', error)
+
       throw new Error(`Erreur lors de la récupération des items: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -202,7 +202,7 @@ export const watchlistService = {
       const data = await response.json()
       return data.item
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'item:', error)
+
       throw new Error(`Erreur lors de l'ajout de la cryptomonnaie: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -219,7 +219,7 @@ export const watchlistService = {
         throw new Error(errorData.error || `Erreur HTTP: ${response.status}`)
       }
     } catch (error) {
-      console.error('Erreur lors de la suppression de l\'item:', error)
+
       throw new Error(`Erreur lors de la suppression de la cryptomonnaie: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -237,7 +237,7 @@ export const watchlistService = {
         throw new Error(errorData.error || `Erreur HTTP: ${response.status}`)
       }
     } catch (error) {
-      console.error('Erreur lors de la mise à jour des notes:', error)
+
       throw new Error(`Erreur lors de la mise à jour des notes: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -248,7 +248,7 @@ export const watchlistService = {
       const items = await this.getWatchlistItems(listId)
       return items.some(item => item.crypto_id === cryptoId)
     } catch (error) {
-      console.error('Erreur lors de la vérification:', error)
+
       return false
     }
   },
@@ -267,7 +267,7 @@ export const watchlistService = {
       const data = await response.json()
       return data.watchlists || []
     } catch (error) {
-      console.error('Erreur lors de la récupération des listes avec items:', error)
+
       throw new Error(`Erreur lors de la récupération: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -319,7 +319,7 @@ export const watchlistService = {
 
       return createdLists
     } catch (error) {
-      console.error('Erreur lors de la création des listes par défaut:', error)
+
       throw new Error(`Erreur lors de l'initialisation: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     }
   },
@@ -334,7 +334,7 @@ export const watchlistService = {
       const uniqueCryptos = new Set(allItems.map(item => item.crypto_id))
       return uniqueCryptos.size
     } catch (error) {
-      console.error('Erreur lors du comptage:', error)
+
       return 0
     }
   },

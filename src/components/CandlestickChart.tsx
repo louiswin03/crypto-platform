@@ -696,7 +696,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
     const validPrices = visibleData.flatMap(d => [d.open, d.high, d.low, d.close]).filter(p => !isNaN(p) && isFinite(p))
 
     if (validPrices.length === 0) {
-      console.error('Aucun prix valide trouvé dans les données')
+
       return <div className="text-red-500 p-4">Erreur: Aucune donnée de prix valide</div>
     }
 
@@ -922,7 +922,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
 
     // Vérifier que x et y sont valides
     if (!isFinite(x) || !isFinite(y) || isNaN(x) || isNaN(y)) {
-      console.warn('Trade point invalide:', { x, y, trade })
+
       return null
     }
 

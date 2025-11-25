@@ -51,14 +51,12 @@ export async function PUT(request: NextRequest) {
       updateData.preferences = preferences
     }
 
-
     // D'abord récupérer le profil existant avec toutes ses données
     const { data: existingProfile, error: fetchError } = await supabaseAdmin
       .from('user_profiles')
       .select('*')  // Récupérer toutes les colonnes
       .eq('id', userId)
       .single()
-
 
     let result
 
@@ -73,7 +71,6 @@ export async function PUT(request: NextRequest) {
       // Supprimer les champs qui ne doivent pas être mis à jour
       delete mergedData.id
       delete mergedData.created_at
-
 
       // Mettre à jour le profil existant
       const { data, error } = await supabaseAdmin
@@ -100,7 +97,6 @@ export async function PUT(request: NextRequest) {
     }
 
     if (result.error) {
-      console.error('Erreur mise à jour profil:', result.error)
 
       // Si c'est une erreur de contrainte de clé étrangère, on essaie une approche différente
       if (result.error.message && result.error.message.includes('foreign key constraint')) {
@@ -119,7 +115,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ success: true, profile: result.data })
   } catch (error) {
-    console.error('Erreur API profile PUT:', error)
+
     return NextResponse.json({
       error: 'Erreur serveur: ' + (error instanceof Error ? error.message : 'Erreur inconnue')
     }, { status: 500 })

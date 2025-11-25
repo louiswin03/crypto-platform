@@ -21,7 +21,6 @@ export const getPool = (): Pool => {
     pool = new Pool(config)
 
     pool.on('error', (err) => {
-      console.error('Erreur PostgreSQL pool:', err)
     })
   }
 

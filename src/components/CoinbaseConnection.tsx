@@ -46,7 +46,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
         onConnectionChange?.(data.connected)
       }
     } catch (err) {
-      console.error('Erreur vérification connexion:', err)
+
     }
   }
 
@@ -64,7 +64,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
         onBalanceChange?.(data.totalValueUsd || 0)
       }
     } catch (err) {
-      console.error('Erreur chargement balance:', err)
+
     }
   }
 
@@ -134,7 +134,7 @@ export default function CoinbaseConnection({ onConnectionChange, onBalanceChange
       onConnectionChange?.(false)
       onBalanceChange?.(0)
     } catch (err) {
-      console.error('Erreur déconnexion:', err)
+
     }
   }
 

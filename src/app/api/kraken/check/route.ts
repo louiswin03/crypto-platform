@@ -4,18 +4,8 @@ import { getUserIdFromRequest } from '@/lib/jwt'
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ connected: false })
-    }
-
-    const userToken = authHeader.substring(7)
-
-    let userId: string
-    try {
-      const decoded = jwt.verify(userToken, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
+    const userId = await getUserIdFromRequest(request)
+    if (!userId) {
       return NextResponse.json({ connected: false })
     }
 
@@ -48,7 +38,7 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Erreur check connexion:', error)
+
     return NextResponse.json({ connected: false })
   }
 }

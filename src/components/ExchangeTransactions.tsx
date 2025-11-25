@@ -43,15 +43,12 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
         return
       }
 
-      console.log(`Chargement transactions ${exchange}...`)
       const response = await fetch(`/api/${exchange}/transactions?limit=${limit}`, {
         headers: {
           'Authorization': `Bearer ${authData.token}`,
           'Content-Type': 'application/json',
         },
       })
-
-      console.log(`Réponse ${exchange}:`, response.status, response.statusText)
 
       if (!response.ok) {
         let errorMessage = `Erreur ${response.status}: ${response.statusText}`
@@ -61,18 +58,18 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
           try {
             const errorData = await response.json()
             errorMessage = errorData.error || errorMessage
-            console.error(`Erreur API ${exchange}:`, errorData)
+
           } catch (jsonError) {
-            console.error(`Impossible de parser JSON pour ${exchange}:`, jsonError)
+
           }
         } else {
           // Réponse en texte brut
           try {
             const errorText = await response.text()
-            console.error(`Erreur texte ${exchange}:`, errorText)
+
             errorMessage = errorText.trim() || errorMessage
           } catch (textError) {
-            console.error(`Impossible de lire texte pour ${exchange}:`, textError)
+
           }
         }
         throw new Error(errorMessage)
@@ -93,7 +90,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
 
       setTransactions(allTx)
     } catch (err: any) {
-      console.error('Erreur chargement transactions:', err)
+
       setError(err.message)
     } finally {
       setLoading(false)

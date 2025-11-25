@@ -47,7 +47,7 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
         onConnectionChange?.(data.connected)
       }
     } catch (err) {
-      console.error('Erreur vérification connexion:', err)
+
     }
   }
 
@@ -62,22 +62,22 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
 
       if (response.ok) {
         const data = await response.json()
-        console.log('💰 Balance chargé:', data.totalValueUsd)
+
         onBalanceChange?.(data.totalValueUsd || 0)
       }
     } catch (err) {
-      console.error('Erreur chargement balance:', err)
+
     }
   }
 
   const handleConnect = async () => {
-    console.log('🔵 handleConnect called')
+
     setError('')
     setIsLoading(true)
 
     try {
       const authData = localStorage.getItem('crypto_platform_auth')
-      console.log('🔵 authData:', authData ? 'exists' : 'null')
+
       if (!authData) {
         setError('Non authentifié. Veuillez vous reconnecter.')
         setIsLoading(false)
@@ -86,7 +86,6 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
 
       const { token } = JSON.parse(authData)
 
-      console.log('🔵 Sending request to /api/binance/connect')
       const response = await fetch('/api/binance/connect', {
         method: 'POST',
         credentials: 'include',
@@ -98,7 +97,6 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
       })
 
       const data = await response.json()
-      console.log('🔵 Response:', response.status, data)
 
       if (response.ok) {
         setIsConnected(true)
@@ -113,7 +111,7 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
         setError(data.error || 'Erreur de connexion')
       }
     } catch (err) {
-      console.error('🔴 Error:', err)
+
       setError('Erreur réseau. Vérifiez votre connexion.')
     } finally {
       setIsLoading(false)
@@ -142,7 +140,7 @@ export default function BinanceConnection({ onConnectionChange, onBalanceChange 
       onConnectionChange?.(false)
       onBalanceChange?.(0)
     } catch (err) {
-      console.error('Erreur déconnexion:', err)
+
     }
   }
 

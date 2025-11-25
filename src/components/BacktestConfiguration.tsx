@@ -131,7 +131,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
         const strategies = await StrategyStorageService.getAllSavedStrategies()
         setSavedStrategies(strategies)
       } catch (error) {
-        console.error('Erreur chargement stratégies:', error)
+
       }
     }
     loadStrategies()
@@ -776,7 +776,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
       setStrategyName('')
       setStrategyDescription('')
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error)
+
     }
   }
 
@@ -799,7 +799,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
         const updatedStrategies = await StrategyStorageService.getAllSavedStrategies()
         setSavedStrategies(updatedStrategies)
       } catch (error) {
-        console.error('Erreur lors de la suppression:', error)
+
       }
     }
   }

@@ -7,24 +7,10 @@ import { getUserIdFromRequest } from '@/lib/jwt'
 export async function GET(request: NextRequest) {
   try {
     // Récupérer l'utilisateur depuis le token JWT
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const userId = await getUserIdFromRequest(request)
+    if (!userId) {
       return NextResponse.json(
         { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
-
-    // Vérifier le token JWT
-    let userId: string
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
-      return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
         { status: 401 }
       )
     }
@@ -168,7 +154,6 @@ export async function GET(request: NextRequest) {
           // Petit délai pour éviter le rate limit
           await new Promise(resolve => setTimeout(resolve, 100))
         } catch (err) {
-          console.error(`Erreur récupération trades ${symbol}:`, err)
         }
       }
     }
@@ -247,7 +232,6 @@ export async function GET(request: NextRequest) {
         }))
       }
     } catch (err) {
-      console.error('Erreur récupération deposits/withdrawals:', err)
     }
 
     return NextResponse.json({
@@ -262,7 +246,6 @@ export async function GET(request: NextRequest) {
       lastUpdate: new Date().toISOString()
     })
   } catch (error: any) {
-    console.error('Erreur récupération transactions:', error)
     return NextResponse.json(
       { error: error.message || 'Erreur serveur' },
       { status: 500 }

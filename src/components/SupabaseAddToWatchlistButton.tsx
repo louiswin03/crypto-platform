@@ -105,7 +105,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
         setActionError(isCurrentlyInList ? 'Erreur lors de la suppression' : 'Erreur lors de l\'ajout')
       }
     } catch (err) {
-      console.error('Erreur lors de l\'action sur la watchlist:', err)
+
       setActionError('Une erreur est survenue')
     } finally {
       setIsProcessing(false)

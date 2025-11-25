@@ -7,8 +7,13 @@ if (!ENCRYPTION_KEY) {
   throw new Error('ENCRYPTION_KEY must be set in environment variables')
 }
 
-// S'assurer que la clé fait exactement 32 bytes pour AES-256
-const KEY_BUFFER = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32)
+// Valider que la clé fait exactement 64 caractères hexadécimaux (32 bytes pour AES-256)
+if (ENCRYPTION_KEY.length !== 64 || !/^[0-9a-fA-F]{64}$/.test(ENCRYPTION_KEY)) {
+  throw new Error('ENCRYPTION_KEY must be exactly 64 hexadecimal characters (32 bytes). Generate with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"')
+}
+
+// Convertir directement la clé hexadécimale en buffer (pas de scrypt avec salt statique)
+const KEY_BUFFER = Buffer.from(ENCRYPTION_KEY, 'hex')
 
 /**
  * Chiffre une chaîne avec AES-256-GCM (mode authentifié)
@@ -28,7 +33,7 @@ export function encrypt(text: string): string {
     // Format: iv:authTag:encryptedData
     return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`
   } catch (error) {
-    console.error('Encryption error:', error)
+
     throw new Error('Failed to encrypt data')
   }
 }
@@ -55,7 +60,7 @@ export function decrypt(encryptedData: string): string {
 
     return decrypted
   } catch (error) {
-    console.error('Decryption error:', error)
+
     throw new Error('Failed to decrypt data')
   }
 }

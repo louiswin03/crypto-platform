@@ -58,7 +58,6 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error: any) {
-    console.error('[API] Error fetching global stats:', error)
 
     if (error.name === 'AbortError') {
       return NextResponse.json(

@@ -184,7 +184,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
       })
 
       if (!response.ok) {
-        console.warn('Impossible de récupérer les stats globales')
+
         return
       }
 
@@ -207,7 +207,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         }
       }
     } catch (err) {
-      console.error('Erreur lors de la récupération des stats globales:', err)
+
     }
   }
 
@@ -312,7 +312,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
 
       // Vérifier si c'est une erreur AbortError (timeout)
       if (err instanceof DOMException && err.name === 'AbortError') {
-        console.warn('⏱️ Timeout de la requête API - Retry automatique...')
+
         setError('Chargement en cours, veuillez patienter...')
         // Retry automatique après 3 secondes avec timeout plus long
         setTimeout(() => {
@@ -321,8 +321,6 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
         setLoading(false)
         return
       }
-
-      console.error('🚨 Erreur lors de la récupération des prix CoinGecko:', err)
 
       if (err instanceof TypeError && err.message === 'Failed to fetch') {
         setError('Erreur de connexion - Rechargement automatique dans 5 secondes...')
@@ -461,7 +459,7 @@ export const useExtendedCoinGeckoPrices = (perPage: number = 100, includeSparkli
           }
         }
       } catch (err) {
-        console.error('Erreur lors de la recherche externe:', err)
+
       } finally {
         setIsSearching(false)
       }

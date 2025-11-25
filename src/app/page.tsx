@@ -173,9 +173,9 @@ export default function Home() {
             <div className="text-center">
               {/* Enhanced Main Title */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 md:mb-8 leading-[1.2] tracking-tight text-shadow font-display pt-12 sm:pt-16 md:pt-20">
-                <span className="block font-extrabold mb-1 sm:mb-2 text-[#F9FAFB]">Votre plateforme</span>
+                <span className="block font-extrabold mb-1 sm:mb-2 text-[#F9FAFB]">{t('home.hero.title1')}</span>
                 <span className="block text-gradient-animate relative">
-                  d'analyse crypto premium
+                  {t('home.hero.title2')}
                   <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#00FF88]/15 via-[#00D9FF]/15 to-[#00FF88]/15 blur-lg sm:blur-xl md:blur-2xl opacity-50 pulse-glow"></div>
                 </span>
               </h1>
@@ -195,10 +195,10 @@ export default function Home() {
               {/* Enhanced Subtitle */}
               <div className="max-w-5xl mx-auto mb-8 sm:mb-12 md:mb-16">
                 <p className={cn("text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-3 sm:mb-4 md:mb-6 leading-relaxed font-light tracking-wide px-4 sm:px-0", themeClasses.text.secondary(isDarkMode))}>
-                  Analysez les marchés, backtestez vos stratégies et suivez votre portfolio crypto.
+                  {t('home.hero.subtitle1')}
                 </p>
                 <p className={cn("text-sm sm:text-base md:text-lg lg:text-xl font-medium px-4 sm:px-0", themeClasses.text.muted(isDarkMode))}>
-                  Gratuit et no-code. La plateforme tout-en-un pour optimiser vos investissements cryptomonnaies.
+                  {t('home.hero.subtitle2')}
                 </p>
               </div>
 
@@ -655,7 +655,7 @@ export default function Home() {
                   />
                   <div>
                     <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display group-hover:text-[#00FF88] transition-colors">Cryptium</span>
-                    <div className="text-xs text-gray-400 font-medium">Votre plateforme d'analyse crypto premium</div>
+                    <div className="text-xs text-gray-400 font-medium">{t('brand.tagline_full')}</div>
                   </div>
                 </Link>
                 <p className="text-gray-400 leading-relaxed text-sm mb-6">

@@ -39,7 +39,6 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error('Erreur mise à jour notes:', error)
       return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500 })
     }
 
@@ -49,7 +48,6 @@ export async function PUT(
 
     return NextResponse.json({ item: data })
   } catch (error) {
-    console.error('Erreur API watchlist item PUT:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -75,13 +73,11 @@ export async function DELETE(
       .eq('user_id', userId) // Sécurité
 
     if (error) {
-      console.error('Erreur suppression item:', error)
       return NextResponse.json({ error: 'Erreur lors de la suppression' }, { status: 500 })
     }
 
     return NextResponse.json({ message: 'Item supprimé avec succès' })
   } catch (error) {
-    console.error('Erreur API watchlist item DELETE:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

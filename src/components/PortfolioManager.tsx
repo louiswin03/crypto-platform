@@ -69,7 +69,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
         }
       }
     } catch (error) {
-      console.error('Erreur chargement portfolios:', error)
+
     } finally {
       setLoading(false)
     }
@@ -109,7 +109,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
         onPortfolioSelect(data.portfolio)
       }
     } catch (error) {
-      console.error('Erreur création portfolio:', error)
+
     }
   }
 
@@ -119,8 +119,6 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
     try {
       const authData = DatabaseAuthService.getCurrentUserFromStorage()
       if (!authData) return
-
-      console.log('Envoi des données:', formData)
 
       const response = await fetch(`/api/portfolios/${editingPortfolio.id}`, {
         method: 'PUT',
@@ -133,7 +131,6 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
 
       if (response.ok) {
         const data = await response.json()
-        console.log('Réponse API:', data)
 
         // Mettre à jour la liste des portfolios
         setPortfolios(portfolios.map(p => p.id === data.portfolio.id ? data.portfolio : p))
@@ -155,10 +152,10 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
         await loadPortfolios()
       } else {
         const error = await response.json()
-        console.error('Erreur API:', error)
+
       }
     } catch (error) {
-      console.error('Erreur modification portfolio:', error)
+
     }
   }
 
@@ -189,7 +186,7 @@ export default function PortfolioManager({ onPortfolioSelect, selectedPortfolioI
         }
       }
     } catch (error) {
-      console.error('Erreur suppression portfolio:', error)
+
     }
   }
 

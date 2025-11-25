@@ -68,14 +68,12 @@ export async function POST(request: Request) {
       .single()
 
     if (error) {
-      console.error('Erreur lors de la sauvegarde du backtest:', error)
       return NextResponse.json({ error: 'Erreur lors de la sauvegarde' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true, backtest: data })
 
   } catch (error) {
-    console.error('Erreur API backtests POST:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
@@ -110,14 +108,12 @@ export async function GET() {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Erreur lors de la récupération des backtests:', error)
       return NextResponse.json({ error: 'Erreur lors de la récupération' }, { status: 500 })
     }
 
     return NextResponse.json({ backtests: backtests || [] })
 
   } catch (error) {
-    console.error('Erreur API backtests GET:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }

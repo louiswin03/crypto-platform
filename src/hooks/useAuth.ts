@@ -28,7 +28,6 @@ export const useAuth = (): UseAuthReturn => {
           setUser(verifiedUser)
         }
       } catch (error) {
-        console.error('Erreur lors du chargement de l\'utilisateur:', error)
       } finally {
         setLoading(false)
       }
@@ -81,7 +80,6 @@ export const useAuth = (): UseAuthReturn => {
       return { success: true }
 
     } catch (error: any) {
-      console.error('Erreur signIn:', error)
       return { error: error.message || 'Erreur de connexion au serveur' }
     } finally {
       setLoading(false)
@@ -116,7 +114,6 @@ export const useAuth = (): UseAuthReturn => {
       return { success: true }
 
     } catch (error: any) {
-      console.error('Erreur signUp:', error)
       return { error: error.message || 'Erreur de connexion au serveur' }
     } finally {
       setLoading(false)
@@ -142,7 +139,6 @@ export const useAuth = (): UseAuthReturn => {
       return { success: true }
 
     } catch (error: any) {
-      console.error('Erreur resetPassword:', error)
       return { error: error.message || 'Erreur de connexion au serveur' }
     }
   }

@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
           }, {} as Record<string, number>)
         }
       } catch (err) {
-        console.error('Erreur récupération prix:', err)
+
       }
     }
 
@@ -159,7 +159,6 @@ export async function GET(request: NextRequest) {
       lastUpdate: new Date().toISOString()
     })
   } catch (error: unknown) {
-    console.error('Erreur récupération balances:', error)
 
     const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(

@@ -82,8 +82,6 @@ export async function POST(request: NextRequest) {
     )
 
   } catch (error: unknown) {
-    console.error('Erreur API login:', error)
-
     const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la connexion'
     return NextResponse.json(
       { error: errorMessage },

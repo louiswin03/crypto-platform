@@ -23,7 +23,7 @@ export const AddToWatchlistButton = ({ crypto, className = "" }: { crypto: any, 
         addToWatchlist(listId, crypto)
       }
     } catch (error) {
-      console.error('Erreur lors de l\'ajout/suppression:', error)
+
     } finally {
       setIsAdding(false)
     }
@@ -339,7 +339,7 @@ const CreateWatchlistModal = ({ onClose }: { onClose: () => void }) => {
       createWatchlist(name.trim(), description.trim(), color, icon)
       onClose()
     } catch (error) {
-      console.error('Erreur lors de la création:', error)
+
     } finally {
       setIsCreating(false)
     }

@@ -82,24 +82,10 @@ export async function POST(request: NextRequest) {
     const sanitizedApiSecret = sanitizeInput(apiSecret, { maxLength: 500 })
 
     // Récupérer l'utilisateur depuis le token JWT
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const userId = await getUserIdFromRequest(request)
+    if (!userId) {
       return NextResponse.json(
         { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
-
-    // Vérifier le token JWT
-    let userId: string
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
-      return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
         { status: 401 }
       )
     }
@@ -144,7 +130,7 @@ export async function POST(request: NextRequest) {
         .eq('id', existingKey.id)
 
       if (updateError) {
-        console.error('Erreur mise à jour clé:', updateError)
+
         return NextResponse.json(
           { error: 'Erreur lors de la mise à jour de la connexion' },
           { status: 500 }
@@ -167,7 +153,7 @@ export async function POST(request: NextRequest) {
         })
 
       if (insertError) {
-        console.error('Erreur insertion clé:', insertError)
+
         return NextResponse.json(
           { error: 'Erreur lors de l\'enregistrement de la connexion' },
           { status: 500 }
@@ -188,7 +174,7 @@ export async function POST(request: NextRequest) {
       }
     })
   } catch (error: any) {
-    console.error('Erreur connexion Binance:', error)
+
     return NextResponse.json(
       { error: error.message || 'Erreur de connexion' },
       { status: 400 }

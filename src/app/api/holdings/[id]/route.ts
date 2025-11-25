@@ -86,7 +86,6 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error('Erreur mise à jour holding:', error)
       return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500 })
     }
 
@@ -96,7 +95,6 @@ export async function PUT(
 
     return NextResponse.json({ holding: data })
   } catch (error) {
-    console.error('Erreur API holding PUT:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -121,13 +119,11 @@ export async function DELETE(
       .eq('user_id', userId) // Sécurité
 
     if (error) {
-      console.error('Erreur suppression holding:', error)
       return NextResponse.json({ error: 'Erreur lors de la suppression' }, { status: 500 })
     }
 
     return NextResponse.json({ message: 'Holding supprimé avec succès' })
   } catch (error) {
-    console.error('Erreur API holding DELETE:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

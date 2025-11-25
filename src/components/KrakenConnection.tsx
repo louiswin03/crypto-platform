@@ -46,7 +46,7 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
         await loadBalance(token)
       }
     } catch (error) {
-      console.error('Erreur vérification connexion:', error)
+
     } finally {
       setIsLoading(false)
     }
@@ -66,7 +66,7 @@ export default function KrakenConnection({ onConnectionChange, onBalanceChange }
         onBalanceChange?.(data.totalValueUsd || 0)
       }
     } catch (error) {
-      console.error('Erreur chargement balance:', error)
+
     }
   }
 

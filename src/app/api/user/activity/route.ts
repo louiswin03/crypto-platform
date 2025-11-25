@@ -110,7 +110,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ activities: sortedActivities })
 
   } catch (error) {
-    console.error('Erreur lors de la récupération de l\'activité:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }

@@ -60,7 +60,6 @@ export default function FearAndGreedIndex() {
         setLoading(false)
         setError(null)
       } catch (err) {
-        console.error('Error fetching Fear & Greed Index:', err)
 
         // Données de fallback
         const fallbackData = {

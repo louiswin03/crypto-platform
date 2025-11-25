@@ -64,7 +64,7 @@ export default function CreateWatchlistModal({
         onClose()
       }
     } catch (error) {
-      console.error('Erreur lors de la création:', error)
+
     } finally {
       setIsSubmitting(false)
     }

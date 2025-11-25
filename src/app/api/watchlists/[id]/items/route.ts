@@ -34,13 +34,11 @@ export async function GET(
       .order('added_at', { ascending: true })
 
     if (error) {
-      console.error('Erreur récupération items:', error)
       return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
     }
 
     return NextResponse.json({ items: data || [] })
   } catch (error) {
-    console.error('Erreur API watchlist items GET:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -116,13 +114,11 @@ export async function POST(
       .single()
 
     if (error) {
-      console.error('Erreur ajout item:', error)
       return NextResponse.json({ error: 'Erreur lors de l\'ajout' }, { status: 500 })
     }
 
     return NextResponse.json({ item: data })
   } catch (error) {
-    console.error('Erreur API watchlist items POST:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

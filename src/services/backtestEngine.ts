@@ -174,7 +174,6 @@ class BacktestEngine {
         totalReturn: metrics.totalReturnPercentage / 100
       }
 
-
       return {
         config: this.config,
         state: this.state,
@@ -188,7 +187,7 @@ class BacktestEngine {
       }
 
     } catch (error) {
-      console.error('❌ Erreur lors du backtest:', error)
+
       return {
         config: this.config,
         state: this.state,
@@ -389,7 +388,6 @@ class BacktestEngine {
 
   private calculateCustomIndicators() {
     if (!this.config.customStrategy) return
-
 
     for (const indicatorConfig of this.config.customStrategy.indicators) {
       switch (indicatorConfig.type) {

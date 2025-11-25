@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer')
 async function createTransporter() {
   // Si les variables d'environnement EMAIL_USER et EMAIL_PASSWORD existent, utiliser Gmail
   if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-    console.log('📧 Utilisation de Gmail pour l\'envoi d\'emails')
+
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -160,7 +160,6 @@ export async function sendPasswordResetEmail(
 
     const info = await transporter.sendMail(mailOptions)
 
-    console.log('Email envoyé:', info.messageId)
     // Pour Ethereal, vous pouvez voir l'email ici :
     console.log('Preview URL:', nodemailer.getTestMessageUrl(info))
 
@@ -170,7 +169,7 @@ export async function sendPasswordResetEmail(
       previewUrl: nodemailer.getTestMessageUrl(info), // Pour les tests
     }
   } catch (error) {
-    console.error('Erreur lors de l\'envoi de l\'email:', error)
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erreur inconnue',

@@ -116,7 +116,6 @@ export class SupabaseDatabaseService {
 
       return user
     } catch (error) {
-      console.error('Erreur createUser:', error)
       throw error
     }
   }
@@ -133,7 +132,6 @@ export class SupabaseDatabaseService {
       if (error && error.code !== 'PGRST116') throw error
       return data || null
     } catch (error) {
-      console.error('Erreur getUserByEmail:', error)
       return null
     }
   }
@@ -150,7 +148,6 @@ export class SupabaseDatabaseService {
       if (error && error.code !== 'PGRST116') throw error
       return data || null
     } catch (error) {
-      console.error('Erreur getUserById:', error)
       return null
     }
   }
@@ -167,7 +164,6 @@ export class SupabaseDatabaseService {
 
       if (error) throw error
     } catch (error) {
-      console.error('Erreur updateUserLastLogin:', error)
       throw error
     }
   }
@@ -183,7 +179,6 @@ export class SupabaseDatabaseService {
       if (error && error.code !== 'PGRST116') throw error
       return data || null
     } catch (error) {
-      console.error('Erreur getUserProfile:', error)
       return null
     }
   }
@@ -203,7 +198,6 @@ export class SupabaseDatabaseService {
       if (error) throw error
       return data
     } catch (error) {
-      console.error('Erreur updateUserProfile:', error)
       throw error
     }
   }
@@ -228,7 +222,6 @@ export class SupabaseDatabaseService {
       if (error) throw error
       return data
     } catch (error) {
-      console.error('Erreur createStrategy:', error)
       throw error
     }
   }
@@ -244,7 +237,6 @@ export class SupabaseDatabaseService {
       if (error) throw error
       return data || []
     } catch (error) {
-      console.error('Erreur getUserStrategies:', error)
       return []
     }
   }
@@ -261,7 +253,6 @@ export class SupabaseDatabaseService {
       if (error && error.code !== 'PGRST116') throw error
       return data || null
     } catch (error) {
-      console.error('Erreur getStrategy:', error)
       return null
     }
   }
@@ -282,7 +273,6 @@ export class SupabaseDatabaseService {
       if (error) throw error
       return data
     } catch (error) {
-      console.error('Erreur updateStrategy:', error)
       throw error
     }
   }
@@ -297,7 +287,6 @@ export class SupabaseDatabaseService {
 
       if (error) throw error
     } catch (error) {
-      console.error('Erreur deleteStrategy:', error)
       throw error
     }
   }
@@ -314,7 +303,6 @@ export class SupabaseDatabaseService {
       if (error) throw error
       return data || []
     } catch (error) {
-      console.error('Erreur getUserBacktests:', error)
       return []
     }
   }

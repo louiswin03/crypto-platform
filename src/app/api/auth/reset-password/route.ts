@@ -54,18 +54,20 @@ export async function POST(request: NextRequest) {
       .limit(1)
 
     if (userError) {
-      console.error('❌ Erreur lors de la recherche de l\'utilisateur:', userError)
+
       return NextResponse.json(
         { error: 'Erreur lors de la recherche de l\'utilisateur' },
         { status: 500 }
       )
     }
 
+    // Si l'utilisateur n'existe pas, retourner quand même un message de succès
+    // pour éviter l'énumération d'utilisateurs
     if (!users || users.length === 0) {
-      return NextResponse.json(
-        { error: 'Aucun compte associé à cette adresse email' },
-        { status: 404 }
-      )
+      return NextResponse.json({
+        success: true,
+        message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
+      })
     }
 
     const user = users[0]
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
       .eq('used', false)
 
     if (deleteError) {
-      console.error('Erreur lors de la suppression des anciens tokens:', deleteError)
+
       // Continuer quand même
     }
 
@@ -98,7 +100,7 @@ export async function POST(request: NextRequest) {
       })
 
     if (insertError) {
-      console.error('❌ Erreur lors de l\'insertion du token:', insertError)
+
       return NextResponse.json(
         { error: 'Erreur lors de la création du token de réinitialisation' },
         { status: 500 }
@@ -114,31 +116,24 @@ export async function POST(request: NextRequest) {
       )
 
       if (!emailResult.success) {
-        console.error('Erreur lors de l\'envoi de l\'email:', emailResult.error)
+
       }
     } catch (emailError: unknown) {
       const errorMessage = emailError instanceof Error ? emailError.message : 'Erreur inconnue'
-      console.error('Exception lors de l\'envoi d\'email:', errorMessage)
+
       // Continuer quand même - le token est créé
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Un email de réinitialisation a été envoyé'
+      message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
     })
 
   } catch (error: unknown) {
-    console.error('Erreur lors de la réinitialisation du mot de passe:', error)
 
     const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue'
     const errorStack = error instanceof Error ? error.stack : undefined
     const errorName = error instanceof Error ? error.name : undefined
-
-    console.error('Détails de l\'erreur:', {
-      message: errorMessage,
-      stack: errorStack,
-      name: errorName
-    })
 
     return NextResponse.json(
       {

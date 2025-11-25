@@ -30,13 +30,11 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: true })
 
     if (error) {
-      console.error('Erreur récupération watchlists:', error)
       return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
     }
 
     return NextResponse.json({ watchlists: data || [] })
   } catch (error) {
-    console.error('Erreur API watchlists GET:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -73,13 +71,11 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
-      console.error('Erreur création watchlist:', error)
       return NextResponse.json({ error: 'Erreur lors de la création' }, { status: 500 })
     }
 
     return NextResponse.json({ watchlist: data })
   } catch (error) {
-    console.error('Erreur API watchlists POST:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

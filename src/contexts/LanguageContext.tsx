@@ -130,12 +130,14 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Common
     'common.free': 'Gratuit',
+    'brand.tagline_full': 'Votre plateforme d\'analyse crypto premium',
+    'brand.tagline_short': 'Analyse, backtest et portfolio crypto',
 
     // Home Page
-    'home.hero.title1': 'Backtestez vos',
-    'home.hero.title2': 'stratégies crypto',
-    'home.hero.subtitle1': 'Plateforme française d\'analyse et de backtesting crypto',
-    'home.hero.subtitle2': 'Testez vos stratégies sur des données historiques réelles et optimisez vos investissements',
+    'home.hero.title1': 'Votre plateforme',
+    'home.hero.title2': 'd\'analyse crypto premium',
+    'home.hero.subtitle1': 'Analysez les marchés, backtestez vos stratégies et suivez votre portfolio crypto.',
+    'home.hero.subtitle2': 'Gratuit et no-code. La plateforme tout-en-un pour optimiser vos investissements cryptomonnaies.',
     'home.hero.trust1': 'Plateforme française',
     'home.hero.trust2': 'Données temps réel',
     'home.hero.trust3': 'Sécurité maximale',
@@ -1035,6 +1037,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Common
     'common.free': 'Free',
+    'brand.tagline_full': 'Your premium crypto analysis platform',
+    'brand.tagline_short': 'Analysis, backtest and crypto portfolio',
 
     // Home Page
     'home.hero.title1': 'Backtest your',
@@ -1211,6 +1215,13 @@ const translations: Record<Language, Record<string, string>> = {
     'backtest.chart.price_indicators': 'Price & Indicators',
     'backtest.chart.zoomed_view': 'Zoomed View',
     'backtest.chart.zoom_desc': 'Detailed view of each signal',
+    'backtest.chart.trade_number': 'Trade',
+    'backtest.chart.candles': 'candles',
+    'backtest.chart.show_all_trades': 'Show all trades',
+    'backtest.chart.hide_trades': 'Hide other trades',
+    'backtest.chart.one_trade': '1 trade',
+    'backtest.chart.all_trades': 'All',
+    'backtest.chart.interactive_mode': 'Interactive Mode',
     'backtest.chart.return_global': 'Return to Global View',
     'backtest.chart.candles_label': 'Candles',
     'backtest.chart.bullish': 'Bullish',
@@ -1218,6 +1229,8 @@ const translations: Record<Language, Record<string, string>> = {
     'backtest.chart.trading_signals': 'Trading Signals',
     'backtest.chart.buy': 'Buy',
     'backtest.chart.sell': 'Sell',
+    'backtest.chart.green_plus': 'Green if +',
+    'backtest.chart.red_minus': 'Red if -',
     'backtest.chart.indicators': 'Indicators',
     'backtest.chart.ema_short': 'EMA {period} (Fast)',
     'backtest.chart.ema_long': 'EMA {period} (Slow)',
@@ -1227,6 +1240,7 @@ const translations: Record<Language, Record<string, string>> = {
     'backtest.chart.upper_band': 'Upper Band',
     'backtest.chart.lower_band': 'Lower Band',
     'backtest.chart.technical_oscillators': 'Technical Oscillators',
+    'backtest.chart.momentum_indicators': 'Momentum & cycle indicators',
     'backtest.chart.show': 'Show',
     'backtest.chart.hide': 'Hide',
     'backtest.chart.rsi': 'RSI (Relative Strength Index)',
@@ -1247,6 +1261,8 @@ const translations: Record<Language, Record<string, string>> = {
     'backtest.chart.trades': 'Trades',
     'backtest.chart.date': 'Date',
     'backtest.chart.price': 'Price',
+    'backtest.chart.buy_label': 'BUY',
+    'backtest.chart.sell_label': 'SELL',
     'backtest.chart.open': 'Open',
     'backtest.chart.high': 'High',
     'backtest.chart.low': 'Low',
@@ -1255,6 +1271,9 @@ const translations: Record<Language, Record<string, string>> = {
     'backtest.chart.data_points': 'data points',
     'backtest.chart.total_capital': 'Total Capital',
     'backtest.chart.initial_capital': 'Initial Capital',
+    'backtest.chart.convergence_divergence': 'Convergence Divergence',
+    'backtest.chart.momentum': 'Momentum',
+    'backtest.chart.volume_indicator': 'Volume Indicator',
 
     // Optimization Advice
     'optimization.title': 'Optimization Advice',

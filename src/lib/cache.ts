@@ -147,7 +147,7 @@ if (typeof window !== 'undefined') {
   setInterval(() => {
     const cleaned = apiCache.cleanup()
     if (cleaned > 0) {
-      console.log(`[Cache] Nettoyé ${cleaned} entrées expirées`)
+
     }
   }, 5 * 60 * 1000)
 }
@@ -156,13 +156,12 @@ if (typeof window !== 'undefined') {
 if (typeof window === 'undefined') {
   // Vider le cache au démarrage du serveur
   apiCache.clear()
-  console.log('[Cache] Cache serveur vidé au démarrage')
 
   // Nettoyer toutes les 2 minutes côté serveur
   setInterval(() => {
     const cleaned = apiCache.cleanup()
     if (cleaned > 0) {
-      console.log(`[Cache Serveur] Nettoyé ${cleaned} entrées expirées`)
+
     }
   }, 2 * 60 * 1000)
 }

@@ -5,24 +5,10 @@ import { getUserIdFromRequest } from '@/lib/jwt'
 export async function POST(request: NextRequest) {
   try {
     // Récupérer l'utilisateur depuis le token JWT
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const userId = await getUserIdFromRequest(request)
+    if (!userId) {
       return NextResponse.json(
         { error: 'Non authentifié' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.substring(7)
-
-    // Vérifier le token JWT
-    let userId: string
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-    } catch (jwtError) {
-      return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
         { status: 401 }
       )
     }
@@ -44,7 +30,7 @@ export async function POST(request: NextRequest) {
       .eq('exchange_name', 'coinbase')
 
     if (deleteError) {
-      console.error('Erreur suppression clé:', deleteError)
+
       return NextResponse.json(
         { error: 'Erreur lors de la déconnexion' },
         { status: 500 }
@@ -56,7 +42,7 @@ export async function POST(request: NextRequest) {
       message: 'Déconnexion réussie. Vos clés ont été supprimées en toute sécurité.'
     })
   } catch (error) {
-    console.error('Erreur déconnexion:', error)
+
     return NextResponse.json(
       { error: 'Erreur lors de la déconnexion' },
       { status: 500 }

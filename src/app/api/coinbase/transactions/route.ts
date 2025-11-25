@@ -30,48 +30,25 @@ function generateCoinbaseJWT(apiKeyName: string, privateKey: string, requestMeth
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('[Coinbase Transactions] Début de la requête')
-
     // Récupérer l'utilisateur depuis le token JWT
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('[Coinbase Transactions] Pas de header Authorization')
+    const userId = await getUserIdFromRequest(request)
+    if (!userId) {
       return NextResponse.json(
         { error: 'Non authentifié' },
         { status: 401 }
       )
     }
 
-    const token = authHeader.substring(7)
-
-    // Vérifier le token JWT
-    let userId: string
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-super-secret-jwt-key') as { userId: string }
-      userId = decoded.userId
-      console.log('[Coinbase Transactions] Token JWT valide pour userId:', userId)
-    } catch (jwtError) {
-      console.error('[Coinbase Transactions] Erreur JWT:', jwtError)
-      return NextResponse.json(
-        { error: 'Token invalide ou expiré' },
-        { status: 401 }
-      )
-    }
-
     // Récupérer l'utilisateur
-    console.log('[Coinbase Transactions] Récupération utilisateur...')
     const user = await SupabaseDatabaseService.getUserById(userId)
     if (!user) {
-      console.log('[Coinbase Transactions] Utilisateur non trouvé')
       return NextResponse.json(
         { error: 'Utilisateur non trouvé' },
         { status: 401 }
       )
     }
-    console.log('[Coinbase Transactions] Utilisateur trouvé:', user.id)
 
     // Récupérer les clés Coinbase chiffrées de l'utilisateur
-    console.log('[Coinbase Transactions] Récupération clés API...')
     const { data: exchangeKey, error } = await supabase
       .from('exchange_keys')
       .select('api_key_encrypted, api_secret_encrypted')
@@ -81,19 +58,15 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (error || !exchangeKey) {
-      console.error('[Coinbase Transactions] Clés non trouvées:', error)
       return NextResponse.json(
         { error: 'Compte Coinbase non connecté' },
         { status: 404 }
       )
     }
-    console.log('[Coinbase Transactions] Clés trouvées')
 
     // Déchiffrer les clés
-    console.log('[Coinbase Transactions] Déchiffrement des clés...')
     const apiKeyName = decrypt(exchangeKey.api_key_encrypted)
     const privateKey = decrypt(exchangeKey.api_secret_encrypted)
-    console.log('[Coinbase Transactions] Clés déchiffrées, appel API Coinbase...')
 
     // Paramètres optionnels
     const { searchParams } = new URL(request.url)
@@ -118,14 +91,11 @@ export async function GET(request: NextRequest) {
         if (contentType && contentType.includes('application/json')) {
           const errorData = await accountsResponse.json()
           errorMessage = errorData.errors?.[0]?.message || errorData.message || `Status ${accountsResponse.status}`
-          console.error('Erreur Coinbase accounts:', errorData)
         } else {
           const errorText = await accountsResponse.text()
           errorMessage = errorText || `Status ${accountsResponse.status}`
-          console.error('Erreur Coinbase accounts (texte):', errorText)
         }
       } catch (e) {
-        console.error('Erreur lecture réponse Coinbase:', e)
         errorMessage = `Status ${accountsResponse.status}`
       }
 
@@ -137,8 +107,6 @@ export async function GET(request: NextRequest) {
 
     const accountsData = await accountsResponse.json()
     const accounts = accountsData.accounts || []
-
-    console.log(`[Coinbase Transactions] ${accounts.length} comptes trouvés`)
 
     const allTransactions: any[] = []
 
@@ -163,8 +131,6 @@ export async function GET(request: NextRequest) {
           const txData = await txResponse.json()
           const transactions = txData.transactions || []
 
-          console.log(`[Coinbase Transactions] ${transactions.length} transactions pour compte ${account.name}`)
-
           // Transformer les transactions au format unifié
           const formattedTransactions = transactions.map((tx: any) => ({
             id: `coinbase-${tx.id}`,
@@ -186,21 +152,16 @@ export async function GET(request: NextRequest) {
 
           allTransactions.push(...formattedTransactions)
         } else {
-          console.error(`[Coinbase Transactions] Erreur ${txResponse.status} pour compte ${account.name}`)
         }
 
         // Petit délai pour éviter le rate limit
         await new Promise(resolve => setTimeout(resolve, 300))
       } catch (err) {
-        console.error(`[Coinbase Transactions] Erreur récupération transactions compte ${account.uuid}:`, err)
       }
     }
 
     // Trier par date décroissante
     allTransactions.sort((a, b) => b.timestamp - a.timestamp)
-
-    console.log(`[Coinbase Transactions] Total: ${allTransactions.length} transactions`)
-
     // Normaliser les types Coinbase v3 vers notre format standard
     allTransactions.forEach(tx => {
       const type = tx.type?.toLowerCase() || 'unknown'
@@ -237,8 +198,6 @@ export async function GET(request: NextRequest) {
       lastUpdate: new Date().toISOString()
     })
   } catch (error: any) {
-    console.error('[Coinbase Transactions] ERREUR FATALE:', error)
-    console.error('[Coinbase Transactions] Stack trace:', error?.stack)
     return NextResponse.json(
       { error: error?.message || error?.toString() || 'Erreur serveur inconnue' },
       { status: 500 }

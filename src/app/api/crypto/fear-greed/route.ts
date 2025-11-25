@@ -61,7 +61,6 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error: any) {
-    console.error('[API] Error fetching Fear & Greed Index:', error)
 
     if (error.name === 'AbortError') {
       return NextResponse.json(

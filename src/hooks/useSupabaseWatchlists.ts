@@ -35,7 +35,6 @@ export const useSupabaseWatchlists = () => {
         await initializeDefaultWatchlists()
       }
     } catch (err) {
-      console.error('Erreur lors du chargement des watchlists:', err)
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
     } finally {
       setLoading(false)
@@ -51,7 +50,6 @@ export const useSupabaseWatchlists = () => {
       // Recharger après création
       await loadWatchlists()
     } catch (err) {
-      console.error('Erreur lors de l\'initialisation:', err)
       setError('Erreur lors de l\'initialisation des listes')
     }
   }
@@ -95,7 +93,6 @@ export const useSupabaseWatchlists = () => {
 
       return newWatchlist.id
     } catch (err) {
-      console.error('Erreur lors de la création:', err)
       setError(err instanceof Error ? err.message : 'Erreur lors de la création')
       return null
     }
@@ -128,7 +125,6 @@ export const useSupabaseWatchlists = () => {
 
       return true
     } catch (err) {
-      console.error('Erreur lors de la suppression:', err)
       setError(err instanceof Error ? err.message : 'Erreur lors de la suppression')
       return false
     }
@@ -152,7 +148,6 @@ export const useSupabaseWatchlists = () => {
 
       return true
     } catch (err) {
-      console.error('Erreur lors de la mise à jour:', err)
       setError(err instanceof Error ? err.message : 'Erreur lors de la mise à jour')
       return false
     }
@@ -210,7 +205,6 @@ export const useSupabaseWatchlists = () => {
 
       return true
     } catch (err) {
-      console.error('Erreur lors de l\'ajout:', err)
       setError(err instanceof Error ? err.message : 'Erreur lors de l\'ajout')
       return false
     }
@@ -231,7 +225,6 @@ export const useSupabaseWatchlists = () => {
 
       return true
     } catch (err) {
-      console.error('Erreur lors de la suppression:', err)
       setError(err instanceof Error ? err.message : 'Erreur lors de la suppression')
       return false
     }
@@ -259,7 +252,6 @@ export const useSupabaseWatchlists = () => {
 
       return true
     } catch (err) {
-      console.error('Erreur lors de la mise à jour des notes:', err)
       setError(err instanceof Error ? err.message : 'Erreur lors de la mise à jour')
       return false
     }

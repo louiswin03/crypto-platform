@@ -46,7 +46,6 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error('Erreur mise à jour watchlist:', error)
       return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500 })
     }
 
@@ -56,7 +55,6 @@ export async function PUT(
 
     return NextResponse.json({ watchlist: data })
   } catch (error) {
-    console.error('Erreur API watchlists PUT:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -89,13 +87,11 @@ export async function DELETE(
       .eq('user_id', userId) // Sécurité : s'assurer que c'est bien la watchlist de l'utilisateur
 
     if (error) {
-      console.error('Erreur suppression watchlist:', error)
       return NextResponse.json({ error: 'Erreur lors de la suppression' }, { status: 500 })
     }
 
     return NextResponse.json({ message: 'Watchlist supprimée avec succès' })
   } catch (error) {
-    console.error('Erreur API watchlists DELETE:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

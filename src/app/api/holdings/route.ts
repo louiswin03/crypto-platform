@@ -40,13 +40,11 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query.order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Erreur récupération holdings:', error)
       return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
     }
 
     return NextResponse.json({ holdings: data || [] })
   } catch (error) {
-    console.error('Erreur API holdings GET:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
@@ -98,13 +96,11 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
-      console.error('Erreur création holding:', error)
       return NextResponse.json({ error: 'Erreur lors de la création' }, { status: 500 })
     }
 
     return NextResponse.json({ holding: data })
   } catch (error) {
-    console.error('Erreur API holdings POST:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }

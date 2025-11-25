@@ -107,7 +107,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
             allHoldings.push(...manualHoldings)
           }
         } catch (err) {
-          console.error('Erreur chargement holdings manuels:', err)
+
         }
       }
 
@@ -139,7 +139,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
             allHoldings.push(...binanceHoldings)
           }
         } catch (err) {
-          console.error('Erreur chargement balances Binance:', err)
+
         }
       }
 
@@ -171,7 +171,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
             allHoldings.push(...coinbaseHoldings)
           }
         } catch (err) {
-          console.error('Erreur chargement balances Coinbase:', err)
+
         }
       }
 
@@ -203,7 +203,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
             allHoldings.push(...krakenHoldings)
           }
         } catch (err) {
-          console.error('Erreur chargement balances Kraken:', err)
+
         }
       }
 
@@ -259,7 +259,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
 
       setHoldings(mergedHoldings.sort((a, b) => b.totalValue - a.totalValue))
     } catch (err) {
-      console.error('Erreur chargement holdings consolidés:', err)
+
       setError('Erreur lors du chargement des données')
     } finally {
       setLoading(false)

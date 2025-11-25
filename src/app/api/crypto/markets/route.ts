@@ -96,7 +96,6 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error: any) {
-    console.error('[API] Error fetching market data:', error)
 
     if (error.name === 'AbortError') {
       return NextResponse.json(

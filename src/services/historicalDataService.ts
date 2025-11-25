@@ -112,7 +112,6 @@ function formatDate(timestamp: number): string {
   return new Date(timestamp).toISOString().split('T')[0]
 }
 
-
 // Fonction principale pour récupérer les données historiques
 export async function fetchHistoricalPrices(
   crypto: SupportedCrypto,
@@ -130,7 +129,6 @@ export async function fetchHistoricalPrices(
     return cached
   }
 
-
   try {
     // Binance en premier, Yahoo Finance en fallback
     let response
@@ -142,7 +140,6 @@ export async function fetchHistoricalPrices(
       const binanceSymbol = crypto === 'BTC' ? 'BTCUSDT' : 'ETHUSDT'
       const days = periodToDays(period)
       const numDays = days
-
 
       // Si on demande plus de 1000 jours, on fait plusieurs requêtes
       if (numDays > 1000) {
@@ -157,7 +154,6 @@ export async function fetchHistoricalPrices(
           const actualLimit = Math.min(batchSize, remainingDays)
           const endTime = now - (batch * batchSize * 24 * 60 * 60 * 1000)
           const url = `https://api.binance.com/api/v3/klines?symbol=${binanceSymbol}&interval=1d&limit=${actualLimit}&endTime=${endTime}`
-
 
           try {
             const batchResponse = await fetch(url, {
@@ -195,7 +191,6 @@ export async function fetchHistoricalPrices(
             index === self.findIndex(p => p.timestamp === price.timestamp)
           )
           prices = uniquePrices.sort((a, b) => a.timestamp - b.timestamp)
-
 
           const result: HistoricalDataResponse = {
             symbol: cryptoConfig.symbol,
@@ -335,7 +330,6 @@ export async function fetchHistoricalPrices(
     }
 
   } catch (error) {
-    console.error(`❌ Erreur lors de la récupération des données pour ${crypto}:`, error)
 
     // Si on a des données en cache (même expirées), on les retourne plutôt que de fail
     const expiredCache = cache.get(cryptoConfig.coinGeckoId, period)
@@ -373,14 +367,13 @@ export async function fetchMultipleHistoricalPrices(
     })
 
     if (errors.length > 0) {
-      console.warn('⚠️ Certaines cryptos ont échoué:', errors)
-    }
 
+    }
 
     return successResults as Record<SupportedCrypto, HistoricalDataResponse>
 
   } catch (error) {
-    console.error('❌ Erreur lors de la récupération multiple:', error)
+
     throw error
   }
 }

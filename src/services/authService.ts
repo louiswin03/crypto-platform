@@ -23,7 +23,6 @@ export class AuthService {
       user.lastLogin = new Date(user.lastLogin)
       return user
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'utilisateur:', error)
       return null
     }
   }
@@ -40,7 +39,6 @@ export class AuthService {
         lastLogin: new Date(user.lastLogin)
       }))
     } catch (error) {
-      console.error('Erreur lors de la récupération des utilisateurs:', error)
       return []
     }
   }

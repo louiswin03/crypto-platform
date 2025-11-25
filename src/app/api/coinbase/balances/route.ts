@@ -150,7 +150,7 @@ export async function GET(request: NextRequest) {
                 valueUsd = amount // Fallback
               }
             } catch (err) {
-              console.error(`Erreur prix pour ${currency}:`, err)
+
               valueUsd = amount // Fallback
             }
           }
@@ -181,7 +181,6 @@ export async function GET(request: NextRequest) {
       lastUpdate: new Date().toISOString()
     })
   } catch (error: unknown) {
-    console.error('Erreur récupération balances:', error)
 
     const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(

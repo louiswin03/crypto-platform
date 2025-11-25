@@ -34,7 +34,6 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: true })
 
     if (error) {
-      console.error('Erreur récupération portfolios:', error)
       return NextResponse.json(
         { error: 'Erreur lors de la récupération des portfolios' },
         { status: 500 }
@@ -56,7 +55,6 @@ export async function GET(request: NextRequest) {
         .single()
 
       if (createError) {
-        console.error('Erreur création portfolio par défaut:', createError)
         return NextResponse.json({ portfolios: [] })
       }
 
@@ -65,8 +63,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ portfolios })
   } catch (error: unknown) {
-    console.error('Erreur API portfolios:', error)
-
     const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
       { error: errorMessage },
@@ -132,7 +128,6 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (error) {
-      console.error('Erreur création portfolio:', error)
       return NextResponse.json(
         { error: 'Erreur lors de la création du portfolio' },
         { status: 500 }
@@ -141,8 +136,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ portfolio }, { status: 201 })
   } catch (error: unknown) {
-    console.error('Erreur API création portfolio:', error)
-
     const errorMessage = error instanceof Error ? error.message : 'Erreur serveur'
     return NextResponse.json(
       { error: errorMessage },
