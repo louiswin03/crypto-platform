@@ -904,7 +904,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 </select>
               </div>
 
-              {/* Capital initial */}
+              {/* Capital initial (caché pour DCA) */}
+              {config.strategy !== 'dca' && (
               <div>
                 <label className={`block text-sm font-semibold mb-3 ${
                   isDarkMode ? 'text-[#E5E7EB]' : 'text-gray-700'
@@ -924,8 +925,10 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   step="1000"
                 />
               </div>
+              )}
 
-              {/* Taille de position */}
+              {/* Taille de position (cachée pour DCA) */}
+              {config.strategy !== 'dca' && (
               <div>
                 <label className={`block text-sm font-semibold mb-3 ${
                   isDarkMode ? 'text-[#E5E7EB]' : 'text-gray-700'
@@ -945,6 +948,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   max="100"
                 />
               </div>
+              )}
             </div>
           </div>
 
@@ -983,17 +987,23 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
 
             {/* Stratégies Recommandées */}
             {activeTab === 'recommended' && (
-              <div className="space-y-4">
-                {recommendedStrategies.map(strategy => (
-                  <div
-                    key={strategy.id}
-                    className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${
-                      config.strategy === strategy.id
-                        ? 'border-[#00FF88]/50 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#00FF88]/10'
-                        : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
-                    }`}
-                    onClick={() => setConfig(prev => ({ ...prev, strategy: strategy.id }))}
-                  >
+              <div className="space-y-6">
+                {/* Section Investissement */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <span>💰</span>
+                    <span>Stratégies d'Investissement</span>
+                  </h3>
+                  {recommendedStrategies.filter(s => s.id === 'dca').map(strategy => (
+                    <div
+                      key={strategy.id}
+                      className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${
+                        config.strategy === strategy.id
+                          ? 'border-[#00FF88]/50 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#00FF88]/10'
+                          : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
+                      }`}
+                      onClick={() => setConfig(prev => ({ ...prev, strategy: strategy.id }))}
+                    >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
@@ -1004,9 +1014,6 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                             'bg-[#DC2626]/20 text-[#DC2626]'
                           }`}>
                             {strategy.difficulty}
-                          </span>
-                          <span className="px-2 py-1 bg-[#00FF88]/20 text-[#00FF88] rounded-full text-xs font-medium">
-                            {strategy.winRate}
                           </span>
                         </div>
                         <p className="text-gray-400 text-sm mb-2">{strategy.description}</p>
@@ -1031,6 +1038,60 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   </div>
                 ))}
               </div>
+
+              {/* Section Trading */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <span>📈</span>
+                  <span>Stratégies de Trading</span>
+                </h3>
+                <div className="space-y-3">
+                  {recommendedStrategies.filter(s => s.id !== 'dca').map(strategy => (
+                    <div
+                      key={strategy.id}
+                      className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${
+                        config.strategy === strategy.id
+                          ? 'border-[#00FF88]/50 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#00FF88]/10'
+                          : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
+                      }`}
+                      onClick={() => setConfig(prev => ({ ...prev, strategy: strategy.id }))}
+                    >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-semibold text-[#F9FAFB]">{strategy.name}</h4>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            strategy.difficulty === t('difficulty.beginner') ? 'bg-[#00FF88]/20 text-[#00FF88]' :
+                            strategy.difficulty === t('difficulty.intermediate') ? 'bg-[#FFA366]/20 text-[#FFA366]' :
+                            'bg-[#DC2626]/20 text-[#DC2626]'
+                          }`}>
+                            {strategy.difficulty}
+                          </span>
+                        </div>
+                        <p className="text-gray-400 text-sm mb-2">{strategy.description}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-[#00FF88] font-medium">{strategy.type}</span>
+                          <span className="text-xs text-gray-500">•</span>
+                          <span className="text-xs text-gray-400">
+                            {t('modal.load.indicators')} {strategy.indicators.join(', ')}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        config.strategy === strategy.id
+                          ? 'border-[#00FF88] bg-[#00FF88]'
+                          : 'border-gray-600'
+                      }`}>
+                        {config.strategy === strategy.id && (
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              </div>
+            </div>
             )}
 
             {/* Stratégie Personnalisée */}
@@ -1432,7 +1493,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
             </div>
           )}
 
-          {/* Gestion des risques */}
+          {/* Gestion des risques (cachée pour DCA) */}
+          {config.strategy !== 'dca' && (
           <div className="glass-effect rounded-2xl p-6 border border-gray-700/50">
             <h3 className="text-xl font-bold text-[#F9FAFB] mb-6 flex items-center gap-2">
               <Target className="w-5 h-5 text-[#DC2626]" />
@@ -1474,6 +1536,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
               </div>
             </div>
           </div>
+          )}
         </div>
 
         {/* Résumé et lancement */}
@@ -1504,22 +1567,26 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                     : (selectedStrategy?.name || '⚠️ Aucune sélectionnée')}
                 </span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">{t('backtest.config.capital')}</span>
-                <span className="text-[#F9FAFB] font-medium">${config.initialCapital.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">{t('backtest.config.position')}</span>
-                <span className="text-[#F9FAFB] font-medium">{config.positionSize}%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Stop Loss:</span>
-                <span className="text-[#DC2626] font-medium">{config.riskManagement.stopLoss}%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Take Profit:</span>
-                <span className="text-[#00FF88] font-medium">{config.riskManagement.takeProfit}%</span>
-              </div>
+              {config.strategy !== 'dca' && (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">{t('backtest.config.capital')}</span>
+                    <span className="text-[#F9FAFB] font-medium">${config.initialCapital.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">{t('backtest.config.position')}</span>
+                    <span className="text-[#F9FAFB] font-medium">{config.positionSize}%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Stop Loss:</span>
+                    <span className="text-[#DC2626] font-medium">{config.riskManagement.stopLoss}%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Take Profit:</span>
+                    <span className="text-[#00FF88] font-medium">{config.riskManagement.takeProfit}%</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

@@ -302,6 +302,8 @@ export default function BacktestPage() {
       setBacktestResults(results)
       setLastUsedConfig(config) // Sauvegarder la config utilisée
       setCurrentTab('results')
+      // Scroll vers le haut de la page pour voir les résultats
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
       console.error('❌ Erreur lors du backtest:', error)
     } finally {
@@ -515,6 +517,20 @@ export default function BacktestPage() {
                   const winningTrades = tradePairs.filter(pair => pair.pnl > 0).length
                   const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0
 
+                  // Calculs spécifiques pour DCA
+                  const isDCA = backtestResults.config.strategy === 'dca'
+                  const buyTrades = backtestResults.state.trades.filter(t => t.type === 'BUY')
+                  const totalBuys = buyTrades.length
+                  const totalInvested = buyTrades.reduce((sum, t) => sum + (t.price * t.quantity), 0)
+                  const totalQuantity = buyTrades.reduce((sum, t) => sum + t.quantity, 0)
+                  const averageBuyPrice = totalQuantity > 0 ? totalInvested / totalQuantity : 0
+
+                  // Pour DCA: valeur portefeuille = crypto holdings * prix actuel (pas de cash)
+                  const currentPrice = backtestResults.priceData[backtestResults.priceData.length - 1]?.close || 0
+                  const cryptoValue = totalQuantity * currentPrice
+                  const portfolioValue = cryptoValue
+                  const dcaPerformance = totalInvested > 0 ? ((portfolioValue - totalInvested) / totalInvested) * 100 : 0
+
                   return (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                       {/* ROI Total */}
@@ -525,11 +541,11 @@ export default function BacktestPage() {
                       }`}>
                         <div className="flex items-center justify-between mb-4">
                           <div className={`p-2.5 rounded-xl ${
-                            backtestResults.metrics.totalReturnPercentage >= 0
+                            (isDCA ? dcaPerformance : backtestResults.metrics.totalReturnPercentage) >= 0
                               ? 'bg-[#00FF88]/10'
                               : 'bg-[#DC2626]/10'
                           }`}>
-                            {backtestResults.metrics.totalReturnPercentage >= 0 ? (
+                            {(isDCA ? dcaPerformance : backtestResults.metrics.totalReturnPercentage) >= 0 ? (
                               <TrendingUp className="w-5 h-5 text-[#00FF88]" />
                             ) : (
                               <TrendingDown className="w-5 h-5 text-[#DC2626]" />
@@ -539,20 +555,20 @@ export default function BacktestPage() {
                         <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${
                           isDarkMode ? 'text-gray-400' : 'text-gray-500'
                         }`}>
-                          {t('backtest.metrics.total_roi')}
+                          {isDCA ? 'Performance' : t('backtest.metrics.total_roi')}
                         </div>
                         <div className={`text-3xl font-bold mb-1 ${
-                          backtestResults.metrics.totalReturnPercentage >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                          (isDCA ? dcaPerformance : backtestResults.metrics.totalReturnPercentage) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
                         }`}>
-                          {backtestResults.metrics.totalReturnPercentage >= 0 ? '+' : ''}
-                          {backtestResults.metrics.totalReturnPercentage.toFixed(2)}%
+                          {(isDCA ? dcaPerformance : backtestResults.metrics.totalReturnPercentage) >= 0 ? '+' : ''}
+                          {(isDCA ? dcaPerformance : backtestResults.metrics.totalReturnPercentage).toFixed(2)}%
                         </div>
                         <div className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                          ${backtestResults.metrics.totalReturn.toFixed(2)}
+                          {isDCA ? `$${(portfolioValue - totalInvested).toFixed(2)}` : `$${backtestResults.metrics.totalReturn.toFixed(2)}`}
                         </div>
                       </div>
 
-                      {/* Win Rate */}
+                      {/* Win Rate (Trading) ou Nombre d'Achats (DCA) */}
                       <div className={`group rounded-2xl p-6 border transition-all duration-300 hover:shadow-lg ${
                         isDarkMode
                           ? 'glass-effect border-gray-700/50 hover:border-[#8B5CF6]/30'
@@ -566,15 +582,15 @@ export default function BacktestPage() {
                         <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${
                           isDarkMode ? 'text-gray-400' : 'text-gray-500'
                         }`}>
-                          {t('backtest.metrics.win_rate')}
+                          {isDCA ? "Nombre d'Achats" : t('backtest.metrics.win_rate')}
                         </div>
                         <div className={`text-3xl font-bold mb-1 ${
                           isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                         }`}>
-                          {winRate.toFixed(1)}%
+                          {isDCA ? totalBuys : `${winRate.toFixed(1)}%`}
                         </div>
                         <div className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                          {winningTrades}/{totalTrades} {t('backtest.metrics.trades')}
+                          {isDCA ? `$${averageBuyPrice.toFixed(2)} coût moyen BTC` : `${winningTrades}/${totalTrades} ${t('backtest.metrics.trades')}`}
                         </div>
                       </div>
 
@@ -698,50 +714,131 @@ export default function BacktestPage() {
                     <h3 className={`text-lg sm:text-xl font-bold mb-3 sm:mb-4 ${
                       isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'
                     }`}>
-                      {t('backtest.stats.title')}
+                      {backtestResults.config.strategy === 'dca' ? "Statistiques d'Investissement" : t('backtest.stats.title')}
                     </h3>
                     <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
-                      <div className="flex justify-between">
-                        <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
-                          {t('backtest.stats.num_trades')}
-                        </span>
-                        <span className={isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}>
-                          {groupTradesIntoPairs(backtestResults.state.trades).length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
-                          {t('backtest.stats.profit_factor')}
-                        </span>
-                        <span className={isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}>
-                          {backtestResults.metrics.profitFactor.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
-                          {t('backtest.stats.avg_win')}
-                        </span>
-                        <span className="text-[#00FF88]">+${backtestResults.metrics.averageWin.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
-                          {t('backtest.stats.avg_loss')}
-                        </span>
-                        <span className="text-[#DC2626]">-${backtestResults.metrics.averageLoss.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
-                          {t('backtest.stats.total_fees')}
-                        </span>
-                        <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                          ${backtestResults.metrics.totalFees.toFixed(2)}
-                        </span>
-                      </div>
+                      {backtestResults.config.strategy === 'dca' ? (
+                        <>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              Nombre d'achats
+                            </span>
+                            <span className={isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}>
+                              {backtestResults.state.trades.filter(t => t.type === 'BUY').length}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              Montant investi
+                            </span>
+                            <span className={isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}>
+                              ${backtestResults.state.trades.filter(t => t.type === 'BUY').reduce((sum, t) => sum + (t.price * t.quantity), 0).toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              Coût moyen BTC
+                            </span>
+                            <span className="text-[#00D9FF]">
+                              ${(() => {
+                                const buys = backtestResults.state.trades.filter(t => t.type === 'BUY')
+                                const totalInvested = buys.reduce((sum, t) => sum + (t.price * t.quantity), 0)
+                                const totalQty = buys.reduce((sum, t) => sum + t.quantity, 0)
+                                return totalQty > 0 ? (totalInvested / totalQty).toFixed(2) : '0.00'
+                              })()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              Quantité de BTC
+                            </span>
+                            <span className="text-[#8B5CF6]">
+                              {(() => {
+                                const buys = backtestResults.state.trades.filter(t => t.type === 'BUY')
+                                const totalQty = buys.reduce((sum, t) => sum + t.quantity, 0)
+                                return totalQty.toFixed(8)
+                              })()} BTC
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              {t('backtest.stats.total_fees')}
+                            </span>
+                            <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                              ${backtestResults.metrics.totalFees.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              Valeur actuelle
+                            </span>
+                            <span className={`font-bold ${
+                              (() => {
+                                const buys = backtestResults.state.trades.filter(t => t.type === 'BUY')
+                                const totalInvested = buys.reduce((sum, t) => sum + (t.price * t.quantity), 0)
+                                const totalQty = buys.reduce((sum, t) => sum + t.quantity, 0)
+                                const currentPrice = backtestResults.priceData[backtestResults.priceData.length - 1]?.close || 0
+                                const cryptoValue = totalQty * currentPrice
+                                return cryptoValue >= totalInvested
+                              })()
+                                ? 'text-[#00FF88]'
+                                : 'text-[#DC2626]'
+                            }`}>
+                              ${(() => {
+                                const buys = backtestResults.state.trades.filter(t => t.type === 'BUY')
+                                const totalQty = buys.reduce((sum, t) => sum + t.quantity, 0)
+                                const currentPrice = backtestResults.priceData[backtestResults.priceData.length - 1]?.close || 0
+                                return (totalQty * currentPrice).toFixed(2)
+                              })()}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              {t('backtest.stats.num_trades')}
+                            </span>
+                            <span className={isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}>
+                              {groupTradesIntoPairs(backtestResults.state.trades).length}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              {t('backtest.stats.profit_factor')}
+                            </span>
+                            <span className={isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}>
+                              {backtestResults.metrics.profitFactor.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              {t('backtest.stats.avg_win')}
+                            </span>
+                            <span className="text-[#00FF88]">+${backtestResults.metrics.averageWin.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              {t('backtest.stats.avg_loss')}
+                            </span>
+                            <span className="text-[#DC2626]">-${backtestResults.metrics.averageLoss.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+                              {t('backtest.stats.total_fees')}
+                            </span>
+                            <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                              ${backtestResults.metrics.totalFees.toFixed(2)}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Liste de tous les trades */}
+                {/* Liste de tous les trades (cachée pour DCA) */}
+                {backtestResults.config.strategy !== 'dca' && (
                 <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 border ${
                   isDarkMode ? 'glass-effect border-gray-700/50' : 'bg-white/95 border-gray-200'
                 }`}>
@@ -834,11 +931,14 @@ export default function BacktestPage() {
                     )
                   })()}
                 </div>
+                )}
 
-                {/* Conseils d'Optimisation */}
+                {/* Conseils d'Optimisation (cachés pour DCA) */}
+                {backtestResults.config.strategy !== 'dca' && (
                 <div className="mb-8">
                   <OptimizationAdviceComponent advice={analyzeBacktest(backtestResults, t)} />
                 </div>
+                )}
 
                 {/* Boutons d'action */}
                 <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">

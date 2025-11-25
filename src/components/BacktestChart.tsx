@@ -902,7 +902,8 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         </div>
       </div>
 
-      {/* Panneau de contrôles du Replay - TOUJOURS VISIBLE */}
+      {/* Panneau de contrôles du Replay (caché pour DCA) */}
+      {backtestData.config.strategy !== 'dca' && (
       <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
         <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
           <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
@@ -1004,8 +1005,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           </div>
         )}
       </div>
+      )}
 
-      {/* Graphique principal */}
+      {/* Graphique principal (caché pour DCA) */}
+      {backtestData.config.strategy !== 'dca' && (
       <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
         <div className="border-b border-white/10 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
@@ -1073,9 +1076,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           </div>
         </div>
       </div>
+      )}
 
-      {/* Sous-graphiques pour oscillateurs - Afficher seulement s'il y en a */}
-      {(currentBacktestData.indicators?.rsi || currentBacktestData.indicators?.macd || currentBacktestData.indicators?.stochastic || currentBacktestData.indicators?.williamsR || currentBacktestData.indicators?.obv) && (
+      {/* Sous-graphiques pour oscillateurs - Afficher seulement s'il y en a (caché pour DCA) */}
+      {backtestData.config.strategy !== 'dca' && (currentBacktestData.indicators?.rsi || currentBacktestData.indicators?.macd || currentBacktestData.indicators?.stochastic || currentBacktestData.indicators?.williamsR || currentBacktestData.indicators?.obv) && (
         <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <h3 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">{t('backtest.chart.technical_oscillators')}</h3>
@@ -1093,8 +1097,8 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         </div>
       )}
 
-      {/* Résumé des performances - Pleine largeur */}
-      {backtestData.state.summary && (
+      {/* Résumé des performances - Pleine largeur (caché pour DCA) */}
+      {backtestData.config.strategy !== 'dca' && backtestData.state.summary && (
         <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl mt-4 sm:mt-6">
           <div className="border-b border-gray-700/30 px-4 sm:px-6 py-3">
             <h3 className="text-base sm:text-lg font-semibold text-[#F9FAFB]">{t('backtest.chart.performance_summary')}</h3>
