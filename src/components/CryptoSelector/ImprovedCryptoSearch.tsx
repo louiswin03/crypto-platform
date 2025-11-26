@@ -21,6 +21,8 @@ interface ImprovedCryptoSearchProps {
   onCryptoSelect: (symbol: string) => void
   searchCoins?: (query: string) => Promise<any[]>
   isSearching?: boolean
+  hideFilters?: boolean
+  hideRecentSearches?: boolean
 }
 
 type SortOption = 'rank' | 'price' | 'change24h' | 'name'
@@ -31,7 +33,9 @@ export default function ImprovedCryptoSearch({
   selectedCrypto,
   onCryptoSelect,
   searchCoins,
-  isSearching: externalIsSearching
+  isSearching: externalIsSearching,
+  hideFilters = false,
+  hideRecentSearches = false
 }: ImprovedCryptoSearchProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [showAll, setShowAll] = useState(false)
@@ -202,15 +206,17 @@ export default function ImprovedCryptoSearch({
             className="block w-full pl-12 pr-16 py-4 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88]/50 focus:ring-2 focus:ring-[#00FF88]/20 focus:outline-none transition-all text-lg"
           />
           <div className="absolute inset-y-0 right-0 pr-4 flex items-center space-x-2">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`p-2 rounded-lg transition-colors ${
-                showFilters ? 'text-[#00FF88] bg-[#00FF88]/10' : 'text-gray-400 hover:text-white'
-              }`}
-              title="Filtres avancés"
-            >
-              <Filter className="w-4 h-4" />
-            </button>
+            {!hideFilters && (
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`p-2 rounded-lg transition-colors ${
+                  showFilters ? 'text-[#00FF88] bg-[#00FF88]/10' : 'text-gray-400 hover:text-white'
+                }`}
+                title="Filtres avancés"
+              >
+                <Filter className="w-4 h-4" />
+              </button>
+            )}
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
@@ -226,7 +232,7 @@ export default function ImprovedCryptoSearch({
         </div>
 
         {/* Recherches récentes */}
-        {!searchTerm && recentSearches.length > 0 && (
+        {!hideRecentSearches && !searchTerm && recentSearches.length > 0 && (
           <div className="flex items-center space-x-2">
             <Clock className="w-4 h-4 text-gray-400" />
             <span className="text-sm text-gray-400">Récent:</span>
@@ -245,7 +251,7 @@ export default function ImprovedCryptoSearch({
         )}
 
         {/* Filtres avancés */}
-        {showFilters && (
+        {!hideFilters && showFilters && (
           <div className="bg-gray-800/30 border border-gray-700/50 rounded-xl p-4 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Filtres par catégorie */}
@@ -311,17 +317,9 @@ export default function ImprovedCryptoSearch({
             {searchTerm ? (
               `${filteredOptions.length} résultat${filteredOptions.length > 1 ? 's' : ''} trouvé${filteredOptions.length > 1 ? 's' : ''}`
             ) : (
-              showAll ? 'Toutes les cryptomonnaies' : 'Cryptomonnaies populaires'
+              'Cryptomonnaies populaires'
             )}
           </div>
-          {!searchTerm && (
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="text-[#00FF88] hover:text-[#8B5CF6] transition-colors text-sm font-medium"
-            >
-              {showAll ? 'Voir moins' : `Voir toutes (${cryptoOptions.length})`}
-            </button>
-          )}
         </div>
 
         {isLoadingExternal ? (
@@ -413,14 +411,6 @@ export default function ImprovedCryptoSearch({
         )}
       </div>
 
-      {/* Message d'encouragement si pas de recherche */}
-      {!searchTerm && !showAll && (
-        <div className="text-center py-4">
-          <div className="text-gray-400 text-sm">
-            💡 <strong>{cryptoOptions.length - topCryptos.length}</strong> autres cryptomonnaies disponibles
-          </div>
-        </div>
-      )}
     </div>
   )
 }

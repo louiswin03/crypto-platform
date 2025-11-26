@@ -1145,10 +1145,10 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
         <div className="border-b border-white/10 px-4 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-white/[0.02] to-white/[0.05]">
           <div className="flex items-center justify-between">
             <h3 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent">
-              {t('backtest.chart.equity_curve')}
+              {backtestData.config.strategy === 'dca' ? 'Valeur du Portefeuille' : t('backtest.chart.equity_curve')}
             </h3>
             <div className="text-xs sm:text-sm text-gray-400 hidden sm:block">
-              {t('backtest.chart.capital_evolution')}
+              {backtestData.config.strategy === 'dca' ? 'Crypto accumulée' : t('backtest.chart.capital_evolution')}
             </div>
           </div>
         </div>
@@ -1156,11 +1156,31 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           <div className="h-80 bg-gray-900/50 rounded-lg border border-gray-700/50 shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={backtestData.state.capitalHistory.map(point => ({
-                  timestamp: point.timestamp,
-                  value: point.value,
-                  displayDate: formatDate(point.timestamp)
-                }))}
+                data={(() => {
+                  // Pour DCA: calculer la valeur de la crypto accumulée à chaque point
+                  if (backtestData.config.strategy === 'dca') {
+                    const buyTrades = backtestData.state.trades.filter(t => t.type === 'BUY')
+                    return backtestData.priceData.map((pricePoint, index) => {
+                      // Trouver tous les achats jusqu'à ce point dans le temps
+                      const tradesUntilNow = buyTrades.filter(t => t.timestamp <= pricePoint.timestamp)
+                      const totalQuantity = tradesUntilNow.reduce((sum, t) => sum + t.quantity, 0)
+                      const portfolioValue = totalQuantity * pricePoint.close
+                      return {
+                        timestamp: pricePoint.timestamp,
+                        value: portfolioValue,
+                        displayDate: formatDate(pricePoint.timestamp),
+                        totalInvested: tradesUntilNow.reduce((sum, t) => sum + (t.price * t.quantity), 0)
+                      }
+                    })
+                  }
+                  // Pour les autres stratégies: utiliser capitalHistory normale
+                  return backtestData.state.capitalHistory.map(point => ({
+                    timestamp: point.timestamp,
+                    value: point.value,
+                    displayDate: formatDate(point.timestamp),
+                    totalInvested: 0
+                  }))
+                })()}
                 margin={{ top: 10, right: 40, left: 30, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="2 2" stroke="#4B5563" opacity={0.4} />
@@ -1184,20 +1204,42 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                   content={({ active, payload }: any) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload
-                      const initialCapital = backtestData.config.initialCapital
-                      const pnl = data.value - initialCapital
-                      const pnlPercent = ((pnl / initialCapital) * 100).toFixed(2)
-                      return (
-                        <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl">
-                          <p className="text-[#F9FAFB] font-medium mb-2">{data.displayDate}</p>
-                          <p className="text-[#F9FAFB] mb-1">
-                            {t('backtest.chart.capital')}: <span className="font-mono">${data.value.toFixed(2)}</span>
-                          </p>
-                          <p className={`${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
-                            P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
-                          </p>
-                        </div>
-                      )
+                      if (backtestData.config.strategy === 'dca') {
+                        // Pour DCA: afficher valeur vs montant investi
+                        const invested = data.totalInvested || 0
+                        const pnl = data.value - invested
+                        const pnlPercent = invested > 0 ? ((pnl / invested) * 100).toFixed(2) : '0.00'
+                        return (
+                          <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl">
+                            <p className="text-[#F9FAFB] font-medium mb-2">{data.displayDate}</p>
+                            <p className="text-[#F9FAFB] mb-1">
+                              Valeur: <span className="font-mono">${data.value.toFixed(2)}</span>
+                            </p>
+                            <p className="text-gray-400 mb-1 text-sm">
+                              Investi: <span className="font-mono">${invested.toFixed(2)}</span>
+                            </p>
+                            <p className={`${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                              P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
+                            </p>
+                          </div>
+                        )
+                      } else {
+                        // Pour les autres stratégies: afficher P&L vs capital initial
+                        const initialCapital = backtestData.config.initialCapital
+                        const pnl = data.value - initialCapital
+                        const pnlPercent = ((pnl / initialCapital) * 100).toFixed(2)
+                        return (
+                          <div className="bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl">
+                            <p className="text-[#F9FAFB] font-medium mb-2">{data.displayDate}</p>
+                            <p className="text-[#F9FAFB] mb-1">
+                              {t('backtest.chart.capital')}: <span className="font-mono">${data.value.toFixed(2)}</span>
+                            </p>
+                            <p className={`${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                              P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
+                            </p>
+                          </div>
+                        )
+                      }
                     }
                     return null
                   }}
@@ -1208,13 +1250,15 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                   stroke="#00FF88"
                   strokeWidth={3}
                   dot={false}
-                  name={t('backtest.chart.capital')}
+                  name={backtestData.config.strategy === 'dca' ? 'Valeur' : t('backtest.chart.capital')}
                 />
-                <ReferenceDot
-                  y={backtestData.config.initialCapital}
-                  stroke="#9CA3AF"
-                  strokeDasharray="5 5"
-                />
+                {backtestData.config.strategy !== 'dca' && (
+                  <ReferenceDot
+                    y={backtestData.config.initialCapital}
+                    stroke="#9CA3AF"
+                    strokeDasharray="5 5"
+                  />
+                )}
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -1222,15 +1266,19 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-0.5 bg-[#00FF88]"></div>
-                <span className="text-gray-300">{t('backtest.chart.total_capital')}</span>
+                <span className="text-gray-300">
+                  {backtestData.config.strategy === 'dca' ? 'Valeur du portefeuille' : t('backtest.chart.total_capital')}
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-0.5 bg-[#9CA3AF] border-dashed border-t"></div>
-                <span className="text-gray-400">{t('backtest.chart.initial_capital')} (${backtestData.config.initialCapital.toFixed(0)})</span>
-              </div>
+              {backtestData.config.strategy !== 'dca' && (
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-0.5 bg-[#9CA3AF] border-dashed border-t"></div>
+                  <span className="text-gray-400">{t('backtest.chart.initial_capital')} (${backtestData.config.initialCapital.toFixed(0)})</span>
+                </div>
+              )}
             </div>
             <div className="text-gray-400">
-              {backtestData.state.capitalHistory.length} {t('backtest.chart.data_points')}
+              {backtestData.priceData.length} {t('backtest.chart.data_points')}
             </div>
           </div>
         </div>
