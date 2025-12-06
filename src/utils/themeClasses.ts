@@ -1,4 +1,11 @@
 // Utilitaires pour les classes de thème
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+// Helper pour combiner les classes avec tailwind-merge
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs))
+}
 
 export const themeClasses = {
   // Backgrounds principaux
@@ -52,9 +59,4 @@ export const themeClasses = {
         : `${base} text-gray-600 hover:text-[#1E293B]`
     }
   }
-}
-
-// Helper pour combiner les classes
-export const cn = (...classes: (string | boolean | undefined)[]) => {
-  return classes.filter(Boolean).join(' ')
 }
