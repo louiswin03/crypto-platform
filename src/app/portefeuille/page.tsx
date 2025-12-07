@@ -549,7 +549,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-2">
-            <History className="w-5 h-5 text-[#00FF88]" />
+            <History className="w-5 h-5 text-[#2563EB]" />
             Transactions Manuelles
           </h2>
           <p className="text-gray-400 text-sm mt-1">Gérez vos transactions crypto manuelles</p>
@@ -570,7 +570,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center space-x-2 bg-[#00FF88] hover:bg-[#8B5CF6] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            className="flex items-center space-x-2 bg-[#2563EB] hover:bg-[#8B5CF6] text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
             {t('portfolio.add')}
@@ -582,7 +582,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
       <div className="glass-effect rounded-xl border border-gray-800/40 overflow-hidden">
         {isLoading ? (
           <div className="p-8 text-center">
-            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#00FF88] mb-3"></div>
+            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#2563EB] mb-3"></div>
             <div className="text-gray-400 text-sm">Chargement de votre portfolio...</div>
           </div>
         ) : manualHoldings.length > 0 ? (
@@ -612,7 +612,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
                             className="w-10 h-10 rounded-full"
                           />
                         ) : (
-                          <div className="w-10 h-10 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
+                          <div className="w-10 h-10 bg-gradient-to-br from-[#2563EB] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
                             {holding.symbol[0]}
                           </div>
                         )}
@@ -628,7 +628,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
                       </div>
 
                       <div className={`text-right font-mono font-medium flex items-center justify-end space-x-1 ${
-                        holding.priceChange24h >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                        holding.priceChange24h >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                       }`}>
                         {holding.priceChange24h >= 0 ? (
                           <TrendingUp className="w-3 h-3" />
@@ -655,10 +655,10 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
                       </div>
 
                       <div className="text-right">
-                        <div className={`font-mono font-bold ${holding.pnlAmount >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                        <div className={`font-mono font-bold ${holding.pnlAmount >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                           {showValues ? formatCurrency(holding.pnlAmount) : '••••••'}
                         </div>
-                        <div className={`text-xs font-mono ${holding.pnlAmount >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                        <div className={`text-xs font-mono ${holding.pnlAmount >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                           {showValues ? `${holding.pnlPercent >= 0 ? '+' : ''}${holding.pnlPercent.toFixed(1)}%` : '••••'}
                         </div>
                       </div>
@@ -670,7 +670,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
                             setSelectedCryptoForTransactions(holding.cryptoId)
                             setShowTransactionsModal(true)
                           }}
-                          className="p-2 text-gray-400 hover:text-[#00FF88] hover:bg-[#00FF88]/10 rounded-lg transition-all"
+                          className="p-2 text-gray-400 hover:text-[#2563EB] hover:bg-[#2563EB]/10 rounded-lg transition-all"
                           title="Historique des transactions"
                         >
                           <History className="w-4 h-4" />
@@ -689,7 +689,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
                             })
                             setShowAddModal(true)
                           }}
-                          className="p-2 text-gray-400 hover:text-[#00FF88] hover:bg-[#00FF88]/10 rounded-lg transition-all"
+                          className="p-2 text-gray-400 hover:text-[#2563EB] hover:bg-[#2563EB]/10 rounded-lg transition-all"
                           title={t('portfolio.add_transaction')}
                         >
                           <Plus className="w-4 h-4" />
@@ -707,7 +707,7 @@ function ManualPortfolioSection({ portfolioId, onTransactionAdded }: { portfolio
             <div className="text-gray-500 text-sm mb-4">{t('portfolio.add_first')}</div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="inline-flex items-center space-x-2 bg-[#00FF88] hover:bg-[#8B5CF6] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              className="inline-flex items-center space-x-2 bg-[#2563EB] hover:bg-[#8B5CF6] text-white px-4 py-2 rounded-lg font-medium transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>{t('portfolio.add_first_crypto')}</span>
@@ -834,7 +834,7 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
   return (
     <div className="glass-effect rounded-xl p-6 border border-gray-700/50">
       <h3 className="text-lg font-bold text-[#F9FAFB] mb-4 flex items-center gap-2">
-        <PieChart className="w-5 h-5 text-[#00FF88]" />
+        <PieChart className="w-5 h-5 text-[#2563EB]" />
         {t('portfolio.allocation')}
       </h3>
 
@@ -925,7 +925,7 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
             <div className="text-center bg-gray-900/95 backdrop-blur-md rounded-full w-32 h-32 flex flex-col items-center justify-center border border-gray-700/50 shadow-2xl">
               {selectedSegment ? (
                 <>
-                  <div className="text-lg font-bold text-[#00FF88]">{selectedSegment}</div>
+                  <div className="text-lg font-bold text-[#2563EB]">{selectedSegment}</div>
                   <div className="text-gray-400 text-xs">
                     {segments.find(s => s.symbol === selectedSegment)?.allocation.toFixed(1)}%
                   </div>
@@ -947,7 +947,7 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
               key={index}
               className={`flex items-center justify-between group rounded-lg p-3 transition-all duration-300 cursor-pointer ${
                 segment.isSelected
-                  ? 'bg-[#00FF88]/20 border border-[#00FF88]/40 shadow-lg'
+                  ? 'bg-[#2563EB]/20 border border-[#2563EB]/40 shadow-lg'
                   : 'hover:bg-gray-800/30 border border-transparent'
               }`}
               onClick={() => handleSegmentClick(segment.symbol)}
@@ -968,22 +968,22 @@ function PortfolioAllocationChart({ holdings }: { holdings: Array<{ symbol: stri
                 ></div>
                 <span className={`font-medium transition-colors duration-300 ${
                   segment.isSelected
-                    ? 'text-[#00FF88] font-bold'
+                    ? 'text-[#2563EB] font-bold'
                     : segment.isHovered
                       ? 'text-[#8B5CF6]'
-                      : 'text-[#F9FAFB] group-hover:text-[#00FF88]'
+                      : 'text-[#F9FAFB] group-hover:text-[#2563EB]'
                 }`}>
                   {segment.symbol}
                 </span>
                 {segment.isSelected && (
-                  <div className="text-xs text-[#00FF88] font-medium bg-[#00FF88]/20 px-2 py-1 rounded-full animate-pulse">
+                  <div className="text-xs text-[#2563EB] font-medium bg-[#2563EB]/20 px-2 py-1 rounded-full animate-pulse">
                     SÉLECTIONNÉ
                   </div>
                 )}
               </div>
               <div className="text-right">
                 <div className={`font-mono text-sm font-semibold transition-colors duration-300 ${
-                  segment.isSelected ? 'text-[#00FF88]' : 'text-[#F9FAFB]'
+                  segment.isSelected ? 'text-[#2563EB]' : 'text-[#F9FAFB]'
                 }`}>
                   {segment.allocation.toFixed(1)}%
                 </div>
@@ -1058,7 +1058,7 @@ function TransactionsManagerModal({
                 className="w-10 h-10 rounded-full"
               />
             ) : (
-              <div className="w-10 h-10 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#2563EB] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
                 {cryptoSymbol[0]}
               </div>
             )}
@@ -1093,7 +1093,7 @@ function TransactionsManagerModal({
           </div>
           <div className="glass-effect rounded-lg p-3 border border-gray-700/50">
             <div className="text-gray-400 text-xs mb-1">P&L Total</div>
-            <div className={`font-mono font-bold ${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+            <div className={`font-mono font-bold ${pnl >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
               {formatCurrency(pnl)}
             </div>
           </div>
@@ -1147,10 +1147,10 @@ function TransactionsManagerModal({
                     </div>
 
                     <div className="text-right">
-                      <div className={`font-mono font-bold ${transactionPnL >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                      <div className={`font-mono font-bold ${transactionPnL >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                         {formatCurrency(transactionPnL)}
                       </div>
-                      <div className={`text-xs font-mono ${transactionPnL >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                      <div className={`text-xs font-mono ${transactionPnL >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                         {transactionPnL >= 0 ? '+' : ''}{transactionPnLPercent.toFixed(1)}%
                       </div>
                     </div>
@@ -1158,7 +1158,7 @@ function TransactionsManagerModal({
                     <div className="flex items-center justify-center space-x-2">
                       <button
                         onClick={() => setEditingTransaction(transaction)}
-                        className="p-2 text-gray-400 hover:text-[#00FF88] hover:bg-[#00FF88]/10 rounded-lg transition-all"
+                        className="p-2 text-gray-400 hover:text-[#2563EB] hover:bg-[#2563EB]/10 rounded-lg transition-all"
                         title={t('portfolio.modify_transaction')}
                       >
                         <Edit3 className="w-4 h-4" />
@@ -1190,7 +1190,7 @@ function TransactionsManagerModal({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-[#00FF88] hover:bg-[#8B5CF6] text-white rounded-lg transition-colors font-medium"
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#8B5CF6] text-white rounded-lg transition-colors font-medium"
           >
             Fermer
           </button>
@@ -1218,7 +1218,7 @@ function TransactionsManagerModal({
                     step="any"
                     defaultValue={editingTransaction.quantity}
                     id="edit-quantity"
-                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   />
                 </div>
 
@@ -1229,7 +1229,7 @@ function TransactionsManagerModal({
                     step="any"
                     defaultValue={editingTransaction.avgPurchasePrice}
                     id="edit-price"
-                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   />
                 </div>
               </div>
@@ -1254,7 +1254,7 @@ function TransactionsManagerModal({
                       setEditingTransaction(null)
                     }
                   }}
-                  className="flex-1 px-4 py-3 bg-[#00FF88] hover:bg-[#8B5CF6] text-white rounded-xl transition-colors"
+                  className="flex-1 px-4 py-3 bg-[#2563EB] hover:bg-[#8B5CF6] text-white rounded-xl transition-colors"
                 >
                   Sauvegarder
                 </button>
@@ -1400,7 +1400,7 @@ function AddEditHoldingModal({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={t('portfolio.search_crypto')}
-                className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+                className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
             
@@ -1429,7 +1429,7 @@ function AddEditHoldingModal({
                           t('portfolio.loading_price')
                         }
                       </div>
-                      <div className={`text-xs ${coin.price_change_percentage_24h >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                      <div className={`text-xs ${coin.price_change_percentage_24h >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                         {coin.price_change_percentage_24h !== 0 ? 
                           `${coin.price_change_percentage_24h >= 0 ? '+' : ''}${coin.price_change_percentage_24h.toFixed(1)}%` :
                           '--'
@@ -1447,7 +1447,7 @@ function AddEditHoldingModal({
                 {selectedCoin.image && selectedCoin.image !== '' ? (
                   <img src={selectedCoin.image} alt={selectedCoin.name} className="w-8 h-8" />
                 ) : (
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-full flex items-center justify-center text-white font-bold text-xs">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#2563EB] to-[#8B5CF6] rounded-full flex items-center justify-center text-white font-bold text-xs">
                     {selectedCoin.symbol[0]}
                   </div>
                 )}
@@ -1479,7 +1479,7 @@ function AddEditHoldingModal({
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
@@ -1494,7 +1494,7 @@ function AddEditHoldingModal({
               value={avgPrice}
               onChange={(e) => setAvgPrice(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-[#F9FAFB] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
             {selectedCoin && (
               <div className="mt-2 text-sm text-gray-400">
@@ -1528,7 +1528,7 @@ function AddEditHoldingModal({
                   const pnl = (parseFloat(quantity) * selectedCoin.current_price) - (parseFloat(quantity) * parseFloat(avgPrice))
                   const pnlPercent = (pnl / (parseFloat(quantity) * parseFloat(avgPrice))) * 100
                   return (
-                    <span className={`font-bold font-mono ${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                    <span className={`font-bold font-mono ${pnl >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                       {pnl.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} 
                       ({pnl >= 0 ? '+' : ''}{pnlPercent.toFixed(1)}%)
                     </span>
@@ -1550,7 +1550,7 @@ function AddEditHoldingModal({
           <button
             onClick={handleSave}
             disabled={!selectedCoin || !quantity || !avgPrice}
-            className="flex-1 px-4 py-3 bg-[#00FF88] hover:bg-[#8B5CF6] text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 bg-[#2563EB] hover:bg-[#8B5CF6] text-white rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {holding ? t('portfolio.modify') : t('portfolio.add')}
           </button>
@@ -1666,8 +1666,8 @@ export default function PortefeuillePage() {
 
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#8B5CF6]/10 via-[#00D9FF]/6 to-transparent rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-[#FFA366]/8 to-transparent rounded-full blur-[100px]"></div>
+          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-[#8B5CF6]/10 via-[#4F46E5]/6 to-transparent rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-[#F59E0B]/8 to-transparent rounded-full blur-[100px]"></div>
         </div>
 
         {/* Navigation intelligente */}
@@ -1720,7 +1720,7 @@ export default function PortefeuillePage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-[#00FF88]" />
+                  <Zap className="w-5 h-5 text-[#2563EB]" />
                   {t('portfolio.exchange_portfolio')}
                 </h2>
               </div>
@@ -1728,7 +1728,7 @@ export default function PortefeuillePage() {
 
             <div className="grid md:grid-cols-3 gap-4">
               {exchanges.map((exchange, index) => (
-                <div key={exchange.name} className="glass-effect rounded-xl p-5 border border-gray-700/50 hover:border-[#00FF88]/50 transition-colors">
+                <div key={exchange.name} className="glass-effect rounded-xl p-5 border border-gray-700/50 hover:border-[#2563EB]/50 transition-colors">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <div className="w-16 h-16 rounded-lg overflow-hidden bg-white flex items-center justify-center p-2">
@@ -1743,7 +1743,7 @@ export default function PortefeuillePage() {
                     </div>
                     <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
                       exchange.status === 'active'
-                        ? 'bg-[#00FF88]/20 text-[#00FF88]'
+                        ? 'bg-[#2563EB]/20 text-[#2563EB]'
                         : 'bg-gray-700/50 text-gray-400'
                     }`}>
                       {exchange.status === 'active' ? t('portfolio.active') : t('portfolio.inactive')}
@@ -1789,27 +1789,27 @@ export default function PortefeuillePage() {
             </div>
 
             {/* Simplified Security Notice */}
-            <div className="mt-6 glass-effect rounded-xl p-5 border border-[#FFA366]/30">
+            <div className="mt-6 glass-effect rounded-xl p-5 border border-[#F59E0B]/30">
               <div className="flex items-start space-x-4">
-                <div className="p-2 bg-[#FFA366]/20 rounded-lg">
-                  <Shield className="w-5 h-5 text-[#FFA366]" />
+                <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                  <Shield className="w-5 h-5 text-[#F59E0B]" />
                 </div>
                 <div className="flex-1">
                   <div className="font-bold text-[#F9FAFB] mb-2 flex items-center gap-2">
                     {t('portfolio.bank_level_security')}
-                    <CheckCircle className="w-4 h-4 text-[#00FF88]" />
+                    <CheckCircle className="w-4 h-4 text-[#2563EB]" />
                   </div>
                   <div className="text-gray-300 text-sm space-y-1">
                     <div className="flex items-center gap-2">
-                      <Lock className="w-3 h-3 text-[#00FF88]" />
+                      <Lock className="w-3 h-3 text-[#2563EB]" />
                       <span>{t('portfolio.api_read_only')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Key className="w-3 h-3 text-[#00FF88]" />
+                      <Key className="w-3 h-3 text-[#2563EB]" />
                       <span>{t('portfolio.aes_encryption')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Shield className="w-3 h-3 text-[#00FF88]" />
+                      <Shield className="w-3 h-3 text-[#2563EB]" />
                       <span>{t('portfolio.no_trade_withdraw')}</span>
                     </div>
                   </div>

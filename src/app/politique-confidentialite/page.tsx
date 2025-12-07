@@ -81,11 +81,11 @@ export default function PolitiqueConfidentialitePage() {
 
             {/* Header */}
             <div className="text-center mb-16">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#00FF88] to-[#22C55E] rounded-3xl mb-6">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#2563EB] to-[#22C55E] rounded-3xl mb-6">
                 <Lock className="w-10 h-10 text-white" />
               </div>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
-                <span className="bg-gradient-to-r from-[#F9FAFB] via-[#00FF88] to-[#22C55E] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#F9FAFB] via-[#2563EB] to-[#22C55E] bg-clip-text text-transparent">
                   {language === 'fr' ? 'Politique de Confidentialité' : 'Privacy Policy'}
                 </span>
               </h1>
@@ -115,8 +115,8 @@ export default function PolitiqueConfidentialitePage() {
                       ? 'Chez Cryptium, la protection de vos données personnelles est importante. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations personnelles.'
                       : 'At Cryptium, protecting your personal data is important. This privacy policy explains how we collect, use, store and protect your personal information.'}
                   </p>
-                  <div className="p-4 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl">
-                    <p className="text-[#00FF88] text-sm leading-relaxed">
+                  <div className="p-4 bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-xl">
+                    <p className="text-[#2563EB] text-sm leading-relaxed">
                       <strong>✓ {language === 'fr' ? 'Engagement :' : 'Commitment:'}</strong> {language === 'fr'
                         ? 'Vos données vous appartiennent. Vous avez un contrôle total sur leur utilisation et pouvez les supprimer à tout moment.'
                         : 'Your data belongs to you. You have full control over its use and can delete it at any time.'}
@@ -185,8 +185,8 @@ export default function PolitiqueConfidentialitePage() {
               {/* Utilisation des données */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#FFA366]/20 rounded-xl">
-                    <Eye className="w-6 h-6 text-[#FFA366]" />
+                  <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
+                    <Eye className="w-6 h-6 text-[#F59E0B]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? 'Utilisation des données' : 'Data Usage'}
@@ -217,8 +217,8 @@ export default function PolitiqueConfidentialitePage() {
               {/* Stockage et sécurité */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#00FF88]/20 rounded-xl">
-                    <Server className="w-6 h-6 text-[#00FF88]" />
+                  <div className="p-2 bg-[#2563EB]/20 rounded-xl">
+                    <Server className="w-6 h-6 text-[#2563EB]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? 'Stockage et sécurité' : 'Storage and Security'}
@@ -281,7 +281,7 @@ export default function PolitiqueConfidentialitePage() {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
                       <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                        <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                         <h4 className="font-semibold text-[#F9FAFB]">
                           {language === 'fr' ? 'Droit d\'accès' : 'Right of Access'}
                         </h4>
@@ -295,7 +295,7 @@ export default function PolitiqueConfidentialitePage() {
 
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
                       <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                        <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                         <h4 className="font-semibold text-[#F9FAFB]">
                           {language === 'fr' ? 'Droit de rectification' : 'Right to Rectification'}
                         </h4>
@@ -309,7 +309,7 @@ export default function PolitiqueConfidentialitePage() {
 
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
                       <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                        <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                         <h4 className="font-semibold text-[#F9FAFB]">
                           {language === 'fr' ? 'Droit à l\'effacement' : 'Right to Erasure'}
                         </h4>
@@ -323,7 +323,7 @@ export default function PolitiqueConfidentialitePage() {
 
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
                       <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                        <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                         <h4 className="font-semibold text-[#F9FAFB]">
                           {language === 'fr' ? 'Droit à la portabilité' : 'Right to Portability'}
                         </h4>
@@ -337,7 +337,7 @@ export default function PolitiqueConfidentialitePage() {
 
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
                       <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                        <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                         <h4 className="font-semibold text-[#F9FAFB]">
                           {language === 'fr' ? 'Droit d\'opposition' : 'Right to Object'}
                         </h4>
@@ -351,7 +351,7 @@ export default function PolitiqueConfidentialitePage() {
 
                     <div className="p-4 bg-white/[0.02] rounded-xl border border-gray-700/50">
                       <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                        <CheckCircle className="w-5 h-5 text-[#2563EB]" />
                         <h4 className="font-semibold text-[#F9FAFB]">
                           {language === 'fr' ? 'Droit de limitation' : 'Right to Restriction'}
                         </h4>
@@ -395,8 +395,8 @@ export default function PolitiqueConfidentialitePage() {
                     <li>{language === 'fr' ? 'Préférences utilisateur (langue, thème) stockées en localStorage' : 'User preferences (language, theme) stored in localStorage'}</li>
                     <li>{language === 'fr' ? 'Données de portfolio stockées localement dans votre navigateur' : 'Portfolio data stored locally in your browser'}</li>
                   </ul>
-                  <div className="p-4 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl">
-                    <p className="text-[#00FF88] text-sm leading-relaxed">
+                  <div className="p-4 bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-xl">
+                    <p className="text-[#2563EB] text-sm leading-relaxed">
                       <strong>✓ {language === 'fr' ? 'Transparence :' : 'Transparency:'}</strong> {language === 'fr'
                         ? 'Aucun cookie publicitaire, de tracking ou d\'analyse tierce. Votre navigation reste privée.'
                         : 'No advertising, tracking or third-party analytics cookies. Your browsing remains private.'}
@@ -408,8 +408,8 @@ export default function PolitiqueConfidentialitePage() {
               {/* Modifications */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#FFA366]/20 rounded-xl">
-                    <AlertCircle className="w-6 h-6 text-[#FFA366]" />
+                  <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
+                    <AlertCircle className="w-6 h-6 text-[#F59E0B]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? 'Modifications de cette politique' : 'Changes to This Policy'}
@@ -456,8 +456,8 @@ export default function PolitiqueConfidentialitePage() {
                       </a>
                     </div>
                   </div>
-                  <div className="p-4 bg-[#FFA366]/10 border border-[#FFA366]/30 rounded-xl mt-6">
-                    <p className="text-[#FFA366] text-sm leading-relaxed">
+                  <div className="p-4 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-xl mt-6">
+                    <p className="text-[#F59E0B] text-sm leading-relaxed">
                       <strong>⚖️ {language === 'fr' ? 'Réclamation :' : 'Complaint:'}</strong> {language === 'fr'
                         ? 'Si vous estimez que vos droits ne sont pas respectés, vous pouvez déposer une réclamation auprès de la CNIL (Commission Nationale de l\'Informatique et des Libertés) - www.cnil.fr'
                         : 'If you believe your rights are not being respected, you can file a complaint with CNIL (French Data Protection Authority) - www.cnil.fr'}

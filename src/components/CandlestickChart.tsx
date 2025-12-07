@@ -47,7 +47,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="ema1"
           d={emaPath}
           fill="none"
-          stroke="#00FF88"
+          stroke="#2563EB"
           strokeWidth="2"
           opacity="0.8"
         />
@@ -171,7 +171,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           <path
             key="bollinger-area"
             d={pathData}
-            fill="#00FF88"
+            fill="#2563EB"
             opacity="0.1"
           />
         )
@@ -183,7 +183,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="bollinger-upper"
           d={upperPath.join(' ')}
           fill="none"
-          stroke="#00FF88"
+          stroke="#2563EB"
           strokeWidth="1"
           strokeDasharray="3,3"
           opacity="0.6"
@@ -194,7 +194,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="bollinger-lower"
           d={lowerPath.join(' ')}
           fill="none"
-          stroke="#00FF88"
+          stroke="#2563EB"
           strokeWidth="1"
           strokeDasharray="3,3"
           opacity="0.6"
@@ -205,7 +205,7 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           key="bollinger-middle"
           d={middlePath.join(' ')}
           fill="none"
-          stroke="#00FF88"
+          stroke="#2563EB"
           strokeWidth="1"
           opacity="0.8"
         />
@@ -364,8 +364,8 @@ const PriceIndicators = ({ data, indicators, config, priceMin, priceMax, chartHe
           { key: 'pivot', value: pivot.pivot, color: '#6B7280', label: 'P' },
           { key: 'r1', value: pivot.r1, color: '#DC2626', label: 'R1' },
           { key: 'r2', value: pivot.r2, color: '#DC2626', label: 'R2' },
-          { key: 's1', value: pivot.s1, color: '#00FF88', label: 'S1' },
-          { key: 's2', value: pivot.s2, color: '#00FF88', label: 'S2' }
+          { key: 's1', value: pivot.s1, color: '#2563EB', label: 'S1' },
+          { key: 's2', value: pivot.s2, color: '#2563EB', label: 'S2' }
         ]
 
         levels.forEach(level => {
@@ -1076,7 +1076,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
                 return localIndex === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
               }).join(' ')}
               fill="none"
-              stroke="#00FF88"
+              stroke="#2563EB"
               strokeWidth="2"
               strokeDasharray="5 5"
               opacity="0.8"
@@ -1178,7 +1178,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               y1={highY}
               x2={x}
               y2={Math.min(openY, closeY)}
-              stroke={isGreen ? "#00FF88" : "#DC2626"}
+              stroke={isGreen ? "#2563EB" : "#DC2626"}
               strokeWidth="1"
             />
 
@@ -1188,7 +1188,7 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               y1={Math.max(openY, closeY)}
               x2={x}
               y2={lowY}
-              stroke={isGreen ? "#00FF88" : "#DC2626"}
+              stroke={isGreen ? "#2563EB" : "#DC2626"}
               strokeWidth="1"
             />
 
@@ -1198,8 +1198,8 @@ export default function CandlestickChart({ data, width, height, trades = [], ind
               y={bodyY}
               width={candleWidth}
               height={Math.max(1, bodyHeight)}
-              fill={isGreen ? "#00FF88" : "#DC2626"}
-              stroke={isGreen ? "#00FF88" : "#DC2626"}
+              fill={isGreen ? "#2563EB" : "#DC2626"}
+              stroke={isGreen ? "#2563EB" : "#DC2626"}
               strokeWidth="1"
               opacity="0.9"
             />

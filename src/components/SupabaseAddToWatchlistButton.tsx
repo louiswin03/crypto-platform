@@ -225,7 +225,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                   {crypto.image && (
                     <>
                       <img src={crypto.image} alt={crypto.name} className="w-12 h-12 rounded-full border-2 border-gray-600/50" />
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00FF88]/20 to-transparent"></div>
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#2563EB]/20 to-transparent"></div>
                     </>
                   )}
                 </div>
@@ -245,7 +245,7 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                     )}
                     {crypto.price_change_percentage_24h && (
                       <div className={`flex items-center space-x-1 text-xs font-semibold ${
-                        crypto.price_change_percentage_24h >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                        crypto.price_change_percentage_24h >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                       }`}>
                         <TrendingUp className={`w-3 h-3 ${crypto.price_change_percentage_24h < 0 ? 'rotate-180' : ''}`} />
                         <span>{crypto.price_change_percentage_24h.toFixed(2)}%</span>
@@ -269,14 +269,14 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                         isProcessing
                           ? 'opacity-50 cursor-not-allowed'
                           : isInThisList
-                          ? 'bg-gradient-to-r from-[#00FF88]/10 to-[#15803D]/10 border border-[#00FF88]/30 hover:scale-105'
+                          ? 'bg-gradient-to-r from-[#2563EB]/10 to-[#15803D]/10 border border-[#2563EB]/30 hover:scale-105'
                           : 'bg-gray-800/30 border border-gray-600/30 hover:bg-gray-700/40 hover:scale-105 hover:border-gray-500/50'
                       }`}
                     >
                       <div className="flex items-center space-x-4">
                         <div
                           className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold shadow-lg"
-                          style={{ backgroundColor: list.color || '#00FF88' }}
+                          style={{ backgroundColor: list.color || '#2563EB' }}
                         >
                           {list.icon || '📋'}
                         </div>
@@ -295,14 +295,14 @@ export default function SupabaseAddToWatchlistButton({ crypto, className = "" }:
                         {isProcessing ? (
                           <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                         ) : isInThisList ? (
-                          <div className="flex items-center space-x-2 bg-[#00FF88]/20 px-3 py-1 rounded-full">
-                            <Check className="w-4 h-4 text-[#00FF88]" />
-                            <span className="text-[#00FF88] text-sm font-bold">Ajoutée</span>
+                          <div className="flex items-center space-x-2 bg-[#2563EB]/20 px-3 py-1 rounded-full">
+                            <Check className="w-4 h-4 text-[#2563EB]" />
+                            <span className="text-[#2563EB] text-sm font-bold">Ajoutée</span>
                           </div>
                         ) : (
-                          <div className="flex items-center space-x-2 bg-gray-600/20 group-hover:bg-[#00FF88]/20 px-3 py-1 rounded-full transition-colors">
-                            <Plus className="w-4 h-4 text-gray-400 group-hover:text-[#00FF88]" />
-                            <span className="text-gray-400 group-hover:text-[#00FF88] text-sm font-bold">Ajouter</span>
+                          <div className="flex items-center space-x-2 bg-gray-600/20 group-hover:bg-[#2563EB]/20 px-3 py-1 rounded-full transition-colors">
+                            <Plus className="w-4 h-4 text-gray-400 group-hover:text-[#2563EB]" />
+                            <span className="text-gray-400 group-hover:text-[#2563EB] text-sm font-bold">Ajouter</span>
                           </div>
                         )}
                       </div>

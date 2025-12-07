@@ -89,7 +89,7 @@ export default function AidePage() {
     {
       category: language === 'fr' ? 'Portefeuille' : 'Portfolio',
       icon: Wallet,
-      color: '#FFA366',
+      color: '#F59E0B',
       questions: [
         {
           q: language === 'fr' ? 'Comment suivre mes gains/pertes ?' : 'How to track my gains/losses?',
@@ -114,7 +114,7 @@ export default function AidePage() {
     {
       category: language === 'fr' ? 'Graphiques' : 'Charts',
       icon: TrendingUp,
-      color: '#00FF88',
+      color: '#2563EB',
       questions: [
         {
           q: language === 'fr' ? 'Comment lire les graphiques ?' : 'How to read the charts?',

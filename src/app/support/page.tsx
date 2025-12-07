@@ -103,7 +103,7 @@ export default function SupportPage() {
           </Link>
 
           <div className="glass-effect rounded-2xl p-8">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#00FF88] to-[#15803D] rounded-xl flex items-center justify-center mb-6">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#2563EB] to-[#15803D] rounded-xl flex items-center justify-center mb-6">
               <MessageCircle className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-xl font-semibold text-[#F9FAFB] mb-3">Chat en direct</h3>
@@ -117,14 +117,14 @@ export default function SupportPage() {
           </div>
 
           <Link href="/aide" className="glass-effect rounded-2xl p-8 hover:border-[#6366F1]/50 transition-all duration-300 group">
-            <div className="w-14 h-14 bg-gradient-to-br from-[#FFA366] to-[#D97706] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#F59E0B] to-[#D97706] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
               <FileText className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-xl font-semibold text-[#F9FAFB] mb-3">Centre d'aide</h3>
             <p className="text-gray-400 mb-4">
               Consultez nos guides et tutoriels détaillés.
             </p>
-            <div className="flex items-center text-[#FFA366] font-medium">
+            <div className="flex items-center text-[#F59E0B] font-medium">
               <HelpCircle className="w-4 h-4 mr-2" />
               <span>Documentation complète</span>
             </div>
@@ -201,8 +201,8 @@ export default function SupportPage() {
               <p className="text-gray-400">Tous les systèmes fonctionnent normalement</p>
             </div>
             <div className="flex items-center space-x-3">
-              <div className="w-3 h-3 bg-[#00FF88] rounded-full animate-pulse"></div>
-              <span className="text-[#00FF88] font-semibold text-lg">OPÉRATIONNEL</span>
+              <div className="w-3 h-3 bg-[#2563EB] rounded-full animate-pulse"></div>
+              <span className="text-[#2563EB] font-semibold text-lg">OPÉRATIONNEL</span>
             </div>
           </div>
 
@@ -210,7 +210,7 @@ export default function SupportPage() {
             <div className="bg-gray-800/30 rounded-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">API</span>
-                <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                <CheckCircle className="w-5 h-5 text-[#2563EB]" />
               </div>
               <div className="text-[#F9FAFB] font-semibold">100% uptime</div>
             </div>
@@ -218,7 +218,7 @@ export default function SupportPage() {
             <div className="bg-gray-800/30 rounded-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">Base de données</span>
-                <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                <CheckCircle className="w-5 h-5 text-[#2563EB]" />
               </div>
               <div className="text-[#F9FAFB] font-semibold">100% uptime</div>
             </div>
@@ -226,7 +226,7 @@ export default function SupportPage() {
             <div className="bg-gray-800/30 rounded-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400">Authentification</span>
-                <CheckCircle className="w-5 h-5 text-[#00FF88]" />
+                <CheckCircle className="w-5 h-5 text-[#2563EB]" />
               </div>
               <div className="text-[#F9FAFB] font-semibold">100% uptime</div>
             </div>

@@ -39,7 +39,7 @@ export default function Footer() {
                 className="object-contain opacity-75 group-hover:opacity-100 transition-opacity"
               />
               <div>
-                <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display group-hover:text-[#00FF88] transition-colors">Cryptium</span>
+                <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display group-hover:text-[#2563EB] transition-colors">Cryptium</span>
                 <div className="text-xs text-gray-400 font-medium">Votre plateforme d'analyse crypto premium</div>
               </div>
             </Link>
@@ -74,7 +74,7 @@ export default function Footer() {
           <div className="border-t border-gray-800/40 pt-12 mb-12">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="glass-effect rounded-2xl p-6 text-center">
-                <Shield className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
+                <Shield className="w-8 h-8 text-[#2563EB] mx-auto mb-3" />
                 <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.rgpd')}</div>
                 <div className="text-xs text-gray-400">{t('home.footer.compliant')}</div>
               </div>
@@ -93,10 +93,10 @@ export default function Footer() {
 
               <div className="glass-effect rounded-2xl p-6 text-center">
                 <div className="h-8 flex items-center justify-center mb-3">
-                  <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-[#2563EB] rounded-full animate-pulse"></div>
                 </div>
                 <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
-                <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
+                <div className="text-xs text-[#2563EB] font-semibold">{t('home.footer.operational')}</div>
               </div>
             </div>
           </div>

@@ -24,7 +24,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         ref={ref}
         className={cn(
           'relative inline-flex items-center justify-center rounded-full overflow-hidden',
-          'bg-gradient-to-br from-[#00FF88] to-[#00D9FF]',
+          'bg-gradient-to-br from-[#2563EB] to-[#00D9FF]',
           'ring-2 ring-gray-800/40',
           sizes[size],
           className

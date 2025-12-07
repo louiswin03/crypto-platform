@@ -34,49 +34,23 @@ export default function Home() {
   return (
     <>
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
-
-        * {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        .font-mono {
-          font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
-        }
-
-        .font-display {
-          font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
         .text-shadow {
-          text-shadow: 0 4px 40px rgba(0, 255, 136, 0.35);
-        }
-
-        .glass-effect {
-          background: rgba(10, 14, 26, 0.85);
-          backdrop-filter: blur(24px);
-          border: 1px solid rgba(0, 255, 136, 0.15);
-        }
-
-        .glass-effect-strong {
-          background: rgba(10, 14, 26, 0.95);
-          backdrop-filter: blur(40px);
-          border: 1px solid rgba(0, 255, 136, 0.2);
+          text-shadow: 0 4px 40px rgba(37, 99, 235, 0.35);
         }
 
         .glow-effect {
-          box-shadow: 0 0 60px rgba(0, 255, 136, 0.3);
+          box-shadow: 0 0 60px rgba(37, 99, 235, 0.3);
         }
 
         .pattern-dots {
-          background-image: radial-gradient(rgba(0, 255, 136, 0.12) 1px, transparent 1px);
+          background-image: radial-gradient(rgba(37, 99, 235, 0.12) 1px, transparent 1px);
           background-size: 24px 24px;
         }
 
         .pattern-grid {
           background-image:
-            linear-gradient(rgba(0, 255, 136, 0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 136, 0.08) 1px, transparent 1px);
+            linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
           background-size: 60px 60px;
         }
 
@@ -87,7 +61,7 @@ export default function Home() {
         }
 
         @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.2); }
+          0%, 100% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.2); }
           50% { box-shadow: 0 0 50px rgba(0, 217, 255, 0.25); }
         }
 
@@ -139,11 +113,11 @@ export default function Home() {
         .text-gradient-animate {
           background: linear-gradient(
             45deg,
-            #00FF88,
-            #00D9FF,
-            #00FFD9,
-            #00FF88,
-            #00D9FF
+            #2563EB,
+            #4F46E5,
+            #3B82F6,
+            #2563EB,
+            #4F46E5
           );
           background-size: 200% 200%;
           background-clip: text;
@@ -164,9 +138,9 @@ export default function Home() {
         <section className="relative pt-0 sm:pt-0 md:pt-0 pb-32 sm:pb-40 md:pb-48 overflow-hidden">
           {/* Enhanced Background Effects */}
           <div className="absolute inset-0">
-            <div className="absolute top-1/4 left-1/4 w-[900px] h-[900px] bg-gradient-to-br from-[#00FF88]/10 via-[#00D9FF]/7 to-transparent rounded-full blur-[100px] float-animation"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-tl from-[#00D9FF]/8 via-[#00FF88]/5 to-transparent rounded-full blur-[80px] float-animation" style={{animationDelay: '2s'}}></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[600px] bg-gradient-to-r from-[#00FF88]/5 via-[#00D9FF]/3 to-[#00FF88]/5 rounded-full blur-[120px] opacity-50"></div>
+            <div className="absolute top-1/4 left-1/4 w-[900px] h-[900px] bg-gradient-to-br from-[#2563EB]/10 via-[#4F46E5]/7 to-transparent rounded-full blur-[100px] float-animation"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-[700px] h-[700px] bg-gradient-to-tl from-[#4F46E5]/8 via-[#2563EB]/5 to-transparent rounded-full blur-[80px] float-animation" style={{animationDelay: '2s'}}></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[600px] bg-gradient-to-r from-[#2563EB]/5 via-[#4F46E5]/3 to-[#2563EB]/5 rounded-full blur-[120px] opacity-50"></div>
           </div>
 
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -176,7 +150,7 @@ export default function Home() {
                 <span className="block font-extrabold mb-1 sm:mb-2 text-[#F9FAFB]">{t('home.hero.title1')}</span>
                 <span className="block text-gradient-animate relative">
                   {t('home.hero.title2')}
-                  <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#00FF88]/15 via-[#00D9FF]/15 to-[#00FF88]/15 blur-lg sm:blur-xl md:blur-2xl opacity-50 pulse-glow"></div>
+                  <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#2563EB]/15 via-[#4F46E5]/15 to-[#2563EB]/15 blur-lg sm:blur-xl md:blur-2xl opacity-50 pulse-glow"></div>
                 </span>
               </h1>
 
@@ -207,41 +181,41 @@ export default function Home() {
                 <Link
                   href="/auth/signup"
                   onClick={handleAuthClick}
-                  className="group relative bg-gradient-to-r from-[#FFA366] via-[#FFB380] to-[#FFA366] text-white px-6 sm:px-8 md:px-12 lg:px-16 py-3 sm:py-4 md:py-5 rounded-lg sm:rounded-xl md:rounded-2xl text-sm sm:text-base md:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 lg:hover:scale-110 shadow-2xl hover:shadow-[#FFA366]/50 overflow-hidden shimmer-effect w-full sm:w-auto"
+                  className="group relative bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#F59E0B] text-white px-6 sm:px-8 md:px-12 lg:px-16 py-3 sm:py-4 md:py-5 rounded-lg sm:rounded-xl md:rounded-2xl text-sm sm:text-base md:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 lg:hover:scale-110 shadow-2xl hover:shadow-[#F59E0B]/50 overflow-hidden shimmer-effect w-full sm:w-auto"
                 >
                   <span className="relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 md:space-x-4">
                     <span>{t('home.hero.cta_start')}</span>
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:translate-x-2 transition-transform duration-300" />
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFB380] via-[#FFC399] to-[#FFB380] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#FFA366] via-[#FFB380] to-[#FFA366] blur-xl sm:blur-2xl md:blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FBBF24] via-[#FFC399] to-[#FBBF24] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute -inset-2 sm:-inset-3 md:-inset-6 bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#F59E0B] blur-xl sm:blur-2xl md:blur-3xl opacity-30 group-hover:opacity-70 transition-opacity duration-500"></div>
                 </Link>
 
                 <Link
                   href="#features"
-                  className="group relative border-2 border-[#00FF88]/50 text-[#F9FAFB] px-6 sm:px-8 md:px-12 lg:px-16 py-3 sm:py-4 md:py-5 rounded-lg sm:rounded-xl md:rounded-2xl text-sm sm:text-base md:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 glass-effect overflow-hidden shimmer-effect w-full sm:w-auto hover:border-[#00FF88]"
+                  className="group relative border-2 border-[#2563EB]/50 text-[#F9FAFB] px-6 sm:px-8 md:px-12 lg:px-16 py-3 sm:py-4 md:py-5 rounded-lg sm:rounded-xl md:rounded-2xl text-sm sm:text-base md:text-lg lg:text-xl font-bold transition-all duration-500 hover:scale-105 glass-effect overflow-hidden shimmer-effect w-full sm:w-auto hover:border-[#2563EB]"
                 >
                   <span className="relative z-10 flex items-center justify-center space-x-2 sm:space-x-3 md:space-x-4">
                     <span className="hidden sm:block">{t('home.hero.cta_discover')}</span>
                     <span className="block sm:hidden">{t('home.hero.cta_discover_mobile')}</span>
                     <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#00FF88]/10 to-[#00D9FF]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#2563EB]/10 to-[#4F46E5]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Link>
               </div>
 
               {/* Stats Preview - Style professionnel */}
               <div className="mt-8 sm:mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-5xl mx-auto px-4 sm:px-0">
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00FF88]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00FF88] mb-1 sm:mb-2 font-mono">Beta</div>
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#2563EB]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2563EB] mb-1 sm:mb-2 font-mono">Beta</div>
                   <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.backtests')}</div>
                 </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#00D9FF]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00D9FF] mb-1 sm:mb-2 font-mono">15K+</div>
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#4F46E5]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#4F46E5] mb-1 sm:mb-2 font-mono">15K+</div>
                   <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.cryptos')}</div>
                 </div>
-                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#FFA366]/20">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#FFA366] mb-1 sm:mb-2 font-mono">24/7</div>
+                <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#F59E0B]/20">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#F59E0B] mb-1 sm:mb-2 font-mono">24/7</div>
                   <div className="text-gray-400 text-xs sm:text-sm font-medium">{t('home.stats.uptime')}</div>
                 </div>
                 <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 text-center hover:scale-105 transition-all duration-300 border border-[#8B5CF6]/20">
@@ -258,7 +232,7 @@ export default function Home() {
           <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
             <div className="text-center mb-12 sm:mb-16 md:mb-20 lg:mb-32">
               <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full glass-effect mb-6 sm:mb-8">
-                <Star className="w-4 sm:w-5 h-4 sm:h-5 text-[#00FF88] mr-2" />
+                <Star className="w-4 sm:w-5 h-4 sm:h-5 text-[#2563EB] mr-2" />
                 <span className="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider">{t('home.features.badge')}</span>
               </div>
 
@@ -290,18 +264,18 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-4 sm:px-0">
               {/* Cryptomonnaies */}
               <Link href="/cryptos" className="group relative block">
-                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#00FF88]/20 border border-[#00FF88]/20 hover:border-[#00FF88]/50 cursor-pointer shimmer-effect overflow-hidden">
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#2563EB]/20 border border-[#2563EB]/20 hover:border-[#2563EB]/50 cursor-pointer shimmer-effect overflow-hidden">
                   {/* Background gradient on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/5 via-transparent to-[#00FFD9]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#2563EB]/5 via-transparent to-[#3B82F6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
                   {/* Icon */}
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#00FF88]/40 float-animation">
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#2563EB] to-[#3B82F6] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#2563EB]/40 float-animation">
                     <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
                     <TrendingUp className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#00FF88] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#2563EB] transition-colors duration-500 font-display">
                     {t('home.features.crypto.title')}
                   </h3>
                   <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
@@ -311,37 +285,37 @@ export default function Home() {
                   {/* Features list */}
                   <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#2563EB] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.crypto.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#2563EB] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.crypto.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00FF88] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#2563EB] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.crypto.feat3')}</span>
                     </li>
                   </ul>
 
                   {/* Arrow */}
                   <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
-                    <ArrowRight className="w-6 h-6 text-[#00FF88]" />
+                    <ArrowRight className="w-6 h-6 text-[#2563EB]" />
                   </div>
                 </div>
               </Link>
 
               {/* Graphiques */}
               <Link href="/graphiques" className="group relative block">
-                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#00D9FF]/20 border border-[#00D9FF]/20 hover:border-[#00D9FF]/50 cursor-pointer shimmer-effect overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#00D9FF]/5 via-transparent to-[#00F0FF]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#4F46E5]/20 border border-[#4F46E5]/20 hover:border-[#4F46E5]/50 cursor-pointer shimmer-effect overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#4F46E5]/5 via-transparent to-[#00F0FF]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#00D9FF] to-[#00F0FF] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#00D9FF]/40 float-animation" style={{animationDelay: '1s'}}>
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#4F46E5] to-[#00F0FF] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#4F46E5]/40 float-animation" style={{animationDelay: '1s'}}>
                     <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
                     <BarChart3 className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#00D9FF] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#4F46E5] transition-colors duration-500 font-display">
                     {t('home.features.charts.title')}
                   </h3>
                   <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
@@ -350,36 +324,36 @@ export default function Home() {
 
                   <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#4F46E5] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.charts.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#4F46E5] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.charts.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#00D9FF] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#4F46E5] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.charts.feat3')}</span>
                     </li>
                   </ul>
 
                   <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
-                    <ArrowRight className="w-6 h-6 text-[#00D9FF]" />
+                    <ArrowRight className="w-6 h-6 text-[#4F46E5]" />
                   </div>
                 </div>
               </Link>
 
               {/* Backtest */}
               <Link href="/backtest" className="group relative block">
-                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#FFA366]/20 border border-[#00FF88]/20 hover:border-[#FFA366]/50 cursor-pointer shimmer-effect overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#FFA366]/5 via-transparent to-[#FFB380]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
+                <div className="relative glass-effect-strong rounded-xl sm:rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 h-full transition-all duration-700 hover:scale-105 sm:hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#F59E0B]/20 border border-[#2563EB]/20 hover:border-[#F59E0B]/50 cursor-pointer shimmer-effect overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#F59E0B]/5 via-transparent to-[#FBBF24]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl"></div>
 
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#FFA366] to-[#FFB380] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#FFA366]/40 float-animation" style={{animationDelay: '2s'}}>
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-2xl sm:rounded-3xl flex items-center justify-center mb-5 sm:mb-6 md:mb-8 group-hover:scale-110 transition-all duration-700 shadow-lg group-hover:shadow-[#F59E0B]/40 float-animation" style={{animationDelay: '2s'}}>
                     <div className="absolute inset-0 bg-black/30 rounded-2xl sm:rounded-3xl"></div>
                     <Activity className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white relative z-10 drop-shadow-lg" />
                   </div>
 
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#FFA366] transition-colors duration-500 font-display">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#F9FAFB] mb-3 sm:mb-4 md:mb-6 tracking-tight group-hover:text-[#F59E0B] transition-colors duration-500 font-display">
                     {t('home.features.backtest.title')}
                   </h3>
                   <p className="text-xs sm:text-sm md:text-base text-gray-400 leading-relaxed font-light mb-3 sm:mb-4 md:mb-6 group-hover:text-gray-300 transition-colors duration-500">
@@ -388,21 +362,21 @@ export default function Home() {
 
                   <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500 group-hover:text-gray-400 transition-colors duration-500">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#F59E0B] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.backtest.feat1')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#F59E0B] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.backtest.feat2')}</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 bg-[#FFA366] rounded-full flex-shrink-0"></div>
+                      <div className="w-1.5 h-1.5 bg-[#F59E0B] rounded-full flex-shrink-0"></div>
                       <span>{t('home.features.backtest.feat3')}</span>
                     </li>
                   </ul>
 
                   <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-2 group-hover:translate-x-0">
-                    <ArrowRight className="w-6 h-6 text-[#FFA366]" />
+                    <ArrowRight className="w-6 h-6 text-[#F59E0B]" />
                   </div>
                 </div>
               </Link>
@@ -454,7 +428,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               <div>
                 <div className="inline-flex items-center px-6 py-3 rounded-full glass-effect mb-8">
-                  <Zap className="w-5 h-5 text-[#FFA366] mr-2" />
+                  <Zap className="w-5 h-5 text-[#F59E0B] mr-2" />
                   <span className="text-sm font-semibold text-gray-300 uppercase tracking-wider">{t('home.tech.badge')}</span>
                 </div>
 
@@ -470,19 +444,19 @@ export default function Home() {
                 <div className="space-y-8">
                   <div className="group relative glass-effect-strong rounded-2xl p-6 hover:scale-105 transition-all duration-500">
                     <div className="flex items-start space-x-6">
-                      <div className="relative w-12 h-12 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-2xl flex items-center justify-center flex-shrink-0 float-animation">
+                      <div className="relative w-12 h-12 bg-gradient-to-br from-[#2563EB] to-[#3B82F6] rounded-2xl flex items-center justify-center flex-shrink-0 float-animation">
                         <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
                         <Target className="w-6 h-6 text-white relative z-10 drop-shadow-lg" />
                       </div>
                       <div>
-                        <h4 className="text-xl font-bold text-[#F9FAFB] mb-3 tracking-tight group-hover:text-[#00FF88] transition-colors duration-300">
+                        <h4 className="text-xl font-bold text-[#F9FAFB] mb-3 tracking-tight group-hover:text-[#2563EB] transition-colors duration-300">
                           {t('home.tech.sync.title')}
                         </h4>
                         <p className="text-gray-400 text-lg leading-relaxed font-light group-hover:text-gray-300 transition-colors duration-300">
                           {t('home.tech.sync.desc')}
                         </p>
                         <div className="flex items-center space-x-2 mt-3 text-sm text-gray-500">
-                          <CheckCircle className="w-4 h-4 text-[#00FF88]" />
+                          <CheckCircle className="w-4 h-4 text-[#2563EB]" />
                           <span>{t('home.tech.sync.check')}</span>
                         </div>
                       </div>
@@ -491,19 +465,19 @@ export default function Home() {
 
                   <div className="group relative glass-effect-strong rounded-2xl p-6 hover:scale-105 transition-all duration-500">
                     <div className="flex items-start space-x-6">
-                      <div className="relative w-12 h-12 bg-gradient-to-br from-[#00D9FF] to-[#00F0FF] rounded-2xl flex items-center justify-center flex-shrink-0 float-animation" style={{animationDelay: '1s'}}>
+                      <div className="relative w-12 h-12 bg-gradient-to-br from-[#4F46E5] to-[#00F0FF] rounded-2xl flex items-center justify-center flex-shrink-0 float-animation" style={{animationDelay: '1s'}}>
                         <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
                         <Activity className="w-6 h-6 text-white relative z-10 drop-shadow-lg" />
                       </div>
                       <div>
-                        <h4 className="text-xl font-bold text-[#F9FAFB] mb-3 tracking-tight group-hover:text-[#00D9FF] transition-colors duration-300">
+                        <h4 className="text-xl font-bold text-[#F9FAFB] mb-3 tracking-tight group-hover:text-[#4F46E5] transition-colors duration-300">
                           {t('home.tech.realtime.title')}
                         </h4>
                         <p className="text-gray-400 text-lg leading-relaxed font-light group-hover:text-gray-300 transition-colors duration-300">
                           {t('home.tech.realtime.desc')}
                         </p>
                         <div className="flex items-center space-x-2 mt-3 text-sm text-gray-500">
-                          <CheckCircle className="w-4 h-4 text-[#00D9FF]" />
+                          <CheckCircle className="w-4 h-4 text-[#4F46E5]" />
                           <span>{t('home.tech.realtime.check')}</span>
                         </div>
                       </div>
@@ -512,19 +486,19 @@ export default function Home() {
 
                   <div className="group relative glass-effect-strong rounded-2xl p-6 hover:scale-105 transition-all duration-500">
                     <div className="flex items-start space-x-6">
-                      <div className="relative w-12 h-12 bg-gradient-to-br from-[#FFA366] to-[#FFB380] rounded-2xl flex items-center justify-center flex-shrink-0 float-animation" style={{animationDelay: '2s'}}>
+                      <div className="relative w-12 h-12 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-2xl flex items-center justify-center flex-shrink-0 float-animation" style={{animationDelay: '2s'}}>
                         <div className="absolute inset-0 bg-black/30 rounded-2xl"></div>
                         <Shield className="w-6 h-6 text-white relative z-10 drop-shadow-lg" />
                       </div>
                       <div>
-                        <h4 className="text-xl font-bold text-[#F9FAFB] mb-3 tracking-tight group-hover:text-[#FFA366] transition-colors duration-300">
+                        <h4 className="text-xl font-bold text-[#F9FAFB] mb-3 tracking-tight group-hover:text-[#F59E0B] transition-colors duration-300">
                           {t('home.tech.security.title')}
                         </h4>
                         <p className="text-gray-400 text-lg leading-relaxed font-light group-hover:text-gray-300 transition-colors duration-300">
                           {t('home.tech.security.desc')}
                         </p>
                         <div className="flex items-center space-x-2 mt-3 text-sm text-gray-500">
-                          <CheckCircle className="w-4 h-4 text-[#FFA366]" />
+                          <CheckCircle className="w-4 h-4 text-[#F59E0B]" />
                           <span>{t('home.tech.security.check')}</span>
                         </div>
                       </div>
@@ -534,8 +508,8 @@ export default function Home() {
               </div>
 
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#00FF88]/12 via-[#00D9FF]/8 to-[#00FF88]/12 rounded-[3rem] blur-2xl"></div>
-                <div className="relative glass-effect-strong rounded-[3rem] p-12 border border-[#00FF88]/30 hover:scale-105 transition-all duration-700 shimmer-effect">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2563EB]/12 via-[#4F46E5]/8 to-[#2563EB]/12 rounded-[3rem] blur-2xl"></div>
+                <div className="relative glass-effect-strong rounded-[3rem] p-12 border border-[#2563EB]/30 hover:scale-105 transition-all duration-700 shimmer-effect">
 
                   {/* Performance Dashboard */}
                   <div className="mb-8">
@@ -543,10 +517,10 @@ export default function Home() {
 
                     <div className="grid grid-cols-2 gap-6 mb-8">
                       <div className="text-center glass-effect rounded-2xl p-4">
-                        <div className="text-3xl font-black text-[#FFA366] mb-2 font-mono">24/7</div>
+                        <div className="text-3xl font-black text-[#F59E0B] mb-2 font-mono">24/7</div>
                         <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('home.tech.perf.uptime')}</div>
                         <div className="w-full bg-gray-800 rounded-full h-2 mt-2">
-                          <div className="bg-gradient-to-r from-[#FFA366] to-[#FFB380] h-2 rounded-full" style={{width: '90%'}}></div>
+                          <div className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] h-2 rounded-full" style={{width: '90%'}}></div>
                         </div>
                       </div>
 
@@ -561,20 +535,20 @@ export default function Home() {
 
                     <div className="grid grid-cols-2 gap-6">
                       <div className="text-center glass-effect rounded-2xl p-4">
-                        <div className="text-3xl font-black text-[#00FF88] mb-2 font-mono">Beta</div>
+                        <div className="text-3xl font-black text-[#2563EB] mb-2 font-mono">Beta</div>
                         <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('home.tech.perf.monitoring')}</div>
                         <div className="flex justify-center mt-2">
-                          <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
-                          <div className="text-xs text-[#00FF88] ml-2">{t('home.tech.perf.live')}</div>
+                          <div className="w-2 h-2 bg-[#2563EB] rounded-full animate-pulse"></div>
+                          <div className="text-xs text-[#2563EB] ml-2">{t('home.tech.perf.live')}</div>
                         </div>
                       </div>
 
                       <div className="text-center glass-effect rounded-2xl p-4">
-                        <div className="text-3xl font-black text-[#00D9FF] mb-2 font-mono">15K+</div>
+                        <div className="text-3xl font-black text-[#4F46E5] mb-2 font-mono">15K+</div>
                         <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('home.tech.perf.encryption')}</div>
                         <div className="flex justify-center mt-2">
-                          <Shield className="w-4 h-4 text-[#00D9FF]" />
-                          <div className="text-xs text-[#00D9FF] ml-2">{t('home.tech.perf.secure')}</div>
+                          <Shield className="w-4 h-4 text-[#4F46E5]" />
+                          <div className="text-xs text-[#4F46E5] ml-2">{t('home.tech.perf.secure')}</div>
                         </div>
                       </div>
                     </div>
@@ -585,19 +559,19 @@ export default function Home() {
                     <div className="text-center text-gray-500 text-xs uppercase tracking-wider mb-4">{t('home.tech.stack')}</div>
                     <div className="grid grid-cols-3 gap-4 text-xs">
                       <div className="text-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-[#00FF88] to-[#00FFD9] rounded-lg flex items-center justify-center mx-auto mb-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-[#2563EB] to-[#3B82F6] rounded-lg flex items-center justify-center mx-auto mb-2">
                           <span className="text-white font-bold">TS</span>
                         </div>
                         <span className="text-gray-400">{t('home.tech.stack.typescript')}</span>
                       </div>
                       <div className="text-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-[#00D9FF] to-[#8B5CF6] rounded-lg flex items-center justify-center mx-auto mb-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-[#4F46E5] to-[#8B5CF6] rounded-lg flex items-center justify-center mx-auto mb-2">
                           <span className="text-white font-bold">AWS</span>
                         </div>
                         <span className="text-gray-400">{t('home.tech.stack.cloud')}</span>
                       </div>
                       <div className="text-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-[#FFA366] to-[#FFB380] rounded-lg flex items-center justify-center mx-auto mb-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-lg flex items-center justify-center mx-auto mb-2">
                           <span className="text-white font-bold">🚀</span>
                         </div>
                         <span className="text-gray-400">{t('home.tech.stack.redis')}</span>
@@ -654,7 +628,7 @@ export default function Home() {
                     className="object-contain opacity-75 group-hover:opacity-100 transition-opacity"
                   />
                   <div>
-                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display group-hover:text-[#00FF88] transition-colors">Cryptium</span>
+                    <span className="text-2xl font-bold text-[#F9FAFB] tracking-tight font-display group-hover:text-[#2563EB] transition-colors">Cryptium</span>
                     <div className="text-xs text-gray-400 font-medium">{t('brand.tagline_full')}</div>
                   </div>
                 </Link>
@@ -688,7 +662,7 @@ export default function Home() {
             <div className="border-t border-gray-800/40 pt-12 mb-12">
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="glass-effect rounded-2xl p-6 text-center">
-                  <Shield className="w-8 h-8 text-[#00FF88] mx-auto mb-3" />
+                  <Shield className="w-8 h-8 text-[#2563EB] mx-auto mb-3" />
                   <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.rgpd')}</div>
                   <div className="text-xs text-gray-400">{t('home.footer.compliant')}</div>
                 </div>
@@ -707,10 +681,10 @@ export default function Home() {
 
                 <div className="glass-effect rounded-2xl p-6 text-center">
                   <div className="h-8 flex items-center justify-center mb-3">
-                    <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#2563EB] rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-lg font-bold text-[#F9FAFB] mb-2">{t('home.footer.status')}</div>
-                  <div className="text-xs text-[#00FF88] font-semibold">{t('home.footer.operational')}</div>
+                  <div className="text-xs text-[#2563EB] font-semibold">{t('home.footer.operational')}</div>
                 </div>
               </div>
             </div>

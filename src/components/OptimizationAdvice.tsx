@@ -13,7 +13,7 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
   if (advice.length === 0) {
     return (
       <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 p-8 text-center">
-        <CheckCircle className="w-16 h-16 text-[#00FF88] mx-auto mb-4" />
+        <CheckCircle className="w-16 h-16 text-[#2563EB] mx-auto mb-4" />
         <h3 className="text-xl font-bold text-[#F9FAFB] mb-2">{t('optimization.optimal_strategy')}</h3>
         <p className="text-gray-400">{t('optimization.no_optimization')}</p>
       </div>
@@ -123,9 +123,9 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
 
   return (
     <div className="bg-gray-900/90 backdrop-blur-sm rounded-xl border border-gray-600/40 overflow-hidden shadow-xl">
-      <div className="border-b border-gray-700/30 px-6 py-4 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10">
+      <div className="border-b border-gray-700/30 px-6 py-4 bg-gradient-to-r from-[#2563EB]/10 to-[#8B5CF6]/10">
         <h3 className="text-xl font-bold text-[#F9FAFB] flex items-center gap-3">
-          <Lightbulb className="w-6 h-6 text-[#00FF88]" />
+          <Lightbulb className="w-6 h-6 text-[#2563EB]" />
           {t('optimization.title')}
           <span className="text-sm font-normal text-gray-400">
             ({advice.length} {t('optimization.suggestions_detected')
@@ -201,8 +201,8 @@ export default function OptimizationAdviceComponent({ advice }: OptimizationAdvi
                             </div>
                           )}
 
-                          <div className="bg-gray-800/30 border-l-4 border-[#00FF88] pl-3 py-2">
-                            <p className="text-sm text-[#00FF88] font-medium">
+                          <div className="bg-gray-800/30 border-l-4 border-[#2563EB] pl-3 py-2">
+                            <p className="text-sm text-[#2563EB] font-medium">
                               💡 {item.suggestion}
                             </p>
                           </div>

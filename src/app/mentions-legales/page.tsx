@@ -173,8 +173,8 @@ export default function MentionsLegalesPage() {
               {/* Propriété intellectuelle */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#FFA366]/20 rounded-xl">
-                    <FileText className="w-6 h-6 text-[#FFA366]" />
+                  <div className="p-2 bg-[#F59E0B]/20 rounded-xl">
+                    <FileText className="w-6 h-6 text-[#F59E0B]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? 'Propriété intellectuelle' : 'Intellectual Property'}
@@ -197,8 +197,8 @@ export default function MentionsLegalesPage() {
               {/* Données personnelles */}
               <section className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2 bg-[#00FF88]/20 rounded-xl">
-                    <Lock className="w-6 h-6 text-[#00FF88]" />
+                  <div className="p-2 bg-[#2563EB]/20 rounded-xl">
+                    <Lock className="w-6 h-6 text-[#2563EB]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#F9FAFB]">
                     {language === 'fr' ? 'Protection des données personnelles' : 'Personal Data Protection'}
@@ -224,8 +224,8 @@ export default function MentionsLegalesPage() {
                       ? 'Pour exercer ces droits, vous pouvez nous contacter à l\'adresse : cryptium.contact@gmail.com'
                       : 'To exercise these rights, you can contact us at: cryptium.contact@gmail.com'}
                   </p>
-                  <div className="p-4 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl">
-                    <p className="text-[#00FF88] text-sm leading-relaxed">
+                  <div className="p-4 bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-xl">
+                    <p className="text-[#2563EB] text-sm leading-relaxed">
                       <strong>{language === 'fr' ? '🔒 Engagement :' : '🔒 Commitment:'}</strong> {language === 'fr'
                         ? 'Vos données ne sont jamais vendues à des tiers. Elles sont utilisées uniquement pour le fonctionnement de la plateforme.'
                         : 'Your data is never sold to third parties. It is used only for platform operations.'}

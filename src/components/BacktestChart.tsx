@@ -96,12 +96,12 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
                 />
                 {/* Lignes de référence */}
                 <ReferenceDot y={70} stroke="#DC2626" strokeDasharray="5 5" />
-                <ReferenceDot y={30} stroke="#00FF88" strokeDasharray="5 5" />
+                <ReferenceDot y={30} stroke="#2563EB" strokeDasharray="5 5" />
               </LineChart>
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex justify-between text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#00FF88] rounded-full"></span>{t('backtest.chart.oversold')} &lt; 30</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#2563EB] rounded-full"></span>{t('backtest.chart.oversold')} &lt; 30</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>{t('backtest.chart.overbought')} &gt; 70</span>
             </div>
           </div>
@@ -117,7 +117,7 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
                 MACD (12,26,9)
               </h3>
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-2 h-2 bg-[#00FF88] rounded-full"></div>
+                <div className="w-2 h-2 bg-[#2563EB] rounded-full"></div>
                 <span className="text-gray-400 hidden sm:inline">Convergence Divergence</span>
               </div>
             </div>
@@ -171,7 +171,7 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex gap-4 text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#00FF88] rounded"></div>{t('backtest.chart.macd_line')}</span>
+              <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#2563EB] rounded"></div>{t('backtest.chart.macd_line')}</span>
               <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#DC2626] rounded"></div>{t('backtest.chart.signal')}</span>
               <span className="flex items-center gap-1"><div className="w-2 h-2 bg-[#FFA366] rounded"></div>{t('backtest.chart.histogram')}</span>
             </div>
@@ -230,12 +230,12 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
                   isAnimationActive={false}
                 />
                 <ReferenceDot y={80} stroke="#DC2626" strokeDasharray="5 5" />
-                <ReferenceDot y={20} stroke="#00FF88" strokeDasharray="5 5" />
+                <ReferenceDot y={20} stroke="#2563EB" strokeDasharray="5 5" />
               </LineChart>
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex justify-between text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#00FF88] rounded-full"></span>{t('backtest.chart.oversold')} &lt; 20</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#2563EB] rounded-full"></span>{t('backtest.chart.oversold')} &lt; 20</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>{t('backtest.chart.overbought')} &gt; 80</span>
             </div>
           </div>
@@ -284,12 +284,12 @@ const OscillatorCharts = React.memo(({ backtestData, chartData, t }: any) => {
                   isAnimationActive={false}
                 />
                 <ReferenceDot y={-20} stroke="#DC2626" strokeDasharray="5 5" />
-                <ReferenceDot y={-80} stroke="#00FF88" strokeDasharray="5 5" />
+                <ReferenceDot y={-80} stroke="#2563EB" strokeDasharray="5 5" />
               </LineChart>
             </ResponsiveContainer>
             </div>
             <div className="mt-2 flex justify-between text-xs text-gray-400 px-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#00FF88] rounded-full"></span>{t('backtest.chart.oversold')} &gt; -80</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#2563EB] rounded-full"></span>{t('backtest.chart.oversold')} &gt; -80</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#DC2626] rounded-full"></span>{t('backtest.chart.overbought')} &lt; -20</span>
             </div>
           </div>
@@ -777,7 +777,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           )}
 
           {data.ema1 && (
-            <p className="text-[#00FF88]">
+            <p className="text-[#2563EB]">
               EMA {backtestData.config.parameters.emaPeriod1}: <span className="font-mono">${data.ema1.toFixed(2)}</span>
             </p>
           )}
@@ -791,14 +791,14 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           {data.trade && (
             <div className="mt-2 pt-2 border-t border-gray-700">
               <p className={`font-medium ${
-                data.trade.type === 'BUY' ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                data.trade.type === 'BUY' ? 'text-[#2563EB]' : 'text-[#DC2626]'
               }`}>
                 {data.trade.type === 'BUY' ? `📈 ${t('backtest.chart.buy').toUpperCase()}` : `📉 ${t('backtest.chart.sell').toUpperCase()}`}
               </p>
               <p className="text-gray-300 text-sm">{data.trade.reason}</p>
               {data.trade.pnl !== undefined && (
                 <p className={`text-sm font-medium ${
-                  data.trade.pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                  data.trade.pnl >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                 }`}>
                   P&L: {data.trade.pnl >= 0 ? '+' : ''}${data.trade.pnl.toFixed(2)}
                   {data.trade.pnlPercentage && (
@@ -930,7 +930,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                   }}
                   className="flex-1 h-2 bg-gray-700/50 rounded-lg appearance-none cursor-pointer slider-thumb"
                   style={{
-                    background: `linear-gradient(to right, #00FF88 0%, #00FF88 ${replayService.getProgress() * 100}%, #374151 ${replayService.getProgress() * 100}%, #374151 100%)`
+                    background: `linear-gradient(to right, #2563EB 0%, #2563EB ${replayService.getProgress() * 100}%, #374151 ${replayService.getProgress() * 100}%, #374151 100%)`
                   }}
                 />
                 <span className="text-xs text-gray-400 min-w-[120px] text-right">
@@ -971,7 +971,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               <Zap className={`${replayIconSize} text-yellow-400`} />
               <span className="text-gray-400">Vitesse:</span>
               {[0.25, 0.5, 1, 2, 5, 10].map(speed => (
-                <button key={speed} onClick={() => replayService.setSpeed(speed)} className={`${replaySpeedSizeClasses} rounded transition-all ${replayState.speed === speed ? 'bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
+                <button key={speed} onClick={() => replayService.setSpeed(speed)} className={`${replaySpeedSizeClasses} rounded transition-all ${replayState.speed === speed ? 'bg-gradient-to-r from-[#2563EB] to-[#8B5CF6] text-white' : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'}`}>
                   {speed}x
                 </button>
               ))}
@@ -1113,7 +1113,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold mb-1 ${
-                  (backtestData.state.summary.winRate || 0) >= 50 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                  (backtestData.state.summary.winRate || 0) >= 50 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                 }`}>
                   {((backtestData.state.summary.winRate || 0) * 100).toFixed(1)}%
                 </div>
@@ -1121,7 +1121,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold mb-1 ${
-                  (backtestData.state.summary.totalPnL || 0) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                  (backtestData.state.summary.totalPnL || 0) >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                 }`}>
                   ${(backtestData.state.summary.totalPnL || 0).toFixed(2)}
                 </div>
@@ -1129,7 +1129,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
               </div>
               <div className="text-center">
                 <div className={`text-2xl font-bold mb-1 ${
-                  (backtestData.state.summary.totalReturn || 0) >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                  (backtestData.state.summary.totalReturn || 0) >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                 }`}>
                   {((backtestData.state.summary.totalReturn || 0) * 100).toFixed(1)}%
                 </div>
@@ -1218,7 +1218,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                             <p className="text-gray-400 mb-1 text-sm">
                               Investi: <span className="font-mono">${invested.toFixed(2)}</span>
                             </p>
-                            <p className={`${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                            <p className={`${pnl >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                               P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
                             </p>
                           </div>
@@ -1234,7 +1234,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                             <p className="text-[#F9FAFB] mb-1">
                               {t('backtest.chart.capital')}: <span className="font-mono">${data.value.toFixed(2)}</span>
                             </p>
-                            <p className={`${pnl >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                            <p className={`${pnl >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                               P&L: <span className="font-mono">{pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} ({pnl >= 0 ? '+' : ''}{pnlPercent}%)</span>
                             </p>
                           </div>
@@ -1247,7 +1247,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#00FF88"
+                  stroke="#2563EB"
                   strokeWidth={3}
                   dot={false}
                   name={backtestData.config.strategy === 'dca' ? 'Valeur' : t('backtest.chart.capital')}
@@ -1265,7 +1265,7 @@ export default function BacktestChart({ backtestData, selectedTrade, onTradeZoom
           <div className="mt-4 flex items-center justify-between text-sm">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-0.5 bg-[#00FF88]"></div>
+                <div className="w-3 h-0.5 bg-[#2563EB]"></div>
                 <span className="text-gray-300">
                   {backtestData.config.strategy === 'dca' ? 'Valeur du portefeuille' : t('backtest.chart.total_capital')}
                 </span>

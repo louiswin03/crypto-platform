@@ -12,8 +12,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', hover = true, children, ...props }, ref) => {
     const variants = {
       default: 'glass-effect-strong border border-gray-800/40',
-      glass: 'glass-effect border border-[#00FF88]/20',
-      gradient: 'glass-effect-strong border border-transparent bg-gradient-to-br from-[#00FF88]/5 via-transparent to-[#00D9FF]/5'
+      glass: 'glass-effect border border-[#2563EB]/20',
+      gradient: 'glass-effect-strong border border-transparent bg-gradient-to-br from-[#2563EB]/5 via-transparent to-[#00D9FF]/5'
     }
 
     return (

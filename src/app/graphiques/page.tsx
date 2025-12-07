@@ -38,14 +38,14 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
               <div className="flex items-center space-x-2">
                 <div
                   className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold"
-                  style={{ backgroundColor: list.color || '#00FF88' }}
+                  style={{ backgroundColor: list.color || '#2563EB' }}
                 >
                   {list.icon || '📋'}
                 </div>
                 <div className="text-left">
                   <div className="font-bold text-white text-sm flex items-center space-x-1.5">
                     <span>{list.name}</span>
-                    {list.is_pinned && <Star className="w-3 h-3 text-[#FFA366] fill-current" />}
+                    {list.is_pinned && <Star className="w-3 h-3 text-[#F59E0B] fill-current" />}
                   </div>
                   <div className="text-gray-400 text-xs">
                     {list.items?.length || 0} crypto{(list.items?.length || 0) !== 1 ? 's' : ''}
@@ -72,7 +72,7 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
                       onClick={() => onCryptoSelect(tradingViewSymbol, item.crypto_id)}
                       className={`w-full flex items-center justify-between p-2 rounded-lg transition-all duration-300 ${
                         selectedPair === tradingViewSymbol
-                          ? 'bg-[#00FF88]/20 border border-[#00FF88]/40'
+                          ? 'bg-[#2563EB]/20 border border-[#2563EB]/40'
                           : 'hover:bg-gray-600/30 border border-transparent'
                       }`}
                     >
@@ -89,7 +89,7 @@ function WatchlistAccordion({ watchlists, prices, selectedPair, onCryptoSelect }
                         <div className="text-right">
                           <div className="font-bold text-white text-sm">${cryptoData.current_price.toLocaleString()}</div>
                           {cryptoData.price_change_percentage_24h !== null && (
-                            <div className={`text-xs ${cryptoData.price_change_percentage_24h >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'}`}>
+                            <div className={`text-xs ${cryptoData.price_change_percentage_24h >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>
                               {cryptoData.price_change_percentage_24h >= 0 ? '+' : ''}{cryptoData.price_change_percentage_24h.toFixed(2)}%
                             </div>
                           )}
@@ -292,9 +292,26 @@ function GraphiquesPageContent() {
         .animate-fade-in-up {
           animation: fade-in-up 0.3s ease-in-out;
         }
+        @keyframes gradient-shift {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        .animate-gradient-shift {
+          background-size: 200% 200%;
+          animation: gradient-shift 6s ease infinite;
+        }
       `}</style>
 
-      <div className={`min-h-screen ${isDarkMode ? 'bg-[#0A0E1A]' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen relative overflow-hidden ${isDarkMode ? 'bg-[#0A0E1A]' : 'bg-gray-50'}`}>
+        {/* Background Pattern */}
+        <div className={`fixed inset-0 pattern-dots ${
+          isDarkMode ? 'opacity-30' : 'opacity-10'
+        }`}></div>
+
         <SmartNavigation />
 
         <main className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-20">
@@ -303,7 +320,7 @@ function GraphiquesPageContent() {
             <h1 className="text-3xl md:text-4xl font-bold mb-2">
               <span className={`${
                 isDarkMode
-                  ? 'bg-gradient-to-r from-[#F9FAFB] via-[#00FF88] to-[#8B5CF6] bg-clip-text text-transparent'
+                  ? 'bg-gradient-to-r from-[#F9FAFB] via-[#2563EB] to-[#4F46E5] bg-clip-text text-transparent animate-gradient-shift'
                   : 'text-[#1E293B]'
               }`}>
                 {t('charts.page_title')}
@@ -333,15 +350,15 @@ function GraphiquesPageContent() {
                 <div>
                   <div className={`text-xl font-bold flex items-center gap-2 ${isDarkMode ? 'text-[#F9FAFB]' : 'text-[#1E293B]'}`}>
                     <span>{symbolWithoutExchange || 'BTCUSD'}</span>
-                    <div className="flex items-center space-x-1 bg-[#00FF88]/20 px-2 py-0.5 rounded-full border border-[#00FF88]/30">
-                      <div className="w-2 h-2 bg-[#00FF88] rounded-full animate-pulse"></div>
-                      <span className="text-[#00FF88] font-bold text-xs">LIVE</span>
+                    <div className="flex items-center space-x-1 bg-[#2563EB]/20 px-2 py-0.5 rounded-full border border-[#2563EB]/30">
+                      <div className="w-2 h-2 bg-[#2563EB] rounded-full animate-pulse"></div>
+                      <span className="text-[#2563EB] font-bold text-xs">LIVE</span>
                     </div>
                   </div>
                   <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     <span className="font-semibold">{currentCrypto.name}</span>
                     <span className="mx-2">•</span>
-                    <span className="text-xs bg-[#00FF88]/20 text-[#00FF88] px-2 py-0.5 rounded-full">
+                    <span className="text-xs bg-[#2563EB]/20 text-[#2563EB] px-2 py-0.5 rounded-full">
                       {currentCrypto.category}
                     </span>
                   </div>
@@ -352,14 +369,14 @@ function GraphiquesPageContent() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowSearchModal(true)}
-                  className="px-4 py-2 bg-[#00FF88]/20 hover:bg-[#00FF88]/30 border border-[#00FF88]/40 text-[#00FF88] rounded-lg font-semibold transition-all flex items-center gap-2"
+                  className="px-4 py-2 bg-[#2563EB]/20 hover:bg-[#2563EB]/30 border border-[#2563EB]/40 text-[#2563EB] rounded-lg font-semibold transition-all flex items-center gap-2"
                 >
                   <Search className="w-4 h-4" />
                   <span>Changer</span>
                 </button>
                 <button
                   onClick={toggleFullscreen}
-                  className="p-2 bg-gray-800/80 hover:bg-gray-700/80 border border-gray-600/50 hover:border-[#00FF88]/60 rounded-lg transition-all"
+                  className="p-2 bg-gray-800/80 hover:bg-gray-700/80 border border-gray-600/50 hover:border-[#2563EB]/60 rounded-lg transition-all"
                   title="Plein écran"
                 >
                   <Maximize2 className="w-5 h-5 text-gray-400" />
@@ -427,7 +444,7 @@ function GraphiquesPageContent() {
             {user && (
               <Link
                 href="/backtest"
-                className="flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-[#00FF88] via-[#8B5CF6] to-[#A855F7] text-white rounded-2xl font-bold hover:scale-105 transition-all duration-300 shadow-2xl"
+                className="flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-[#2563EB] via-[#8B5CF6] to-[#A855F7] text-white rounded-2xl font-bold hover:scale-105 transition-all duration-300 shadow-2xl"
               >
                 <Activity className="w-6 h-6" />
                 <span>Backtest {currentCrypto.name}</span>
@@ -472,12 +489,12 @@ function GraphiquesPageContent() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
-                      <Star className="w-4 h-4 text-[#FFA366]" />
+                      <Star className="w-4 h-4 text-[#F59E0B]" />
                       <h3 className="text-base font-semibold text-white">
                         {t('charts.my_watchlists')}
                       </h3>
                       {user && watchlists.length > 0 && (
-                        <div className="text-xs bg-[#FFA366]/20 border border-[#FFA366]/30 text-[#FFA366] px-2 py-0.5 rounded-full font-bold">
+                        <div className="text-xs bg-[#F59E0B]/20 border border-[#F59E0B]/30 text-[#F59E0B] px-2 py-0.5 rounded-full font-bold">
                           {watchlists.length}
                         </div>
                       )}
@@ -490,7 +507,7 @@ function GraphiquesPageContent() {
                       <p className="text-gray-400 text-sm mb-3">{t('charts.connect_for_lists')}</p>
                       <Link
                         href="/auth/signin"
-                        className="inline-flex items-center px-4 py-2 bg-[#00FF88] text-white rounded-lg text-sm hover:bg-[#8B5CF6] transition-all"
+                        className="inline-flex items-center px-4 py-2 bg-[#2563EB] text-white rounded-lg text-sm hover:bg-[#8B5CF6] transition-all"
                       >
                         {t('charts.signin')}
                       </Link>
@@ -501,7 +518,7 @@ function GraphiquesPageContent() {
                       <p className="text-gray-400 text-sm mb-3">{t('charts.create_first_list')}</p>
                       <Link
                         href="/cryptos"
-                        className="inline-flex items-center space-x-2 px-4 py-2 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-lg text-sm transition-all duration-300"
+                        className="inline-flex items-center space-x-2 px-4 py-2 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] border-2 border-[#2563EB]/30 hover:border-[#2563EB]/40 rounded-lg text-sm transition-all duration-300"
                       >
                         <Star className="w-4 h-4" />
                         <span>{t('charts.create_list')}</span>
@@ -530,7 +547,7 @@ export default function GraphiquesPageSimple() {
     <Suspense fallback={
       <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#00FF88]/20 border-t-[#00FF88] rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-[#2563EB]/20 border-t-[#2563EB] rounded-full animate-spin mx-auto mb-4"></div>
           <div className="text-gray-400">Chargement...</div>
         </div>
       </div>

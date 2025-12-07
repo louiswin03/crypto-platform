@@ -16,7 +16,7 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
 
     const variants = {
       default: 'from-gray-600 to-gray-500',
-      primary: 'from-[#00FF88] to-[#00D9FF]',
+      primary: 'from-[#2563EB] to-[#00D9FF]',
       success: 'from-green-500 to-green-400',
       warning: 'from-yellow-500 to-yellow-400',
       danger: 'from-red-500 to-red-400',

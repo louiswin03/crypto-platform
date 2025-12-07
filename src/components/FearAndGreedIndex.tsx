@@ -73,7 +73,7 @@ export default function FearAndGreedIndex() {
   if (loading) {
     return (
       <div className="glass-effect-strong rounded-2xl p-8 border border-gray-700/50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#00FF88]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#2563EB]" />
       </div>
     )
   }
@@ -90,7 +90,7 @@ export default function FearAndGreedIndex() {
     if (value <= 25) return '#DC2626' // Extreme Fear - Rouge
     if (value <= 45) return '#FFA366' // Fear - Orange
     if (value <= 55) return '#9CA3AF' // Neutral - Gris
-    if (value <= 75) return '#00FF88' // Greed - Vert
+    if (value <= 75) return '#2563EB' // Greed - Vert
     return '#10B981' // Extreme Greed - Vert vif
   }
 
@@ -118,7 +118,7 @@ export default function FearAndGreedIndex() {
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="flex items-center space-x-2 font-bold text-[#F9FAFB] text-base">
-              <div className="p-1.5 bg-[#00FF88]/20 rounded-lg">
+              <div className="p-1.5 bg-[#2563EB]/20 rounded-lg">
                 {getIcon()}
               </div>
               <span>{t('fear_greed.title')}</span>
@@ -139,7 +139,7 @@ export default function FearAndGreedIndex() {
                 className="p-1 hover:bg-gray-700/50 rounded-lg transition-colors"
                 title={t('fear_greed.refresh')}
               >
-                <Activity className="w-4 h-4 text-gray-400 hover:text-[#00FF88]" />
+                <Activity className="w-4 h-4 text-gray-400 hover:text-[#2563EB]" />
               </button>
             </div>
           </div>
@@ -216,7 +216,7 @@ export default function FearAndGreedIndex() {
               <div className="text-[9px] text-gray-500">{t('fear_greed.neutral')}</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-full h-1.5 bg-[#00FF88] rounded"></div>
+              <div className="w-full h-1.5 bg-[#2563EB] rounded"></div>
               <div className="text-[10px] text-gray-400 mt-1">56-75</div>
               <div className="text-[9px] text-gray-500">{t('fear_greed.greed')}</div>
             </div>

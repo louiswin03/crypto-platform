@@ -124,8 +124,8 @@ export default function CookieConsent() {
           <div className="p-6 md:p-8">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-[#00FF88]/20 rounded-xl flex items-center justify-center transition-transform hover:scale-110">
-                  <Cookie className="w-6 h-6 text-[#00FF88]" />
+                <div className="w-12 h-12 bg-[#2563EB]/20 rounded-xl flex items-center justify-center transition-transform hover:scale-110">
+                  <Cookie className="w-6 h-6 text-[#2563EB]" />
                 </div>
               </div>
 
@@ -137,7 +137,7 @@ export default function CookieConsent() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={handleAcceptAll}
-                    className="px-6 py-2.5 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-xl font-medium transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="px-6 py-2.5 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] border-2 border-[#2563EB]/30 hover:border-[#2563EB]/40 rounded-xl font-medium transition-all duration-300 shadow-sm hover:shadow-md"
                   >
                     {t.acceptAll}
                   </button>
@@ -149,7 +149,7 @@ export default function CookieConsent() {
                   </button>
                   <button
                     onClick={() => setShowSettings(!showSettings)}
-                    className="px-6 py-2.5 bg-transparent border border-gray-600 hover:border-[#00FF88] hover:bg-[#00FF88]/10 text-gray-300 hover:text-white rounded-xl font-medium transition-all hover:scale-105 flex items-center gap-2"
+                    className="px-6 py-2.5 bg-transparent border border-gray-600 hover:border-[#2563EB] hover:bg-[#2563EB]/10 text-gray-300 hover:text-white rounded-xl font-medium transition-all hover:scale-105 flex items-center gap-2"
                   >
                     <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" />
                     {t.customize}
@@ -158,7 +158,7 @@ export default function CookieConsent() {
 
                 <a
                   href="/politique-confidentialite"
-                  className="inline-flex items-center gap-1 mt-3 text-sm text-[#00FF88] hover:text-[#8B5CF6] transition-all hover:gap-2"
+                  className="inline-flex items-center gap-1 mt-3 text-sm text-[#2563EB] hover:text-[#8B5CF6] transition-all hover:gap-2"
                 >
                   <span>{t.privacyPolicy}</span>
                   <span className="transition-transform">→</span>
@@ -170,18 +170,18 @@ export default function CookieConsent() {
             {showSettings && (
               <div className="mt-6 pt-6 border-t border-gray-700/50 space-y-4">
                 {/* Cookies nécessaires */}
-                <div className="flex items-start justify-between gap-4 p-4 rounded-xl bg-[#00FF88]/5 border border-[#00FF88]/20">
+                <div className="flex items-start justify-between gap-4 p-4 rounded-xl bg-[#2563EB]/5 border border-[#2563EB]/20">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-semibold text-[#F9FAFB]">{t.necessary}</h4>
-                      <span className="px-2 py-0.5 bg-[#00FF88]/20 text-[#00FF88] text-xs rounded-md font-medium">
+                      <span className="px-2 py-0.5 bg-[#2563EB]/20 text-[#2563EB] text-xs rounded-md font-medium">
                         {language === 'fr' ? 'Requis' : 'Required'}
                       </span>
                     </div>
                     <p className="text-sm text-gray-400">{t.necessaryDesc}</p>
                   </div>
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-6 bg-[#00FF88] rounded-full flex items-center justify-end px-1 cursor-not-allowed opacity-75">
+                    <div className="w-12 h-6 bg-[#2563EB] rounded-full flex items-center justify-end px-1 cursor-not-allowed opacity-75">
                       <div className="w-4 h-4 bg-white rounded-full shadow-lg"></div>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ export default function CookieConsent() {
                     <button
                       onClick={() => togglePreference('functional')}
                       className={`w-12 h-6 rounded-full flex items-center px-1 transition-all hover:scale-110 ${
-                        preferences.functional ? 'bg-[#00FF88] hover:bg-[#5558E3] justify-end' : 'bg-gray-600 hover:bg-gray-500 justify-start'
+                        preferences.functional ? 'bg-[#2563EB] hover:bg-[#5558E3] justify-end' : 'bg-gray-600 hover:bg-gray-500 justify-start'
                       }`}
                     >
                       <div className="w-4 h-4 bg-white rounded-full shadow-lg"></div>
@@ -209,7 +209,7 @@ export default function CookieConsent() {
                 <div className="flex justify-end pt-4">
                   <button
                     onClick={handleSavePreferences}
-                    className="px-6 py-2.5 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-xl font-medium transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="px-6 py-2.5 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] border-2 border-[#2563EB]/30 hover:border-[#2563EB]/40 rounded-xl font-medium transition-all duration-300 shadow-sm hover:shadow-md"
                   >
                     {t.savePreferences}
                   </button>

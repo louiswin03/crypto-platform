@@ -290,7 +290,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   // Données pour le graphique circulaire
-  const COLORS = ['#00FF88', '#8B5CF6', '#EC4899', '#FFA366', '#10B981', '#3B82F6', '#EF4444', '#14B8A6', '#F97316', '#8B5CF6']
+  const COLORS = ['#2563EB', '#8B5CF6', '#EC4899', '#FFA366', '#10B981', '#3B82F6', '#EF4444', '#14B8A6', '#F97316', '#8B5CF6']
 
   // Séparer les holdings >= 1% et < 1%
   const significantHoldings = holdings.filter(h => totalValue > 0 && (h.totalValue / totalValue) * 100 >= 1)
@@ -338,7 +338,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-2xl font-bold text-white flex items-center space-x-3">
-            <Wallet className="w-6 h-6 text-[#00FF88]" />
+            <Wallet className="w-6 h-6 text-[#2563EB]" />
             <span>{portfolio.name}</span>
           </h3>
           {portfolio.description && (
@@ -388,16 +388,16 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
       {holdings.length > 0 && (
         <button
           onClick={() => setShowHoldings(!showHoldings)}
-          className="w-full flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 border border-[#00FF88]/30 hover:border-[#00FF88]/50 transition-all group mb-4"
+          className="w-full flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-[#2563EB]/10 to-[#8B5CF6]/10 border border-[#2563EB]/30 hover:border-[#2563EB]/50 transition-all group mb-4"
         >
           <div className="flex items-center space-x-3">
-            <Wallet className="w-5 h-5 text-[#00FF88]" />
+            <Wallet className="w-5 h-5 text-[#2563EB]" />
             <span className="text-white font-semibold">
               {showHoldings ? 'Masquer mes actifs' : 'Voir mes actifs'} ({holdings.length})
             </span>
           </div>
           <div className={`transform transition-transform ${showHoldings ? 'rotate-180' : ''}`}>
-            <svg className="w-5 h-5 text-[#00FF88]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </div>
@@ -428,7 +428,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
                       className="w-10 h-10 rounded-full"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#2563EB] via-[#8B5CF6] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
                       {holding.symbol.substring(0, 2)}
                     </div>
                   )}
@@ -473,7 +473,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
               <div className="glass-effect rounded-xl p-4 border border-gray-800/40">
                 <p className="text-gray-400 text-sm mb-2">Plus Grande Position</p>
                 <p className="text-xl font-bold text-white">{largestPosition.symbol}</p>
-                <p className="text-[#00FF88] text-sm mt-1">{largestPositionPercent.toFixed(1)}% du portfolio</p>
+                <p className="text-[#2563EB] text-sm mt-1">{largestPositionPercent.toFixed(1)}% du portfolio</p>
               </div>
             )}
 
@@ -556,7 +556,7 @@ export default function ConsolidatedPortfolioView({ portfolio, onAddManualHoldin
           {/* Répartition du Portfolio */}
           <div className="glass-effect rounded-xl p-6 border border-gray-800/40 mt-6">
             <h5 className="text-md font-semibold text-white mb-4 flex items-center space-x-2">
-              <PieChart className="w-5 h-5 text-[#00FF88]" />
+              <PieChart className="w-5 h-5 text-[#2563EB]" />
               <span>Répartition du Portfolio</span>
             </h5>
 

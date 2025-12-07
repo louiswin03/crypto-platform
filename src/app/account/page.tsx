@@ -348,7 +348,7 @@ function AccountPageContent() {
       <ProtectedRoute>
         <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#00FF88] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-400">{t('account.loading')}</p>
           </div>
         </div>
@@ -427,8 +427,8 @@ function AccountPageContent() {
         <div className="fixed inset-0 pattern-grid opacity-20"></div>
 
         {/* Gradient orbs */}
-        <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#00D9FF]/10 rounded-full blur-3xl"></div>
-        <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-[#FFA366]/10 rounded-full blur-3xl"></div>
+        <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#4F46E5]/10 rounded-full blur-3xl"></div>
+        <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-[#F59E0B]/10 rounded-full blur-3xl"></div>
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#8B5CF6]/8 rounded-full blur-3xl"></div>
 
         {/* Navigation */}
@@ -441,10 +441,10 @@ function AccountPageContent() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-6 md:mb-0">
                 <div className="relative">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#00FF88] via-[#8B5CF6] to-[#A855F7] rounded-2xl sm:rounded-3xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl shadow-2xl shadow-[#00FF88]/25">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#2563EB] via-[#8B5CF6] to-[#A855F7] rounded-2xl sm:rounded-3xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl shadow-2xl shadow-[#2563EB]/25">
                     {getUserInitials()}
                   </div>
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-[#00FF88] border-3 sm:border-4 border-[#0A0E1A] rounded-full"></div>
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-[#2563EB] border-3 sm:border-4 border-[#0A0E1A] rounded-full"></div>
                 </div>
                 <div className="text-center sm:text-left">
                   <h1 className={cn("text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight font-display mb-1 sm:mb-2", themeClasses.text.primary(isDarkMode))}>
@@ -466,7 +466,7 @@ function AccountPageContent() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 flex items-center justify-center space-x-1.5 sm:space-x-2 px-4 sm:px-6 py-3 sm:py-3.5 rounded-lg sm:rounded-xl transition-all duration-300 font-medium border-2 min-w-[110px] sm:min-w-[130px] ${
                       activeTab === tab.id
-                        ? 'bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/30 shadow-sm'
+                        ? 'bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/30 shadow-sm'
                         : 'text-gray-400 hover:text-[#F9FAFB] hover:bg-gray-800/40 border-transparent'
                     }`}
                   >
@@ -495,8 +495,8 @@ function AccountPageContent() {
                       disabled={loading}
                       className={`w-full sm:w-auto flex items-center justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-medium transition-all duration-300 border-2 text-sm sm:text-base ${
                         isEditing
-                          ? 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
-                          : 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md'
+                          ? 'bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] border-[#2563EB]/30 hover:border-[#2563EB]/40 shadow-sm hover:shadow-md'
+                          : 'bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] border-[#2563EB]/30 hover:border-[#2563EB]/40 shadow-sm hover:shadow-md'
                       }`}
                     >
                       {loading ? (
@@ -515,10 +515,10 @@ function AccountPageContent() {
                       {/* User Avatar & Basic Info */}
                       <div className="text-center lg:text-left">
                         <div className="relative inline-block mb-4 sm:mb-6">
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#00FF88] to-[#8B5CF6] rounded-2xl sm:rounded-3xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl shadow-2xl">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#2563EB] to-[#8B5CF6] rounded-2xl sm:rounded-3xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl shadow-2xl">
                             {getUserInitials()}
                           </div>
-                          <button className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-7 h-7 sm:w-8 sm:h-8 bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 rounded-full flex items-center justify-center hover:bg-[#00FF88]/20 hover:border-[#00FF88]/40 transition-all duration-300 shadow-sm">
+                          <button className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-7 h-7 sm:w-8 sm:h-8 bg-[#2563EB]/15 text-[#2563EB] border-2 border-[#2563EB]/30 rounded-full flex items-center justify-center hover:bg-[#2563EB]/20 hover:border-[#2563EB]/40 transition-all duration-300 shadow-sm">
                             <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </button>
                         </div>
@@ -541,12 +541,12 @@ function AccountPageContent() {
                           <div className={cn("flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#00FF88] flex-shrink-0" />
+                            <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#2563EB] flex-shrink-0" />
                             <div className="flex-1 min-w-0">
                               <div className={cn("font-medium text-sm sm:text-base truncate", themeClasses.text.primary(isDarkMode))}>{user?.email}</div>
                               <div className={cn("text-xs sm:text-sm", themeClasses.text.secondary(isDarkMode))}>{t('contact.email')}</div>
                             </div>
-                            <div className="px-2 py-0.5 sm:py-1 bg-[#00FF88]/20 text-[#00FF88] text-[10px] sm:text-xs rounded-full font-semibold whitespace-nowrap flex-shrink-0">
+                            <div className="px-2 py-0.5 sm:py-1 bg-[#2563EB]/20 text-[#2563EB] text-[10px] sm:text-xs rounded-full font-semibold whitespace-nowrap flex-shrink-0">
                               {t('contact.verified')}
                             </div>
                           </div>
@@ -562,7 +562,7 @@ function AccountPageContent() {
                                   value={editForm.phone}
                                   onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
                                   placeholder={t('contact.phone_placeholder')}
-                                  className={cn("w-full border rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:border-[#00FF88] focus:outline-none transition-colors",
+                                  className={cn("w-full border rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:border-[#2563EB] focus:outline-none transition-colors",
                                     isDarkMode
                                       ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
                                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -582,7 +582,7 @@ function AccountPageContent() {
                           <div className={cn("flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl",
                             isDarkMode ? "glass-effect" : "bg-gray-50 border border-gray-200"
                           )}>
-                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFA366] flex-shrink-0" />
+                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#F59E0B] flex-shrink-0" />
                             <div className="flex-1 min-w-0">
                               {isEditing ? (
                                 <input
@@ -590,7 +590,7 @@ function AccountPageContent() {
                                   value={editForm.location}
                                   onChange={(e) => setEditForm({...editForm, location: e.target.value})}
                                   placeholder={t('contact.location_placeholder')}
-                                  className={cn("w-full border rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:border-[#00FF88] focus:outline-none transition-colors",
+                                  className={cn("w-full border rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:border-[#2563EB] focus:outline-none transition-colors",
                                     isDarkMode
                                       ? "bg-gray-800/50 border-gray-700/50 text-[#F9FAFB] placeholder-gray-500"
                                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -635,13 +635,13 @@ function AccountPageContent() {
                       )}>{t('stats.title')}</h3>
 
                       <div className="grid grid-cols-2 gap-4 sm:gap-4 lg:gap-6">
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#2563EB]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#2563EB]/30">
                           <div className="flex items-center justify-between mb-3 sm:mb-3">
-                            <div className="p-2 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
-                              <Star className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
+                            <div className="p-2 sm:p-2 bg-[#2563EB]/20 rounded-lg sm:rounded-xl">
+                              <Star className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#2563EB]" />
                             </div>
                           </div>
-                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-2 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#2563EB] mb-2 sm:mb-2 font-display">
                             {userStats?.watchlists_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.watchlists')}</div>
@@ -649,31 +649,31 @@ function AccountPageContent() {
                             <div className="mt-2 sm:mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-xs sm:text-xs text-[#00FF88] hover:text-[#8B5CF6] transition-colors"
+                                className="text-xs sm:text-xs text-[#2563EB] hover:text-[#8B5CF6] transition-colors"
                               >
                                 {t('stats.create_first')}
                               </Link>
                             </div>
                           )}
                         </div>
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#00FF88]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#00FF88]/30">
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#2563EB]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#2563EB]/30">
                           <div className="flex items-center justify-between mb-3 sm:mb-3">
-                            <div className="p-2 sm:p-2 bg-[#00FF88]/20 rounded-lg sm:rounded-xl">
-                              <Activity className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#00FF88]" />
+                            <div className="p-2 sm:p-2 bg-[#2563EB]/20 rounded-lg sm:rounded-xl">
+                              <Activity className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#2563EB]" />
                             </div>
                           </div>
-                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#00FF88] mb-2 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#2563EB] mb-2 sm:mb-2 font-display">
                             {userStats?.exchanges_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.exchanges')}</div>
                         </div>
-                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#FFA366]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#FFA366]/30">
+                        <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-4 lg:p-6 hover:scale-105 hover:shadow-xl hover:shadow-[#F59E0B]/10 transition-all duration-300 border border-gray-800/50 hover:border-[#F59E0B]/30">
                           <div className="flex items-center justify-between mb-3 sm:mb-3">
-                            <div className="p-2 sm:p-2 bg-[#FFA366]/20 rounded-lg sm:rounded-xl">
-                              <TrendingUp className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#FFA366]" />
+                            <div className="p-2 sm:p-2 bg-[#F59E0B]/20 rounded-lg sm:rounded-xl">
+                              <TrendingUp className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-[#F59E0B]" />
                             </div>
                           </div>
-                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#FFA366] mb-2 sm:mb-2 font-display">
+                          <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-[#F59E0B] mb-2 sm:mb-2 font-display">
                             {userStats?.cryptos_count || 0}
                           </div>
                           <div className="text-gray-400 text-sm sm:text-sm font-medium">{t('stats.cryptos')}</div>
@@ -681,7 +681,7 @@ function AccountPageContent() {
                             <div className="mt-2 sm:mt-2">
                               <Link
                                 href="/portfolio"
-                                className="text-xs sm:text-xs text-[#FFA366] hover:text-[#FBBF24] transition-colors"
+                                className="text-xs sm:text-xs text-[#F59E0B] hover:text-[#FBBF24] transition-colors"
                               >
                                 {t('stats.add_cryptos')}
                               </Link>
@@ -713,7 +713,7 @@ function AccountPageContent() {
 
                       <div className="mt-6 sm:mt-8 glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
                         <h4 className="font-semibold text-[#F9FAFB] mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
-                          <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#00FF88] mr-2" />
+                          <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#2563EB] mr-2" />
                           {t('performance.title')}
                         </h4>
                         {performanceData ? (
@@ -721,7 +721,7 @@ function AccountPageContent() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-400">{t('performance.this_month')}</span>
                               <span className={`font-semibold ${
-                                performanceData.monthly_return >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                                performanceData.monthly_return >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                               }`}>
                                 {performanceData.monthly_return >= 0 ? '+' : ''}{(performanceData.monthly_return * 100).toFixed(1)}%
                               </span>
@@ -729,7 +729,7 @@ function AccountPageContent() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-400">{t('performance.last_3_months')}</span>
                               <span className={`font-semibold ${
-                                performanceData.quarterly_return >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                                performanceData.quarterly_return >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                               }`}>
                                 {performanceData.quarterly_return >= 0 ? '+' : ''}{(performanceData.quarterly_return * 100).toFixed(1)}%
                               </span>
@@ -737,7 +737,7 @@ function AccountPageContent() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-400">{t('performance.this_year')}</span>
                               <span className={`font-semibold ${
-                                performanceData.yearly_return >= 0 ? 'text-[#00FF88]' : 'text-[#DC2626]'
+                                performanceData.yearly_return >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
                               }`}>
                                 {performanceData.yearly_return >= 0 ? '+' : ''}{(performanceData.yearly_return * 100).toFixed(1)}%
                               </span>
@@ -784,7 +784,7 @@ function AccountPageContent() {
                         <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('settings.email_notifications')}</div>
                         <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('settings.email_notifications_desc')}</div>
                       </div>
-                      <button className="relative w-12 h-6 bg-[#00FF88] rounded-full transition-colors flex-shrink-0 self-start sm:self-center">
+                      <button className="relative w-12 h-6 bg-[#2563EB] rounded-full transition-colors flex-shrink-0 self-start sm:self-center">
                         <div className="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div>
                       </button>
                     </div>
@@ -799,7 +799,7 @@ function AccountPageContent() {
                       <button
                         onClick={toggleTheme}
                         className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 self-start sm:self-center ${
-                          isDarkMode ? 'bg-[#00FF88]' : 'bg-gray-300'
+                          isDarkMode ? 'bg-[#2563EB]' : 'bg-gray-300'
                         }`}
                       >
                         <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
@@ -818,7 +818,7 @@ function AccountPageContent() {
                       <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value as 'fr' | 'en')}
-                        className="bg-gray-800/50 border border-gray-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none text-sm sm:text-base flex-shrink-0"
+                        className="bg-gray-800/50 border border-gray-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 text-[#F9FAFB] focus:border-[#2563EB] focus:outline-none text-sm sm:text-base flex-shrink-0"
                       >
                         <option value="fr">Français</option>
                         <option value="en">English</option>
@@ -832,7 +832,7 @@ function AccountPageContent() {
                         <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('settings.currency')}</div>
                         <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('settings.currency_desc')}</div>
                       </div>
-                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 text-[#F9FAFB] focus:border-[#00FF88] focus:outline-none text-sm sm:text-base flex-shrink-0">
+                      <select className="bg-gray-800/50 border border-gray-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 text-[#F9FAFB] focus:border-[#2563EB] focus:outline-none text-sm sm:text-base flex-shrink-0">
                         <option value="EUR">EUR (€)</option>
                         <option value="USD">USD ($)</option>
                         <option value="BTC">BTC (₿)</option>
@@ -851,8 +851,8 @@ function AccountPageContent() {
                   <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center space-x-3 sm:space-x-4">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#00FF88]/20 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
-                          <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-[#00FF88]" />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#2563EB]/20 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                          <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-[#2563EB]" />
                         </div>
                         <div>
                           <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('security.password')}</div>
@@ -862,7 +862,7 @@ function AccountPageContent() {
                       <button
                         onClick={handlePasswordReset}
                         disabled={sendingPasswordReset}
-                        className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 rounded-lg sm:rounded-xl transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm hover:shadow-md text-sm sm:text-base"
+                        className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] border-2 border-[#2563EB]/30 hover:border-[#2563EB]/40 rounded-lg sm:rounded-xl transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-sm hover:shadow-md text-sm sm:text-base"
                       >
                         {sendingPasswordReset ? (
                           <>
@@ -882,8 +882,8 @@ function AccountPageContent() {
                   <div className="glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-center space-x-3 sm:space-x-4">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FFA366]/20 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
-                          <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFA366]" />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F59E0B]/20 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                          <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#F59E0B]" />
                         </div>
                         <div>
                           <div className="font-semibold text-[#F9FAFB] text-sm sm:text-base">{t('security.2fa')}</div>
@@ -901,13 +901,13 @@ function AccountPageContent() {
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/30 rounded-lg sm:rounded-xl">
                         <div className="flex items-center space-x-3 sm:space-x-4">
-                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#00FF88]/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                            <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-[#00FF88]" />
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#2563EB]/20 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                            <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-[#2563EB]" />
                           </div>
                           <div>
                             <div className="font-medium text-[#F9FAFB] flex flex-wrap items-center gap-2 text-sm sm:text-base">
                               <span>{t('security.current_session')}</span>
-                              <span className="px-2 py-0.5 sm:py-1 bg-[#00FF88]/20 text-[#00FF88] text-[10px] sm:text-xs font-semibold rounded-full">
+                              <span className="px-2 py-0.5 sm:py-1 bg-[#2563EB]/20 text-[#2563EB] text-[10px] sm:text-xs font-semibold rounded-full">
                                 {t('security.active')}
                               </span>
                             </div>
@@ -943,9 +943,9 @@ function AccountPageContent() {
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <div className={`w-3 h-3 rounded-full mt-2 animate-pulse-slow ${
-                          activity.type === 'backtest' ? 'bg-[#00FF88]' :
-                          activity.type === 'security' ? 'bg-[#FFA366]' :
-                          activity.type === 'auth' ? 'bg-[#00FF88]' :
+                          activity.type === 'backtest' ? 'bg-[#2563EB]' :
+                          activity.type === 'security' ? 'bg-[#F59E0B]' :
+                          activity.type === 'auth' ? 'bg-[#2563EB]' :
                           'bg-gray-400'
                         }`}></div>
                         <div className="flex-1">
@@ -982,7 +982,7 @@ export default function AccountPage() {
       <ProtectedRoute>
         <div className="min-h-screen bg-[#0A0E1A] text-[#F9FAFB] flex items-center justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-[#00FF88] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-400">Chargement...</p>
           </div>
         </div>

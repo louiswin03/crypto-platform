@@ -109,11 +109,11 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
   const getTransactionIcon = (type: string) => {
     switch (type) {
       case 'buy':
-        return <TrendingUp className="w-5 h-5 text-[#00FF88]" />
+        return <TrendingUp className="w-5 h-5 text-[#2563EB]" />
       case 'sell':
         return <TrendingDown className="w-5 h-5 text-[#DC2626]" />
       case 'deposit':
-        return <ArrowDownCircle className="w-5 h-5 text-[#00FF88]" />
+        return <ArrowDownCircle className="w-5 h-5 text-[#2563EB]" />
       case 'withdrawal':
         return <ArrowUpCircle className="w-5 h-5 text-[#FFA366]" />
       default:
@@ -124,11 +124,11 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
   const getTransactionColor = (type: string) => {
     switch (type) {
       case 'buy':
-        return 'bg-[#00FF88]/10 border-[#00FF88]/30 text-[#00FF88]'
+        return 'bg-[#2563EB]/10 border-[#2563EB]/30 text-[#2563EB]'
       case 'sell':
         return 'bg-[#DC2626]/10 border-[#DC2626]/30 text-[#DC2626]'
       case 'deposit':
-        return 'bg-[#00FF88]/10 border-[#00FF88]/30 text-[#00FF88]'
+        return 'bg-[#2563EB]/10 border-[#2563EB]/30 text-[#2563EB]'
       case 'withdrawal':
         return 'bg-[#FFA366]/10 border-[#FFA366]/30 text-[#FFA366]'
       default:
@@ -171,7 +171,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-2xl font-bold text-white flex items-center space-x-3">
-            <Activity className="w-6 h-6 text-[#00FF88]" />
+            <Activity className="w-6 h-6 text-[#2563EB]" />
             <span>Transactions {exchange.charAt(0).toUpperCase() + exchange.slice(1)}</span>
           </h3>
           <p className="text-gray-400 text-sm mt-1">
@@ -195,7 +195,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
             onClick={() => setFilter(f as any)}
             className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
               filter === f
-                ? 'bg-[#00FF88] text-white'
+                ? 'bg-[#2563EB] text-white'
                 : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
             }`}
           >
@@ -209,7 +209,7 @@ export default function ExchangeTransactions({ exchange, onClose }: ExchangeTran
       {/* Liste des transactions */}
       {loading ? (
         <div className="text-center py-12">
-          <RefreshCcw className="w-8 h-8 text-[#00FF88] mx-auto mb-4 animate-spin" />
+          <RefreshCcw className="w-8 h-8 text-[#2563EB] mx-auto mb-4 animate-spin" />
           <p className="text-gray-400">Chargement des transactions...</p>
         </div>
       ) : error ? (

@@ -631,7 +631,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   type="number"
                   value={value}
                   onChange={(e) => updateIndicatorParameter(indicator.id, key, Number(e.target.value))}
-                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded px-2 py-1 text-xs text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#00FF88]"
+                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded px-2 py-1 text-xs text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                   min="1"
                   step={key === 'stdDev' ? '0.1' : '1'}
                 />
@@ -852,7 +852,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 ? 'bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent'
                 : 'text-[#1E293B]'
             }`}>
-              <div className="p-2 bg-gradient-to-r from-[#00FF88] to-[#8B5CF6] rounded-lg">
+              <div className="p-2 bg-gradient-to-r from-[#2563EB] to-[#8B5CF6] rounded-lg">
                 <Settings className="w-5 h-5 text-white" />
               </div>
               {t('backtest.config.base_params')}
@@ -869,7 +869,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 <select
                   value={config.crypto}
                   onChange={(e) => setConfig(prev => ({ ...prev, crypto: e.target.value as 'BTC' | 'ETH' }))}
-                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200 ${
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200 ${
                     isDarkMode
                       ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
                       : 'bg-white border-gray-300 text-gray-900'
@@ -890,7 +890,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 <select
                   value={config.period}
                   onChange={(e) => setConfig(prev => ({ ...prev, period: e.target.value as BacktestPeriod }))}
-                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200 ${
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200 ${
                     isDarkMode
                       ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
                       : 'bg-white border-gray-300 text-gray-900'
@@ -916,7 +916,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   type="number"
                   value={config.initialCapital}
                   onChange={(e) => setConfig(prev => ({ ...prev, initialCapital: Number(e.target.value) }))}
-                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200 ${
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200 ${
                     isDarkMode
                       ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
                       : 'bg-white border-gray-300 text-gray-900'
@@ -939,7 +939,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   type="number"
                   value={config.positionSize}
                   onChange={(e) => setConfig(prev => ({ ...prev, positionSize: Number(e.target.value) }))}
-                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200 ${
+                  className={`w-full backdrop-blur-sm border rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200 ${
                     isDarkMode
                       ? 'bg-white/[0.02] border-white/10 text-[#F9FAFB]'
                       : 'bg-white border-gray-300 text-gray-900'
@@ -955,7 +955,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
           {/* Stratégie */}
           <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
             <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] bg-clip-text text-transparent mb-8 flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-[#00FF88] to-[#22C55E] rounded-lg">
+              <div className="p-2 bg-gradient-to-r from-[#2563EB] to-[#22C55E] rounded-lg">
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
               {t('backtest.config.trading_strategy')}
@@ -967,7 +967,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 onClick={() => setActiveTab('recommended')}
                 className={`flex-1 px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 border-2 ${
                   activeTab === 'recommended'
-                    ? 'bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/30 shadow-sm'
+                    ? 'bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/30 shadow-sm'
                     : 'text-[#9CA3AF] hover:text-[#F9FAFB] hover:bg-white/[0.05] border-transparent'
                 }`}
               >
@@ -977,7 +977,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 onClick={() => setActiveTab('custom')}
                 className={`flex-1 px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 border-2 ${
                   activeTab === 'custom'
-                    ? 'bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/30 shadow-sm'
+                    ? 'bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/30 shadow-sm'
                     : 'text-[#9CA3AF] hover:text-[#F9FAFB] hover:bg-white/[0.05] border-transparent'
                 }`}
               >
@@ -999,7 +999,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                       key={strategy.id}
                       className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${
                         config.strategy === strategy.id
-                          ? 'border-[#00FF88]/50 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#00FF88]/10'
+                          ? 'border-[#2563EB]/50 bg-gradient-to-r from-[#2563EB]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#2563EB]/10'
                           : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
                       }`}
                       onClick={() => setConfig(prev => ({ ...prev, strategy: strategy.id }))}
@@ -1009,7 +1009,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-semibold text-[#F9FAFB]">{strategy.name}</h4>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            strategy.difficulty === t('difficulty.beginner') ? 'bg-[#00FF88]/20 text-[#00FF88]' :
+                            strategy.difficulty === t('difficulty.beginner') ? 'bg-[#2563EB]/20 text-[#2563EB]' :
                             strategy.difficulty === t('difficulty.intermediate') ? 'bg-[#FFA366]/20 text-[#FFA366]' :
                             'bg-[#DC2626]/20 text-[#DC2626]'
                           }`}>
@@ -1018,7 +1018,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         </div>
                         <p className="text-gray-400 text-sm mb-2">{strategy.description}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-[#00FF88] font-medium">{strategy.type}</span>
+                          <span className="text-xs text-[#2563EB] font-medium">{strategy.type}</span>
                           <span className="text-xs text-gray-500">•</span>
                           <span className="text-xs text-gray-400">
                             {t('modal.load.indicators')} {strategy.indicators.join(', ')}
@@ -1027,7 +1027,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                       </div>
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                         config.strategy === strategy.id
-                          ? 'border-[#00FF88] bg-[#00FF88]'
+                          ? 'border-[#2563EB] bg-[#2563EB]'
                           : 'border-gray-600'
                       }`}>
                         {config.strategy === strategy.id && (
@@ -1051,7 +1051,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                       key={strategy.id}
                       className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${
                         config.strategy === strategy.id
-                          ? 'border-[#00FF88]/50 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#00FF88]/10'
+                          ? 'border-[#2563EB]/50 bg-gradient-to-r from-[#2563EB]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#2563EB]/10'
                           : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
                       }`}
                       onClick={() => setConfig(prev => ({ ...prev, strategy: strategy.id }))}
@@ -1061,7 +1061,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-semibold text-[#F9FAFB]">{strategy.name}</h4>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            strategy.difficulty === t('difficulty.beginner') ? 'bg-[#00FF88]/20 text-[#00FF88]' :
+                            strategy.difficulty === t('difficulty.beginner') ? 'bg-[#2563EB]/20 text-[#2563EB]' :
                             strategy.difficulty === t('difficulty.intermediate') ? 'bg-[#FFA366]/20 text-[#FFA366]' :
                             'bg-[#DC2626]/20 text-[#DC2626]'
                           }`}>
@@ -1070,7 +1070,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         </div>
                         <p className="text-gray-400 text-sm mb-2">{strategy.description}</p>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-[#00FF88] font-medium">{strategy.type}</span>
+                          <span className="text-xs text-[#2563EB] font-medium">{strategy.type}</span>
                           <span className="text-xs text-gray-500">•</span>
                           <span className="text-xs text-gray-400">
                             {t('modal.load.indicators')} {strategy.indicators.join(', ')}
@@ -1079,7 +1079,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                       </div>
                       <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                         config.strategy === strategy.id
-                          ? 'border-[#00FF88] bg-[#00FF88]'
+                          ? 'border-[#2563EB] bg-[#2563EB]'
                           : 'border-gray-600'
                       }`}>
                         {config.strategy === strategy.id && (
@@ -1110,7 +1110,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         key={indicator.id}
                         className={`p-4 border rounded-xl transition-all duration-300 cursor-pointer ${
                           config.customStrategy?.indicators.some(ind => ind.id === indicator.id)
-                            ? 'border-[#00FF88]/50 bg-gradient-to-r from-[#00FF88]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#00FF88]/10'
+                            ? 'border-[#2563EB]/50 bg-gradient-to-r from-[#2563EB]/10 to-[#8B5CF6]/10 shadow-lg shadow-[#2563EB]/10'
                             : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
                         }`}
                         onClick={() => toggleIndicator(indicator)}
@@ -1120,15 +1120,15 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                           <div className="flex items-center gap-2">
                             <span className={`px-2 py-1 rounded text-xs ${
                               indicator.category === t('indicator.category.oscillator') ? 'bg-[#8B5CF6]/20 text-[#8B5CF6]' :
-                              indicator.category === t('indicator.category.trend') ? 'bg-[#00FF88]/20 text-[#00FF88]' :
+                              indicator.category === t('indicator.category.trend') ? 'bg-[#2563EB]/20 text-[#2563EB]' :
                               indicator.category === t('indicator.category.momentum') ? 'bg-[#FFA366]/20 text-[#FFA366]' :
-                              'bg-[#00FF88]/20 text-[#00FF88]'
+                              'bg-[#2563EB]/20 text-[#2563EB]'
                             }`}>
                               {indicator.category}
                             </span>
                             <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
                               config.customStrategy?.indicators.some(ind => ind.id === indicator.id)
-                                ? 'border-[#00FF88] bg-[#00FF88]'
+                                ? 'border-[#2563EB] bg-[#2563EB]'
                                 : 'border-gray-600'
                             }`}>
                               {config.customStrategy?.indicators.some(ind => ind.id === indicator.id) && (
@@ -1193,7 +1193,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                               entryLogic: e.target.value as 'ALL_AND' | 'ANY_OR'
                             }
                           }))}
-                          className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200"
+                          className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200"
                         >
                           <option value="ALL_AND" className="bg-gray-800 text-white">{t('indicator.all_and')}</option>
                           <option value="ANY_OR" className="bg-gray-800 text-white">{t('indicator.any_or')}</option>
@@ -1218,7 +1218,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                               exitLogic: e.target.value as 'ALL_AND' | 'ANY_OR'
                             }
                           }))}
-                          className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200"
+                          className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200"
                         >
                           <option value="ALL_AND" className="bg-gray-800 text-white">{t('indicator.all_and')}</option>
                           <option value="ANY_OR" className="bg-gray-800 text-white">{t('indicator.any_or')}</option>
@@ -1235,8 +1235,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
 
                 {/* Résumé de la stratégie personnalisée */}
                 {config.customStrategy?.indicators && config.customStrategy.indicators.length > 0 && (
-                  <div className="bg-gradient-to-r from-[#00FF88]/10 to-[#22C55E]/10 border border-[#00FF88]/30 rounded-xl p-6 shadow-lg">
-                    <h5 className="text-[#00FF88] text-lg font-bold mb-4">
+                  <div className="bg-gradient-to-r from-[#2563EB]/10 to-[#22C55E]/10 border border-[#2563EB]/30 rounded-xl p-6 shadow-lg">
+                    <h5 className="text-[#2563EB] text-lg font-bold mb-4">
                       {t('strategy.summary.title')}
                     </h5>
 
@@ -1266,9 +1266,9 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                                 </h6>
                                 <span className={`px-2 py-1 rounded text-xs ${
                                   indicatorInfo?.category === t('indicator.category.oscillator') ? 'bg-[#8B5CF6]/20 text-[#8B5CF6]' :
-                                  indicatorInfo?.category === t('indicator.category.trend') ? 'bg-[#00FF88]/20 text-[#00FF88]' :
+                                  indicatorInfo?.category === t('indicator.category.trend') ? 'bg-[#2563EB]/20 text-[#2563EB]' :
                                   indicatorInfo?.category === t('indicator.category.momentum') ? 'bg-[#FFA366]/20 text-[#FFA366]' :
-                                  indicatorInfo?.category === t('indicator.category.volatility') ? 'bg-[#00FF88]/20 text-[#00FF88]' :
+                                  indicatorInfo?.category === t('indicator.category.volatility') ? 'bg-[#2563EB]/20 text-[#2563EB]' :
                                   'bg-gray-600/20 text-gray-400'
                                 }`}>
                                   {indicatorInfo?.category}
@@ -1359,7 +1359,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, rsiPeriod: Number(e.target.value) }
                       }))}
-                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#00FF88]"
+                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       min="5" max="30"
                     />
                   </div>
@@ -1372,7 +1372,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, rsiOversold: Number(e.target.value) }
                       }))}
-                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#00FF88]"
+                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       min="10" max="40"
                     />
                   </div>
@@ -1385,7 +1385,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, rsiOverbought: Number(e.target.value) }
                       }))}
-                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#00FF88]"
+                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       min="60" max="90"
                     />
                   </div>
@@ -1403,7 +1403,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, emaPeriod1: Number(e.target.value) }
                       }))}
-                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200"
+                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200"
                       min="5" max="50"
                     />
                   </div>
@@ -1416,7 +1416,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, emaPeriod2: Number(e.target.value) }
                       }))}
-                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200"
+                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200"
                       min="20" max="200"
                     />
                   </div>
@@ -1434,7 +1434,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, bollingerPeriod: Number(e.target.value) }
                       }))}
-                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#00FF88]"
+                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       min="10" max="50"
                     />
                   </div>
@@ -1448,7 +1448,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, bollingerStdDev: Number(e.target.value) }
                       }))}
-                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#00FF88]"
+                      className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                       min="1" max="3"
                     />
                   </div>
@@ -1466,7 +1466,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, dcaAmount: Number(e.target.value) }
                       }))}
-                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200"
+                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200"
                       min="10" max="10000" step="10"
                     />
                     <p className="text-xs text-gray-400 mt-2">Montant fixe investi à chaque période</p>
@@ -1479,7 +1479,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                         ...prev,
                         parameters: { ...prev.parameters, dcaFrequency: e.target.value as 'daily' | 'weekly' | 'biweekly' | 'monthly' }
                       }))}
-                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] focus:border-[#00FF88] transition-all duration-200"
+                      className="w-full bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all duration-200"
                     >
                       <option value="daily" className="bg-gray-800 text-white">Quotidien</option>
                       <option value="weekly" className="bg-gray-800 text-white">Hebdomadaire</option>
@@ -1514,7 +1514,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                     ...prev,
                     riskManagement: { ...prev.riskManagement, stopLoss: Number(e.target.value) }
                   }))}
-                  className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+                  className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   min="1" max="20"
                 />
               </div>
@@ -1530,7 +1530,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                     ...prev,
                     riskManagement: { ...prev.riskManagement, takeProfit: Number(e.target.value) }
                   }))}
-                  className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+                  className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   min="2" max="50"
                 />
               </div>
@@ -1583,7 +1583,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">Take Profit:</span>
-                    <span className="text-[#00FF88] font-medium">{config.riskManagement.takeProfit}%</span>
+                    <span className="text-[#2563EB] font-medium">{config.riskManagement.takeProfit}%</span>
                   </div>
                 </>
               )}
@@ -1622,7 +1622,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
               className={`group w-full text-white px-8 py-5 rounded-xl font-bold text-lg transition-all duration-300 shadow-2xl flex items-center justify-center gap-4 ${
                 isRunning || !isConfigValid()
                   ? 'bg-gray-600 cursor-not-allowed opacity-50'
-                  : 'bg-gradient-to-r from-[#00FF88] via-[#8B5CF6] to-[#A855F7] hover:scale-[1.02] hover:shadow-[#00FF88]/30 hover:shadow-2xl'
+                  : 'bg-gradient-to-r from-[#2563EB] via-[#8B5CF6] to-[#A855F7] hover:scale-[1.02] hover:shadow-[#2563EB]/30 hover:shadow-2xl'
               }`}
             >
               {isRunning ? (
@@ -1640,8 +1640,8 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
           </div>
 
           {/* Note d'information */}
-          <div className="p-4 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl">
-            <p className="text-[#00FF88] text-sm">
+          <div className="p-4 bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-xl">
+            <p className="text-[#2563EB] text-sm">
               <strong>{t('backtest.config.tip')}</strong> {t('backtest.config.tip_text')}
             </p>
           </div>
@@ -1664,7 +1664,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                   type="text"
                   value={strategyName}
                   onChange={(e) => setStrategyName(e.target.value)}
-                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88]"
+                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                   placeholder={t('modal.save.name_placeholder')}
                 />
               </div>
@@ -1675,7 +1675,7 @@ export default function BacktestConfiguration({ onStartBacktest, isRunning = fal
                 <textarea
                   value={strategyDescription}
                   onChange={(e) => setStrategyDescription(e.target.value)}
-                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#00FF88] h-20 resize-none"
+                  className="w-full bg-gray-700/50 border border-gray-600/50 rounded-lg px-3 py-2 text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#2563EB] h-20 resize-none"
                   placeholder={t('modal.save.description_placeholder')}
                 />
               </div>

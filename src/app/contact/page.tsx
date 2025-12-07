@@ -259,11 +259,11 @@ export default function ContactPage() {
                 </h2>
 
                 {submitSuccess ? (
-                  <div className="p-6 bg-[#00FF88]/10 border border-[#00FF88]/30 rounded-xl text-center">
-                    <div className="w-16 h-16 bg-[#00FF88] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="p-6 bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-xl text-center">
+                    <div className="w-16 h-16 bg-[#2563EB] rounded-full flex items-center justify-center mx-auto mb-4">
                       <Send className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#00FF88] mb-2">
+                    <h3 className="text-xl font-bold text-[#2563EB] mb-2">
                       {language === 'fr' ? 'Message envoyé !' : 'Message sent!'}
                     </h3>
                     <p className="text-gray-300">

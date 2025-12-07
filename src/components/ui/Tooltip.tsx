@@ -53,7 +53,7 @@ const Tooltip = ({ children, content, side = 'top', className }: TooltipProps) =
         <div
           className={cn(
             'fixed z-50 px-3 py-2 text-sm text-white rounded-lg',
-            'glass-effect-strong border border-[#00FF88]/30',
+            'glass-effect-strong border border-[#2563EB]/30',
             'animate-in fade-in-0 zoom-in-95',
             sideClasses[side],
             className

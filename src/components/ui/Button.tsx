@@ -21,36 +21,45 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     children,
     ...props
   }, ref) => {
-    // Styles de base
-    const baseStyles = 'inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+    // Styles de base utilisant le design system
+    const baseStyles = 'inline-flex items-center justify-center font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+    const transitionStyles = 'transition-all duration-[var(--transition-base)]'
+    const radiusStyles = 'rounded-[var(--radius-lg)]'
 
-    // Tailles
+    // Tailles utilisant le design system
     const sizeStyles = {
-      sm: 'px-4 py-2 text-sm',
-      md: 'px-6 py-3 text-base',
-      lg: 'px-8 py-3.5 text-base'
+      sm: 'text-[var(--text-sm)]',
+      md: 'text-[var(--text-base)]',
+      lg: 'text-[var(--text-lg)]'
     }
 
-    // Variantes
+    // Padding utilisant le design system
+    const paddingStyles = {
+      sm: 'px-[var(--space-4)] py-[var(--space-2)]',
+      md: 'px-[var(--space-6)] py-[var(--space-3)]',
+      lg: 'px-[var(--space-8)] py-[var(--space-4)]'
+    }
+
+    // Variantes utilisant les CSS variables du design system
     const variantStyles = {
       primary: isDarkMode
-        ? 'bg-[#00FF88]/10 hover:bg-[#00FF88]/15 text-[#00FF88] border-2 border-[#00FF88]/30 hover:border-[#00FF88]/40 shadow-sm hover:shadow-md hover:shadow-[#00FF88]/5 focus:ring-[#00FF88]/20'
-        : 'bg-[#00FF88]/5 hover:bg-[#00FF88]/10 text-[#00875E] border-2 border-[#00FF88]/20 hover:border-[#00FF88]/30 shadow-sm hover:shadow-md focus:ring-[#00FF88]/20',
+        ? 'bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] border-2 border-[rgba(var(--color-primary-rgb),0.3)] hover:border-[rgba(var(--color-primary-rgb),0.4)] shadow-sm hover:shadow-md focus:ring-[rgba(var(--color-primary-rgb),0.2)]'
+        : 'bg-[rgba(var(--color-primary-rgb),0.05)] hover:bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border-2 border-[rgba(var(--color-primary-rgb),0.2)] hover:border-[rgba(var(--color-primary-rgb),0.3)] shadow-sm hover:shadow-md focus:ring-[rgba(var(--color-primary-rgb),0.2)]',
 
       secondary: isDarkMode
-        ? 'bg-gray-800/40 hover:bg-gray-800/60 text-gray-300 hover:text-white border-2 border-gray-700/50 hover:border-gray-600/50 shadow-sm focus:ring-gray-500/20'
-        : 'bg-white/60 hover:bg-white/80 text-gray-700 hover:text-gray-900 border-2 border-gray-200/60 hover:border-gray-300/60 shadow-sm hover:shadow-md focus:ring-gray-400/20',
+        ? 'bg-[var(--bg-secondary-dark)] hover:bg-[var(--bg-tertiary-dark)] text-[var(--text-secondary-dark)] hover:text-[var(--text-primary-dark)] border-2 border-[var(--border-color-dark)] hover:border-[var(--border-color-dark-hover)] shadow-sm'
+        : 'bg-[var(--bg-secondary-light)] hover:bg-[var(--bg-tertiary-light)] text-[var(--text-secondary-light)] hover:text-[var(--text-primary-light)] border-2 border-[var(--border-color-light)] hover:border-[var(--border-color-light-hover)] shadow-sm hover:shadow-md',
 
       outline: isDarkMode
-        ? 'bg-transparent hover:bg-gray-800/30 text-gray-400 hover:text-gray-200 border-2 border-gray-700/50 hover:border-gray-600/50 focus:ring-gray-500/20'
-        : 'bg-transparent hover:bg-gray-100/50 text-gray-600 hover:text-gray-900 border-2 border-gray-300/50 hover:border-gray-400/50 focus:ring-gray-400/20',
+        ? 'bg-transparent hover:bg-[var(--bg-secondary-dark)] text-[var(--text-secondary-dark)] hover:text-[var(--text-primary-dark)] border-2 border-[var(--border-color-dark)] hover:border-[var(--border-color-dark-hover)]'
+        : 'bg-transparent hover:bg-[var(--bg-tertiary-light)] text-[var(--text-secondary-light)] hover:text-[var(--text-primary-light)] border-2 border-[var(--border-color-light)] hover:border-[var(--border-color-light-hover)]',
 
       ghost: isDarkMode
-        ? 'bg-transparent hover:bg-gray-800/30 text-gray-400 hover:text-gray-200 border-0 focus:ring-gray-500/20'
-        : 'bg-transparent hover:bg-gray-100/50 text-gray-600 hover:text-gray-900 border-0 focus:ring-gray-400/20'
+        ? 'bg-transparent hover:bg-[var(--bg-secondary-dark)] text-[var(--text-secondary-dark)] hover:text-[var(--text-primary-dark)] border-0'
+        : 'bg-transparent hover:bg-[var(--bg-tertiary-light)] text-[var(--text-secondary-light)] hover:text-[var(--text-primary-light)] border-0'
     }
 
-    const combinedClassName = `${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`
+    const combinedClassName = `${baseStyles} ${transitionStyles} ${radiusStyles} ${paddingStyles[size]} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`
 
     return (
       <button

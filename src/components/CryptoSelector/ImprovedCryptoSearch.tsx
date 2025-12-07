@@ -203,14 +203,14 @@ export default function ImprovedCryptoSearch({
             placeholder="Rechercher Bitcoin, Ethereum, Solana... ou tapez un symbole (BTC, ETH...)"
             value={searchTerm}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="block w-full pl-12 pr-16 py-4 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-400 focus:border-[#00FF88]/50 focus:ring-2 focus:ring-[#00FF88]/20 focus:outline-none transition-all text-lg"
+            className="block w-full pl-12 pr-16 py-4 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-400 focus:border-[#2563EB]/50 focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all text-lg"
           />
           <div className="absolute inset-y-0 right-0 pr-4 flex items-center space-x-2">
             {!hideFilters && (
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`p-2 rounded-lg transition-colors ${
-                  showFilters ? 'text-[#00FF88] bg-[#00FF88]/10' : 'text-gray-400 hover:text-white'
+                  showFilters ? 'text-[#2563EB] bg-[#2563EB]/10' : 'text-gray-400 hover:text-white'
                 }`}
                 title="Filtres avancés"
               >
@@ -269,7 +269,7 @@ export default function ImprovedCryptoSearch({
                       onClick={() => setFilterBy(value as FilterOption)}
                       className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm transition-all ${
                         filterBy === value
-                          ? 'bg-[#00FF88] text-white'
+                          ? 'bg-[#2563EB] text-white'
                           : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
                       }`}
                     >
@@ -295,7 +295,7 @@ export default function ImprovedCryptoSearch({
                       onClick={() => setSortBy(value as SortOption)}
                       className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-sm transition-all ${
                         sortBy === value
-                          ? 'bg-[#00FF88] text-white'
+                          ? 'bg-[#2563EB] text-white'
                           : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
                       }`}
                     >
@@ -324,7 +324,7 @@ export default function ImprovedCryptoSearch({
 
         {isLoadingExternal ? (
           <div className="text-center py-12 animate-fade-in">
-            <div className="w-12 h-12 border-4 border-[#00FF88]/20 border-t-[#00FF88] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#2563EB]/20 border-t-[#2563EB] rounded-full animate-spin mx-auto mb-4"></div>
             <div className="text-gray-400 font-medium mb-2">Recherche en cours...</div>
             <div className="text-gray-500 text-sm">
               Recherche dans toutes les cryptomonnaies disponibles
@@ -346,7 +346,7 @@ export default function ImprovedCryptoSearch({
                 onClick={() => handleCryptoSelect(crypto)}
                 className={`group p-2 rounded-lg border transition-all duration-300 text-left hover:scale-[1.02] animate-fade-in-up ${
                   crypto.tradingview_symbol === selectedCrypto
-                    ? 'border-[#00FF88] bg-[#00FF88]/10'
+                    ? 'border-[#2563EB] bg-[#2563EB]/10'
                     : 'border-gray-700/50 bg-gray-800/30 hover:border-gray-600/50 hover:bg-gray-800/50'
                 }`}
                 style={{
@@ -357,7 +357,7 @@ export default function ImprovedCryptoSearch({
                   <div className="flex items-center space-x-2">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden ${
                       crypto.tradingview_symbol === selectedCrypto
-                        ? 'ring-2 ring-[#00FF88] bg-gray-800/50'
+                        ? 'ring-2 ring-[#2563EB] bg-gray-800/50'
                         : 'bg-gray-800/50 border border-gray-700/50'
                     }`}>
                       {crypto.image ? (
@@ -378,7 +378,7 @@ export default function ImprovedCryptoSearch({
                       </span>
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-white text-sm group-hover:text-[#00FF88] transition-colors">
+                      <div className="font-semibold text-white text-sm group-hover:text-[#2563EB] transition-colors">
                         {crypto.name}
                       </div>
                       <div className="text-xs text-gray-400 flex items-center space-x-1">
@@ -398,7 +398,7 @@ export default function ImprovedCryptoSearch({
                     </div>
                   </div>
                   {crypto.tradingview_symbol === selectedCrypto && (
-                    <div className="w-5 h-5 bg-[#00FF88] rounded-full flex items-center justify-center">
+                    <div className="w-5 h-5 bg-[#2563EB] rounded-full flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
